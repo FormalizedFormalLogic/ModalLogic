@@ -1,9 +1,20 @@
 name = "ModalLogic"
 defaultTargets = ["ModalLogic"]
 
-[[require]]
-scope = "leanprover-community"
-name = "mathlib"
-
 [[lean_lib]]
 name = "ModalLogic"
+
+[[lean_lib]]
+name = "ModalLogicArchive"
+
+[lean_lib.leanOptions]
+pp.unicode.fun = true
+weak.linter.flexible = true
+weak.linter.refine = true
+weak.linter.oldObtain = true
+weak.linter.style.multiGoal = true
+
+[[require]]
+name = "Foundation"
+git = "https://github.com/FormalizedFormalLogic/Foundation"
+rev = "master"
