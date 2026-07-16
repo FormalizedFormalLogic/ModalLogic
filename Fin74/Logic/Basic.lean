@@ -1,6 +1,5 @@
 module
 
-public import Foundation.Vorspiel.Set.Basic
 public import Fin74.Formula.Substitution
 
 @[expose]
@@ -58,28 +57,24 @@ def C : ℕ → Formula ℕ
 end
 
 @[simp, grind =] lemma B_zero : B 0 = q0 := by simp [B]
-@[simp, grind =] lemma C_zero : C 0 = r0 := by simp [C]
 @[simp, grind =] lemma B_one : B 1 = q1 := by simp [B]
+@[simp, grind =] lemma B_add_two (m : ℕ) : B (m + 2) = ◇(B (m + 1)) ⋏ ◇(C m) ⋏ ∼◇(C (m + 1)) := by simp [B]
+
+@[simp, grind =] lemma C_zero : C 0 = r0 := by simp [C]
 @[simp, grind =] lemma C_one : C 1 = r1 := by simp [C]
-
-@[simp, grind =]
-lemma B_add_two (m : ℕ) : B (m + 2) = ◇(B (m + 1)) ⋏ ◇(C m) ⋏ ∼◇(C (m + 1)) := by simp [B]
-
-@[simp, grind =]
-lemma C_add_two (m : ℕ) : C (m + 2) = ◇(C (m + 1)) ⋏ ◇(B m) ⋏ ∼◇(B (m + 2)) := by simp [C]
+@[simp, grind =] lemma C_add_two (m : ℕ) : C (m + 2) = ◇(C (m + 1)) ⋏ ◇(B m) ⋏ ∼◇(B (m + 2)) := by simp [C]
 
 /-- `A_m` from [Fin74]. -/
 def A (m : ℕ) : Formula ℕ := ◇(B (m + 1)) ⋏ ◇(C (m + 1)) ⋏ ∼◇(B (m + 2))
 
 /-- `D` from [Fin74]. -/
-def D : Formula ℕ :=
-  (p0 ⋎ p1) ⋏ □(p0 🡒 (∼p1 ⋏ ◇p1)) ⋏ □(∼(p0 ⋎ p1) 🡒 □(∼(p0 ⋎ p1)))
+def D : Formula ℕ := (p0 ⋎ p1) ⋏ □(p0 🡒 (∼p1 ⋏ ◇p1)) ⋏ □(∼(p0 ⋎ p1) 🡒 □(∼(p0 ⋎ p1)))
 
 /-- `E` from [Fin74]. -/
 def E : Formula ℕ :=
   D ⋏ ◇(A 0)
-    ⋏ □(B 1 🡒 ◇(B 0) ⋏ ∼◇(C 0))
-    ⋏ □(C 1 🡒 ◇(C 0) ⋏ ∼◇(B 0))
+    ⋏ □(B 1 🡒 (◇(B 0) ⋏ ∼◇(C 0)))
+    ⋏ □(C 1 🡒 (◇(C 0) ⋏ ∼◇(B 0)))
     ⋏ □(B 0 🡒 ∼◇(B 1))
     ⋏ □(C 0 🡒 ∼◇(C 1))
 
@@ -94,7 +89,7 @@ def H : Formula ℕ :=
   ∼(s ⋏ □(s 🡒 ◇(∼s ⋏ t ⋏ ◇((∼s ⋏ ∼t) ⋏ ◇s))))
 
 /-- The logic `L` of [Fin74]: `S4` extended by the axioms `G` and `H`. -/
-abbrev LogicFi : @Logic ℕ := mkLogic {G, H}
+abbrev LogicFi := mkLogic {G, H}
 
 end Fin74
 

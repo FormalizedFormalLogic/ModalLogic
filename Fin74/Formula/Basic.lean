@@ -1,6 +1,6 @@
 module
 
-public import Mathlib.Logic.Basic
+public import Foundation.Vorspiel.Set.Basic
 
 @[expose]
 public section
@@ -24,7 +24,7 @@ variable {A B : Formula α}
 
 prefix:100 "#" => atom
 notation:max "⊥" => bot
-infixr:85 " 🡒 " => imp
+infixr:64 " 🡒 " => imp
 prefix:95 "◇" => dia
 
 @[match_pattern]
@@ -33,15 +33,15 @@ prefix:90 "∼" => neg
 
 @[match_pattern]
 abbrev or (A B : Formula α) : Formula α := ∼A 🡒 B
-infixl:83 " ⋎ " => or
+infixl:68 " ⋎ " => or
 
 @[match_pattern]
 abbrev and (A B : Formula α) : Formula α := ∼(A 🡒 ∼B)
-infixl:84 " ⋏ " => and
+infixl:72 " ⋏ " => and
 
 @[match_pattern]
 abbrev iff (A B : Formula α) : Formula α := (A 🡒 B) ⋏ (B 🡒 A)
-infix:85 " 🡘 " => iff
+infix:58 " 🡘 " => iff
 
 @[match_pattern]
 abbrev top : Formula α := ∼⊥
