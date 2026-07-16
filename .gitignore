@@ -1,1 +1,20 @@
-/.lake
+# Lake
+.lake
+
+# Env
+.envrc
+
+# VSCode
+.vscode/settings.json
+
+# Claude
+CLAUDE.local.md
+
+# Notes
+.notes
+
+# Import graph
+import_graph.dot
+import_graph.png
+import_graph.pdf
+import_graph.html
