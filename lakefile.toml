@@ -1,5 +1,5 @@
 name = "ModalLogic"
-defaultTargets = ["ModalLogic"]
+defaultTargets = ["Fin74"]
 
 [[lean_lib]]
 name = "ModalLogic"
@@ -7,12 +7,8 @@ name = "ModalLogic"
 [[lean_lib]]
 name = "ModalLogicArchive"
 
-[lean_lib.leanOptions]
-pp.unicode.fun = true
-weak.linter.flexible = true
-weak.linter.refine = true
-weak.linter.oldObtain = true
-weak.linter.style.multiGoal = true
+[[lean_lib]]
+name = "Fin74"
 
 [[require]]
 name = "Foundation"
