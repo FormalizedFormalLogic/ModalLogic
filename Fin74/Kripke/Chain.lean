@@ -34,13 +34,16 @@ theorem exists_strictChain {w₀ : M.World} (h0 : P 0 w₀)
 theorem strictChain_rel_of_lt (hR : ∀ m : ℕ, u m ≺ u (m + 1)) {i j : ℕ} (hij : i < j) : u i ≺ u j := by
   induction j, hij using Nat.le_induction with
   | base => exact hR i;
-  | succ j _ ih => exact Model.rel_trans' ih (hR j);
+  | succ j _ ih =>
+    trans u j;
+    . exact ih;
+    . exact hR j;
 
 /-- An ascending chain relates along `≤`. -/
 theorem strictChain_rel_of_le (hR : ∀ m : ℕ, u m ≺ u (m + 1)) {i j : ℕ} (hij : i ≤ j) : u i ≺ u j := by
-  obtain hij | hij := Nat.lt_or_eq_of_le hij;
+  rcases Nat.lt_or_eq_of_le hij with hij | rfl
   · exact strictChain_rel_of_lt hR hij;
-  · exact hij ▸ Model.rel_refl' (u i);
+  · simp;
 
 /-- A strict ascending chain has pairwise-distinct points (transitivity + reflexivity only;
 antisymmetry is not assumed, since Lemma 1's frames need not be posets). -/

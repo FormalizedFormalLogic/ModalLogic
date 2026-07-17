@@ -85,8 +85,7 @@ def F : Formula ℕ := ◇((p0 ⋎ p1) ⋏ ∼◇(A 0) ⋏ ◇(A 1))
 def G : Formula ℕ := E 🡒 F
 
 /-- `H` from [Fin74]. -/
-def H : Formula ℕ :=
-  ∼(s ⋏ □(s 🡒 ◇(∼s ⋏ t ⋏ ◇((∼s ⋏ ∼t) ⋏ ◇s))))
+def H : Formula ℕ := ∼(s ⋏ □(s 🡒 ◇(∼s ⋏ t ⋏ ◇((∼s ⋏ ∼t) ⋏ ◇s))))
 
 /-- The logic `L` of [Fin74]: `S4` extended by the axioms `G` and `H`. -/
 abbrev LogicFi := mkLogic {G, H}

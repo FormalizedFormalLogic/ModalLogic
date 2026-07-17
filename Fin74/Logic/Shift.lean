@@ -33,13 +33,13 @@ theorem B_C_subst_shift (m n : ℕ) : (B n)⟦shift m⟧ = B (m + n) ∧ (C n)�
   | 0 => by simp
   | 1 => by simp
   | n + 2 => by
-      obtain ⟨ihB1, ihC1⟩ := B_C_subst_shift m (n + 1);
-      obtain ⟨ihB0, ihC0⟩ := B_C_subst_shift m n;
-      have : m + (n + 1) = m + n + 1 := by omega;
-      have : m + (n + 2) = m + n + 2 := by omega;
-      constructor;
-      . simp_all;
-      . simp_all;
+    obtain ⟨ihB1, ihC1⟩ := B_C_subst_shift m (n + 1);
+    obtain ⟨ihB0, ihC0⟩ := B_C_subst_shift m n;
+    have : m + (n + 1) = m + n + 1 := by omega;
+    have : m + (n + 2) = m + n + 2 := by omega;
+    constructor;
+    . simp_all;
+    . simp_all;
 
 theorem B_subst_shift (m n : ℕ) : (B n)⟦shift m⟧ = B (m + n) := (B_C_subst_shift m n).1
 theorem C_subst_shift (m n : ℕ) : (C n)⟦shift m⟧ = C (m + n) := (B_C_subst_shift m n).2
@@ -97,8 +97,7 @@ theorem forces_E_subst_shift : x ⊩ E⟦shift m⟧ ↔ x ⊩ D ∧ x ⊩ ◇(A 
   tauto
 
 /-- Forcing characterization of `F⟦σ_m⟧`. -/
-theorem forces_F_subst_shift :
-    x ⊩ F⟦shift m⟧ ↔ ∃ y, x ≺ y ∧ y ⊩ p0 ⋎ p1 ∧ y ⊩ ∼◇(A m) ∧ y ⊩ ◇(A (m + 1)) := by
+theorem forces_F_subst_shift : x ⊩ F⟦shift m⟧ ↔ ∃ y, x ≺ y ∧ y ⊩ p0 ⋎ p1 ∧ y ⊩ ∼◇(A m) ∧ y ⊩ ◇(A (m + 1)) := by
   simp [F, A_subst_shift, Model.World.forces_dia, Model.World.forces_and];
   tauto
 
