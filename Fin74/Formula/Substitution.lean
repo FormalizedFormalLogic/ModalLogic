@@ -11,9 +11,7 @@ variable {α β γ : Type*}
 
 abbrev Substitution (α β) := α → Formula β
 
-/-- Uniform substitution of atoms, extended homomorphically over `⊥`/`🡒`/`◇`. Since the
-derived connectives `¬`/`∧`/`∨`/`⊤`/`↔`/`□` are themselves built from `⊥`/`🡒`/`◇`, `subst`
-commutes with them definitionally (see `subst_neg` etc. below). -/
+/-- Uniform substitution of atoms, extended homomorphically over `⊥`/`🡒`/`◇`. -/
 @[grind =]
 def subst (s : Substitution α β) : Formula α → Formula β
 | #a    => s a
@@ -36,11 +34,17 @@ variable {s : Substitution α β} {A B : Formula α}
 @[simp, grind =] lemma subst_top : (⊤ : Formula α)⟦s⟧ = ⊤ := rfl
 @[simp, grind =] lemma subst_box : (□A)⟦s⟧ = □(A⟦s⟧) := rfl
 
-/-- Substitution composition: substituting `t` then `s` agrees with substituting once by
-their pointwise composite. -/
 @[grind =]
 lemma subst_subst {t : Substitution α β} {s : Substitution β γ} {A : Formula α} :
     (A⟦t⟧)⟦s⟧ = A⟦fun a => (t a)⟦s⟧⟧ := by
+  induction A with
+  | atom a => rfl
+  | bot => rfl
+  | imp A B ihA ihB => simp [subst, ihA, ihB]
+  | dia A ih => simp [subst, ih]
+
+@[simp, grind =]
+lemma subst_id {A : Formula α} : A⟦(#·)⟧ = A := by
   induction A with
   | atom a => rfl
   | bot => rfl

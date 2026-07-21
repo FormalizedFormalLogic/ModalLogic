@@ -7,10 +7,9 @@ public section
 
 variable {α : Type*}
 
-/-- Formulas over primitives `⊥`, `🡒`, `◇` (following [Fin74]), with `□` a derived
-connective. Fewer modal primitives keep structural induction (e.g. for `subst`, or the
-"modal decomposition" lemma used in the pigeonhole argument of [Fin74]) to a single
-modal case. -/
+/-- Formulas over primitives `⊥`, `🡒`, `◇`, with `□` a derived connective.
+
+- [Fin74] -/
 inductive Formula (α : Type*)
 | atom : α → Formula α
 | bot  : Formula α

@@ -5,11 +5,9 @@ public import Fin74.Formula.Substitution
 @[expose]
 public section
 
-/-- A Kripke frame: a relation that is reflexive and transitive (the paper [Fin74] only ever
-considers such frames, so this is baked into the structure rather than imposed via a separate
-typeclass). No `World`/`Rel` abbreviations or `≺` notation are attached to `Frame` itself: the
-relation is only ever accessed through a `Model` built on top of it, so that there is a single,
-unambiguous home for the `≺` notation. -/
+/-- A Kripke frame: a relation that is reflexive and transitive.
+
+- [Fin74] -/
 structure Frame (κ : Type u) where
   Rel'      : κ → κ → Prop
   rel_refl  : ∀ x, Rel' x x
@@ -36,7 +34,6 @@ end Frame
 
 
 
-/-- A Kripke model: a frame together with a valuation. -/
 structure Model (κ : Type u) (α : Type v) extends Frame κ where
   Val'      : κ → α → Prop
 
@@ -83,13 +80,20 @@ infix:50 " ⊮ " => NotForces _
 @[grind =] lemma not_forces_dia : x ⊮ ◇A ↔ ∀ y : M.World, x ≺ y → y ⊮ A := by grind;
 @[grind =] lemma not_forces_box : x ⊮ □A ↔ ∃ y : M.World, x ≺ y ∧ y ⊮ A := by grind;
 
-/-- Boxed formulas persist along the accessibility relation. -/
 @[grind →]
 lemma forces_box_of_rel (h : x ⊩ □A) (hxy : x ≺ y) : y ⊩ □A := by grind;
 
-/-- Diamond formulas pull back along the accessibility relation. -/
 @[grind →]
 lemma forces_dia_of_rel (h : y ⊩ ◇A) (hxy : x ≺ y) : x ⊩ ◇A := by grind;
+
+@[grind =]
+lemma forces_subst {M : Model κ β} {x : M.World} {σ : Formula.Substitution α β} {A : Formula α} :
+    x ⊩[M] A⟦σ⟧ ↔ x ⊩[⟨M.toFrame, fun w a => w ⊩[M] σ a⟩] A := by
+  induction A generalizing x with
+  | atom a => rfl
+  | bot => rfl
+  | imp A B ihA ihB => grind
+  | dia A ih => grind
 
 end Model.World
 
@@ -98,14 +102,13 @@ namespace Model
 
 variable {M : Model κ α} {A : Formula α}
 
-/-- `M` satisfies `A` at every world, i.e. `A` is valid on `M`. -/
 @[grind]
 def Validates (M : Model κ α) (A : Formula α) : Prop := ∀ x : M.World, x ⊩ A
 infix:50 " ⊧ " => Model.Validates
 
 /-- `M` strongly verifies `A`: every uniform substitution instance of `A` is valid on `M`.
-(This is the notion of "strongly verified" from [Fin74]: `A` remains valid on `M` no matter
-which formulas are substituted for its atoms.) -/
+
+- [Fin74] -/
 @[grind]
 def StronglyVerifies (M : Model κ α) (A : Formula α) : Prop := ∀ σ, M ⊧ A⟦σ⟧
 
@@ -115,7 +118,6 @@ end Model
 
 namespace Frame
 
-/-- `A` is valid on `F`: true at every world of every model built on `F`. -/
 @[grind =]
 def Validates (F : Frame κ) (A : Formula α) : Prop := ∀ V, (Model.mk F V) ⊧ A
 infix:50 " ⊧ " => Frame.Validates
@@ -124,7 +126,21 @@ infix:50 " ⊧ " => Frame.Validates
 def ValidatesSet (F : Frame κ) (S : Set (Formula ℕ)) : Prop := ∀ A ∈ S, F.Validates A
 infix:50 " ⊧ " => Frame.ValidatesSet
 
+lemma forces_subst_of_validates {F : Frame κ} {A : Formula α} {σ : Formula.Substitution α α}
+    (h : F.Validates A) : F.Validates (A⟦σ⟧) := by
+  intro V x;
+  exact Model.World.forces_subst.mpr (h (fun w a => w ⊩[⟨F, V⟩] σ a) x)
+
 end Frame
+
+namespace Model
+
+lemma stronglyVerifies_of_frame_validates {F : Frame κ} {A : Formula α} (h : F.Validates A)
+    (V) : Model.StronglyVerifies ⟨F, V⟩ A := by
+  intro σ x;
+  exact Frame.forces_subst_of_validates h V x
+
+end Model
 
 
 end
