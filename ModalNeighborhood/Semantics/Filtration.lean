@@ -136,10 +136,8 @@ lemma compl_truthset (hφ : φ ∈ T) : (【(M φ)ᶜ】 : Set (FilterEqvQuotien
 
 lemma subset_original_truthset_of_subset (hψ : ψ ∈ T) (h : (【M φ】 : Set (FilterEqvQuotient M T)) ⊆ 【M ψ】) : M φ ⊆ M ψ := by
   intro x hx;
-  replace h : ∀ y ∈ M φ, ∃ z ∈ M ψ, (filterEquiv M T) z y := by
-    simpa [toFilterEquivSet, FilterEqvSetoid, Quotient.eq] using h;
-  obtain ⟨y, hy₁, hy₂⟩ := h x hx;
-  apply hy₂ ψ hψ |>.mp hy₁;
+  obtain ⟨z, hz₁, hz₂⟩ := h (mem_of_mem hx);
+  exact FilterEqvQuotient.iff_eq.mp hz₂ ψ hψ |>.mp hz₁;
 
 lemma eq_original_truthset_of_eq (hφ : φ ∈ T) (hψ : ψ ∈ T) (h : (【M φ】 : Set (FilterEqvQuotient M T)) = 【M ψ】) : M φ = M ψ := by
   apply Set.Subset.antisymm;
