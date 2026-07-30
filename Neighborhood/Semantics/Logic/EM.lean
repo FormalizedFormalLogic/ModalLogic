@@ -44,7 +44,7 @@ theorem LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hM : Axioms.M #0 #1 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, _, rfl⟩)
+    have hM : Axioms.M #0 #1 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_3_137264.not_valid_axiomM (LogicE.sound _ hM)
 
 end

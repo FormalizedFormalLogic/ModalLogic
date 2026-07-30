@@ -62,7 +62,7 @@ theorem LogicEMT_ssubset_LogicEMT4 : @LogicEMT ℕ ⊂ LogicEMT4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hFour : Axioms.Four #0 ∈ (@LogicEMT ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    have hFour : Axioms.Four #0 ∈ (@LogicEMT ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_8.not_valid_axiomFour
       (LogicEMT.sound frame_2_8 hFour)
 

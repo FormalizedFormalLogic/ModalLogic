@@ -34,7 +34,7 @@ theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hP : (Axioms.P : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm rfl)
+    have hP : (Axioms.P : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_1.not_valid_axiomP (LogicE.sound _ hP)
 
 theorem LogicEP.not_mem_axiomD {a : ℕ} : Axioms.D #a ∉ @LogicEP ℕ := fun hD =>

@@ -30,7 +30,7 @@ theorem LogicE_ssubset_LogicEK : @LogicE ℕ ⊂ LogicEK := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hK : Axioms.K #0 #1 ∈ @LogicE ℕ := h (ProvableHilbert.axm ⟨_, _, rfl⟩)
+    have hK : Axioms.K #0 #1 ∈ @LogicE ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_3_130.not_valid_axiomK (LogicE.sound _ hK)
 
 end

@@ -30,7 +30,7 @@ theorem LogicE_ssubset_LogicED : @LogicE ℕ ⊂ LogicED := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hD : Axioms.D #0 ∈ @LogicE ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    have hD : Axioms.D #0 ∈ @LogicE ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_2_79.not_isSerial (isSerial_of_valid_axiomD (LogicE.sound _ hD))
 
 end

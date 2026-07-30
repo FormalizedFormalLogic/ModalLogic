@@ -36,7 +36,7 @@ theorem LogicET_ssubset_LogicETB : @LogicET ℕ ⊂ LogicETB := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hB : Axioms.B #0 ∈ @LogicET ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    have hB : Axioms.B #0 ∈ @LogicET ℕ := h (ProvableHilbert.axm (by grind))
     have hS := isSymmetric_of_valid_axiomB (LogicET.sound frame_1_0 hB)
     have := hS.symm (X := Set.univ)
     simp [Frame.box, Frame.dia] at this
@@ -45,7 +45,7 @@ theorem LogicEB_ssubset_LogicETB : @LogicEB ℕ ⊂ LogicETB := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hT : Axioms.T #0 ∈ @LogicEB ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, rfl⟩))
+    have hT : Axioms.T #0 ∈ @LogicEB ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT (LogicEB.sound frame_1_3 hT))
 
 end

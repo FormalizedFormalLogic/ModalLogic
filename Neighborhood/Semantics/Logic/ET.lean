@@ -43,7 +43,7 @@ theorem LogicED_ssubset_LogicET : @LogicED ℕ ⊂ LogicET := by
     rintro _ ⟨A, rfl⟩
     exact Logic.C_trans Logic.axiomT Logic.diaTc
   · intro h
-    have hT : Axioms.T #0 ∈ @LogicED ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    have hT : Axioms.T #0 ∈ @LogicED ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_1.not_isReflexive (isReflexive_of_valid_axiomT (LogicED.sound frame_1_1 hT))
 
 end

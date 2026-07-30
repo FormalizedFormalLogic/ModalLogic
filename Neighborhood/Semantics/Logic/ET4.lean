@@ -64,14 +64,14 @@ theorem LogicE4_ssubset_LogicET4 : @LogicE4 ℕ ⊂ LogicET4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hT : Axioms.T #0 ∈ @LogicE4 ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, rfl⟩))
+    have hT : Axioms.T #0 ∈ @LogicE4 ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT (LogicE4.sound frame_1_3 hT))
 
 theorem LogicET_ssubset_LogicET4 : @LogicET ℕ ⊂ LogicET4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hFour : Axioms.Four #0 ∈ @LogicET ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    have hFour : Axioms.Four #0 ∈ @LogicET ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_2_72.not_isTransitive (isTransitive_of_valid_axiomFour (LogicET.sound frame_2_72 hFour))
 
 end

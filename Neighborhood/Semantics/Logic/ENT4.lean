@@ -74,8 +74,7 @@ theorem LogicEN4_ssubset_LogicENT4 : @LogicEN4 ℕ ⊂ LogicENT4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.union_subset_union_left _ Set.subset_union_left)
   · intro h
-    have hT : Axioms.T #0 ∈ (@LogicEN4 ℕ) :=
-      h (ProvableHilbert.axm (Or.inl (Or.inr ⟨_, rfl⟩)))
+    have hT : Axioms.T #0 ∈ (@LogicEN4 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_170.not_valid_axiomT
       (LogicEN4.sound frame_2_170 hT)
 
@@ -83,8 +82,7 @@ theorem LogicET4_ssubset_LogicENT4 : @LogicET4 ℕ ⊂ LogicENT4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.union_subset_union_left _ Set.subset_union_right)
   · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicET4 ℕ) :=
-      h (ProvableHilbert.axm (Or.inl (Or.inl rfl)))
+    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicET4 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_1_0.not_valid_axiomN (LogicET4.sound frame_1_0 hN)
 
 end

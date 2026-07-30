@@ -42,7 +42,7 @@ theorem LogicE_ssubset_LogicEN : @LogicE ℕ ⊂ LogicEN := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm rfl)
+    have hN : (Axioms.N : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_0.not_valid_axiomN (LogicE.sound frame_1_0 hN)
 
 end

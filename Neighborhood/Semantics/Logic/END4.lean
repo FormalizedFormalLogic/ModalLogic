@@ -37,7 +37,7 @@ theorem LogicEND_ssubset_LogicEND4 : @LogicEND ℕ ⊂ LogicEND4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hFour : Axioms.Four #0 ∈ @LogicEND ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    have hFour : Axioms.Four #0 ∈ @LogicEND ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_2_172.not_valid_axiomFour
       (LogicEND.sound frame_2_172 hFour)
 
