@@ -27,6 +27,10 @@ instance : frame_1_3.IsEuclidean := ⟨fun X => by simp [Frame.box, Frame.dia]�
 lemma frame_1_3.not_isReflexive : ¬frame_1_3.IsReflexive := fun hR => by
   simpa using hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
 
+@[simp]
+lemma frame_1_3.not_valid_axiomT : ¬frame_1_3 ⊧ (Axioms.T #0 : Formula ℕ) :=
+  fun h => frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT h)
+
 instance : frame_1_3.ContainsUnit := ⟨by simp [Frame.box]⟩
 
 instance : frame_1_3.IsRegular := ⟨by
