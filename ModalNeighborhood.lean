@@ -8,6 +8,7 @@ public import ModalNeighborhood.Semantics.AxiomN
 public import ModalNeighborhood.Semantics.AxiomP
 public import ModalNeighborhood.Semantics.Basic
 public import ModalNeighborhood.Semantics.Completeness
+public import ModalNeighborhood.Semantics.Filtration
 public import ModalNeighborhood.Semantics.Hilbert
 public import ModalNeighborhood.Semantics.IntersectionClosure
 public import ModalNeighborhood.Semantics.Logic.E
