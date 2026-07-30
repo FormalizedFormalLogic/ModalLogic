@@ -1,6 +1,6 @@
-# `ModalNeighborhood/Semantics/Filtration.lean` 修正計画
+# `Neighborhood/Semantics/Filtration.lean` 修正計画
 
-対象: `.claude/worktrees/nbhd-filtration/ModalNeighborhood/Semantics/Filtration.lean`（691行，26エラー）．
+対象: `.claude/worktrees/nbhd-filtration/Neighborhood/Semantics/Filtration.lean`（691行，26エラー）．
 参照論文: [Kop23]（`.references/Kop23.pdf`，K. Kopnev, "The Finite Model Property of Some Non-normal Modal Logics with the Transitivity Axiom", arXiv:2305.08605）．
 エラー一覧: `.claude/directions/pending-modal-neighborhood/filtration-build-errors.txt`（`lake build` 出力からの抜粋．各エラーの後続文脈は12行で切られており，一部のゴールは途中までしか見えない．以下で「（推定）」と付けた記述はこの切り詰めから復元した推測であり，実装時に `lean_goal` で必ず確認すること）．
 
@@ -117,7 +117,7 @@ Lemma 5.18 の証明の骨格（本ファイル最難関部の元）: w̃ ∈ �
 | S10 | 597–622行: Ξ のみ非空ケースの `grind` 置換 | E21 | S9（S9 で確立した証明パターンを流用） | 中（S9 のコピー適用） |
 | S11 | 623–632行: 両方空ケース | E22–E24, （W5 残余） | S7（`eYVU` を使用），S8–S10 と同一証明内 | 中（§5 難所3） |
 | S12 | 656–661行: `quasiFilteringTransitiveFiltration.containsUnit`（def 化＋証明修正） | E25, E26, W4 | S5（実質 S6 と同型．S6 の修正パターンを流用） | 低 |
-| S13 | 仕上げ: `lake build` 全体確認 → 警告ゼロ確認 → `ModalNeighborhood.lean` の import（追加済み）でのビルド → `just mk-all`・`just shake`・再ビルド | — | S1–S12 | 低 |
+| S13 | 仕上げ: `lake build` 全体確認 → 警告ゼロ確認 → `Neighborhood.lean` の import（追加済み）でのビルド → `just mk-all`・`just shake`・再ビルド | — | S1–S12 | 低 |
 
 備考:
 - S1–S6 は互いに独立（どの順でもよい）．S7–S11 は単一証明内なので必ずこの順で逐次．S12 は S6 完了後ならいつでも可．
@@ -163,7 +163,7 @@ Lemma 5.18 の証明の骨格（本ファイル最難関部の元）: w̃ ∈ �
 
 1. 修正前に `mcp__lean-lsp__lean_goal` で当該位置の実ゴールを確認する（本計画の「推定」箇所は特に必須）．
 2. 修正後は `lean_diagnostic_messages` で当該宣言のエラー・警告が消えたことを確認する．
-3. ステップ完了ごとにコミット（メッセージは英語，`Co-Authored-By: Claude <noreply@anthropic.com>` 付き）．本ファイルは `ModalNeighborhood` ライブラリなのでプロジェクト prefix は `ModalNeighborhood:` を用いる（移植コミット 6a8146d に倣う）．
+3. ステップ完了ごとにコミット（メッセージは英語，`Co-Authored-By: Claude <noreply@anthropic.com>` 付き）．本ファイルは `Neighborhood` ライブラリなのでプロジェクト prefix は `Neighborhood:` を用いる（移植コミット 6a8146d に倣う）．
 4. S13 で全体 `lake build` → `just mk-all` → `just shake` → 再 `lake build`．
 
 ## 7. 確認できなかったこと（正直な限界の明記）
