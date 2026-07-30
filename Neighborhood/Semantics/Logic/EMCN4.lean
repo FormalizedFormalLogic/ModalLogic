@@ -17,10 +17,7 @@ unit, together with its finite frame property.
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicEMCN4` is sound with respect to every monotonic, regular and transitive neighborhood
-frame containing its unit. -/
 theorem LogicEMCN4.sound (h : A ∈ LogicEMCN4) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.ContainsUnit] [F.IsTransitive] : F ⊧ A :=
   Hilbert.sound (by
@@ -40,8 +37,6 @@ instance : (@LogicEMCN4 α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicEMCN4` is complete with respect to all monotonic, regular and transitive neighborhood
-frames containing their unit. -/
 theorem LogicEMCN4.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsRegular →
       F.ContainsUnit → F.IsTransitive → F ⊧ A) : A ∈ @LogicEMCN4 α :=
@@ -49,8 +44,6 @@ theorem LogicEMCN4.complete
     (h (supplementedBasicCanonicity LogicEMCN4).toModel.toFrame inferInstance inferInstance
       inferInstance inferInstance (supplementedBasicCanonicity LogicEMCN4).toModel.Val)
 
-/-- The finite closure of `A.subformulas` under `□⊤`, used to filtrate a model while retaining
-enough structure to witness `ContainsUnit`. -/
 instance : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
   closed B hB C hC := by
@@ -58,8 +51,6 @@ instance : FormulaSet.IsSubformulaClosed
     · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
-/-- `LogicEMCN4` is complete with respect to the finite monotonic, regular and transitive
-neighborhood frames containing their unit (its finite frame property). -/
 theorem LogicEMCN4.finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsMonotonic → F.IsRegular →
       F.ContainsUnit → F.IsTransitive → F ⊧ A) : A ∈ @LogicEMCN4 α :=
@@ -68,7 +59,8 @@ theorem LogicEMCN4.finite_complete
     let M : Model κ α := ⟨F, V⟩
     let T : FormulaSet α := (A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas
     haveI : Finite (FilterEqvQuotient M T) := FilterEqvQuotient.finite (by simp [T])
-    haveI := quasiFilteringTransitiveFiltration.containsUnit (M := M) (T := T) (by simp [T])
+    haveI := quasiFilteringTransitiveFiltration.containsUnit (M := M) (T := T)
+      (T_finite := by simp [T]) (by simp [T])
     apply (quasiFilteringTransitiveFiltration M T (by simp [T])).filtration_satisfies _
       (by simp [T]) |>.mp
     exact h (quasiFilteringTransitiveFiltration M T (by simp [T])).toModel.toFrame ⟨‹_›⟩
