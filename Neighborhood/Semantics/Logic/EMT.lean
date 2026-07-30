@@ -3,6 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.ET
 import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame1_3
 
 /-!
 # The neighborhood logic `LogicEMT`
@@ -46,11 +47,7 @@ theorem LogicEM_ssubset_LogicEMT : @LogicEM ℕ ⊂ LogicEMT := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hT : Axioms.T (.atom 0) ∈ @LogicEM ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
-    haveI : (⟨fun _ => Set.univ⟩ : Frame (Fin 1)).IsMonotonic := ⟨fun X Y => by simp [Frame.box]⟩
-    have hR := isReflexive_of_valid_axiomT
-      (LogicEM.sound (⟨fun _ => Set.univ⟩ : Frame (Fin 1)) hT)
-    have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
-    simp at this
+    have hT : Axioms.T #0 ∈ @LogicEM ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    exact frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT (LogicEM.sound frame_1_3 hT))
 
 end

@@ -55,7 +55,7 @@ theorem LogicE_ssubset_LogicE4 : @LogicE ℕ ⊂ LogicE4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hFour : Axioms.Four (.atom 0) ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    have hFour : Axioms.Four #0 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, rfl⟩)
     exact frame_2_8.not_valid_axiomFour
       (LogicE.sound frame_2_8 hFour)
 

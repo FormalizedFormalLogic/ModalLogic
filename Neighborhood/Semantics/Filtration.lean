@@ -208,7 +208,7 @@ structure Filtration (M : Model κ α) (T : FormulaSet α) [T.IsSubformulaClosed
   B : Set (FilterEqvQuotient M T) → Set (FilterEqvQuotient M T)
   B_def : ∀ φ, (□φ ∈ T) → B 【M φ】 = 【M.box (M φ)】
   V : α → Set (FilterEqvQuotient M T)
-  V_def : ∀ a, V a = 【M (.atom a)】
+  V_def : ∀ a, V a = 【M #a】
 
 namespace Filtration
 
@@ -303,7 +303,7 @@ def minimalFiltration (M : Model κ α) (T : FormulaSet α) [T.IsSubformulaClose
     . push Not at hψ;
       have := hψ _ hφ;
       contradiction;
-  V := λ a => 【M (.atom a)】
+  V := λ a => 【M #a】
   V_def := by intro a; rfl
 
 lemma minimalFiltration.iff_mem_B : W ∈ (minimalFiltration M T).B X ↔ ∃ φ, □φ ∈ T ∧ X = 【M.truthset φ】 ∧ W ∈ 【M.truthset (□φ)】 := by
@@ -361,7 +361,7 @@ def transitiveFiltration (M : Model κ α) [M.IsTransitive] (T : FormulaSet α) 
       . push Not at h;
         have := h _ hφ;
         contradiction;
-  V := λ a => 【M (.atom a)】
+  V := λ a => 【M #a】
   V_def := by intro a; rfl
 
 

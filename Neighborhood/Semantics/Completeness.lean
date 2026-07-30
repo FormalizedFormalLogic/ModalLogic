@@ -105,7 +105,7 @@ structure Canonicity (L : Logic α) where
   𝒩 : MaximalConsistentSet L → Set (Set (MaximalConsistentSet L))
   def_𝒩 : ∀ Ω : MaximalConsistentSet L, ∀ A, □A ∈ Ω ↔ proofset L A ∈ 𝒩 Ω
   V : α → Set (MaximalConsistentSet L)
-  def_V : ∀ a, V a = proofset L (.atom a)
+  def_V : ∀ a, V a = proofset L #a
 
 namespace Canonicity
 
@@ -181,7 +181,7 @@ def basicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] : Canonicit
     · intro h; exact ⟨A, h, rfl⟩
     · rintro ⟨B, hB, hAB⟩
       exact (proofset.iff_mem_of_eq (proofset.eq_boxed_of_eq hAB)).mpr hB
-  V a := proofset L (.atom a)
+  V a := proofset L #a
   def_V _ := rfl
 
 namespace basicCanonicity
@@ -220,7 +220,7 @@ def relativeBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE]
     · rintro (⟨B, hB, hAB⟩ | h)
       · exact (proofset.iff_mem_of_eq (proofset.eq_boxed_of_eq hAB)).mpr hB
       · exact absurd rfl (h.1 A)
-  V a := proofset L (.atom a)
+  V a := proofset L #a
   def_V _ := rfl
 
 namespace relativeBasicCanonicity

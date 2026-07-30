@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame2_22
 
 /-!
 # The neighborhood logic `LogicEC`
@@ -40,16 +41,7 @@ theorem LogicE_ssubset_LogicEC : (@LogicE ℕ) ⊂ LogicEC := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hC : Axioms.C (.atom 0) (.atom 1) ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, _, rfl⟩)
-    let M : Model (Fin 2) ℕ :=
-      ⟨⟨fun w => match w with
-        | 0 => {{0}, {1}}
-        | 1 => {∅}⟩,
-       fun a => match a with
-        | 0 => {0}
-        | 1 => {1}
-        | _ => Set.univ⟩
-    have h0 := LogicE.sound M.toFrame hC M.Val 0
-    simp [M, Forces, Frame.box, Set.ext_iff] at h0
+    have hC : Axioms.C #0 #1 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, _, rfl⟩)
+    exact frame_2_22.not_valid_axiomC (LogicE.sound _ hC)
 
 end

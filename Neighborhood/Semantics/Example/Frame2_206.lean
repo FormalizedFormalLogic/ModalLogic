@@ -28,7 +28,7 @@ lemma frame_2_206.box_mono {X Y : Set (Fin 2)} (h : X ⊆ Y) :
 
 @[simp]
 lemma frame_2_206.not_valid_axiomC :
-    ¬frame_2_206 ⊧ (Axioms.C (.atom 0) (.atom 1) : Formula ℕ) :=
+    ¬frame_2_206 ⊧ (Axioms.C #0 #1 : Formula ℕ) :=
   Frame.Validate.not_of_exists_valuation_world
     ⟨fun a => match a with | 0 => {0} | 1 => {1} | _ => Set.univ, 0, by
       unfold NotForces Forces; simp [Frame.box, frame_2_206, Set.ext_iff]⟩

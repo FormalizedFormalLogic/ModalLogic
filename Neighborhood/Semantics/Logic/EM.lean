@@ -3,6 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Supplementation
 import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame3_137264
 
 /-!
 # The neighborhood logic `LogicEM`
@@ -43,18 +44,7 @@ theorem LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hM : Axioms.M (.atom 0) (.atom 1) ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, _, rfl⟩)
-    let M : Model (Fin 3) ℕ :=
-      ⟨⟨fun w => match w with
-        | 0 => {{1}}
-        | 1 => {{0}, {0, 1}}
-        | 2 => {{0}, {1, 2}}⟩,
-       fun a => match a with
-        | 0 => {0, 1}
-        | 1 => {1, 2}
-        | _ => Set.univ⟩
-    have h0 := LogicE.sound M.toFrame hM M.Val 0
-    simp [M, Forces, Frame.box, Set.ext_iff] at h0
-    grind
+    have hM : Axioms.M #0 #1 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, _, rfl⟩)
+    exact frame_3_137264.not_valid_axiomM (LogicE.sound _ hM)
 
 end

@@ -114,7 +114,7 @@ abbrev supplementedBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.Has
       exact ⟨proofset L A, Set.Subset.rfl, A, h, rfl⟩
     · rintro ⟨Y, hY₁, B, hB, rfl⟩
       exact proofset.box_subset_of_subset hY₁ hB
-  V a := proofset L (.atom a)
+  V a := proofset L #a
   def_V _ := rfl
 
 variable [DecidableEq α] [L.Cl] [L.HasRE] [L.HasAxiomM] [Nonempty (MaximalConsistentSet L)]
@@ -151,7 +151,7 @@ def supplementedRelativeCanonicity (L : Logic α)
     · rintro ⟨Y, hY₁, (⟨B, hB, rfl⟩ | ⟨hYnp, hY₂⟩)⟩
       · exact proofset.box_subset_of_subset hY₁ hB
       · exact hP Y hYnp Ω hY₂ A hY₁
-  V a := proofset L (.atom a)
+  V a := proofset L #a
   def_V _ := rfl
 
 end

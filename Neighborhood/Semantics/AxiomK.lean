@@ -36,7 +36,7 @@ theorem valid_axiomK_of_hasPropertyK [F.HasPropertyK] : F ⊧ Axioms.K A B := by
 
 theorem hasPropertyK_of_valid_axiomK (h : ∀ A B : Formula ℕ, F ⊧ Axioms.K A B) : F.HasPropertyK where
   K X Y w := by
-    have := (h (.atom 0) (.atom 1)) (fun n => match n with | 0 => X | 1 => Y | _ => ∅) w
+    have := (h #0 #1) (fun n => match n with | 0 => X | 1 => Y | _ => ∅) w
     simpa [forces_imp, forces_box] using this
 
 end

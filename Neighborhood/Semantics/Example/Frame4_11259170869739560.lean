@@ -15,7 +15,7 @@ abbrev frame_4_11259170869739560 : Frame (Fin 4) := ⟨fun _ => {{0, 1}, {0, 2}}
 
 @[simp]
 lemma frame_4_11259170869739560.not_valid_axiomC :
-    ¬frame_4_11259170869739560 ⊧ (Axioms.C (.atom 0) (.atom 1) : Formula ℕ) :=
+    ¬frame_4_11259170869739560 ⊧ (Axioms.C #0 #1 : Formula ℕ) :=
   Frame.Validate.not_of_exists_valuation_world
     ⟨fun a => match a with | 0 => {0, 1} | 1 => {0, 2} | _ => ∅, 0, by
       unfold NotForces Forces
@@ -24,7 +24,7 @@ lemma frame_4_11259170869739560.not_valid_axiomC :
 @[simp]
 lemma frame_4_11259170869739560.not_valid_axiomM :
     ¬frame_4_11259170869739560 ⊧
-      (Axioms.M ((.atom 0) ⋎ (.atom 1)) (.atom 1) : Formula ℕ) :=
+      (Axioms.M (#0 ⋎ #1) #1 : Formula ℕ) :=
   Frame.Validate.not_of_exists_valuation_world
     ⟨fun a => match a with | 0 => {0, 1} | 1 => {0, 2} | _ => ∅, 0, by
       unfold NotForces Forces

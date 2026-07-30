@@ -57,7 +57,7 @@ theorem LogicECN_ssubset_LogicEMCN : @LogicECN ℕ ⊂ LogicEMCN := by
     · exact Or.inl (Or.inr hC)
     · exact Or.inr hN
   · intro h
-    have hM : Axioms.M (.atom 0) (.atom 1) ∈ @LogicECN ℕ :=
+    have hM : Axioms.M #0 #1 ∈ @LogicECN ℕ :=
       h (ProvableHilbert.axm (Or.inl (Or.inl ⟨_, _, rfl⟩)))
     exact frame_2_153.not_valid_axiomM
       (LogicECN.sound frame_2_153 hM)
@@ -77,7 +77,7 @@ theorem LogicEMN_ssubset_LogicEMCN : @LogicEMN ℕ ⊂ LogicEMCN := by
     · exact Or.inl (Or.inl hM)
     · exact Or.inr hN
   · intro h
-    have hC : Axioms.C (.atom 0) (.atom 1) ∈ @LogicEMN ℕ :=
+    have hC : Axioms.C #0 #1 ∈ @LogicEMN ℕ :=
       h (ProvableHilbert.axm (Or.inl (Or.inr ⟨_, _, rfl⟩)))
     exact frame_2_206.not_valid_axiomC
       (LogicEMN.sound frame_2_206 hC)

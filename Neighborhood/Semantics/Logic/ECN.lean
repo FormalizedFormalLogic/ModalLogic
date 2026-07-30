@@ -55,7 +55,7 @@ theorem LogicEN_ssubset_LogicECN : @LogicEN ℕ ⊂ LogicECN := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hC : Axioms.C (.atom 0) (.atom 1) ∈ @LogicEN ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, _, rfl⟩))
+    have hC : Axioms.C #0 #1 ∈ @LogicEN ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, _, rfl⟩))
     let M : Model (Fin 2) ℕ :=
       ⟨frame_2_206,
        fun a => match a with

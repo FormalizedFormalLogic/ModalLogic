@@ -48,6 +48,7 @@ instance : Top (Formula α) := ⟨verum⟩
 
 end Formula
 
+@[inherit_doc] prefix:max "#" => Formula.atom
 @[inherit_doc] prefix:75 "∼" => Formula.neg
 @[inherit_doc] infixr:60 " 🡒 " => Formula.imp
 @[inherit_doc] infixr:69 " ⋏ " => Formula.and

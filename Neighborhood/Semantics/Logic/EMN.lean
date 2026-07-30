@@ -4,6 +4,7 @@ public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.EN
 import Neighborhood.Semantics.Example.Frame1_2
 import Neighborhood.Semantics.Example.Frame1_0
+import Neighborhood.Semantics.Example.Frame2_137
 
 /-!
 # The neighborhood logic `LogicEMN`
@@ -55,18 +56,8 @@ theorem LogicEN_ssubset_LogicEMN : @LogicEN ℕ ⊂ LogicEMN := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hM : Axioms.M (.atom 0) (.atom 1) ∈ (@LogicEN ℕ) :=
+    have hM : Axioms.M #0 #1 ∈ (@LogicEN ℕ) :=
       h (ProvableHilbert.axm (Or.inl ⟨_, _, rfl⟩))
-    let M : Model (Fin 2) ℕ :=
-      ⟨⟨fun w => match w with
-        | 0 => {∅, Set.univ}
-        | 1 => {Set.univ}⟩,
-       fun a => match a with
-        | 0 => {0}
-        | 1 => {1}
-        | _ => Set.univ⟩
-    have : M.toFrame.ContainsUnit := ⟨by ext x; match x with | 0 | 1 => simp [M, Frame.box]⟩
-    have h0 := LogicEN.sound M.toFrame hM M.Val 0
-    simp [M, Forces, Frame.box, Set.ext_iff] at h0
+    exact frame_2_137.not_valid_axiomM (LogicEN.sound _ hM)
 
 end

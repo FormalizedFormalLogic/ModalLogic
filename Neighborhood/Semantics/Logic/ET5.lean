@@ -3,6 +3,8 @@ module
 public import Neighborhood.Semantics.Logic.ENT4
 public import Neighborhood.Semantics.Logic.E5
 import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame1_3
+import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicET5`
@@ -75,64 +77,16 @@ theorem LogicENT4_ssubset_LogicET5 : @LogicENT4 ℕ ⊂ LogicET5 := by
     · exact Logic.axiomT
     · exact LogicET5.hasAxiomFour
   · intro h
-    have hFive : Axioms.Five (.atom 0) ∈ @LogicENT4 ℕ := h Logic.axiomFive
-    let F : Frame (Fin 3) := ⟨fun x => {{x}, Set.univ}⟩
-    haveI : F.ContainsUnit := ⟨by
-      ext x
-      simp only [Frame.box, F, Set.mem_setOf_eq, Set.mem_univ, iff_true]
-      right; rfl⟩
-    have hbox_univ : F.box (Set.univ : Set (Fin 3)) = Set.univ := F.contains_unit
-    have hbox_singleton : ∀ a : Fin 3, F.box ({a} : Set (Fin 3)) = {a} := by
-      intro a
-      have hne : ({a} : Set (Fin 3)) ≠ Set.univ := by
-        obtain ⟨b, hb⟩ := exists_ne a
-        intro heq
-        exact hb (show b ∈ ({a} : Set (Fin 3)) by rw [heq]; exact Set.mem_univ b)
-      ext y
-      simp only [Frame.box, F, Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff,
-        Set.singleton_eq_singleton_iff]
-      constructor
-      · rintro (h | h)
-        · exact h.symm
-        · exact absurd h hne
-      · rintro rfl
-        left; rfl
-    haveI : F.IsReflexive := ⟨by
-      intro X x hx
-      simp only [Frame.box, F, Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff] at hx
-      rcases hx with rfl | rfl
-      · rfl
-      · trivial⟩
-    haveI : F.IsTransitive := ⟨by
-      intro X x hx
-      simp only [Function.iterate_succ, Function.iterate_zero, Function.comp_apply, id_eq]
-      simp only [Frame.box, F, Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff] at hx
-      rcases hx with rfl | rfl
-      · simp [hbox_singleton]
-      · simp [hbox_univ]⟩
-    have hE : F.IsEuclidean := isEuclidean_of_valid_axiomFive (LogicENT4.sound F hFive)
-    have hdia : F.dia ({0, 1} : Set (Fin 3)) = {0, 1} := by
-      simp only [Set.ext_iff, Frame.dia, Frame.box, F, Set.mem_compl_iff, Set.mem_setOf_eq,
-        Set.mem_insert_iff, Set.mem_singleton_iff]
-      decide
-    have hbox : F.box ({0, 1} : Set (Fin 3)) = ∅ := by
-      simp only [Set.ext_iff, Frame.box, F, Set.mem_setOf_eq, Set.mem_insert_iff,
-        Set.mem_singleton_iff, Set.mem_empty_iff_false]
-      decide
-    have h2 := hE.eucl {0, 1}
-    rw [hdia, hbox] at h2
-    exact (Set.nonempty_of_mem (Set.mem_insert 0 {1})).ne_empty (Set.subset_empty_iff.mp h2)
+    have hFive : Axioms.Five #0 ∈ @LogicENT4 ℕ := h Logic.axiomFive
+    exact frame_3_9471106.not_isEuclidean
+      (isEuclidean_of_valid_axiomFive (LogicENT4.sound frame_3_9471106 hFive))
 
 theorem LogicE5_ssubset_LogicET5 : @LogicE5 ℕ ⊂ LogicET5 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hT : Axioms.T (.atom 0) ∈ @LogicE5 ℕ := h Logic.axiomT
-    haveI : (⟨fun _ => Set.univ⟩ : Frame (Fin 1)).IsEuclidean :=
-      ⟨fun X => by simp [Frame.box, Frame.dia]⟩
-    have hR := isReflexive_of_valid_axiomT
-      (LogicE5.sound (⟨fun _ => Set.univ⟩ : Frame (Fin 1)) hT)
-    have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
-    simp at this
+    have hT : Axioms.T #0 ∈ @LogicE5 ℕ := h Logic.axiomT
+    exact frame_1_3.not_isReflexive
+      (isReflexive_of_valid_axiomT (LogicE5.sound frame_1_3 hT))
 
 end

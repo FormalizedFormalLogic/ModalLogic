@@ -174,30 +174,30 @@ section
 variable {a : ℕ}
 
 /-- If `Axioms.Geach g` is valid on `F` for some atom, `F` is Geach convergent for `g`. -/
-theorem isGeachConvergent_of_valid_axiomGeach (h : F ⊧ Axioms.Geach g (.atom a)) :
+theorem isGeachConvergent_of_valid_axiomGeach (h : F ⊧ Axioms.Geach g #a) :
     F.IsGeachConvergent g := by
   refine ⟨fun X x hx => ?_⟩
   have : x ∈ F.dia^[g.i] (F.box^[g.m] X) → x ∈ F.box^[g.j] (F.dia^[g.n] X) := by
     simpa [forces_imp, forces_diaItr, forces_boxItr] using h (fun _ => X) x
   exact this hx
 
-theorem isReflexive_of_valid_axiomT (h : F ⊧ Axioms.T (.atom a)) : F.IsReflexive := by
+theorem isReflexive_of_valid_axiomT (h : F ⊧ Axioms.T #a) : F.IsReflexive := by
   have := isGeachConvergent_of_valid_axiomGeach (g := ⟨0, 0, 1, 0⟩) h
   infer_instance
 
-theorem isTransitive_of_valid_axiomFour (h : F ⊧ Axioms.Four (.atom a)) : F.IsTransitive := by
+theorem isTransitive_of_valid_axiomFour (h : F ⊧ Axioms.Four #a) : F.IsTransitive := by
   have := isGeachConvergent_of_valid_axiomGeach (g := ⟨0, 2, 1, 0⟩) h
   infer_instance
 
-theorem isSerial_of_valid_axiomD (h : F ⊧ Axioms.D (.atom a)) : F.IsSerial := by
+theorem isSerial_of_valid_axiomD (h : F ⊧ Axioms.D #a) : F.IsSerial := by
   have := isGeachConvergent_of_valid_axiomGeach (g := ⟨0, 0, 1, 1⟩) h
   infer_instance
 
-theorem isSymmetric_of_valid_axiomB (h : F ⊧ Axioms.B (.atom a)) : F.IsSymmetric := by
+theorem isSymmetric_of_valid_axiomB (h : F ⊧ Axioms.B #a) : F.IsSymmetric := by
   have := isGeachConvergent_of_valid_axiomGeach (g := ⟨0, 1, 0, 1⟩) h
   infer_instance
 
-theorem isEuclidean_of_valid_axiomFive (h : F ⊧ Axioms.Five (.atom a)) : F.IsEuclidean := by
+theorem isEuclidean_of_valid_axiomFive (h : F ⊧ Axioms.Five #a) : F.IsEuclidean := by
   have := isGeachConvergent_of_valid_axiomGeach (g := ⟨1, 1, 0, 1⟩) h
   infer_instance
 

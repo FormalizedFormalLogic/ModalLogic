@@ -21,7 +21,7 @@ lemma frame_2_170.not_isReflexive :
   exact absurd (frame_2_170.refl h1) (by simp)
 
 lemma frame_2_170.not_valid_axiomT :
-    ¬frame_2_170 ⊧ (Axioms.T (.atom 0) : Formula ℕ) :=
+    ¬frame_2_170 ⊧ (Axioms.T #0 : Formula ℕ) :=
   fun h => frame_2_170.not_isReflexive (isReflexive_of_valid_axiomT h)
 
 instance : frame_2_170.ContainsUnit := ⟨by

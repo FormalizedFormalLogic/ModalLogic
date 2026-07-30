@@ -71,7 +71,7 @@ theorem LogicEN_ssubset_LogicEN4 : @LogicEN ℕ ⊂ LogicEN4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hFour : Axioms.Four (.atom 0) ∈ (@LogicEN ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    have hFour : Axioms.Four #0 ∈ (@LogicEN ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
     exact frame_2_172.not_valid_axiomFour
       (LogicEN.sound frame_2_172 hFour)
 

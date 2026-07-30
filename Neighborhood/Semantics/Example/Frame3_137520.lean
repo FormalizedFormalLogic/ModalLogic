@@ -20,7 +20,7 @@ abbrev frame_3_137520 : Frame (Fin 3) :=
 
 @[simp]
 lemma frame_3_137520.not_valid_axiomM :
-    ¬frame_3_137520 ⊧ (Axioms.M (.atom 0) (.atom 1) : Formula ℕ) :=
+    ¬frame_3_137520 ⊧ (Axioms.M #0 #1 : Formula ℕ) :=
   Frame.Validate.not_of_exists_valuation_world
     ⟨fun a => match a with | 0 => {0, 1} | 1 => {1, 2} | _ => Set.univ, 0, by
       unfold NotForces Forces; simp [Frame.box, frame_3_137520, Set.ext_iff]; decide⟩

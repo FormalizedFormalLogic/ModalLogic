@@ -29,7 +29,7 @@ theorem LogicE_ssubset_LogicEB : (@LogicE ℕ) ⊂ LogicEB := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hB : Axioms.B (.atom 0) ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    have hB : Axioms.B #0 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, rfl⟩)
     have hS : frame_1_0.IsSymmetric := isSymmetric_of_valid_axiomB (LogicE.sound _ hB)
     have := hS.symm {0} (show (0 : Fin 1) ∈ _ by simp)
     simp [Frame.box] at this

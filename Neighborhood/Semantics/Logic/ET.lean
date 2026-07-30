@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.ED
 import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame1_1
 
 /-!
 # The neighborhood logic `LogicET`
@@ -42,11 +43,7 @@ theorem LogicED_ssubset_LogicET : @LogicED ℕ ⊂ LogicET := by
     rintro _ ⟨A, rfl⟩
     exact Logic.C_trans Logic.axiomT Logic.diaTc
   · intro h
-    have hT : Axioms.T (.atom 0) ∈ @LogicED ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
-    haveI : (⟨fun _ => {∅}⟩ : Frame (Fin 1)).IsSerial :=
-      ⟨fun X x hx => by simp_all [Frame.dia, Frame.box]⟩
-    have hR := isReflexive_of_valid_axiomT (LogicED.sound (⟨fun _ => {∅}⟩ : Frame (Fin 1)) hT)
-    have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
-    simp at this
+    have hT : Axioms.T #0 ∈ @LogicED ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    exact frame_1_1.not_isReflexive (isReflexive_of_valid_axiomT (LogicED.sound frame_1_1 hT))
 
 end

@@ -76,7 +76,7 @@ namespace Model.truthset
 
 variable {M : Model κ α} {a : α} {A B : Formula α} {n : ℕ}
 
-@[simp, grind =] lemma eq_atom : M (.atom a) = M.Val a := rfl
+@[simp, grind =] lemma eq_atom : M #a = M.Val a := rfl
 @[simp, grind =] lemma eq_bot  : M (⊥ : Formula α) = ∅ := rfl
 @[simp, grind =] lemma eq_top  : M (⊤ : Formula α) = Set.univ := by simp [Model.truthset]
 @[simp, grind =] lemma eq_imp  : M (A 🡒 B) = (M A)ᶜ ∪ M B := rfl
@@ -117,7 +117,7 @@ variable {M : Model κ α} {x : M.World} {a : α} {A B : Formula α} {n : ℕ}
 
 @[simp, grind .] lemma forces_top : x ⊩ ⊤ := by grind;
 @[simp, grind .] lemma not_forces_bot : x ⊮ ⊥ := by grind
-@[grind =] lemma forces_atom : x ⊩ (.atom a) ↔ x ∈ M.Val a := by grind
+@[grind =] lemma forces_atom : x ⊩ #a ↔ x ∈ M.Val a := by grind
 @[grind =] lemma forces_neg : x ⊩ ∼A ↔ x ⊮ A := by grind
 @[grind =] lemma forces_imp : x ⊩ A 🡒 B ↔ (x ⊩ A → x ⊩ B) := by grind
 @[grind =] lemma forces_and : x ⊩ A ⋏ B ↔ x ⊩ A ∧ x ⊩ B := by grind

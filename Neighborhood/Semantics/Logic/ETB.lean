@@ -4,6 +4,7 @@ public import Neighborhood.Semantics.Logic.ET
 public import Neighborhood.Semantics.Logic.EB
 import Neighborhood.Semantics.Example.Frame1_2
 import Neighborhood.Semantics.Example.Frame1_0
+import Neighborhood.Semantics.Example.Frame1_3
 
 /-!
 # The neighborhood logic `LogicETB`
@@ -35,7 +36,7 @@ theorem LogicET_ssubset_LogicETB : @LogicET ℕ ⊂ LogicETB := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hB : Axioms.B (.atom 0) ∈ @LogicET ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    have hB : Axioms.B #0 ∈ @LogicET ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
     have hS := isSymmetric_of_valid_axiomB (LogicET.sound frame_1_0 hB)
     have := hS.symm (X := Set.univ)
     simp [Frame.box, Frame.dia] at this
@@ -44,11 +45,7 @@ theorem LogicEB_ssubset_LogicETB : @LogicEB ℕ ⊂ LogicETB := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hT : Axioms.T (.atom 0) ∈ @LogicEB ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, rfl⟩))
-    haveI : (⟨fun _ => Set.univ⟩ : Frame (Fin 1)).IsSymmetric := ⟨fun X => by simp [Frame.box]⟩
-    have hR := isReflexive_of_valid_axiomT
-      (LogicEB.sound (⟨fun _ => Set.univ⟩ : Frame (Fin 1)) hT)
-    have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
-    simp at this
+    have hT : Axioms.T #0 ∈ @LogicEB ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, rfl⟩))
+    exact frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT (LogicEB.sound frame_1_3 hT))
 
 end

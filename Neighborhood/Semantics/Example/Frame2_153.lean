@@ -15,7 +15,7 @@ abbrev frame_2_153 : Frame (Fin 2) := ⟨fun _ => {∅, Set.univ}⟩
 
 @[simp]
 lemma frame_2_153.not_valid_axiomM :
-    ¬frame_2_153 ⊧ (Axioms.M (.atom 0) (.atom 1) : Formula ℕ) :=
+    ¬frame_2_153 ⊧ (Axioms.M #0 #1 : Formula ℕ) :=
   Frame.Validate.not_of_exists_valuation_world
     ⟨fun a => match a with | 0 => {0} | 1 => {1} | _ => Set.univ, 0, by
       unfold NotForces Forces

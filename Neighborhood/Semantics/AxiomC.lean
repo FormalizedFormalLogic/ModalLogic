@@ -54,7 +54,7 @@ theorem valid_axiomC_of_isRegular [F.IsRegular] {A B : Formula α} : F ⊧ Axiom
 theorem isRegular_of_valid_axiomC (h : ∀ A B : Formula ℕ, F ⊧ Axioms.C A B) : F.IsRegular := by
   constructor
   rintro X Y x ⟨hX, hY⟩
-  have h₂ := h (.atom 0) (.atom 1) (fun a => match a with | 0 => X | 1 => Y | _ => ∅) x
+  have h₂ := h #0 #1 (fun a => match a with | 0 => X | 1 => Y | _ => ∅) x
   rw [forces_imp] at h₂
   rw [forces_and] at h₂
   rw [forces_box, forces_box, forces_box, Model.truthset.eq_and] at h₂

@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame2_79
 
 /-!
 # The neighborhood logic `LogicED`
@@ -29,10 +30,7 @@ theorem LogicE_ssubset_LogicED : @LogicE ℕ ⊂ LogicED := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hD : Axioms.D (.atom 0) ∈ @LogicE ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
-    have hS : (⟨fun w => match w with | 0 => {{0}} | 1 => Set.univ⟩ : Frame (Fin 2)).IsSerial :=
-      isSerial_of_valid_axiomD (LogicE.sound _ hD)
-    have := hS.serial {1} (show (1 : Fin 2) ∈ _ by simp [Frame.box])
-    simp [Frame.dia, Frame.box] at this
+    have hD : Axioms.D #0 ∈ @LogicE ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    exact frame_2_79.not_isSerial (isSerial_of_valid_axiomD (LogicE.sound _ hD))
 
 end

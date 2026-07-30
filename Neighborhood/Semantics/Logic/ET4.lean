@@ -3,6 +3,8 @@ module
 public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.ET
 import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame1_3
+import Neighborhood.Semantics.Example.Frame2_72
 
 /-!
 # The neighborhood logic `LogicET4`
@@ -62,32 +64,14 @@ theorem LogicE4_ssubset_LogicET4 : @LogicE4 ℕ ⊂ LogicET4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hT : Axioms.T (.atom 0) ∈ @LogicE4 ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, rfl⟩))
-    haveI : (⟨fun _ => Set.univ⟩ : Frame (Fin 1)).IsTransitive := ⟨fun X => by simp [Frame.box]⟩
-    have hR := isReflexive_of_valid_axiomT
-      (LogicE4.sound (⟨fun _ => Set.univ⟩ : Frame (Fin 1)) hT)
-    have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
-    simp at this
+    have hT : Axioms.T #0 ∈ @LogicE4 ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, rfl⟩))
+    exact frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT (LogicE4.sound frame_1_3 hT))
 
 theorem LogicET_ssubset_LogicET4 : @LogicET ℕ ⊂ LogicET4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hFour : Axioms.Four (.atom 0) ∈ @LogicET ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
-    let F : Frame (Fin 2) := ⟨fun x => match x with | 0 => {Set.univ} | 1 => {{1}}⟩
-    haveI : F.IsReflexive := ⟨by
-      intro X x
-      match x with
-      | 0 => intro hx; simp_all [Frame.box, F]
-      | 1 => intro hx; simp_all [Frame.box, F]⟩
-    have hT := isTransitive_of_valid_axiomFour (LogicET.sound F hFour)
-    have h0 : (0 : Fin 2) ∈ F.box Set.univ := by simp [Frame.box, F]
-    have h1 := hT.trans Set.univ h0
-    simp only [Function.iterate_succ, Function.comp_apply, Function.iterate_zero, id_eq,
-      Frame.box, F, Set.mem_setOf_eq, Set.mem_singleton_iff, Set.ext_iff] at h1
-    have h2 := h1 1
-    simp at h2
-    have h3 : (0 : Fin 2) ∈ ({1} : Set (Fin 2)) := h2 ▸ Set.mem_univ 0
-    simp at h3
+    have hFour : Axioms.Four #0 ∈ @LogicET ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    exact frame_2_72.not_isTransitive (isTransitive_of_valid_axiomFour (LogicET.sound frame_2_72 hFour))
 
 end

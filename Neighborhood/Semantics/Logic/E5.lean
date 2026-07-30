@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicE5`
@@ -39,19 +40,7 @@ theorem LogicE_ssubset_LogicE5 : @LogicE ℕ ⊂ LogicE5 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hFive : Axioms.Five (.atom 0) ∈ @LogicE ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
-    let F : Frame (Fin 3) := ⟨fun x => {{x}, Set.univ}⟩
-    have hE : F.IsEuclidean := isEuclidean_of_valid_axiomFive (LogicE.sound F hFive)
-    have hdia : F.dia ({0, 1} : Set (Fin 3)) = {0, 1} := by
-      simp only [Set.ext_iff, Frame.dia, Frame.box, F, Set.mem_compl_iff, Set.mem_setOf_eq,
-        Set.mem_insert_iff, Set.mem_singleton_iff]
-      decide
-    have hbox : F.box ({0, 1} : Set (Fin 3)) = ∅ := by
-      simp only [Set.ext_iff, Frame.box, F, Set.mem_setOf_eq, Set.mem_insert_iff,
-        Set.mem_singleton_iff, Set.mem_empty_iff_false]
-      decide
-    have h2 := hE.eucl {0, 1}
-    rw [hdia, hbox] at h2
-    exact (Set.nonempty_of_mem (Set.mem_insert 0 {1})).ne_empty (Set.subset_empty_iff.mp h2)
+    have hFive : Axioms.Five #0 ∈ @LogicE ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    exact frame_3_9471106.not_isEuclidean (isEuclidean_of_valid_axiomFive (LogicE.sound _ hFive))
 
 end

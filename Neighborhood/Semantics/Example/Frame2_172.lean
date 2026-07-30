@@ -31,7 +31,7 @@ lemma frame_2_172.not_isTransitive :
   simp at h2
 
 lemma frame_2_172.not_valid_axiomFour :
-    ¬frame_2_172 ⊧ (Axioms.Four (.atom 0) : Formula ℕ) :=
+    ¬frame_2_172 ⊧ (Axioms.Four #0 : Formula ℕ) :=
   fun h => frame_2_172.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
 instance : frame_2_172.ContainsUnit := ⟨by

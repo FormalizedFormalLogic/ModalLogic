@@ -50,7 +50,7 @@ theorem LogicEM_ssubset_LogicEMC : @LogicEM ℕ ⊂ LogicEMC := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hC : Axioms.C (.atom 0) (.atom 1) ∈ @LogicEM ℕ :=
+    have hC : Axioms.C #0 #1 ∈ @LogicEM ℕ :=
       h (ProvableHilbert.axm (Or.inr ⟨_, _, rfl⟩))
     exact frame_2_206.not_valid_axiomC (LogicEM.sound frame_2_206 hC)
 
@@ -58,7 +58,7 @@ theorem LogicEC_ssubset_LogicEMC : @LogicEC ℕ ⊂ LogicEMC := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hM : Axioms.M (.atom 0) (.atom 1) ∈ @LogicEC ℕ :=
+    have hM : Axioms.M #0 #1 ∈ @LogicEC ℕ :=
       h (ProvableHilbert.axm (Or.inl ⟨_, _, rfl⟩))
     exact frame_3_137520.not_valid_axiomM (LogicEC.sound frame_3_137520 hM)
 
@@ -68,7 +68,7 @@ theorem LogicEK_ssubset_LogicEMC : @LogicEK ℕ ⊂ LogicEMC := by
     rintro _ ⟨A, B, rfl⟩
     exact Logic.axiomK_of_MC
   · intro h
-    have hC : Axioms.C (.atom 0) (.atom 1) ∈ @LogicEK ℕ :=
+    have hC : Axioms.C #0 #1 ∈ @LogicEK ℕ :=
       h (ProvableHilbert.axm (Or.inr ⟨_, _, rfl⟩))
     exact frame_4_11259170869739560.not_valid_axiomC
       (LogicEK.sound frame_4_11259170869739560 hC)
