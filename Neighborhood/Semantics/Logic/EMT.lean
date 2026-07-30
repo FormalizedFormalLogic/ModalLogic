@@ -11,8 +11,7 @@ public import Neighborhood.Semantics.Example.Frame3_9471106
 
 Soundness, consistency and completeness of `LogicEMT`, the classical modal logic axiomatised by
 the monotonicity axiom `M` and the reflexivity axiom `T`, with respect to the neighborhood frames
-that are both monotonic and reflexive, and its strict inclusion of `LogicEM`, together with the
-strict inclusion of `LogicET` in `LogicEMT`.
+that are both monotonic and reflexive.
 -/
 
 @[expose] public section

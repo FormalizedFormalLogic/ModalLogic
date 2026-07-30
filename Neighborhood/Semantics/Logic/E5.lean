@@ -9,7 +9,6 @@ public import Neighborhood.Semantics.Example.Frame3_9471106
 
 Soundness, consistency and completeness of `LogicE5`, the classical modal logic axiomatized by
 `Five := ◇A 🡒 □◇A` over `LogicE`, with respect to the euclidean frames (`Frame.IsEuclidean`).
-Also its strict inclusion in `LogicE`.
 -/
 
 @[expose] public section

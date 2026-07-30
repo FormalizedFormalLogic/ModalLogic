@@ -12,9 +12,6 @@ public import Neighborhood.Semantics.Example.Frame4_11259170869739560
 Soundness and consistency of `LogicEMK`, the classical modal logic axiomatised by the
 monotonicity axiom `M` together with every instance of the axiom scheme `K`, with respect to all
 monotonic neighborhood frames satisfying the `K`-property.
-
-Also proves the strict inclusions of `LogicEK` and `LogicEM` in `LogicEMK`, and — combined with
-the coincidence `LogicEMK_eq_LogicEMCK` — the strict inclusion of `LogicEM` in `LogicEMCK`.
 -/
 
 @[expose] public section

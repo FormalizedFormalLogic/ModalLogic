@@ -10,8 +10,8 @@ public import Neighborhood.Semantics.Example.Frame1_1
 
 Soundness and consistency of `LogicEP`, the classical modal logic axiomatised by the
 possibility axiom `P := ∼□⊥`, with respect to the neighborhood frames in which no world has the
-empty set as one of its neighborhoods (`Frame.NotContainsEmpty`). Also its strict inclusion in
-`LogicE`, and that `D` is not among its theorems.
+empty set as one of its neighborhoods (`Frame.NotContainsEmpty`). Also that `D` is not among its
+theorems.
 -/
 
 @[expose] public section

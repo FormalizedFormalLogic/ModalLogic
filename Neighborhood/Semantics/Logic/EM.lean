@@ -10,9 +10,6 @@ public import Neighborhood.Semantics.Example.Frame3_137264
 
 Soundness, consistency and completeness of `LogicEM`, the classical modal logic axiomatised by
 the monotonicity axiom `M`, with respect to all monotonic neighborhood frames.
-
-Also proves the strict inclusion of `LogicE` in `LogicEM` (a comparison of two logics lives in
-the stronger logic's module).
 -/
 
 @[expose] public section

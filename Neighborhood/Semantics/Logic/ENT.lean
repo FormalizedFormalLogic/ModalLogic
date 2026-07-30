@@ -11,8 +11,7 @@ public import Neighborhood.Semantics.Example.Frame2_170
 
 Soundness, consistency and completeness of `LogicENT`, the classical modal logic axiomatised by
 `N := □⊤` and the reflexivity axiom `T` over `LogicE`, with respect to the neighborhood frames
-that contain their unit and are reflexive. Also proves the strict inclusions of `LogicEN` and
-`LogicET` in `LogicENT`.
+that contain their unit and are reflexive.
 -/
 
 @[expose] public section
