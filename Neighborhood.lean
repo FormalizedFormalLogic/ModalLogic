@@ -64,6 +64,7 @@ public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.END4
+public import Neighborhood.Semantics.Logic.ENT
 public import Neighborhood.Semantics.Logic.ENT4
 public import Neighborhood.Semantics.Logic.EP
 public import Neighborhood.Semantics.Logic.ET
