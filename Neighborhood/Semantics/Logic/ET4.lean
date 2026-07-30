@@ -4,101 +4,94 @@ public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.ET
 public import Neighborhood.Semantics.Filtration
 
+/-!
+# The neighborhood logic `LogicET4`
+
+Soundness, consistency and completeness of `LogicET4`, the classical modal logic axiomatised by
+the reflexivity axiom `T` together with the transitivity axiom `Four`, with respect to the
+neighborhood frames that are both reflexive and transitive, together with its finite frame
+property. Also proves the strict inclusions of `LogicE4` and `LogicET` in `LogicET4`.
+-/
+
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
-namespace Neighborhood
+/-- `LogicET4` is sound with respect to every reflexive and transitive neighborhood frame. -/
+theorem LogicET4.sound (h : A ∈ LogicET4) {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
+    [F.IsTransitive] : F ⊧ A :=
+  Hilbert.sound (by
+    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
+    · exact valid_axiomT_of_isReflexive
+    · exact valid_axiomFour_of_isTransitive) h
 
-protected class Frame.IsET4 (F : Frame) extends F.IsReflexive, F.IsTransitive
-protected class Frame.IsFiniteET4 (F : Frame) extends F.IsET4, F.IsFinite
+instance : (@LogicET4 α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole) (by
+    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
+    · exact valid_axiomT_of_isReflexive
+    · exact valid_axiomFour_of_isTransitive)
 
-protected abbrev FrameClass.ET4 : FrameClass := { F | F.IsET4 }
-protected abbrev FrameClass.finite_ET4 : FrameClass := { F | F.IsFiniteET4 }
+variable [DecidableEq α]
 
-end Neighborhood
+/-- `LogicET4` is complete with respect to all reflexive and transitive neighborhood frames. -/
+theorem LogicET4.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsReflexive → F.IsTransitive → F ⊧ A) :
+    A ∈ @LogicET4 α :=
+  (basicCanonicity LogicET4).mem_of_valid
+    (h (basicCanonicity LogicET4).toModel.toFrame inferInstance inferInstance
+      (basicCanonicity LogicET4).toModel.Val)
 
+/-- `LogicET4` is complete with respect to the finite reflexive and transitive neighborhood
+frames (its finite frame property). -/
+theorem LogicET4.finite_complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsReflexive → F.IsTransitive →
+      F ⊧ A) :
+    A ∈ @LogicET4 α :=
+  LogicET4.complete <| by
+    intro κ _ F hR hT V x
+    haveI : F.IsReflexive := hR
+    haveI : F.IsTransitive := hT
+    let M : Model κ α := ⟨F, V⟩
+    haveI : Finite (FilterEqvQuotient M A.subformulas) := FilterEqvQuotient.finite (by simp)
+    apply (transitiveFiltration M A.subformulas).filtration_satisfies _ (by grind) |>.mp
+    exact h (transitiveFiltration M A.subformulas).toModel.toFrame ⟨‹_›⟩
+      transitiveFiltration.isReflexive transitiveFiltration.isTransitive
+      (transitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
+/-! ### Strict inclusions of `LogicE4` and `LogicET` -/
 
-namespace ET4
+theorem LogicE4_ssubset_LogicET4 : @LogicE4 ℕ ⊂ LogicET4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
+  · intro h
+    have hT : Axioms.T (.atom 0) ∈ @LogicE4 ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, rfl⟩))
+    haveI : (⟨fun _ => Set.univ⟩ : Frame (Fin 1)).IsTransitive := ⟨fun X => by simp [Frame.box]⟩
+    have hR := isReflexive_of_valid_axiomT
+      (LogicE4.sound hT (⟨fun _ => Set.univ⟩ : Frame (Fin 1)))
+    have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
+    simp at this
 
-instance Neighborhood.sound : Sound Modal.ET4 FrameClass.ET4 := instSound_of_validates_axioms $ by
-  constructor;
-  rintro φ (rfl | rfl) F ⟨_, _⟩;
-  . apply valid_axiomFour_of_isTransitive;
-  . apply valid_axiomT_of_isReflexive;
+theorem LogicET_ssubset_LogicET4 : @LogicET ℕ ⊂ LogicET4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
+  · intro h
+    have hFour : Axioms.Four (.atom 0) ∈ @LogicET ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    let F : Frame (Fin 2) := ⟨fun x => match x with | 0 => {Set.univ} | 1 => {{1}}⟩
+    haveI : F.IsReflexive := ⟨by
+      intro X x
+      match x with
+      | 0 => intro hx; simp_all [Frame.box, F]
+      | 1 => intro hx; simp_all [Frame.box, F]⟩
+    have hT := isTransitive_of_valid_axiomFour (LogicET.sound hFour F)
+    have h0 : (0 : Fin 2) ∈ F.box Set.univ := by simp [Frame.box, F]
+    have h1 := hT.trans Set.univ h0
+    simp only [Function.iterate_succ, Function.comp_apply, Function.iterate_zero, id_eq,
+      Frame.box, F, Set.mem_setOf_eq, Set.mem_singleton_iff, Set.ext_iff] at h1
+    have h2 := h1 1
+    simp at h2
+    have h3 : (0 : Fin 2) ∈ ({1} : Set (Fin 2)) := h2 ▸ Set.mem_univ 0
+    simp at h3
 
-instance consistent : Entailment.Consistent Modal.ET4 := consistent_of_sound_frameclass FrameClass.ET4 $ by
-  use Frame.simple_blackhole;
-  constructor;
-
-instance Neighborhood.complete : Complete Modal.ET4 FrameClass.ET4 := (basicCanonicity _).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  constructor;
-
-/-- FFP of `Modal.ET4` -/
-instance Neighborhood.finite_complete : Complete Modal.ET4 FrameClass.finite_ET4 := ⟨by
-  intro φ hφ;
-  apply Complete.complete (𝓜 := FrameClass.ET4);
-  intro F F_trans V x;
-  replace F_trans := Set.mem_setOf_eq.mp F_trans;
-
-  let M : Model := ⟨F, V⟩;
-  apply transitiveFiltration M φ.subformulas |>.filtration_satisfies _ (by grind) |>.mp;
-  apply hφ;
-  apply Set.mem_setOf_eq.mpr;
-  exact {
-    world_finite := by apply FilterEqvQuotient.finite $ by simp;
-    trans := by apply transitiveFiltration.isTransitive.trans;
-    refl := by apply transitiveFiltration.isReflexive.refl;
-  };
-⟩
-
-end ET4
-
-instance : Modal.E4 ⪱ Modal.ET4 := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.T (.atom 0));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.E4);
-      apply not_validOnFrameClass_of_exists_frame;
-      use ⟨Fin 1, λ _ => Set.univ⟩;
-      constructor;
-      . tauto;
-      . apply not_imp_not.mpr isReflexive_of_valid_axiomT;
-        by_contra! hC;
-        simpa [Frame.box] using @hC.refl ∅;
-
-instance : Modal.ET ⪱ Modal.ET4 := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.Four (.atom 0));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.ET);
-      apply not_validOnFrameClass_of_exists_frame;
-      use ⟨Fin 2, λ x => match x with | 0 => {Set.univ} | 1 => {{1}}⟩;
-      constructor;
-      . constructor;
-        intro X x;
-        match x with
-        | 0 => rintro rfl; simp;
-        | 1 => rintro rfl; simp;
-      . by_contra! hC;
-        have : ∀ (x : Fin 2), Set.univ ∈ match x with | 0 => ({Set.univ} : Set (Set (Fin 2))) | 1 => ({{1}} : Set (Set (Fin 2))) := by
-          simpa [Frame.box, Set.eq_univ_iff_forall] using (Set.subset_def.mp $ isTransitive_of_valid_axiomFour hC |>.trans Set.univ) 0;
-        replace : Set.univ = ({1} : Set (Fin 2)) := this 1;
-        tauto_set;
-
-end LO.Modal
 end
