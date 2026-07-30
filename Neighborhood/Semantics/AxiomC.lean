@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Axioms
 public import Neighborhood.Semantics.Basic
+public import Neighborhood.Semantics.Completeness
 public import Mathlib.Data.Fintype.Basic
 
 /-!
@@ -65,5 +66,19 @@ theorem isRegular_of_valid_axiomC (h : ∀ A B : Formula ℕ, F ⊧ Axioms.C A B
   rw [forces_and] at h₂
   rw [forces_box, forces_box, forces_box, Model.truthset.eq_and] at h₂
   exact h₂ ⟨hX, hY⟩
+
+section
+
+variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent]
+
+instance [L.HasAxiomC] : (basicCanonicity L).toModel.IsRegular := by
+  constructor
+  rintro X Y Ω ⟨hX, hY⟩
+  obtain ⟨A, rfl, hA⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hX
+  obtain ⟨B, rfl, hB⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hY
+  rw [← proofset.eq_and, Canonicity.box_proofset]
+  exact MaximalConsistentSet.mdp_provable Logic.axiomC (MaximalConsistentSet.iff_mem_and.mpr ⟨hA, hB⟩)
+
+end
 
 end

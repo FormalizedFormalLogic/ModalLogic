@@ -1,6 +1,7 @@
 module
 
 public import Neighborhood.Semantics.IntersectionClosure
+public import Neighborhood.Formula.Subformulas
 
 /-!
 # Filtration of neighborhood semantics
@@ -13,46 +14,41 @@ minimal, transitive, supplemented transitive and quasi-filtering transitive filt
 
 @[expose] public section
 
-namespace LO.Modal
-
-namespace Neighborhood
-
 open FormulaSet.IsSubformulaClosed
-open Formula (atom)
-open Formula.Neighborhood
 
 attribute [grind]
   FormulaSet.IsSubformulaClosed.of_mem_imp₁
   FormulaSet.IsSubformulaClosed.of_mem_imp₂
   FormulaSet.IsSubformulaClosed.of_mem_box
 
-variable {M : Model} {T : FormulaSet ℕ} [T.IsSubformulaClosed] {x y : M.World} {φ ψ : Formula ℕ}
+variable {κ : Type u} [Nonempty κ] {α : Type v} [DecidableEq α]
+  {M : Model κ α} {T : FormulaSet α} [T.IsSubformulaClosed] {x y : M.World} {φ ψ : Formula α}
 
-def filterEquiv (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaClosed] (x y : M.World) := ∀ φ, (_ : φ ∈ T) → x ⊧ φ ↔ y ⊧ φ
+def filterEquiv (M : Model κ α) (T : FormulaSet α) [T.IsSubformulaClosed] (x y : M.World) := ∀ φ, (_ : φ ∈ T) → x ⊩ φ ↔ y ⊩ φ
 
-lemma filterEquiv.equivalence (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaClosed] : Equivalence (filterEquiv M T) where
+lemma filterEquiv.equivalence (M : Model κ α) (T : FormulaSet α) [T.IsSubformulaClosed] : Equivalence (filterEquiv M T) where
   refl := by intro x φ _; rfl;
   symm := by intro x y h φ hp; exact h _ hp |>.symm;
   trans := by
     intro x y z exy eyz φ hp;
     exact Iff.trans (exy φ hp) (eyz φ hp)
 
-def FilterEqvSetoid (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaClosed] : Setoid (M.World) := ⟨filterEquiv M T, filterEquiv.equivalence M T⟩
+def FilterEqvSetoid (M : Model κ α) (T : FormulaSet α) [T.IsSubformulaClosed] : Setoid (M.World) := ⟨filterEquiv M T, filterEquiv.equivalence M T⟩
 
-abbrev FilterEqvQuotient (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaClosed] := Quotient (FilterEqvSetoid M T)
+abbrev FilterEqvQuotient (M : Model κ α) (T : FormulaSet α) [T.IsSubformulaClosed] := Quotient (FilterEqvSetoid M T)
 
 namespace FilterEqvQuotient
 
 @[grind =>]
-lemma iff_eq : (⟦x⟧ : FilterEqvQuotient M T) = ⟦y⟧ ↔ (∀ φ ∈ T, x ⊧ φ ↔ y ⊧ φ) := by
+lemma iff_eq : (⟦x⟧ : FilterEqvQuotient M T) = ⟦y⟧ ↔ (∀ φ ∈ T, x ⊩ φ ↔ y ⊩ φ) := by
   simp [FilterEqvSetoid, Quotient.eq, filterEquiv];
 
 lemma finite (T_finite : T.Finite) : Finite (FilterEqvQuotient M T) := by
   have : Finite (𝒫 T) := Set.Finite.powerset T_finite
   let f : FilterEqvQuotient M T → 𝒫 T :=
-    λ (X : FilterEqvQuotient M T) => Quotient.lift (λ x => ⟨{ φ ∈ T | x ⊧ φ }, (by simp_all)⟩) (by
+    λ (X : FilterEqvQuotient M T) => Quotient.lift (λ x => ⟨{ φ ∈ T | x ⊩ φ }, (by simp_all)⟩) (by
       intro x y hxy;
-      suffices {φ | φ ∈ T ∧ Satisfies M x φ} = {φ | φ ∈ T ∧ Satisfies M y φ} by simpa;
+      suffices {φ | φ ∈ T ∧ x ⊩ φ} = {φ | φ ∈ T ∧ y ⊩ φ} by simpa;
       apply Set.eq_of_subset_of_subset;
       . rintro φ ⟨hp, hx⟩; exact ⟨hp, (hxy φ hp).mp hx⟩;
       . rintro φ ⟨hp, hy⟩; exact ⟨hp, (hxy φ hp).mpr hy⟩;
@@ -66,7 +62,7 @@ lemma finite (T_finite : T.Finite) : Finite (FilterEqvQuotient M T) := by
     intro φ hp;
     constructor;
     . intro hpx;
-      have : ∀ a ∈ T, x ⊧ a → a ∈ T ∧ y ⊧ a := by simpa using h.subset;
+      have : ∀ a ∈ T, x ⊩ a → a ∈ T ∧ y ⊩ a := by simpa using h.subset;
       exact this φ hp hpx |>.2;
     . intro hpy;
       have := h.symm.subset;
@@ -74,7 +70,7 @@ lemma finite (T_finite : T.Finite) : Finite (FilterEqvQuotient M T) := by
       exact this φ hp hpy |>.2;
   exact Finite.of_injective f hf
 
-instance : Nonempty (FilterEqvQuotient M T) := ⟨⟦M.toFrame.world_nonempty.some⟧⟩
+instance : Nonempty (FilterEqvQuotient M T) := ⟨⟦Classical.arbitrary κ⟧⟩
 
 end FilterEqvQuotient
 
@@ -207,10 +203,10 @@ of `T`, and whose valuation is the image of `M`'s valuation.
 
 - [Kop23, Definition 5.1]
 -/
-structure Filtration (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaClosed] where
+structure Filtration (M : Model κ α) (T : FormulaSet α) [T.IsSubformulaClosed] where
   B : Set (FilterEqvQuotient M T) → Set (FilterEqvQuotient M T)
   B_def : ∀ φ, (□φ ∈ T) → B 【M φ】 = 【M.box (M φ)】
-  V : ℕ → Set (FilterEqvQuotient M T)
+  V : α → Set (FilterEqvQuotient M T)
   V_def : ∀ a, V a = 【M (.atom a)】
 
 namespace Filtration
@@ -219,8 +215,9 @@ attribute [simp] Filtration.B_def Filtration.V_def
 
 variable {Fi : Filtration M T}
 
-def toModel {M : Model} {T : FormulaSet ℕ} [T.IsSubformulaClosed] (Fi : Filtration M T) : Model where
-  toFrame := Frame.mk_ℬ (FilterEqvQuotient M T) Fi.B
+def toModel {M : Model κ α} {T : FormulaSet α} [T.IsSubformulaClosed] (Fi : Filtration M T) :
+    Model (FilterEqvQuotient M T) α where
+  toFrame := Frame.mk_ℬ Fi.B
   Val := Fi.V
 
 @[simp, grind =_]
@@ -245,8 +242,9 @@ theorem filtration (Fi : Filtration M T) (φ) (hφ : φ ∈ T) : (Fi.toModel φ)
     replace ihφ := ihφ (by grind);
     apply ihφ ▸ Fi.B_def φ (by grind);
 
-lemma filtration_satisfies (Fi : Filtration M T) (φ) (hφ : φ ∈ T) {x : M} : Satisfies Fi.toModel ⟦x⟧ φ ↔ x ⊧ φ := by
-  simp only [Satisfies, (filtration Fi _ hφ)];
+lemma filtration_satisfies (Fi : Filtration M T) (φ) (hφ : φ ∈ T) {x : M.World} :
+    ⟦x⟧ ∈ Fi.toModel.truthset φ ↔ x ⊩ φ := by
+  simp only [Forces, (filtration Fi _ hφ), toFilterEquivSet, Set.mem_setOf_eq];
   constructor;
   . rintro ⟨y, hy, Ryx⟩;
     simp only [FilterEqvSetoid, Quotient.eq, filterEquiv] at Ryx;
@@ -297,7 +295,7 @@ well-definedness of this assignment.
 
 - [Kop23, Definition 5.4, Proposition 5.5]
 -/
-def minimalFiltration (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaClosed] : Filtration M T where
+def minimalFiltration (M : Model κ α) (T : FormulaSet α) [T.IsSubformulaClosed] : Filtration M T where
   B X := if h : ∃ φ, □φ ∈ T ∧ X = 【M φ】 then 【M.box (M h.choose)】 else ∅
   B_def := by
     intro φ hφ;
@@ -339,7 +337,7 @@ box.
 
 - [Kop23, Definition 5.6, Definition 5.7, Lemma 5.9]
 -/
-def transitiveFiltration (M : Model) [M.IsTransitive] (T : FormulaSet ℕ) [T.IsSubformulaClosed] : Filtration M T where
+def transitiveFiltration (M : Model κ α) [M.IsTransitive] (T : FormulaSet α) [T.IsSubformulaClosed] : Filtration M T where
   B X := ((minimalFiltration M T).B X) ∪ (if ∃ Y, X = (minimalFiltration M T).B Y then X else ∅)
   B_def := by
     intro φ hφ;
@@ -480,7 +478,7 @@ monotonic and transitive.
 
 - [Kop23, Lemma 5.11]
 -/
-def supplementedTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransitive] (T : FormulaSet ℕ) [T.IsSubformulaClosed] : Filtration M T where
+def supplementedTransitiveFiltration (M : Model κ α) [M.IsMonotonic] [M.IsTransitive] (T : FormulaSet α) [T.IsSubformulaClosed] : Filtration M T where
   B := (transitiveFiltration M T).toModel.supplementation.box
   B_def := by
     intro φ hφ;
@@ -536,7 +534,7 @@ which is again a filtration when the model is monotonic, transitive and regular.
 
 - [Kop23, Definition 5.16, Lemma 5.18]
 -/
-def quasiFilteringTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransitive] [M.IsRegular] (T : FormulaSet ℕ) [T.IsSubformulaClosed] (hT : T.Finite) : Filtration M T where
+def quasiFilteringTransitiveFiltration (M : Model κ α) [M.IsMonotonic] [M.IsTransitive] [M.IsRegular] (T : FormulaSet α) [T.IsSubformulaClosed] (hT : T.Finite) : Filtration M T where
   V := (transitiveFiltration M T).V
   V_def := by simp;
   B := (transitiveFiltration M T).toModel.quasiFiltering.box
@@ -564,12 +562,16 @@ def quasiFilteringTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransiti
 
       let Ψ := {ψ // □ψ ∈ T ∧ (∃ Vi ∈ Ys, Vi = 【M ψ】) ∧ W ∈ 【M (□ψ)】};
       have : Fintype Ψ := by
-        apply Fintype.subtype (s := { ψ ∈ □⁻¹'hT.toFinset | (∃ Vi ∈ Ys, Vi = 【M ψ】) ∧ W ∈ 【M (□ψ)】 });
-        simp [Finset.LO.preboxItr];
+        apply Fintype.ofInjective (β := ↥hT.toFinset) (fun p => ⟨□ p.1, hT.mem_toFinset.mpr p.2.1⟩);
+        rintro ⟨A, hA⟩ ⟨B, hB⟩ h;
+        simp only [Subtype.mk.injEq] at h;
+        exact Subtype.ext (Formula.inj_box.mp h);
       let Ξ := {ξ // □ξ ∈ T ∧ (∃ Ui ∈ Ys, Ui = 【M (□ξ)】) ∧ W ∈ 【M (□ξ)】};
       have : Fintype Ξ := by
-        apply Fintype.subtype (s := { ξ ∈ □⁻¹'hT.toFinset | (∃ Ui ∈ Ys, Ui = 【M (□ξ)】) ∧ W ∈ 【M (□ξ)】 });
-        simp [Finset.LO.preboxItr];
+        apply Fintype.ofInjective (β := ↥hT.toFinset) (fun p => ⟨□ p.1, hT.mem_toFinset.mpr p.2.1⟩);
+        rintro ⟨A, hA⟩ ⟨B, hB⟩ h;
+        simp only [Subtype.mk.injEq] at h;
+        exact Subtype.ext (Formula.inj_box.mp h);
       have H : (⋂ ψ : Ψ, 【M ψ】) ∩ (⋂ ξ : Ξ, 【M (□ξ)】) ⊆ (【M φ】 : Set (FilterEqvQuotient M T)) := by
         -- The chain is kept purely equational: `calc` cannot mix `Eq` and `⊆` here, because the
         -- two sides live in types that agree only after unfolding the filtration frame.
@@ -740,7 +742,4 @@ protected def containsUnit [M.ContainsUnit] (hT : □⊤ ∈ T) : (quasiFilterin
 
 end quasiFilteringTransitiveFiltration
 
-end Neighborhood
-
-end LO.Modal
 end

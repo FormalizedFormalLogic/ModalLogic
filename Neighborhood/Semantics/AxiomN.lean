@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Axioms
 public import Neighborhood.Semantics.Basic
+public import Neighborhood.Semantics.Completeness
 
 /-!
 # Axiom `N` on neighborhood frames
@@ -39,5 +40,24 @@ theorem containsUnit_of_valid_axiomN (h : F ⊧ (Axioms.N : Formula ℕ)) : F.Co
   constructor
   ext x
   simpa [Forces] using h (fun _ => Set.univ) x
+
+section
+
+variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent]
+
+instance [L.HasAxiomN] : (basicCanonicity L).toModel.ContainsUnit := by
+  constructor
+  ext Ω
+  apply iff_of_true _ (Set.mem_univ Ω)
+  exact ⟨⊤, MaximalConsistentSet.mem_of_prove (by simp), by simp⟩
+
+instance {P : MaximalConsistentSet L → Set (Proofset L)} [L.HasAxiomN] :
+    (relativeBasicCanonicity L P).toModel.ContainsUnit := by
+  constructor
+  ext Ω
+  apply iff_of_true _ (Set.mem_univ Ω)
+  exact Or.inl ⟨⊤, MaximalConsistentSet.mem_of_prove (by simp), by simp⟩
+
+end
 
 end

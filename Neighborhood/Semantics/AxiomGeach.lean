@@ -1,6 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Basic
+public import Neighborhood.Semantics.Completeness
 public import Neighborhood.Axioms
 
 /-!
@@ -201,6 +202,272 @@ theorem isSymmetric_of_valid_axiomB (h : F ⊧ Axioms.B (.atom a)) : F.IsSymmetr
 theorem isEuclidean_of_valid_axiomFive (h : F ⊧ Axioms.Five (.atom a)) : F.IsEuclidean := by
   have := isGeachConvergent_of_valid_axiomGeach (g := ⟨1, 1, 0, 1⟩) h
   infer_instance
+
+end
+
+section
+
+variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent]
+
+namespace Logic
+
+variable {A B : Formula α}
+
+omit [DecidableEq α] [L.HasRE] [L.Consistent] in
+private lemma not_iff_not_of_iff (h : A 🡘 B ∈ L) : ∼A 🡘 ∼B ∈ L :=
+  E_intro (contra (C_of_E_mpr h)) (contra (C_of_E_mp h))
+
+omit [DecidableEq α] [L.Consistent] in
+private lemma dia_congr (h : A 🡘 B ∈ L) : ◇A 🡘 ◇B ∈ L :=
+  not_iff_not_of_iff (re (not_iff_not_of_iff h))
+
+omit [DecidableEq α] [L.Consistent] in
+private lemma multidia_congr (h : A 🡘 B ∈ L) (n : ℕ) : ◇^[n]A 🡘 ◇^[n]B ∈ L := by
+  induction n with
+  | zero => simpa
+  | succ n ih => simpa using dia_congr ih
+
+omit [DecidableEq α] [L.Consistent] in
+private lemma neg_box_iff_dia_neg (A : Formula α) : ∼(□A) 🡘 ◇(∼A) ∈ L :=
+  not_iff_not_of_iff (re (E_intro dni dne))
+
+omit [DecidableEq α] [L.HasRE] [L.Consistent] in
+private lemma neg_dia_iff_box_neg (A : Formula α) : ∼(◇A) 🡘 □(∼A) ∈ L := E_intro dne dni
+
+omit [DecidableEq α] [L.Consistent] in
+private lemma neg_boxItr_iff_diaItr_neg (n : ℕ) (A : Formula α) :
+    ∼(□^[n]A) 🡘 ◇^[n](∼A) ∈ L := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [Formula.multibox_succ, Formula.multidia_succ]
+    exact E_trans (neg_box_iff_dia_neg _) (dia_congr ih)
+
+omit [DecidableEq α] [L.Consistent] in
+private lemma neg_diaItr_iff_boxItr_neg (n : ℕ) (A : Formula α) :
+    ∼(◇^[n]A) 🡘 □^[n](∼A) ∈ L := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [Formula.multidia_succ, Formula.multibox_succ]
+    exact E_trans (neg_dia_iff_box_neg _) (re ih)
+
+omit [DecidableEq α] [L.Consistent] in
+/-- The dual of a boxed-then-diamonded negated formula: pure contraposition and `RE`-congruence,
+without any further modal assumption on `L`. -/
+private lemma neg_boxItr_diaItr_neg (i n : ℕ) (A : Formula α) :
+    ∼(□^[i](◇^[n](∼A))) 🡘 ◇^[i](□^[n]A) ∈ L := by
+  have h2 : ∼(◇^[n](∼A)) 🡘 □^[n]A ∈ L :=
+    E_trans (neg_diaItr_iff_boxItr_neg n (∼A)) (multire (E_intro dne dni))
+  exact E_trans (neg_boxItr_iff_diaItr_neg i _) (multidia_congr h2 i)
+
+omit [DecidableEq α] [L.Consistent] in
+/-- The dual of a diamonded-then-boxed negated formula, symmetric to
+`neg_boxItr_diaItr_neg`. -/
+private lemma neg_diaItr_boxItr_neg (i n : ℕ) (A : Formula α) :
+    ∼(◇^[i](□^[n](∼A))) 🡘 □^[i](◇^[n]A) ∈ L := by
+  have h2 : ∼(□^[n](∼A)) 🡘 ◇^[n]A ∈ L :=
+    E_trans (neg_boxItr_iff_diaItr_neg n (∼A)) (multidia_congr (E_intro dne dni) n)
+  exact E_trans (neg_diaItr_iff_boxItr_neg i _) (multire (n := i) h2)
+
+/-- The Geach axiom scheme is closed under swapping `i ↔ j` and `m ↔ n`: this is the purely
+propositional contrapositive of the scheme, so it holds regardless of the ambient modal axioms.
+
+Stated as a `def` rather than an `instance`: the swapped tuple's fields are projections of the
+implicit `g`, so instance search cannot invert them to find `g` from the goal and this must be
+applied explicitly with `g` provided. -/
+@[reducible] def hasAxiomGeachSwap {g : Axioms.Geach.Taple} [L.HasAxiomGeach g] :
+    L.HasAxiomGeach ⟨g.j, g.i, g.n, g.m⟩ where
+  Geach A := by
+    have h : Axioms.Geach g (∼A) ∈ L := axiomGeach
+    have hc : ∼(□^[g.j](◇^[g.n](∼A))) 🡒 ∼(◇^[g.i](□^[g.m](∼A))) ∈ L := contra h
+    have e1 : ∼(□^[g.j](◇^[g.n](∼A))) 🡘 ◇^[g.j](□^[g.n]A) ∈ L := neg_boxItr_diaItr_neg g.j g.n A
+    have e2 : ∼(◇^[g.i](□^[g.m](∼A))) 🡘 □^[g.i](◇^[g.m]A) ∈ L := neg_diaItr_boxItr_neg g.i g.m A
+    exact C_trans (C_of_E_mpr e1) (C_trans hc (C_of_E_mp e2))
+
+end Logic
+
+namespace Canonicity
+
+variable {𝓒 : Canonicity L}
+
+/-- A sufficient condition for `𝓒.toModel` to be Geach convergent for `g`: the convergence
+inclusion holds on every neighborhood witnessing a non-proofset, the case of a proofset following
+automatically from the Geach axiom scheme. -/
+@[reducible] protected def isGeachean (g : Axioms.Geach.Taple) [L.HasAxiomGeach g]
+    (h : ∀ X : Proofset L, X.IsNonproofset →
+      𝓒.toModel.dia^[g.i] (𝓒.toModel.box^[g.m] X) ⊆ 𝓒.toModel.box^[g.j] (𝓒.toModel.dia^[g.n] X)) :
+    𝓒.toModel.IsGeachConvergent g := by
+  constructor
+  intro X Ω hX
+  by_cases X_np : Proofset.IsNonproofset X
+  · exact h X X_np hX
+  · obtain ⟨A, rfl⟩ := iff_not_isNonproofset_exists.mp X_np
+    replace hX : Ω ∈ proofset L (◇^[g.i](□^[g.m]A)) := by
+      simpa only [Canonicity.diaItr_proofset, Canonicity.boxItr_proofset] using hX
+    suffices Ω ∈ proofset L (□^[g.j](◇^[g.n]A)) by simpa
+    exact MaximalConsistentSet.mdp_provable (by simp) hX
+
+@[reducible] def isReflexive [L.HasAxiomT]
+    (h : ∀ X : Proofset L, X.IsNonproofset → 𝓒.toModel.box X ⊆ X) : 𝓒.toModel.IsReflexive := by
+  have := Canonicity.isGeachean ⟨0, 0, 1, 0⟩ h
+  infer_instance
+
+@[reducible] def isTransitive [L.HasAxiomFour]
+    (h : ∀ X : Proofset L, X.IsNonproofset → 𝓒.toModel.box X ⊆ 𝓒.toModel.box^[2] X) :
+    𝓒.toModel.IsTransitive := by
+  have := Canonicity.isGeachean ⟨0, 2, 1, 0⟩ h
+  infer_instance
+
+@[reducible] def isSerial [L.HasAxiomD]
+    (h : ∀ X : Proofset L, X.IsNonproofset → 𝓒.toModel.box X ⊆ 𝓒.toModel.dia X) :
+    𝓒.toModel.IsSerial := by
+  have := Canonicity.isGeachean ⟨0, 0, 1, 1⟩ h
+  infer_instance
+
+@[reducible] def isEuclidean [L.HasAxiomFive]
+    (h : ∀ X : Proofset L, X.IsNonproofset →
+      𝓒.toModel.dia X ⊆ 𝓒.toModel.box (𝓒.toModel.dia X)) : 𝓒.toModel.IsEuclidean := by
+  have := Canonicity.isGeachean ⟨1, 1, 0, 1⟩ h
+  infer_instance
+
+@[reducible] def isEuclidean' [L.HasAxiomFive]
+    (h : ∀ X : Proofset L, X.IsNonproofset →
+      𝓒.toModel.dia (𝓒.toModel.box X) ⊆ 𝓒.toModel.box X) : 𝓒.toModel.IsEuclidean := by
+  haveI := Logic.hasAxiomGeachSwap (L := L) (g := ⟨1, 1, 0, 1⟩)
+  apply Frame.IsEuclidean.of_dual
+  apply (Canonicity.isGeachean ⟨1, 1, 1, 0⟩ h).gconv
+
+@[reducible] def isSymmetric [L.HasAxiomB]
+    (h : ∀ X : Proofset L, X.IsNonproofset → X ⊆ 𝓒.toModel.box (𝓒.toModel.dia X)) :
+    𝓒.toModel.IsSymmetric := by
+  have := Canonicity.isGeachean ⟨0, 1, 0, 1⟩ h
+  infer_instance
+
+@[reducible] def isSymmetric' [L.HasAxiomB]
+    (h : ∀ X : Proofset L, X.IsNonproofset → 𝓒.toModel.dia (𝓒.toModel.box X) ⊆ X) :
+    𝓒.toModel.IsSymmetric := by
+  haveI := Logic.hasAxiomGeachSwap (L := L) (g := ⟨0, 1, 0, 1⟩)
+  apply Frame.IsSymmetric.of_dual
+  apply (Canonicity.isGeachean ⟨1, 0, 1, 0⟩ h).gconv
+
+end Canonicity
+
+instance [L.HasAxiomT] : (basicCanonicity L).toModel.IsReflexive := by
+  apply Canonicity.isReflexive
+  intro X hX Ω hΩ
+  obtain ⟨A, rfl, hA⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hΩ
+  exact proofset.imp_subset.mp Logic.axiomT hA
+
+instance [L.HasAxiomFour] : (basicCanonicity L).toModel.IsTransitive := by
+  apply Canonicity.isTransitive
+  intro X hX Ω hΩ
+  obtain ⟨A, rfl, hA⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hΩ
+  simp only [Canonicity.boxItr_proofset]
+  exact proofset.imp_subset.mp Logic.axiomFour hA
+
+instance [L.HasAxiomD] : (basicCanonicity L).toModel.IsSerial := by
+  apply Canonicity.isSerial
+  intro X hX Ω hΩ
+  obtain ⟨A, rfl, hA⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hΩ
+  simp only [Canonicity.dia_proofset]
+  exact proofset.imp_subset.mp Logic.axiomD hA
+
+namespace relativeBasicCanonicity
+
+variable {P : MaximalConsistentSet L → Set (Proofset L)}
+
+@[reducible] protected def isSerial [L.HasAxiomD]
+    (hP : ∀ X : Proofset L, X.IsNonproofset → ∀ Ω, X ∈ P Ω →
+      Ω ∈ (relativeBasicCanonicity L P).toModel.dia X) :
+    (relativeBasicCanonicity L P).toModel.IsSerial := by
+  apply Canonicity.isSerial
+  intro X hX Ω hΩ
+  apply hP X hX
+  rcases hΩ with (h | ⟨_, h⟩)
+  · exact absurd hX (basicCanonicity.not_isNonproofset_of_mem_box h)
+  · exact h
+
+@[reducible] protected def isReflexive [L.HasAxiomT]
+    (hP : ∀ X : Proofset L, X.IsNonproofset → ∀ Ω, X ∈ P Ω → Ω ∈ X) :
+    (relativeBasicCanonicity L P).toModel.IsReflexive := by
+  apply Canonicity.isReflexive
+  intro X hX Ω hΩ
+  apply hP X hX
+  rcases hΩ with (h | ⟨_, h⟩)
+  · exact absurd hX (basicCanonicity.not_isNonproofset_of_mem_box h)
+  · exact h
+
+@[reducible] protected def isTransitive [L.HasAxiomFour]
+    (hP : ∀ X : Proofset L, X.IsNonproofset → ∀ Ω, X ∈ P Ω →
+      Ω ∈ (relativeBasicCanonicity L P).toModel.box^[2] X) :
+    (relativeBasicCanonicity L P).toModel.IsTransitive := by
+  apply Canonicity.isTransitive
+  intro X hX Ω hΩ
+  apply hP X hX
+  rcases hΩ with (h | ⟨_, h⟩)
+  · exact absurd hX (basicCanonicity.not_isNonproofset_of_mem_box h)
+  · exact h
+
+@[reducible] protected def isEuclidean [L.HasAxiomFive]
+    (hP : ∀ X : Proofset L, X.IsNonproofset → ∀ Ω,
+      Xᶜ ∉ P Ω → Ω ∈ (relativeBasicCanonicity L P).toModel.box
+        ((relativeBasicCanonicity L P).toModel.dia X)) :
+    (relativeBasicCanonicity L P).toModel.IsEuclidean := by
+  apply Canonicity.isEuclidean
+  intro X hX Ω hΩ
+  apply hP X hX
+  rcases relativeBasicCanonicity.iff_mem_dia.mp hΩ with ⟨hΩ₁, (h | hΩ₂)⟩
+  · exfalso
+    obtain ⟨A, hA⟩ := iff_not_isNonproofset_exists.mp h
+    apply hX (∼A)
+    grind
+  · exact hΩ₂
+
+/-
+`relativeBasicCanonicity` does not automatically satisfy the symmetry frame condition: unlike
+seriality, reflexivity, transitivity, and euclideanness, closing the dual inclusion
+`◇□X ⊆ X` for a non-proofset `X` under the extra neighborhoods `P` requires relating `X` back to
+the complement of a proofset, which is not derivable from `hP` alone. This case is left open,
+ported from an earlier attempt.
+
+protected instance isSymmetric [L.HasAxiomGeach ⟨1, 0, 1, 0⟩]
+    (hP₁ : ∀ X : Proofset L, X.IsNonproofset → ∀ Ω,
+      ((relativeBasicCanonicity L P).toModel.box X)ᶜ ∉ P Ω → Ω ∈ X) :
+    (relativeBasicCanonicity L P).toModel.IsSymmetric := by
+  apply Canonicity.isSymmetric'
+  intro X hX Ω hΩ
+  apply hP₁ X hX
+  rcases relativeBasicCanonicity.iff_mem_dia.mp hΩ with ⟨hΩ, (⟨A, hA⟩ | hΩ)⟩
+  · rw [hA] at hΩ
+    sorry
+  · exact hΩ
+-/
+
+end relativeBasicCanonicity
+
+namespace minimalRelativeMaximalCanonicity
+
+protected instance isSerial [L.HasAxiomD] : (minimalRelativeMaximalCanonicity L).toModel.IsSerial :=
+  relativeBasicCanonicity.isSerial (by tauto)
+
+protected instance isReflexive [L.HasAxiomT] :
+    (minimalRelativeMaximalCanonicity L).toModel.IsReflexive :=
+  relativeBasicCanonicity.isReflexive (by tauto)
+
+protected instance isTransitive [L.HasAxiomFour] :
+    (minimalRelativeMaximalCanonicity L).toModel.IsTransitive :=
+  relativeBasicCanonicity.isTransitive (by tauto)
+
+end minimalRelativeMaximalCanonicity
+
+namespace maximalRelativeMaximalCanonicity
+
+protected instance isEuclidean [L.HasAxiomFive] :
+    (maximalRelativeMaximalCanonicity L).toModel.IsEuclidean :=
+  relativeBasicCanonicity.isEuclidean (by tauto)
+
+end maximalRelativeMaximalCanonicity
 
 end
 

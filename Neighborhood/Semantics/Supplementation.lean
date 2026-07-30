@@ -1,6 +1,10 @@
 module
 
 public import Neighborhood.Semantics.AxiomM
+public import Neighborhood.Semantics.AxiomC
+public import Neighborhood.Semantics.AxiomN
+public import Neighborhood.Semantics.AxiomGeach
+public import Neighborhood.Semantics.Completeness
 
 /-!
 # Supplementation of a neighborhood frame
@@ -66,6 +70,89 @@ instance isMonotonic : F.supplementation.IsMonotonic := by
   exact ⟨iff_exists_subset.mpr ⟨W, hW₁.trans Set.inter_subset_left, hW₂⟩,
     iff_exists_subset.mpr ⟨W, hW₁.trans Set.inter_subset_right, hW₂⟩⟩
 
+instance isReflexive [F.IsReflexive] : F.supplementation.IsReflexive := by
+  constructor
+  intro X x hx
+  obtain ⟨Y, hY₁, hY₂⟩ := iff_exists_subset.mp hx
+  exact hY₁ (F.refl hY₂)
+
+instance containsUnit [F.ContainsUnit] : F.supplementation.ContainsUnit := by
+  constructor
+  ext x
+  apply iff_of_true _ (Set.mem_univ x)
+  exact iff_exists_subset.mpr ⟨Set.univ, le_refl _, F.univ_mem x⟩
+
+instance isTransitive [F.IsTransitive] : F.supplementation.IsTransitive := by
+  constructor
+  intro X x hx
+  obtain ⟨Y, hYX, hY⟩ := iff_exists_subset.mp hx
+  exact monotonic_iterated hYX 2 (monotonic (subset Y) (subset (F.box Y) (F.trans hY)))
+
+instance isRegular [F.IsRegular] : F.supplementation.IsRegular := by
+  constructor
+  intro X Y x hx
+  obtain ⟨hX, hY⟩ := hx
+  obtain ⟨X', hX'₁, hX'₂⟩ := iff_exists_subset.mp hX
+  obtain ⟨Y', hY'₁, hY'₂⟩ := iff_exists_subset.mp hY
+  exact iff_exists_subset.mpr ⟨X' ∩ Y', Set.inter_subset_inter hX'₁ hY'₁, F.regular ⟨hX'₂, hY'₂⟩⟩
+
 end Frame.supplementation
+
+section
+
+variable {α : Type u} {L : Logic α}
+
+/-- The supplementation of `basicCanonicity L`, augmented with the monotonicity axiom `M` so
+that boxed formulas of `L` correspond exactly to the neighborhoods of the supplemented canonical
+model. -/
+abbrev supplementedBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] [L.HasAxiomM]
+    [L.Consistent] : Canonicity L where
+  𝒩 := (basicCanonicity L).toModel.supplementation.𝒩
+  def_𝒩 := by
+    intro Ω A
+    constructor
+    · intro h
+      exact ⟨proofset L A, Set.Subset.rfl, A, h, rfl⟩
+    · rintro ⟨Y, hY₁, B, hB, rfl⟩
+      exact proofset.box_subset_of_subset hY₁ hB
+  V a := proofset L (.atom a)
+  def_V _ := rfl
+
+variable [DecidableEq α] [L.Cl] [L.HasRE] [L.HasAxiomM] [L.Consistent]
+
+instance : (supplementedBasicCanonicity L).toModel.IsMonotonic :=
+  Frame.supplementation.isMonotonic (F := (basicCanonicity L).toModel.toFrame)
+
+instance [L.HasAxiomC] : (supplementedBasicCanonicity L).toModel.IsRegular :=
+  Frame.supplementation.isRegular (F := (basicCanonicity L).toModel.toFrame)
+
+instance [L.HasAxiomN] : (supplementedBasicCanonicity L).toModel.ContainsUnit :=
+  Frame.supplementation.containsUnit (F := (basicCanonicity L).toModel.toFrame)
+
+instance [L.HasAxiomT] : (supplementedBasicCanonicity L).toModel.IsReflexive :=
+  Frame.supplementation.isReflexive (F := (basicCanonicity L).toModel.toFrame)
+
+instance [L.HasAxiomFour] : (supplementedBasicCanonicity L).toModel.IsTransitive :=
+  Frame.supplementation.isTransitive (F := (basicCanonicity L).toModel.toFrame)
+
+/-- The supplementation of `relativeBasicCanonicity L P`, augmented with the monotonicity axiom
+`M` and a compatibility condition `hP` ensuring that every extra neighborhood `Y` witnessing a
+non-proofset `X` at `Ω` (with `Y ⊆ X`) forces `□A ∈ Ω` whenever `Y ⊆ proofset L A`. -/
+def supplementedRelativeCanonicity (L : Logic α) (P : MaximalConsistentSet L → Set (Proofset L))
+    (hP : ∀ Y : Proofset L, Y.IsNonproofset → ∀ Ω, Y ∈ P Ω → ∀ A, Y ⊆ proofset L A → □A ∈ Ω) :
+    Canonicity L where
+  𝒩 := (relativeBasicCanonicity L P).toModel.supplementation.𝒩
+  def_𝒩 := by
+    intro Ω A
+    constructor
+    · intro h
+      exact ⟨proofset L A, Set.Subset.rfl, Or.inl ⟨A, h, rfl⟩⟩
+    · rintro ⟨Y, hY₁, (⟨B, hB, rfl⟩ | ⟨hYnp, hY₂⟩)⟩
+      · exact proofset.box_subset_of_subset hY₁ hB
+      · exact hP Y hYnp Ω hY₂ A hY₁
+  V a := proofset L (.atom a)
+  def_V _ := rfl
+
+end
 
 end
