@@ -5,6 +5,7 @@ public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame2_238
 public import Neighborhood.Semantics.Example.Frame4_11259170869739560
+public import Neighborhood.Logic.Equiv.EMK_EMCK
 
 /-!
 # The neighborhood logic `LogicEMK`

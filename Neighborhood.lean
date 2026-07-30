@@ -12,9 +12,13 @@ public import Neighborhood.Logic.Context
 public import Neighborhood.Logic.Equiv.EB4_ENB4
 public import Neighborhood.Logic.Equiv.EM45_EMN45
 public import Neighborhood.Logic.Equiv.EMB4_EMCNB4
+public import Neighborhood.Logic.Equiv.EMC_EMCK
+public import Neighborhood.Logic.Equiv.EMC_EMK
+public import Neighborhood.Logic.Equiv.EMK_EMCK
 public import Neighborhood.Logic.Equiv.EMT5_EMCNT5
 public import Neighborhood.Logic.Equiv.EMTB_EMCNTB
 public import Neighborhood.Logic.Equiv.ET5_ENT5
+public import Neighborhood.Logic.Equiv.ETB_ENTB
 public import Neighborhood.Logic.MaximalConsistentSet
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomGeach
