@@ -285,9 +285,10 @@ abbrev maximalRelativeMaximalCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [
 
 /-- `relativeBasicCanonicity` with the non-proofsets containing `Ω` as `Ω`'s extra neighborhoods,
 `P Ω X := Ω ∈ X`. Pointwise this sits between `minimalRelativeMaximalCanonicity` (`P := False`)
-and `maximalRelativeMaximalCanonicity` (`P := True`); it is the "model in between" of
-[Che80, Theorem 9.8], and it is exactly this intermediate choice that makes the canonical model
-symmetric. -/
+and `maximalRelativeMaximalCanonicity` (`P := True`), and it is exactly this intermediate choice
+that makes the canonical model symmetric.
+
+- [Che80, Theorem 9.8] -/
 abbrev intermediateRelativeMaximalCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] :
     Canonicity L :=
   relativeBasicCanonicity L (fun Ω X => Ω ∈ X)

@@ -36,8 +36,10 @@ section
 
 variable [DecidableEq α]
 
-/-- `LogicETB` is complete with respect to the neighborhood frames that are both reflexive and
-symmetric, again via the intermediate canonical model of [Che80, Exercise 9.39(b)]. -/
+/-- The intermediate canonical model of `intermediateRelativeMaximalCanonicity` is reflexive as
+well as symmetric.
+
+- [Che80, Exercise 9.39(b)] -/
 theorem LogicETB.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsSymmetric] → F ⊧ A) :
     A ∈ @LogicETB α :=

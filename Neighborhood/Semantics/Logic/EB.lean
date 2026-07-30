@@ -31,8 +31,8 @@ section
 
 variable [DecidableEq α]
 
-/-- Chellas' "model in between" solves Exercise 9.39(b): `LogicEB` is complete with respect to
-the symmetric neighborhood frames.
+/-- Neither the smallest nor the largest canonical model is symmetric, but the intermediate one
+of `intermediateRelativeMaximalCanonicity` is.
 
 - [Che80, Exercise 9.39(b)] -/
 theorem LogicEB.complete
