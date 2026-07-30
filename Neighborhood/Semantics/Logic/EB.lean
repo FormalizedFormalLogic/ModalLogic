@@ -7,9 +7,9 @@ import Neighborhood.Semantics.Example.Frame1_0
 /-!
 # The neighborhood logic `LogicEB`
 
-Soundness and consistency of `LogicEB`, the classical modal logic axiomatised by the symmetry
-axiom `B`, with respect to the symmetric neighborhood frames, and its strict inclusion in
-`LogicE`.
+Soundness, consistency and completeness of `LogicEB`, the classical modal logic axiomatised by
+the symmetry axiom `B`, with respect to the symmetric neighborhood frames, and the strict
+inclusion of `LogicE` in `LogicEB`.
 -/
 
 @[expose] public section
@@ -24,6 +24,25 @@ theorem LogicEB.consistent : (@LogicEB α).IsConsistent := by
   by_contra! hC
   simpa using LogicEB.sound frame_1_2 hC
 
+instance : Nonempty (MaximalConsistentSet (@LogicEB α)) :=
+  MaximalConsistentSet.nonempty LogicEB.consistent
+
+section
+
+variable [DecidableEq α]
+
+/-- Chellas' "model in between" solves Exercise 9.39(b): `LogicEB` is complete with respect to
+the symmetric neighborhood frames.
+
+- [Che80, Exercise 9.39(b)] -/
+theorem LogicEB.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsSymmetric] → F ⊧ A) :
+    A ∈ @LogicEB α :=
+  (intermediateRelativeMaximalCanonicity LogicEB).mem_of_valid
+    (h (intermediateRelativeMaximalCanonicity LogicEB).toModel.toFrame
+      (intermediateRelativeMaximalCanonicity LogicEB).toModel.Val)
+
+end
 
 theorem LogicE_ssubset_LogicEB : (@LogicE ℕ) ⊂ LogicEB := by
   constructor
