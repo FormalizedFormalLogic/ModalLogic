@@ -1,9 +1,5 @@
 module  -- shake: keep-all --deprecated_module: ignore
 
-public import ModalNeighborhood.Axioms
-public import ModalNeighborhood.Formula.Basic
-public import ModalNeighborhood.Formula.Subformulas
-public import ModalNeighborhood.Logic.Basic
 public import ModalNeighborhood.Semantics.AxiomC
 public import ModalNeighborhood.Semantics.AxiomGeach
 public import ModalNeighborhood.Semantics.AxiomK
@@ -44,4 +40,3 @@ public import ModalNeighborhood.Semantics.Logic.ET5
 public import ModalNeighborhood.Semantics.Logic.ETB
 public import ModalNeighborhood.Semantics.Logic.Incomparability.ED_EP
 public import ModalNeighborhood.Semantics.Supplementation
-public import ModalNeighborhood.Vorspiel
