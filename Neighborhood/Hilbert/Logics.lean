@@ -210,12 +210,6 @@ abbrev LogicECT : Logic α := Hilbert $
 instance : (@LogicECT α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
 instance : (@LogicECT α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
 
-abbrev LogicENT : Logic α := Hilbert $
-  { Axioms.N } ∪
-  { Axioms.T A | (A) }
-instance : (@LogicENT α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicENT α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
-
 abbrev LogicEMCT : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪
   { Axioms.C A B | (A) (B) } ∪
@@ -350,12 +344,6 @@ instance : (@LogicEMCNB α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
 instance : (@LogicEMCNB α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
 instance : (@LogicEMCNB α).HasAxiomB := Hilbert.hasAxiomB_of $ by grind;
 
-
-abbrev LogicEM4 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicEM4 α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
-instance : (@LogicEM4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by grind;
 
 abbrev LogicEC4 : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
