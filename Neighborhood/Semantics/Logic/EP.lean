@@ -19,14 +19,14 @@ empty set as one of its neighborhoods (`Frame.NotContainsEmpty`). Also its stric
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEP.sound (h : A ∈ LogicEP) {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
-    F ⊧ A :=
+theorem LogicEP.sound {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
+    A ∈ LogicEP → F ⊧ A :=
   Hilbert.sound
     (fun B hB => by
       simp only [Set.mem_singleton_iff] at hB; subst hB
-      exact valid_axiomP_of_notContainsEmpty) h
+      exact valid_axiomP_of_notContainsEmpty)
 
-instance : (@LogicEP α).Consistent :=
+theorem LogicEP.consistent : (@LogicEP α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (fun B hB => by
       simp only [Set.mem_singleton_iff] at hB; subst hB
@@ -39,7 +39,7 @@ theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
   · intro h
     have hP : (Axioms.P : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm rfl)
     have := notContainsEmpty_of_valid_axiomP
-      (F := (⟨fun _ => {∅}⟩ : Frame (Fin 1))) (LogicE.sound hP _)
+      (F := (⟨fun _ => {∅}⟩ : Frame (Fin 1))) (LogicE.sound _ hP)
     simpa using this.not_contains_empty (x := 0)
 
 abbrev Frame.trivial_nonserial : Frame (Fin 2) :=

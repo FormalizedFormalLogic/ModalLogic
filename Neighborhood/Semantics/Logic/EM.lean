@@ -18,20 +18,23 @@ the stronger logic's module).
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicEM.sound (h : A ∈ LogicEM) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] :
-    F ⊧ A :=
-  Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; exact valid_axiomM_of_isMonotonic) h
+theorem LogicEM.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] :
+    A ∈ LogicEM → F ⊧ A :=
+  Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; exact valid_axiomM_of_isMonotonic)
 
-instance : (@LogicEM α).Consistent :=
+theorem LogicEM.consistent : (@LogicEM α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (by rintro _ ⟨_, _, rfl⟩; exact valid_axiomM_of_isMonotonic)
 
+instance : Nonempty (MaximalConsistentSet (@LogicEM α)) :=
+  MaximalConsistentSet.nonempty LogicEM.consistent
+
 variable [DecidableEq α]
 
-theorem LogicEM.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F ⊧ A) :
+theorem LogicEM.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → F ⊧ A) :
     A ∈ @LogicEM α :=
   (supplementedBasicCanonicity LogicEM).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEM).toModel.toFrame inferInstance
+    (h (supplementedBasicCanonicity LogicEM).toModel.toFrame
       (supplementedBasicCanonicity LogicEM).toModel.Val)
 
 
@@ -49,7 +52,7 @@ theorem LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM := by
         | 0 => {0, 1}
         | 1 => {1, 2}
         | _ => Set.univ⟩
-    have h0 := LogicE.sound hM M.toFrame M.Val 0
+    have h0 := LogicE.sound M.toFrame hM M.Val 0
     simp [M, Forces, Frame.box, Set.ext_iff] at h0
     grind
 

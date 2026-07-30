@@ -18,30 +18,34 @@ property. Also proves the strict inclusions of `LogicE4` and `LogicET` in `Logic
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicET4.sound (h : A ∈ LogicET4) {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
-    [F.IsTransitive] : F ⊧ A :=
+theorem LogicET4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
+    [F.IsTransitive] :
+    A ∈ LogicET4 → F ⊧ A :=
   Hilbert.sound (by
     rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
     · exact valid_axiomT_of_isReflexive
-    · exact valid_axiomFour_of_isTransitive) h
+    · exact valid_axiomFour_of_isTransitive)
 
-instance : (@LogicET4 α).Consistent :=
+theorem LogicET4.consistent : (@LogicET4 α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole) (by
     rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
     · exact valid_axiomT_of_isReflexive
     · exact valid_axiomFour_of_isTransitive)
 
+instance : Nonempty (MaximalConsistentSet (@LogicET4 α)) :=
+  MaximalConsistentSet.nonempty LogicET4.consistent
+
 variable [DecidableEq α]
 
 theorem LogicET4.complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsReflexive → F.IsTransitive → F ⊧ A) :
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicET4 α :=
   (basicCanonicity LogicET4).mem_of_valid
-    (h (basicCanonicity LogicET4).toModel.toFrame inferInstance inferInstance
+    (h (basicCanonicity LogicET4).toModel.toFrame
       (basicCanonicity LogicET4).toModel.Val)
 
 theorem LogicET4.finite_complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsReflexive → F.IsTransitive →
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsReflexive] → [F.IsTransitive] →
       F ⊧ A) :
     A ∈ @LogicET4 α :=
   LogicET4.complete <| by
@@ -51,8 +55,8 @@ theorem LogicET4.finite_complete
     let M : Model κ α := ⟨F, V⟩
     haveI : Finite (FilterEqvQuotient M A.subformulas) := FilterEqvQuotient.finite (by simp)
     apply (transitiveFiltration M A.subformulas).filtration_satisfies _ (by grind) |>.mp
-    exact h (transitiveFiltration M A.subformulas).toModel.toFrame ⟨‹_›⟩
-      transitiveFiltration.isReflexive transitiveFiltration.isTransitive
+    haveI : (transitiveFiltration M A.subformulas).toModel.toFrame.IsFinite := ⟨‹_›⟩
+    exact h (transitiveFiltration M A.subformulas).toModel.toFrame
       (transitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
 
@@ -63,7 +67,7 @@ theorem LogicE4_ssubset_LogicET4 : @LogicE4 ℕ ⊂ LogicET4 := by
     have hT : Axioms.T (.atom 0) ∈ @LogicE4 ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, rfl⟩))
     haveI : (⟨fun _ => Set.univ⟩ : Frame (Fin 1)).IsTransitive := ⟨fun X => by simp [Frame.box]⟩
     have hR := isReflexive_of_valid_axiomT
-      (LogicE4.sound hT (⟨fun _ => Set.univ⟩ : Frame (Fin 1)))
+      (LogicE4.sound (⟨fun _ => Set.univ⟩ : Frame (Fin 1)) hT)
     have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
     simp at this
 
@@ -78,7 +82,7 @@ theorem LogicET_ssubset_LogicET4 : @LogicET ℕ ⊂ LogicET4 := by
       match x with
       | 0 => intro hx; simp_all [Frame.box, F]
       | 1 => intro hx; simp_all [Frame.box, F]⟩
-    have hT := isTransitive_of_valid_axiomFour (LogicET.sound hFour F)
+    have hT := isTransitive_of_valid_axiomFour (LogicET.sound F hFour)
     have h0 : (0 : Fin 2) ∈ F.box Set.univ := by simp [Frame.box, F]
     have h1 := hT.trans Set.univ h0
     simp only [Function.iterate_succ, Function.comp_apply, Function.iterate_zero, id_eq,

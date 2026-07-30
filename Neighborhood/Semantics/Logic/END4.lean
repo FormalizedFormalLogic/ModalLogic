@@ -18,16 +18,17 @@ inclusion of `LogicEND` in `LogicEND4`.
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicEND4.sound (h : A ∈ LogicEND4) {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
-    [F.IsSerial] [F.IsTransitive] : F ⊧ A :=
+theorem LogicEND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
+    [F.IsSerial] [F.IsTransitive] :
+    A ∈ LogicEND4 → F ⊧ A :=
   Hilbert.sound
     (by
       rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩)
       · exact valid_axiomN_of_containsUnit
       · exact valid_axiomD_of_isSerial
-      · exact valid_axiomFour_of_isTransitive) h
+      · exact valid_axiomFour_of_isTransitive)
 
-instance : (@LogicEND4 α).Consistent :=
+theorem LogicEND4.consistent : (@LogicEND4 α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (by
       rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩)
@@ -49,6 +50,6 @@ theorem LogicEND_ssubset_LogicEND4 : @LogicEND ℕ ⊂ LogicEND4 := by
   · intro h
     have hFour : Axioms.Four (.atom 0) ∈ @LogicEND ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
     exact Frame.trivial_containsUnit.not_valid_axiomFour
-      (LogicEND.sound hFour Frame.trivial_containsUnit)
+      (LogicEND.sound Frame.trivial_containsUnit hFour)
 
 end

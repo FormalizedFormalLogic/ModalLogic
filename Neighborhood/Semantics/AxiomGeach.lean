@@ -207,34 +207,34 @@ end
 
 section
 
-variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent]
+variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
 
 namespace Logic
 
 variable {A B : Formula α}
 
-omit [DecidableEq α] [L.HasRE] [L.Consistent] in
+omit [DecidableEq α] [L.HasRE] [Nonempty (MaximalConsistentSet L)] in
 private lemma not_iff_not_of_iff (h : A 🡘 B ∈ L) : ∼A 🡘 ∼B ∈ L :=
   E_intro (contra (C_of_E_mpr h)) (contra (C_of_E_mp h))
 
-omit [DecidableEq α] [L.Consistent] in
+omit [DecidableEq α] [Nonempty (MaximalConsistentSet L)] in
 private lemma dia_congr (h : A 🡘 B ∈ L) : ◇A 🡘 ◇B ∈ L :=
   not_iff_not_of_iff (re (not_iff_not_of_iff h))
 
-omit [DecidableEq α] [L.Consistent] in
+omit [DecidableEq α] [Nonempty (MaximalConsistentSet L)] in
 private lemma multidia_congr (h : A 🡘 B ∈ L) (n : ℕ) : ◇^[n]A 🡘 ◇^[n]B ∈ L := by
   induction n with
   | zero => simpa
   | succ n ih => simpa using dia_congr ih
 
-omit [DecidableEq α] [L.Consistent] in
+omit [DecidableEq α] [Nonempty (MaximalConsistentSet L)] in
 private lemma neg_box_iff_dia_neg (A : Formula α) : ∼(□A) 🡘 ◇(∼A) ∈ L :=
   not_iff_not_of_iff (re (E_intro dni dne))
 
-omit [DecidableEq α] [L.HasRE] [L.Consistent] in
+omit [DecidableEq α] [L.HasRE] [Nonempty (MaximalConsistentSet L)] in
 private lemma neg_dia_iff_box_neg (A : Formula α) : ∼(◇A) 🡘 □(∼A) ∈ L := E_intro dne dni
 
-omit [DecidableEq α] [L.Consistent] in
+omit [DecidableEq α] [Nonempty (MaximalConsistentSet L)] in
 private lemma neg_boxItr_iff_diaItr_neg (n : ℕ) (A : Formula α) :
     ∼(□^[n]A) 🡘 ◇^[n](∼A) ∈ L := by
   induction n with
@@ -243,7 +243,7 @@ private lemma neg_boxItr_iff_diaItr_neg (n : ℕ) (A : Formula α) :
     rw [Formula.multibox_succ, Formula.multidia_succ]
     exact E_trans (neg_box_iff_dia_neg _) (dia_congr ih)
 
-omit [DecidableEq α] [L.Consistent] in
+omit [DecidableEq α] [Nonempty (MaximalConsistentSet L)] in
 private lemma neg_diaItr_iff_boxItr_neg (n : ℕ) (A : Formula α) :
     ∼(◇^[n]A) 🡘 □^[n](∼A) ∈ L := by
   induction n with
@@ -252,7 +252,7 @@ private lemma neg_diaItr_iff_boxItr_neg (n : ℕ) (A : Formula α) :
     rw [Formula.multidia_succ, Formula.multibox_succ]
     exact E_trans (neg_dia_iff_box_neg _) (re ih)
 
-omit [DecidableEq α] [L.Consistent] in
+omit [DecidableEq α] [Nonempty (MaximalConsistentSet L)] in
 /-- The dual of a boxed-then-diamonded negated formula: pure contraposition and `RE`-congruence,
 without any further modal assumption on `L`. -/
 private lemma neg_boxItr_diaItr_neg (i n : ℕ) (A : Formula α) :
@@ -261,7 +261,7 @@ private lemma neg_boxItr_diaItr_neg (i n : ℕ) (A : Formula α) :
     E_trans (neg_diaItr_iff_boxItr_neg n (∼A)) (multire (E_intro dne dni))
   exact E_trans (neg_boxItr_iff_diaItr_neg i _) (multidia_congr h2 i)
 
-omit [DecidableEq α] [L.Consistent] in
+omit [DecidableEq α] [Nonempty (MaximalConsistentSet L)] in
 /-- The dual of a diamonded-then-boxed negated formula, symmetric to
 `neg_boxItr_diaItr_neg`. -/
 private lemma neg_diaItr_boxItr_neg (i n : ℕ) (A : Formula α) :

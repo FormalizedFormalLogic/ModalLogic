@@ -128,8 +128,8 @@ section
 variable [L.Cl] [DecidableEq α]
 
 omit [DecidableEq α] in
-lemma emptyset_consistent [L.Consistent] : Consistent L (∅ : FormulaSet α) := by
-  simpa [Consistent] using iff_provable_empty (L := L) (A := ⊥) |>.not.mpr Logic.not_mem_falsum;
+lemma emptyset_consistent (hL : L.IsConsistent) : Consistent L (∅ : FormulaSet α) := by
+  simpa [Consistent] using iff_provable_empty (L := L) (A := ⊥) |>.not.mpr hL;
 
 omit [DecidableEq α] in
 lemma not_mem_falsum_of_consistent (h : Consistent L T) : ⊥ ∉ T := fun hC => h (by_axm hC)

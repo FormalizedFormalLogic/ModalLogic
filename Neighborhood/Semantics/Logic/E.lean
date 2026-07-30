@@ -61,11 +61,15 @@ lemma Frame.trivial_nontransitive.not_valid_axiomFour :
   fun h => Frame.trivial_nontransitive.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
 
-theorem LogicE.sound (h : A ∈ LogicE) {κ} [Nonempty κ] (F : Frame κ) : F ⊧ A :=
-  Hilbert.sound (fun B hB => by simp at hB) h
+theorem LogicE.sound {κ} [Nonempty κ] (F : Frame κ) :
+    A ∈ LogicE → F ⊧ A :=
+  Hilbert.sound (fun B hB => by simp at hB)
 
-instance : (@LogicE α).Consistent :=
+theorem LogicE.consistent : (@LogicE α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole) (fun B hB => by simp at hB)
+
+instance : Nonempty (MaximalConsistentSet (@LogicE α)) :=
+  MaximalConsistentSet.nonempty LogicE.consistent
 
 variable [DecidableEq α]
 

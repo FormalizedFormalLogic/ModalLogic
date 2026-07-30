@@ -29,7 +29,7 @@ theorem LogicEP_not_subset_LogicED : ¬(@LogicEP ℕ ⊆ LogicED) := by
   intro h
   have hP : (Axioms.P : Formula ℕ) ∈ LogicED := h (ProvableHilbert.axm rfl)
   have hNCE := notContainsEmpty_of_valid_axiomP
-    (LogicED.sound hP Frame.trivial_serial_containsEmpty)
+    (LogicED.sound Frame.trivial_serial_containsEmpty hP)
   simpa using hNCE.not_contains_empty (x := 0)
 
 end

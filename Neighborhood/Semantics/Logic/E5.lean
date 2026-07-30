@@ -18,20 +18,23 @@ variable {α : Type u} {A : Formula α}
 instance : Frame.simple_blackhole.IsEuclidean where
   eucl X x hx := by simp_all [Frame.box, Frame.dia]
 
-theorem LogicE5.sound (h : A ∈ @LogicE5 α) {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
-    F ⊧ A :=
-  Hilbert.sound (fun B hB => by obtain ⟨B, rfl⟩ := hB; exact valid_axiomFive_of_isEuclidean) h
+theorem LogicE5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
+    A ∈ @LogicE5 α → F ⊧ A :=
+  Hilbert.sound (fun B hB => by obtain ⟨B, rfl⟩ := hB; exact valid_axiomFive_of_isEuclidean)
 
-instance : (@LogicE5 α).Consistent :=
+theorem LogicE5.consistent : (@LogicE5 α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (fun B hB => by obtain ⟨B, rfl⟩ := hB; exact valid_axiomFive_of_isEuclidean)
 
+instance : Nonempty (MaximalConsistentSet (@LogicE5 α)) :=
+  MaximalConsistentSet.nonempty LogicE5.consistent
+
 variable [DecidableEq α]
 
-theorem LogicE5.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsEuclidean → F ⊧ A) :
+theorem LogicE5.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsEuclidean] → F ⊧ A) :
     A ∈ @LogicE5 α :=
   (maximalRelativeMaximalCanonicity LogicE5).mem_of_valid
-    (h (maximalRelativeMaximalCanonicity LogicE5).toModel.toFrame inferInstance
+    (h (maximalRelativeMaximalCanonicity LogicE5).toModel.toFrame
       (maximalRelativeMaximalCanonicity LogicE5).toModel.Val)
 
 
@@ -41,7 +44,7 @@ theorem LogicE_ssubset_LogicE5 : @LogicE ℕ ⊂ LogicE5 := by
   · intro h
     have hFive : Axioms.Five (.atom 0) ∈ @LogicE ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
     let F : Frame (Fin 3) := ⟨fun x => {{x}, Set.univ}⟩
-    have hE : F.IsEuclidean := isEuclidean_of_valid_axiomFive (LogicE.sound hFive F)
+    have hE : F.IsEuclidean := isEuclidean_of_valid_axiomFive (LogicE.sound F hFive)
     have hdia : F.dia ({0, 1} : Set (Fin 3)) = {0, 1} := by
       simp only [Set.ext_iff, Frame.dia, Frame.box, F, Set.mem_compl_iff, Set.mem_setOf_eq,
         Set.mem_insert_iff, Set.mem_singleton_iff]

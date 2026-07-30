@@ -16,20 +16,23 @@ Soundness, consistency and completeness of `LogicEN`, the classical modal logic 
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicEN.sound (h : A ∈ @LogicEN α) {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] :
-    F ⊧ A :=
-  Hilbert.sound (fun B hB => by simp only [Set.mem_singleton_iff] at hB; grind) h
+theorem LogicEN.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] :
+    A ∈ @LogicEN α → F ⊧ A :=
+  Hilbert.sound (fun B hB => by simp only [Set.mem_singleton_iff] at hB; grind)
 
-instance : (@LogicEN α).Consistent :=
+theorem LogicEN.consistent : (@LogicEN α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (fun B hB => by simp only [Set.mem_singleton_iff] at hB; grind)
 
+instance : Nonempty (MaximalConsistentSet (@LogicEN α)) :=
+  MaximalConsistentSet.nonempty LogicEN.consistent
+
 variable [DecidableEq α]
 
-theorem LogicEN.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.ContainsUnit → F ⊧ A) :
+theorem LogicEN.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → F ⊧ A) :
     A ∈ @LogicEN α :=
   (basicCanonicity LogicEN).mem_of_valid
-    (h (basicCanonicity LogicEN).toModel.toFrame inferInstance
+    (h (basicCanonicity LogicEN).toModel.toFrame
       (basicCanonicity LogicEN).toModel.Val)
 
 
@@ -38,6 +41,6 @@ theorem LogicE_ssubset_LogicEN : @LogicE ℕ ⊂ LogicEN := by
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm rfl)
-    exact Frame.simple_whitehole.not_valid_axiomN (LogicE.sound hN Frame.simple_whitehole)
+    exact Frame.simple_whitehole.not_valid_axiomN (LogicE.sound Frame.simple_whitehole hN)
 
 end

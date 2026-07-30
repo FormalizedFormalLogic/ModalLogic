@@ -16,35 +16,33 @@ with its finite frame property. Also proves the strict inclusions of `LogicEN4` 
 
 @[expose] public section
 
-variable {α : Type u} {A : Formula α}
+variable {α : Type u} [DecidableEq α] {A : Formula α}
 
+namespace LogicENT4
 
-theorem LogicENT4.sound (h : A ∈ LogicENT4) {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
-    [F.IsReflexive] [F.IsTransitive] : F ⊧ A :=
-  Hilbert.sound
-    (by
-      rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩)
-      · exact valid_axiomN_of_containsUnit
-      · exact valid_axiomT_of_isReflexive
-      · exact valid_axiomFour_of_isTransitive) h
+omit [DecidableEq α] in
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsReflexive] [F.IsTransitive]
+  : A ∈ LogicENT4 → F ⊧ A := Hilbert.sound (by
+  rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩);
+  · exact valid_axiomN_of_containsUnit;
+  · exact valid_axiomT_of_isReflexive;
+  · exact valid_axiomFour_of_isTransitive)
 
-instance : (@LogicENT4 α).Consistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (by
-      rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩)
-      · exact valid_axiomN_of_containsUnit
-      · exact valid_axiomT_of_isReflexive
-      · exact valid_axiomFour_of_isTransitive)
+omit [DecidableEq α] in
+theorem consistent : (@LogicENT4 α).IsConsistent := by
+  by_contra! hC;
+  simpa using LogicENT4.sound Frame.simple_blackhole hC;
 
-variable [DecidableEq α]
+instance : Nonempty (MaximalConsistentSet (@LogicENT4 α)) :=
+  MaximalConsistentSet.nonempty consistent
 
-theorem LogicENT4.complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.ContainsUnit → F.IsReflexive →
-      F.IsTransitive → F ⊧ A) :
-    A ∈ @LogicENT4 α :=
-  (basicCanonicity LogicENT4).mem_of_valid
-    (h (basicCanonicity LogicENT4).toModel.toFrame inferInstance inferInstance inferInstance
-      (basicCanonicity LogicENT4).toModel.Val)
+theorem complete
+  (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) :
+  A ∈ @LogicENT4 α :=
+  (basicCanonicity LogicENT4).mem_of_valid $ h (basicCanonicity LogicENT4).toModel.toFrame (basicCanonicity LogicENT4).toModel.Val
+
+end LogicENT4
+
 
 instance : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
@@ -54,8 +52,8 @@ instance : FormulaSet.IsSubformulaClosed
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
 theorem LogicENT4.finite_complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.ContainsUnit → F.IsReflexive →
-      F.IsTransitive → F ⊧ A) :
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.ContainsUnit] → [F.IsReflexive] →
+      [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicENT4 α :=
   LogicENT4.complete <| by
     intro κ _ F hUnit hRefl hTrans V x
@@ -66,8 +64,8 @@ theorem LogicENT4.finite_complete
     haveI : Finite (FilterEqvQuotient M T) := FilterEqvQuotient.finite (by simp [T])
     haveI := transitiveFiltration.containsUnit (M := M) (T := T) (by simp [T])
     apply (transitiveFiltration M T).filtration_satisfies _ (by simp [T]) |>.mp
-    exact h (transitiveFiltration M T).toModel.toFrame ⟨‹_›⟩ ‹_› transitiveFiltration.isReflexive
-      transitiveFiltration.isTransitive (transitiveFiltration M T).toModel.Val ⟦x⟧
+    haveI : (transitiveFiltration M T).toModel.toFrame.IsFinite := ⟨‹_›⟩
+    exact h (transitiveFiltration M T).toModel.toFrame (transitiveFiltration M T).toModel.Val ⟦x⟧
 
 
 abbrev Frame.trivial_containsUnit_transitive : Frame (Fin 2) := ⟨fun _ => {{(1 : Fin 2)}, Set.univ}⟩
@@ -102,6 +100,8 @@ lemma Frame.trivial_containsUnit_transitive.not_valid_axiomT :
 instance : Frame.simple_whitehole.IsReflexive :=
   ⟨fun X => by simp [Frame.box, Frame.simple_whitehole]⟩
 
+
+
 theorem LogicEN4_ssubset_LogicENT4 : @LogicEN4 ℕ ⊂ LogicENT4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.union_subset_union_left _ Set.subset_union_left)
@@ -109,7 +109,7 @@ theorem LogicEN4_ssubset_LogicENT4 : @LogicEN4 ℕ ⊂ LogicENT4 := by
     have hT : Axioms.T (.atom 0) ∈ (@LogicEN4 ℕ) :=
       h (ProvableHilbert.axm (Or.inl (Or.inr ⟨_, rfl⟩)))
     exact Frame.trivial_containsUnit_transitive.not_valid_axiomT
-      (LogicEN4.sound hT Frame.trivial_containsUnit_transitive)
+      (LogicEN4.sound Frame.trivial_containsUnit_transitive hT)
 
 theorem LogicET4_ssubset_LogicENT4 : @LogicET4 ℕ ⊂ LogicENT4 := by
   constructor
@@ -117,6 +117,6 @@ theorem LogicET4_ssubset_LogicENT4 : @LogicET4 ℕ ⊂ LogicENT4 := by
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ (@LogicET4 ℕ) :=
       h (ProvableHilbert.axm (Or.inl (Or.inl rfl)))
-    exact Frame.simple_whitehole.not_valid_axiomN (LogicET4.sound hN Frame.simple_whitehole)
+    exact Frame.simple_whitehole.not_valid_axiomN (LogicET4.sound Frame.simple_whitehole hN)
 
 end

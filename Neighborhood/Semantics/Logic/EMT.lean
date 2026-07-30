@@ -22,26 +22,30 @@ that are both monotonic and reflexive, and its strict inclusion of `LogicEM`.
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicEMT.sound (h : A ∈ LogicEMT) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
-    [F.IsReflexive] : F ⊧ A :=
+theorem LogicEMT.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+    [F.IsReflexive] :
+    A ∈ LogicEMT → F ⊧ A :=
   Hilbert.sound (by
     rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩)
     · exact valid_axiomM_of_isMonotonic
-    · exact valid_axiomT_of_isReflexive) h
+    · exact valid_axiomT_of_isReflexive)
 
-instance : (@LogicEMT α).Consistent :=
+theorem LogicEMT.consistent : (@LogicEMT α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole) (by
     rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩)
     · exact valid_axiomM_of_isMonotonic
     · exact valid_axiomT_of_isReflexive)
 
+instance : Nonempty (MaximalConsistentSet (@LogicEMT α)) :=
+  MaximalConsistentSet.nonempty LogicEMT.consistent
+
 variable [DecidableEq α]
 
 theorem LogicEMT.complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsReflexive → F ⊧ A) :
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsReflexive] → F ⊧ A) :
     A ∈ @LogicEMT α :=
   (supplementedBasicCanonicity LogicEMT).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMT).toModel.toFrame inferInstance inferInstance
+    (h (supplementedBasicCanonicity LogicEMT).toModel.toFrame
       (supplementedBasicCanonicity LogicEMT).toModel.Val)
 
 
@@ -52,7 +56,7 @@ theorem LogicEM_ssubset_LogicEMT : @LogicEM ℕ ⊂ LogicEMT := by
     have hT : Axioms.T (.atom 0) ∈ @LogicEM ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
     haveI : (⟨fun _ => Set.univ⟩ : Frame (Fin 1)).IsMonotonic := ⟨fun X Y => by simp [Frame.box]⟩
     have hR := isReflexive_of_valid_axiomT
-      (LogicEM.sound hT (⟨fun _ => Set.univ⟩ : Frame (Fin 1)))
+      (LogicEM.sound (⟨fun _ => Set.univ⟩ : Frame (Fin 1)) hT)
     have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
     simp at this
 

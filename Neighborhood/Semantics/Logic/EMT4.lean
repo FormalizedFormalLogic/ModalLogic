@@ -18,42 +18,45 @@ finite frame property. Also proves the strict inclusion of `LogicEMT` in `LogicE
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicEMT4.sound (h : A ∈ LogicEMT4) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
-    [F.IsReflexive] [F.IsTransitive] : F ⊧ A :=
+theorem LogicEMT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+    [F.IsReflexive] [F.IsTransitive] :
+    A ∈ LogicEMT4 → F ⊧ A :=
   Hilbert.sound (by
     rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
     · exact valid_axiomM_of_isMonotonic
     · exact valid_axiomT_of_isReflexive
-    · exact valid_axiomFour_of_isTransitive) h
+    · exact valid_axiomFour_of_isTransitive)
 
-instance : (@LogicEMT4 α).Consistent :=
+theorem LogicEMT4.consistent : (@LogicEMT4 α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole) (by
     rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
     · exact valid_axiomM_of_isMonotonic
     · exact valid_axiomT_of_isReflexive
     · exact valid_axiomFour_of_isTransitive)
 
+instance : Nonempty (MaximalConsistentSet (@LogicEMT4 α)) :=
+  MaximalConsistentSet.nonempty LogicEMT4.consistent
+
 variable [DecidableEq α]
 
 theorem LogicEMT4.complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsReflexive →
-      F.IsTransitive → F ⊧ A) : A ∈ @LogicEMT4 α :=
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsReflexive] →
+      [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMT4 α :=
   (supplementedBasicCanonicity LogicEMT4).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMT4).toModel.toFrame inferInstance inferInstance
-      inferInstance (supplementedBasicCanonicity LogicEMT4).toModel.Val)
+    (h (supplementedBasicCanonicity LogicEMT4).toModel.toFrame
+      (supplementedBasicCanonicity LogicEMT4).toModel.Val)
 
 theorem LogicEMT4.finite_complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsMonotonic → F.IsReflexive →
-      F.IsTransitive → F ⊧ A) : A ∈ @LogicEMT4 α :=
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] → [F.IsReflexive] →
+      [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMT4 α :=
   LogicEMT4.complete <| by
     intro κ _ F hMono hRefl hTrans V x
     let M : Model κ α := ⟨F, V⟩
     haveI : Finite (FilterEqvQuotient M A.subformulas) := FilterEqvQuotient.finite (by simp)
     apply (supplementedTransitiveFiltration M A.subformulas).filtration_satisfies _
       (by grind) |>.mp
-    exact h (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame ⟨‹_›⟩
-      supplementedTransitiveFiltration.isMonotonic supplementedTransitiveFiltration.isReflexive
-      supplementedTransitiveFiltration.isTransitive
+    haveI : (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame.IsFinite := ⟨‹_›⟩
+    exact h (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame
       (supplementedTransitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
 
@@ -63,6 +66,6 @@ theorem LogicEMT_ssubset_LogicEMT4 : @LogicEMT ℕ ⊂ LogicEMT4 := by
   · intro h
     have hFour : Axioms.Four (.atom 0) ∈ (@LogicEMT ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
     exact Frame.trivial_nontransitive.not_valid_axiomFour
-      (LogicEMT.sound hFour Frame.trivial_nontransitive)
+      (LogicEMT.sound Frame.trivial_nontransitive hFour)
 
 end

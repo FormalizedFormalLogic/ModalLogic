@@ -41,8 +41,8 @@ theorem not_mem_of_not_valid (hAx : ∀ B ∈ Ax, F ⊧ B) (h : ¬F ⊧ A) : A �
   fun hA => h (sound hAx hA)
 
 /-- `Hilbert Ax` is consistent whenever some frame validates every axiom of `Ax`. -/
-theorem consistent_of (hAx : ∀ B ∈ Ax, F ⊧ B) : (Hilbert Ax).Consistent :=
-  ⟨not_mem_of_not_valid hAx (Frame.Validate.not_bot F)⟩
+theorem consistent_of (hAx : ∀ B ∈ Ax, F ⊧ B) : (Hilbert Ax).IsConsistent :=
+  not_mem_of_not_valid hAx (Frame.Validate.not_bot (F := F))
 
 end Hilbert
 

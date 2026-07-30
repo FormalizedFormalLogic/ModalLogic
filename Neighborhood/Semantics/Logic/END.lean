@@ -22,28 +22,32 @@ frames containing their unit. Also its strict inclusions of `LogicED` and `Logic
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicEND.sound (h : A ∈ LogicEND) {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
-    [F.IsSerial] : F ⊧ A :=
+theorem LogicEND.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
+    [F.IsSerial] :
+    A ∈ LogicEND → F ⊧ A :=
   Hilbert.sound
     (fun _ hB => by
       rcases hB with rfl | ⟨_, rfl⟩
       · exact valid_axiomN_of_containsUnit
-      · exact valid_axiomD_of_isSerial) h
+      · exact valid_axiomD_of_isSerial)
 
-instance : (@LogicEND α).Consistent :=
+theorem LogicEND.consistent : (@LogicEND α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (fun _ hB => by
       rcases hB with rfl | ⟨_, rfl⟩
       · exact valid_axiomN_of_containsUnit
       · exact valid_axiomD_of_isSerial)
 
+instance : Nonempty (MaximalConsistentSet (@LogicEND α)) :=
+  MaximalConsistentSet.nonempty LogicEND.consistent
+
 variable [DecidableEq α]
 
 theorem LogicEND.complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.ContainsUnit → F.IsSerial → F ⊧ A) :
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsSerial] → F ⊧ A) :
     A ∈ @LogicEND α :=
   (basicCanonicity LogicEND).mem_of_valid
-    (h (basicCanonicity LogicEND).toModel.toFrame inferInstance inferInstance
+    (h (basicCanonicity LogicEND).toModel.toFrame
       (basicCanonicity LogicEND).toModel.Val)
 
 
@@ -55,7 +59,7 @@ theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ @LogicED ℕ := h (ProvableHilbert.axm (Or.inl rfl))
-    exact Frame.simple_whitehole.not_valid_axiomN (LogicED.sound hN Frame.simple_whitehole)
+    exact Frame.simple_whitehole.not_valid_axiomN (LogicED.sound Frame.simple_whitehole hN)
 
 instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.NotContainsEmpty where
   not_contains_empty x hx := by

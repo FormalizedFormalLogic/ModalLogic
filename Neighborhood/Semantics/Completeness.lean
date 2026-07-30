@@ -111,19 +111,19 @@ namespace Canonicity
 
 attribute [simp] def_𝒩 def_V
 
-variable [DecidableEq α] [L.Cl] [L.Consistent] {𝓒 : Canonicity L}
+variable [DecidableEq α] [L.Cl] [Nonempty (MaximalConsistentSet L)] {𝓒 : Canonicity L}
 
 /-- The canonical model of `𝓒`. -/
 def toModel (𝓒 : Canonicity L) : Model (MaximalConsistentSet L) α where
   𝒩 := 𝓒.𝒩
   Val := 𝓒.V
 
-omit [DecidableEq α] in
+omit [DecidableEq α] [L.Cl] in
 @[simp]
 lemma box_proofset : 𝓒.toModel.box (proofset L A) = proofset L (□A) := by
   ext Ω; exact (𝓒.def_𝒩 Ω A).symm
 
-omit [DecidableEq α] in
+omit [DecidableEq α] [L.Cl] in
 @[simp]
 lemma boxItr_proofset {n : ℕ} : 𝓒.toModel.box^[n] (proofset L A) = proofset L (□^[n]A) := by
   induction n generalizing A with
@@ -141,7 +141,7 @@ lemma diaItr_proofset {n : ℕ} : 𝓒.toModel.dia^[n] (proofset L A) = proofset
   | zero => simp
   | succ n ih => simp only [Function.iterate_succ, Function.comp_apply, dia_proofset, ih]
 
-omit [DecidableEq α] in
+omit [DecidableEq α] [L.Cl] in
 lemma iff_box {Ω : MaximalConsistentSet L} : □A ∈ Ω ↔ Ω ∈ 𝓒.toModel.box (proofset L A) :=
   𝓒.def_𝒩 Ω A
 
@@ -186,7 +186,7 @@ def basicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] : Canonicit
 
 namespace basicCanonicity
 
-variable [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent] {X : Proofset L}
+variable [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)] {X : Proofset L}
   {Ω : MaximalConsistentSet L}
 
 lemma iff_mem_box_exists_fml :
@@ -225,7 +225,7 @@ def relativeBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE]
 
 namespace relativeBasicCanonicity
 
-variable [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent]
+variable [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
   {P : MaximalConsistentSet L → Set (Proofset L)} {X : Proofset L} {Ω : MaximalConsistentSet L}
 
 protected lemma iff_mem_box :
@@ -245,7 +245,7 @@ abbrev minimalRelativeMaximalCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [
     Canonicity L :=
   relativeBasicCanonicity L (fun _ _ => False)
 
-lemma minimalRelativeMaximalCanonicity.iff_minimal [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent]
+lemma minimalRelativeMaximalCanonicity.iff_minimal [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
     {X : Proofset L} {Ω : MaximalConsistentSet L} :
     Ω ∈ (minimalRelativeMaximalCanonicity L).toModel.box X ↔
       Ω ∈ (basicCanonicity L).toModel.box X := by

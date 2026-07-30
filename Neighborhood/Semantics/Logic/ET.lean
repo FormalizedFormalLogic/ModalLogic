@@ -19,8 +19,9 @@ the reflexivity axiom `T`, with respect to the reflexive neighborhood frames
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicET.sound (h : A ∈ LogicET) {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] : F ⊧ A :=
-  Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomT_of_isReflexive) h
+theorem LogicET.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] :
+    A ∈ LogicET → F ⊧ A :=
+  Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomT_of_isReflexive)
 
 instance : Frame.simple_blackhole.IsReflexive where
   refl X x hx := by
@@ -28,16 +29,19 @@ instance : Frame.simple_blackhole.IsReflexive where
     subst hx
     trivial
 
-instance : (@LogicET α).Consistent :=
+theorem LogicET.consistent : (@LogicET α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomT_of_isReflexive)
 
+instance : Nonempty (MaximalConsistentSet (@LogicET α)) :=
+  MaximalConsistentSet.nonempty LogicET.consistent
+
 variable [DecidableEq α]
 
-theorem LogicET.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsReflexive → F ⊧ A) :
+theorem LogicET.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → F ⊧ A) :
     A ∈ @LogicET α :=
   (basicCanonicity LogicET).mem_of_valid
-    (h (basicCanonicity LogicET).toModel.toFrame inferInstance
+    (h (basicCanonicity LogicET).toModel.toFrame
       (basicCanonicity LogicET).toModel.Val)
 
 
@@ -50,7 +54,7 @@ theorem LogicED_ssubset_LogicET : @LogicED ℕ ⊂ LogicET := by
     have hT : Axioms.T (.atom 0) ∈ @LogicED ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
     haveI : (⟨fun _ => {∅}⟩ : Frame (Fin 1)).IsSerial :=
       ⟨fun X x hx => by simp_all [Frame.dia, Frame.box]⟩
-    have hR := isReflexive_of_valid_axiomT (LogicED.sound hT (⟨fun _ => {∅}⟩ : Frame (Fin 1)))
+    have hR := isReflexive_of_valid_axiomT (LogicED.sound (⟨fun _ => {∅}⟩ : Frame (Fin 1)) hT)
     have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
     simp at this
 

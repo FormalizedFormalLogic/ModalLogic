@@ -106,7 +106,7 @@ variable {α : Type u} {L : Logic α}
 that boxed formulas of `L` correspond exactly to the neighborhoods of the supplemented canonical
 model. -/
 abbrev supplementedBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] [L.HasAxiomM]
-    [L.Consistent] : Canonicity L where
+    [Nonempty (MaximalConsistentSet L)] : Canonicity L where
   𝒩 := (basicCanonicity L).toModel.supplementation.𝒩
   def_𝒩 := by
     intro Ω A
@@ -118,7 +118,7 @@ abbrev supplementedBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.Has
   V a := proofset L (.atom a)
   def_V _ := rfl
 
-variable [DecidableEq α] [L.Cl] [L.HasRE] [L.HasAxiomM] [L.Consistent]
+variable [DecidableEq α] [L.Cl] [L.HasRE] [L.HasAxiomM] [Nonempty (MaximalConsistentSet L)]
 
 instance : (supplementedBasicCanonicity L).toModel.IsMonotonic :=
   Frame.supplementation.isMonotonic (F := (basicCanonicity L).toModel.toFrame)
@@ -139,7 +139,7 @@ instance [L.HasAxiomFour] : (supplementedBasicCanonicity L).toModel.IsTransitive
 `M` and a compatibility condition `hP` ensuring that every extra neighborhood `Y` witnessing a
 non-proofset `X` at `Ω` (with `Y ⊆ X`) forces `□A ∈ Ω` whenever `Y ⊆ proofset L A`. -/
 def supplementedRelativeCanonicity (L : Logic α)
-    [L.Cl] [L.HasRE] [L.HasAxiomM] [L.Consistent]
+    [L.Cl] [L.HasRE] [L.HasAxiomM] [Nonempty (MaximalConsistentSet L)]
     (P : MaximalConsistentSet L → Set (Proofset L))
     (hP : ∀ Y : Proofset L, Y.IsNonproofset → ∀ Ω, Y ∈ P Ω → ∀ A, Y ⊆ proofset L A → □A ∈ Ω) :
     Canonicity L where

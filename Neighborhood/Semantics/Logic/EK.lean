@@ -15,11 +15,11 @@ strict inclusion of `LogicE`.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEK.sound (h : A ∈ LogicEK) {κ} [Nonempty κ] (F : Frame κ) [F.HasPropertyK] :
-    F ⊧ A :=
-  Hilbert.sound (fun B hB => by obtain ⟨A, B, rfl⟩ := hB; exact valid_axiomK_of_hasPropertyK) h
+theorem LogicEK.sound {κ} [Nonempty κ] (F : Frame κ) [F.HasPropertyK] :
+    A ∈ LogicEK → F ⊧ A :=
+  Hilbert.sound (fun B hB => by obtain ⟨A, B, rfl⟩ := hB; exact valid_axiomK_of_hasPropertyK)
 
-instance : (@LogicEK α).Consistent :=
+theorem LogicEK.consistent : (@LogicEK α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (fun B hB => by obtain ⟨A, B, rfl⟩ := hB; exact valid_axiomK_of_hasPropertyK)
 
@@ -38,7 +38,7 @@ theorem LogicE_ssubset_LogicEK : @LogicE ℕ ⊂ LogicEK := by
         | 0 => {0}
         | 1 => {0, 1}
         | _ => Set.univ⟩
-    have h0 := LogicE.sound hK M.toFrame M.Val 0
+    have h0 := LogicE.sound M.toFrame hK M.Val 0
     simp [M, Forces, Frame.box, Set.ext_iff] at h0
     revert h0
     decide

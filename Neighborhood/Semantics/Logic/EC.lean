@@ -18,20 +18,24 @@ inclusion in `LogicE`.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEC.sound (h : A ∈ LogicEC) {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] : F ⊧ A :=
+theorem LogicEC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] :
+    A ∈ LogicEC → F ⊧ A :=
   Hilbert.sound (fun _ hB => by
-    obtain ⟨_, _, rfl⟩ := hB; exact valid_axiomC_of_isRegular) h
+    obtain ⟨_, _, rfl⟩ := hB; exact valid_axiomC_of_isRegular)
 
-instance : (@LogicEC α).Consistent :=
+theorem LogicEC.consistent : (@LogicEC α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole) (fun _ hB => by
     obtain ⟨_, _, rfl⟩ := hB; exact valid_axiomC_of_isRegular)
 
+instance : Nonempty (MaximalConsistentSet (@LogicEC α)) :=
+  MaximalConsistentSet.nonempty LogicEC.consistent
+
 variable [DecidableEq α]
 
-theorem LogicEC.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsRegular → F ⊧ A) :
+theorem LogicEC.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegular] → F ⊧ A) :
     A ∈ @LogicEC α :=
   (basicCanonicity LogicEC).mem_of_valid
-    (h (basicCanonicity LogicEC).toModel.toFrame inferInstance
+    (h (basicCanonicity LogicEC).toModel.toFrame
       (basicCanonicity LogicEC).toModel.Val)
 
 
@@ -48,7 +52,7 @@ theorem LogicE_ssubset_LogicEC : (@LogicE ℕ) ⊂ LogicEC := by
         | 0 => {0}
         | 1 => {1}
         | _ => Set.univ⟩
-    have h0 := LogicE.sound hC M.toFrame M.Val 0
+    have h0 := LogicE.sound M.toFrame hC M.Val 0
     simp [M, Forces, Frame.box, Set.ext_iff] at h0
 
 end

@@ -26,10 +26,11 @@ instance : Frame.simple_blackhole.IsSymmetric := by
     simp at hx
   simp [Frame.box, Frame.dia, hne]
 
-theorem LogicEB.sound (h : A ∈ LogicEB) {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] : F ⊧ A :=
-  Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomB_of_isSymmetric) h
+theorem LogicEB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] :
+    A ∈ LogicEB → F ⊧ A :=
+  Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomB_of_isSymmetric)
 
-instance : (@LogicEB α).Consistent :=
+theorem LogicEB.consistent : (@LogicEB α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomB_of_isSymmetric)
 
@@ -39,7 +40,7 @@ theorem LogicE_ssubset_LogicEB : (@LogicE ℕ) ⊂ LogicEB := by
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
     have hB : Axioms.B (.atom 0) ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, rfl⟩)
-    have hS : Frame.simple_whitehole.IsSymmetric := isSymmetric_of_valid_axiomB (LogicE.sound hB _)
+    have hS : Frame.simple_whitehole.IsSymmetric := isSymmetric_of_valid_axiomB (LogicE.sound _ hB)
     have := hS.symm {()} (show () ∈ _ by simp)
     simp [Frame.box] at this
 

@@ -18,16 +18,17 @@ unit, together with its finite frame property.
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicEMCN4.sound (h : A ∈ LogicEMCN4) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
-    [F.IsRegular] [F.ContainsUnit] [F.IsTransitive] : F ⊧ A :=
+theorem LogicEMCN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+    [F.IsRegular] [F.ContainsUnit] [F.IsTransitive] :
+    A ∈ LogicEMCN4 → F ⊧ A :=
   Hilbert.sound (by
     rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩)
     · exact valid_axiomM_of_isMonotonic
     · exact valid_axiomC_of_isRegular
     · exact valid_axiomN_of_containsUnit
-    · exact valid_axiomFour_of_isTransitive) h
+    · exact valid_axiomFour_of_isTransitive)
 
-instance : (@LogicEMCN4 α).Consistent :=
+theorem LogicEMCN4.consistent : (@LogicEMCN4 α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole) (by
     rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩)
     · exact valid_axiomM_of_isMonotonic
@@ -35,14 +36,17 @@ instance : (@LogicEMCN4 α).Consistent :=
     · exact valid_axiomN_of_containsUnit
     · exact valid_axiomFour_of_isTransitive)
 
+instance : Nonempty (MaximalConsistentSet (@LogicEMCN4 α)) :=
+  MaximalConsistentSet.nonempty LogicEMCN4.consistent
+
 variable [DecidableEq α]
 
 theorem LogicEMCN4.complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsRegular →
-      F.ContainsUnit → F.IsTransitive → F ⊧ A) : A ∈ @LogicEMCN4 α :=
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] →
+      [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMCN4 α :=
   (supplementedBasicCanonicity LogicEMCN4).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMCN4).toModel.toFrame inferInstance inferInstance
-      inferInstance inferInstance (supplementedBasicCanonicity LogicEMCN4).toModel.Val)
+    (h (supplementedBasicCanonicity LogicEMCN4).toModel.toFrame
+      (supplementedBasicCanonicity LogicEMCN4).toModel.Val)
 
 instance : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
@@ -52,20 +56,21 @@ instance : FormulaSet.IsSubformulaClosed
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
 theorem LogicEMCN4.finite_complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsMonotonic → F.IsRegular →
-      F.ContainsUnit → F.IsTransitive → F ⊧ A) : A ∈ @LogicEMCN4 α :=
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] → [F.IsRegular] →
+      [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMCN4 α :=
   LogicEMCN4.complete <| by
     intro κ _ F hMono hReg hUnit hTrans V x
     let M : Model κ α := ⟨F, V⟩
     let T : FormulaSet α := (A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas
-    haveI : Finite (FilterEqvQuotient M T) := FilterEqvQuotient.finite (by simp [T])
+    have hfin : T.Finite := by simp [T]
+    haveI : Finite (FilterEqvQuotient M T) := FilterEqvQuotient.finite hfin
     haveI := quasiFilteringTransitiveFiltration.containsUnit (M := M) (T := T)
-      (T_finite := by simp [T]) (by simp [T])
-    apply (quasiFilteringTransitiveFiltration M T (by simp [T])).filtration_satisfies _
+      (T_finite := hfin) (by simp [T])
+    apply (quasiFilteringTransitiveFiltration M T hfin).filtration_satisfies _
       (by simp [T]) |>.mp
-    exact h (quasiFilteringTransitiveFiltration M T (by simp [T])).toModel.toFrame ⟨‹_›⟩
-      quasiFilteringTransitiveFiltration.isMonotonic quasiFilteringTransitiveFiltration.isRegular
-      ‹_› quasiFilteringTransitiveFiltration.isTransitive
-      (quasiFilteringTransitiveFiltration M T (by simp [T])).toModel.Val ⟦x⟧
+    haveI : (quasiFilteringTransitiveFiltration M T hfin).toModel.toFrame.IsFinite :=
+      ⟨‹_›⟩
+    exact h (quasiFilteringTransitiveFiltration M T hfin).toModel.toFrame
+      (quasiFilteringTransitiveFiltration M T hfin).toModel.Val ⟦x⟧
 
 end

@@ -164,7 +164,8 @@ theorem Frame.Validate.mdp (hAB : F ⊧ A 🡒 B) (hA : F ⊧ A) : F ⊧ B := fu
 
 theorem Frame.Validate.re (h : F ⊧ A 🡘 B) : F ⊧ □A 🡘 □B := fun V => Model.Validate.re (h V)
 
-theorem Frame.Validate.not_bot (F : Frame κ) : ¬F ⊧ (⊥ : Formula α) := by
+@[simp, grind .]
+theorem Frame.Validate.not_bot {F : Frame κ} : ¬F ⊧ (⊥ : Formula α) := by
   intro h
   have := h (fun _ => (∅ : Set κ)) (Classical.arbitrary κ)
   simp [Forces] at this

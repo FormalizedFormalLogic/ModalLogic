@@ -24,26 +24,30 @@ that are both monotonic and regular, and its strict inclusion of `LogicEM`, `Log
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicEMC.sound (h : A ∈ LogicEMC) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
-    [F.IsRegular] : F ⊧ A :=
+theorem LogicEMC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+    [F.IsRegular] :
+    A ∈ LogicEMC → F ⊧ A :=
   Hilbert.sound (by
     rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩)
     · exact valid_axiomM_of_isMonotonic
-    · exact valid_axiomC_of_isRegular) h
+    · exact valid_axiomC_of_isRegular)
 
-instance : (@LogicEMC α).Consistent :=
+theorem LogicEMC.consistent : (@LogicEMC α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole) (by
     rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩)
     · exact valid_axiomM_of_isMonotonic
     · exact valid_axiomC_of_isRegular)
 
+instance : Nonempty (MaximalConsistentSet (@LogicEMC α)) :=
+  MaximalConsistentSet.nonempty LogicEMC.consistent
+
 variable [DecidableEq α]
 
 theorem LogicEMC.complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsRegular → F ⊧ A) :
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] → F ⊧ A) :
     A ∈ @LogicEMC α :=
   (supplementedBasicCanonicity LogicEMC).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMC).toModel.toFrame inferInstance inferInstance
+    (h (supplementedBasicCanonicity LogicEMC).toModel.toFrame
       (supplementedBasicCanonicity LogicEMC).toModel.Val)
 
 
@@ -79,7 +83,7 @@ theorem LogicEM_ssubset_LogicEMC : @LogicEM ℕ ⊂ LogicEMC := by
   · intro h
     have hC : Axioms.C (.atom 0) (.atom 1) ∈ @LogicEM ℕ :=
       h (ProvableHilbert.axm (Or.inr ⟨_, _, rfl⟩))
-    exact Frame.counterframe_axiomC₁.not_valid_axiomC (LogicEM.sound hC Frame.counterframe_axiomC₁)
+    exact Frame.counterframe_axiomC₁.not_valid_axiomC (LogicEM.sound Frame.counterframe_axiomC₁ hC)
 
 
 abbrev Frame.counterframe_axiomM₁ : Frame (Fin 3) :=
@@ -108,7 +112,7 @@ theorem LogicEC_ssubset_LogicEMC : @LogicEC ℕ ⊂ LogicEMC := by
   · intro h
     have hM : Axioms.M (.atom 0) (.atom 1) ∈ @LogicEC ℕ :=
       h (ProvableHilbert.axm (Or.inl ⟨_, _, rfl⟩))
-    exact Frame.counterframe_axiomM₁.not_valid_axiomM (LogicEC.sound hM Frame.counterframe_axiomM₁)
+    exact Frame.counterframe_axiomM₁.not_valid_axiomM (LogicEC.sound Frame.counterframe_axiomM₁ hM)
 
 
 abbrev Frame.EK_counterframe_for_M_and_C : Frame (Fin 4) := ⟨fun _ => {{0, 1}, {0, 2}}⟩
@@ -151,6 +155,6 @@ theorem LogicEK_ssubset_LogicEMC : @LogicEK ℕ ⊂ LogicEMC := by
     have hC : Axioms.C (.atom 0) (.atom 1) ∈ @LogicEK ℕ :=
       h (ProvableHilbert.axm (Or.inr ⟨_, _, rfl⟩))
     exact Frame.EK_counterframe_for_M_and_C.not_valid_axiomC
-      (LogicEK.sound hC Frame.EK_counterframe_for_M_and_C)
+      (LogicEK.sound Frame.EK_counterframe_for_M_and_C hC)
 
 end

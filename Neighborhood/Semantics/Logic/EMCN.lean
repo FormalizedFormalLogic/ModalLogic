@@ -21,30 +21,34 @@ comparison of two logics lives in the stronger logic's module).
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicEMCN.sound (h : A ∈ LogicEMCN) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
-    [F.IsRegular] [F.ContainsUnit] : F ⊧ A :=
+theorem LogicEMCN.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+    [F.IsRegular] [F.ContainsUnit] :
+    A ∈ LogicEMCN → F ⊧ A :=
   Hilbert.sound (by
     rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl)
     · exact valid_axiomM_of_isMonotonic
     · exact valid_axiomC_of_isRegular
-    · exact valid_axiomN_of_containsUnit) h
+    · exact valid_axiomN_of_containsUnit)
 
-instance : (@LogicEMCN α).Consistent :=
+theorem LogicEMCN.consistent : (@LogicEMCN α).IsConsistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole) (by
     rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl)
     · exact valid_axiomM_of_isMonotonic
     · exact valid_axiomC_of_isRegular
     · exact valid_axiomN_of_containsUnit)
 
+instance : Nonempty (MaximalConsistentSet (@LogicEMCN α)) :=
+  MaximalConsistentSet.nonempty LogicEMCN.consistent
+
 variable [DecidableEq α]
 
 theorem LogicEMCN.complete
-    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsRegular →
-      F.ContainsUnit → F ⊧ A) :
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] →
+      [F.ContainsUnit] → F ⊧ A) :
     A ∈ @LogicEMCN α :=
   (supplementedBasicCanonicity LogicEMCN).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMCN).toModel.toFrame inferInstance inferInstance
-      inferInstance (supplementedBasicCanonicity LogicEMCN).toModel.Val)
+    (h (supplementedBasicCanonicity LogicEMCN).toModel.toFrame
+      (supplementedBasicCanonicity LogicEMCN).toModel.Val)
 
 
 abbrev Frame.ECN_counterframe_for_M : Frame (Fin 2) := ⟨fun _ => {∅, Set.univ}⟩
@@ -78,7 +82,7 @@ theorem LogicECN_ssubset_LogicEMCN : @LogicECN ℕ ⊂ LogicEMCN := by
     have hM : Axioms.M (.atom 0) (.atom 1) ∈ @LogicECN ℕ :=
       h (ProvableHilbert.axm (Or.inl (Or.inl ⟨_, _, rfl⟩)))
     exact Frame.ECN_counterframe_for_M.not_valid_axiomM
-      (LogicECN.sound hM Frame.ECN_counterframe_for_M)
+      (LogicECN.sound Frame.ECN_counterframe_for_M hM)
 
 
 theorem LogicEMC_ssubset_LogicEMCN : @LogicEMC ℕ ⊂ LogicEMCN := by
@@ -86,7 +90,7 @@ theorem LogicEMC_ssubset_LogicEMCN : @LogicEMC ℕ ⊂ LogicEMCN := by
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ @LogicEMC ℕ := h (ProvableHilbert.axm (Or.inr rfl))
-    exact Frame.simple_whitehole.not_valid_axiomN (LogicEMC.sound hN Frame.simple_whitehole)
+    exact Frame.simple_whitehole.not_valid_axiomN (LogicEMC.sound Frame.simple_whitehole hN)
 
 
 instance : Frame.counterframe_axiomC₁.ContainsUnit := ⟨by
@@ -104,6 +108,6 @@ theorem LogicEMN_ssubset_LogicEMCN : @LogicEMN ℕ ⊂ LogicEMCN := by
     have hC : Axioms.C (.atom 0) (.atom 1) ∈ @LogicEMN ℕ :=
       h (ProvableHilbert.axm (Or.inl (Or.inr ⟨_, _, rfl⟩)))
     exact Frame.counterframe_axiomC₁.not_valid_axiomC
-      (LogicEMN.sound hC Frame.counterframe_axiomC₁)
+      (LogicEMN.sound Frame.counterframe_axiomC₁ hC)
 
 end

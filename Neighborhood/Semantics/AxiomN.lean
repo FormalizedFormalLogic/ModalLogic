@@ -43,7 +43,7 @@ theorem containsUnit_of_valid_axiomN (h : F ⊧ (Axioms.N : Formula ℕ)) : F.Co
 
 section
 
-variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent]
+variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
 
 instance [L.HasAxiomN] : (basicCanonicity L).toModel.ContainsUnit := by
   constructor

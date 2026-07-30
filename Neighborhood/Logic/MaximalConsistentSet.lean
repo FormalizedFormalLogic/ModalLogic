@@ -81,8 +81,8 @@ lemma exists_of_consistent (hT : Consistent L T) : ∃ Ω : MaximalConsistentSet
 
 alias lindenbaum := exists_of_consistent
 
-instance [L.Consistent] : Nonempty (MaximalConsistentSet L) :=
-  ⟨lindenbaum (T := ∅) emptyset_consistent |>.choose⟩
+theorem nonempty (hL : L.IsConsistent) : Nonempty (MaximalConsistentSet L) :=
+  ⟨lindenbaum (T := ∅) (emptyset_consistent hL) |>.choose⟩
 
 variable [DecidableEq α]
 

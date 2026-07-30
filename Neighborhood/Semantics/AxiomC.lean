@@ -69,7 +69,7 @@ theorem isRegular_of_valid_axiomC (h : ∀ A B : Formula ℕ, F ⊧ Axioms.C A B
 
 section
 
-variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent]
+variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
 
 instance [L.HasAxiomC] : (basicCanonicity L).toModel.IsRegular := by
   constructor
