@@ -9,6 +9,9 @@ public import Neighborhood.Logic.Basic
 public import Neighborhood.Logic.Calculus
 public import Neighborhood.Logic.Cl
 public import Neighborhood.Logic.Context
+public import Neighborhood.Logic.Equiv.ECNP_ECND
+public import Neighborhood.Logic.Equiv.EMCNP_EMCND
+public import Neighborhood.Logic.Equiv.EMCP_EMCD
 public import Neighborhood.Logic.MaximalConsistentSet
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomGeach
