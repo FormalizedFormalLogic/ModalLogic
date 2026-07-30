@@ -63,8 +63,11 @@ theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by
     exact Frame.simple_whitehole.not_valid_axiomN (LogicED.sound hN Frame.simple_whitehole)
 
 /-- A serial frame containing its unit has no world with the empty set as a neighborhood. -/
-instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.NotContainsEmpty := by
-  sorry
+instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.NotContainsEmpty where
+  not_contains_empty x hx := by
+    have hbox : x ∈ F.box (∅ : Set κ) := hx
+    have hd := F.serial (X := (∅ : Set κ)) hbox
+    simp [Frame.dia, F.contains_unit] at hd
 
 theorem LogicEP_ssubset_LogicEND : @LogicEP ℕ ⊂ LogicEND := by
   sorry
