@@ -360,11 +360,15 @@ lemma iff_mem_B :
 
 protected instance isTransitive : (transitiveFiltration M T).toModel.IsTransitive := by
   constructor;
+  -- State the goal at the type `Set (FilterEqvQuotient M T)`, so that the `simp` set matches.
+  show ∀ X : Set (FilterEqvQuotient M T),
+    (transitiveFiltration M T).B X ⊆ (transitiveFiltration M T).B ((transitiveFiltration M T).B X);
   intro X;
   by_cases h : (minimalFiltration M T).B X = ∅;
-  . simp_all [transitiveFiltration, Filtration.toModel, Frame.mk_ℬ, Frame.box];
+  . -- The minimal part of `B X` is empty, so only the closure part survives and it is idempotent.
+    simp only [transitiveFiltration, h, Set.empty_union];
+    split_ifs with hc <;> simp [h, hc];
   . suffices (minimalFiltration M T).B X = (transitiveFiltration M T).B X by calc
-      _ = (transitiveFiltration M T).B X := by simp;
       _ ⊆ (minimalFiltration M T).B X ∪ (minimalFiltration M T).B^[2] X := by tauto_set
       _ ⊆ (transitiveFiltration M T).B ((minimalFiltration M T).B X) := by
         rintro W (hW | hW);
@@ -373,7 +377,7 @@ protected instance isTransitive : (transitiveFiltration M T).toModel.IsTransitiv
           . assumption;
           . grind;
         . left; assumption;
-      _ = (transitiveFiltration M T).toModel.box^[2] X := by simp [this]
+      _ = (transitiveFiltration M T).B ((transitiveFiltration M T).B X) := by rw [this]
     ext W;
     constructor;
     . tauto;
