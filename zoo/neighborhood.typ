@@ -10,9 +10,22 @@
 
 #let edges = json("./neighborhood.json")
 
-// An edge {from: L1, to: L2} means L1 ⊊ L2; draw the arrow from the stronger
-// logic to the weaker one, laid out right-to-left (weakest logic rightmost).
-#let arrows = edges.map(((from, to)) => strfmt("\"{}\" -> \"{}\"", to, from))
+// An edge {from: L1, to: L2, type: t} means L1 ⊊ L2 (t = "ssub", solid),
+// L1 ⊆ L2 (t = "sub", dashed) or L1 = L2 (t = "eq", arrowless double line);
+// draw the arrow from the stronger logic to the weaker one, laid out
+// right-to-left (weakest logic rightmost).
+#let arrows = edges.map(((from, to, type)) => {
+  if type == "ssub" {
+    strfmt("\"{}\" -> \"{}\"", to, from)
+  } else if type == "sub" {
+    strfmt("\"{}\" -> \"{}\" [style=dashed]", to, from)
+  } else if type == "eq" {
+    (
+      strfmt("\"{}\" -> \"{}\" [color=\"black:white:black\" arrowhead=\"none\"]", to, from),
+      strfmt("{{rank = same; \"{}\"; \"{}\";}}", to, from),
+    ).join("\n")
+  }
+})
 
 // Every vertex is named `Logic<X>`; label it 𝐗 (bold upright), dropping the prefix.
 #let vertices = (edges.map(((from, to)) => from) + edges.map(((from, to)) => to)).dedup()
