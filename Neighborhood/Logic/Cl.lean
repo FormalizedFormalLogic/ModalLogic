@@ -7,10 +7,10 @@ public import Neighborhood.Logic.Basic
 # Classical propositional reasoning inside a logic
 
 Closure of a logic under classical propositional reasoning, presented by modus ponens together
-with the axiom schemes `ImplyK`, `ImplyS`, `DNE`, `AndElim₁`, `AndElim₂`, `AndIntro`,
-`OrIntro₁`, `OrIntro₂` and `OrElim`, and the toolkit of propositional inferences derived from it.
-Since negation, conjunction, disjunction and biimplication are abbreviations for implications
-and `⊥`, the toolkit is stated directly in terms of them.
+with the classical propositional axiom schemes `implyK`, `implyS`, `dne`, `andElim₁`,
+`andElim₂`, `andIntro`, `orIntro₁`, `orIntro₂` and `orElim`, and the toolkit of propositional
+inferences derived from it. Since negation, conjunction, disjunction and biimplication are
+abbreviations for implications and `⊥`, the toolkit is stated directly in terms of them.
 -/
 
 @[expose] public section
@@ -26,15 +26,15 @@ variable {L : Logic α} {A A₁ A₂ B B₁ B₂ C D : Formula α}
 /-- A logic closed under classical propositional reasoning. -/
 class Cl (L : Logic α) where
   mdp : ∀ {A B : Formula α}, A 🡒 B ∈ L → A ∈ L → B ∈ L
-  implyK : ∀ (A B : Formula α), Axioms.ImplyK A B ∈ L
-  implyS : ∀ (A B C : Formula α), Axioms.ImplyS A B C ∈ L
-  dne : ∀ (A : Formula α), Axioms.DNE A ∈ L
-  andElim₁ : ∀ (A B : Formula α), Axioms.AndElim₁ A B ∈ L
-  andElim₂ : ∀ (A B : Formula α), Axioms.AndElim₂ A B ∈ L
-  andIntro : ∀ (A B : Formula α), Axioms.AndIntro A B ∈ L
-  orIntro₁ : ∀ (A B : Formula α), Axioms.OrIntro₁ A B ∈ L
-  orIntro₂ : ∀ (A B : Formula α), Axioms.OrIntro₂ A B ∈ L
-  orElim : ∀ (A B C : Formula α), Axioms.OrElim A B C ∈ L
+  implyK : ∀ (A B : Formula α), A 🡒 B 🡒 A ∈ L
+  implyS : ∀ (A B C : Formula α), (A 🡒 B 🡒 C) 🡒 (A 🡒 B) 🡒 A 🡒 C ∈ L
+  dne : ∀ (A : Formula α), ∼∼A 🡒 A ∈ L
+  andElim₁ : ∀ (A B : Formula α), A ⋏ B 🡒 A ∈ L
+  andElim₂ : ∀ (A B : Formula α), A ⋏ B 🡒 B ∈ L
+  andIntro : ∀ (A B : Formula α), A 🡒 B 🡒 A ⋏ B ∈ L
+  orIntro₁ : ∀ (A B : Formula α), A 🡒 A ⋎ B ∈ L
+  orIntro₂ : ∀ (A B : Formula α), B 🡒 A ⋎ B ∈ L
+  orElim : ∀ (A B C : Formula α), (A 🡒 C) 🡒 (B 🡒 C) 🡒 (A ⋎ B 🡒 C) ∈ L
 
 section
 

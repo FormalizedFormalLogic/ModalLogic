@@ -5,35 +5,14 @@ public import Neighborhood.Formula.Basic
 /-!
 # Axiom schemes
 
-Axiom schemes of classical propositional logic and of modal logic, as reducible
-abbreviations for the corresponding formulas.
+Axiom schemes of modal logic, as reducible abbreviations for the corresponding formulas.
 -/
 
 @[expose] public section
 
 namespace Axioms
 
-variable {α : Type u} (A B C : Formula α)
-
-protected abbrev ImplyK := A 🡒 B 🡒 A
-
-protected abbrev ImplyS := (A 🡒 B 🡒 C) 🡒 (A 🡒 B) 🡒 A 🡒 C
-
-protected abbrev ElimContra := (∼B 🡒 ∼A) 🡒 (A 🡒 B)
-
-protected abbrev DNE := ∼∼A 🡒 A
-
-protected abbrev AndElim₁ := A ⋏ B 🡒 A
-
-protected abbrev AndElim₂ := A ⋏ B 🡒 B
-
-protected abbrev AndIntro := A 🡒 B 🡒 A ⋏ B
-
-protected abbrev OrIntro₁ := A 🡒 A ⋎ B
-
-protected abbrev OrIntro₂ := B 🡒 A ⋎ B
-
-protected abbrev OrElim := (A 🡒 C) 🡒 (B 🡒 C) 🡒 (A ⋎ B 🡒 C)
+variable {α : Type u} (A B : Formula α)
 
 protected abbrev K := □(A 🡒 B) 🡒 □A 🡒 □B
 

@@ -10,8 +10,8 @@ throughout the provability logic development:
 
 * `ProofHilbert Ax A`, the `Type`-valued derivation tree of `A` from an axiom set `Ax`, closed
   under modus ponens and the congruence rule for `□`, together with the propositional axiom
-  schemes `ImplyK`, `ImplyS`, `DNE`, `AndElim₁`, `AndElim₂`, `AndIntro`, `OrIntro₁`, `OrIntro₂`
-  and `OrElim`. Since `Ax` is a set of formulas rather than a set of schemes taken up to
+  schemes `implyK`, `implyS`, `dne`, `andElim₁`, `andElim₂`, `andIntro`, `orIntro₁`, `orIntro₂`
+  and `orElim`. Since `Ax` is a set of formulas rather than a set of schemes taken up to
   substitution, `axm` requires no substitution step: it is instantiated by supplying `Ax` with
   every instance of a scheme directly (e.g. `{Axioms.M A B | (A) (B)}`).
 * `ProvableHilbert Ax A`, the `Prop`-valued truncation `Nonempty (ProofHilbert Ax A)`.
@@ -29,15 +29,15 @@ inductive ProofHilbert (Ax : FormulaSet α) : Formula α → Type u
   | axm {A} : A ∈ Ax → ProofHilbert Ax A
   | mdp {A B} : ProofHilbert Ax (A 🡒 B) → ProofHilbert Ax A → ProofHilbert Ax B
   | re {A B} : ProofHilbert Ax (A 🡘 B) → ProofHilbert Ax (□A 🡘 □B)
-  | implyK {A B} : ProofHilbert Ax (Axioms.ImplyK A B)
-  | implyS {A B C} : ProofHilbert Ax (Axioms.ImplyS A B C)
-  | dne {A} : ProofHilbert Ax (Axioms.DNE A)
-  | andElim₁ {A B} : ProofHilbert Ax (Axioms.AndElim₁ A B)
-  | andElim₂ {A B} : ProofHilbert Ax (Axioms.AndElim₂ A B)
-  | andIntro {A B} : ProofHilbert Ax (Axioms.AndIntro A B)
-  | orIntro₁ {A B} : ProofHilbert Ax (Axioms.OrIntro₁ A B)
-  | orIntro₂ {A B} : ProofHilbert Ax (Axioms.OrIntro₂ A B)
-  | orElim {A B C} : ProofHilbert Ax (Axioms.OrElim A B C)
+  | implyK {A B} : ProofHilbert Ax (A 🡒 B 🡒 A)
+  | implyS {A B C} : ProofHilbert Ax ((A 🡒 B 🡒 C) 🡒 (A 🡒 B) 🡒 A 🡒 C)
+  | dne {A} : ProofHilbert Ax (∼∼A 🡒 A)
+  | andElim₁ {A B} : ProofHilbert Ax (A ⋏ B 🡒 A)
+  | andElim₂ {A B} : ProofHilbert Ax (A ⋏ B 🡒 B)
+  | andIntro {A B} : ProofHilbert Ax (A 🡒 B 🡒 A ⋏ B)
+  | orIntro₁ {A B} : ProofHilbert Ax (A 🡒 A ⋎ B)
+  | orIntro₂ {A B} : ProofHilbert Ax (B 🡒 A ⋎ B)
+  | orElim {A B C} : ProofHilbert Ax ((A 🡒 C) 🡒 (B 🡒 C) 🡒 (A ⋎ B 🡒 C))
 
 @[inherit_doc] notation:45 "⊢ʰ[" Ax "]! " A:46 => ProofHilbert Ax A
 
@@ -54,15 +54,15 @@ namespace ProvableHilbert
 @[grind =>] lemma mdp : ⊢ʰ[Ax] (A 🡒 B) → ⊢ʰ[Ax] A → ⊢ʰ[Ax] B :=
   fun ⟨h₁⟩ ⟨h₂⟩ => ⟨ProofHilbert.mdp h₁ h₂⟩
 @[grind <=] lemma re : ⊢ʰ[Ax] (A 🡘 B) → ⊢ʰ[Ax] (□A 🡘 □B) := fun ⟨h⟩ => ⟨ProofHilbert.re h⟩
-@[simp, grind .] lemma implyK (A B) : ⊢ʰ[Ax] Axioms.ImplyK A B := ⟨ProofHilbert.implyK⟩
-@[simp, grind .] lemma implyS (A B C) : ⊢ʰ[Ax] Axioms.ImplyS A B C := ⟨ProofHilbert.implyS⟩
-@[simp, grind .] lemma dne (A) : ⊢ʰ[Ax] Axioms.DNE A := ⟨ProofHilbert.dne⟩
-@[simp, grind .] lemma andElim₁ (A B) : ⊢ʰ[Ax] Axioms.AndElim₁ A B := ⟨ProofHilbert.andElim₁⟩
-@[simp, grind .] lemma andElim₂ (A B) : ⊢ʰ[Ax] Axioms.AndElim₂ A B := ⟨ProofHilbert.andElim₂⟩
-@[simp, grind .] lemma andIntro (A B) : ⊢ʰ[Ax] Axioms.AndIntro A B := ⟨ProofHilbert.andIntro⟩
-@[simp, grind .] lemma orIntro₁ (A B) : ⊢ʰ[Ax] Axioms.OrIntro₁ A B := ⟨ProofHilbert.orIntro₁⟩
-@[simp, grind .] lemma orIntro₂ (A B) : ⊢ʰ[Ax] Axioms.OrIntro₂ A B := ⟨ProofHilbert.orIntro₂⟩
-@[simp, grind .] lemma orElim (A B C) : ⊢ʰ[Ax] Axioms.OrElim A B C := ⟨ProofHilbert.orElim⟩
+@[simp, grind .] lemma implyK (A B) : ⊢ʰ[Ax] (A 🡒 B 🡒 A) := ⟨ProofHilbert.implyK⟩
+@[simp, grind .] lemma implyS (A B C) : ⊢ʰ[Ax] ((A 🡒 B 🡒 C) 🡒 (A 🡒 B) 🡒 A 🡒 C) := ⟨ProofHilbert.implyS⟩
+@[simp, grind .] lemma dne (A) : ⊢ʰ[Ax] (∼∼A 🡒 A) := ⟨ProofHilbert.dne⟩
+@[simp, grind .] lemma andElim₁ (A B) : ⊢ʰ[Ax] (A ⋏ B 🡒 A) := ⟨ProofHilbert.andElim₁⟩
+@[simp, grind .] lemma andElim₂ (A B) : ⊢ʰ[Ax] (A ⋏ B 🡒 B) := ⟨ProofHilbert.andElim₂⟩
+@[simp, grind .] lemma andIntro (A B) : ⊢ʰ[Ax] (A 🡒 B 🡒 A ⋏ B) := ⟨ProofHilbert.andIntro⟩
+@[simp, grind .] lemma orIntro₁ (A B) : ⊢ʰ[Ax] (A 🡒 A ⋎ B) := ⟨ProofHilbert.orIntro₁⟩
+@[simp, grind .] lemma orIntro₂ (A B) : ⊢ʰ[Ax] (B 🡒 A ⋎ B) := ⟨ProofHilbert.orIntro₂⟩
+@[simp, grind .] lemma orElim (A B C) : ⊢ʰ[Ax] ((A 🡒 C) 🡒 (B 🡒 C) 🡒 (A ⋎ B 🡒 C)) := ⟨ProofHilbert.orElim⟩
 
 -- None of `axm`, `mdp`, `re`, `implyK`, `implyS`, `dne`, `andElim₁`, `andElim₂`, `andIntro`,
 -- `orIntro₁`, `orIntro₂`, `orElim` is referenced by name inside `rintro A ⟨h⟩; induction h <;>
