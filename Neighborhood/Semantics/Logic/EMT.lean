@@ -2,8 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.ET
-import Neighborhood.Semantics.Example.Frame1_2
-import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame1_3
 
 /-!
 # The neighborhood logic `LogicEMT`
