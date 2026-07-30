@@ -32,8 +32,7 @@ lemma filterEquiv.equivalence (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaCl
   refl := by intro x φ _; rfl;
   symm := by intro x y h φ hp; exact h _ hp |>.symm;
   trans := by
-    intro x y z exy eyz;
-    intro φ hp;
+    intro x y z exy eyz φ hp;
     exact Iff.trans (exy φ hp) (eyz φ hp)
 
 def FilterEqvSetoid (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaClosed] : Setoid (M.World) := ⟨filterEquiv M T, filterEquiv.equivalence M T⟩
@@ -122,7 +121,7 @@ lemma compl_truthset (hφ : φ ∈ T) : (【(M φ)ᶜ】 : Set (FilterEqvQuotien
   constructor;
   . rintro ⟨x, hx, rfl⟩ y hy;
     apply FilterEqvQuotient.iff_eq.not.mpr;
-    push_neg;
+    push Not;
     use φ;
     constructor;
     . assumption;
@@ -148,7 +147,7 @@ lemma eq_original_truthset_of_eq (hφ : φ ∈ T) (hψ : ψ ∈ T) (h : (【M φ
 lemma eq_univ : (【Set.univ】  : Set (FilterEqvQuotient M T)) = Set.univ := by
   ext X;
   obtain ⟨x, rfl⟩ := Quotient.exists_rep X;
-  suffices ∃ y, (FilterEqvSetoid M T) y x by simpa [toFilterEquivSet];
+  suffices ∃ y, (FilterEqvSetoid M T) y x by simp [toFilterEquivSet];
   use x;
 
 @[simp, grind =]
@@ -269,7 +268,7 @@ def minimalFiltration (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaClosed] : 
     . suffices M φ = M hψ.choose by simp [←this];
       have := hψ.choose_spec;
       apply toFilterEquivSet.eq_original_truthset_of_eq (by grind) (by grind) this.2;
-    . push_neg at hψ;
+    . push Not at hψ;
       have := hψ _ hφ;
       contradiction;
   V := λ a => 【M (.atom a)】
@@ -291,7 +290,7 @@ lemma minimalFiltration.iff_mem_B : W ∈ (minimalFiltration M T).B X ↔ ∃ φ
     split_ifs with h;
     . suffices W ∈ 【M.truthset (□h.choose)】 by exact this;
       exact (minimalFiltration M T).mem_box_in_out h.choose_spec.1 |>.mp $ h.choose_spec.2 ▸ (minimalFiltration M T).mem_box_in_out hφ |>.mpr hW;
-    . push_neg at h;
+    . push Not at h;
       have := h φ hφ;
       contradiction;
 
@@ -321,7 +320,7 @@ def transitiveFiltration (M : Model) [M.IsTransitive] (T : FormulaSet ℕ) [T.Is
       split_ifs with h;
       . have := h.choose_spec;
         rwa [←(toFilterEquivSet.eq_original_truthset_of_eq (by grind) (by grind) this.2)];
-      . push_neg at h;
+      . push Not at h;
         have := h _ hφ;
         contradiction;
   V := λ a => 【M (.atom a)】
