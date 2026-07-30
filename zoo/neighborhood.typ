@@ -21,7 +21,7 @@
   labels.insert(v, Logic(v.trim("Logic", at: start)))
 }
 
-#figure(caption: [Neighborhood Logic Zoo], numbering: none)[
+#figure(caption: [Modal logic characterlized neighborhood semantics zoo], numbering: none)[
   #raw-render(
     raw(
       "

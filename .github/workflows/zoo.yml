@@ -1,0 +1,65 @@
+name: Zoo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  zoo:
+    name: Generate and deploy zoo
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: extractions/setup-just@v4
+      - uses: typst-community/setup-typst@v4
+      - name: Setup elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # Restore the project cache saved by the CI workflow (read-only here).
+      - name: Get Mathlib cache
+        run: lake exe cache get
+      - name: Restore cache
+        uses: actions/cache/restore@v6
+        with:
+          path: .lake/ModalLogic-x86_64-unknown-linux-gnu.tar.gz
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}
+      - name: Unpack project cache
+        if: hashFiles('.lake/ModalLogic-x86_64-unknown-linux-gnu.tar.gz') != ''
+        run: lake unpack
+
+      - name: Build
+        run: lake build
+
+      - name: Generate zoo
+        run: just zoo
+
+      - name: Collect pages artifact
+        run: |
+          mkdir -p _site
+          cp zoo/neighborhood.png zoo/neighborhood.json _site/
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
