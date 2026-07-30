@@ -20,6 +20,11 @@ mk-all:
     lake exe mk_all --module --lib ModalLogicArchive
     lake exe mk_all --module --lib Neighborhood
 
+# Regenerate the Neighborhood logic zoo as zoo/neighborhood.{json,png} (requires typst)
+zoo:
+    lake env lean zoo/Extract.lean
+    typst compile --root . zoo/neighborhood.typ zoo/neighborhood.png
+
 # Count lines of Lean source per project library (requires cloc)
 cloc:
     cloc --include-lang=Lean Fin74/ Neighborhood/ ModalLogicArchive/
