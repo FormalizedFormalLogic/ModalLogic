@@ -44,4 +44,22 @@ instance : frame_2_172.IsSerial where
     rcases hx with rfl | rfl <;> fin_cases x <;>
       simp [Frame.box, Frame.dia, frame_2_172, Set.ext_iff]
 
+instance : frame_2_172.IsMonotonic where
+  mono X Y w hw := by
+    fin_cases w <;>
+      simp only [Frame.box, frame_2_172, Set.mem_setOf_eq, Set.mem_insert_iff,
+        Set.mem_singleton_iff] at hw ⊢ <;>
+      rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
+      simp_all [Set.ext_iff]
+
+instance : frame_2_172.IsRegular where
+  regular X Y w hw := by
+    fin_cases w <;>
+      simp only [Frame.box, frame_2_172, Set.mem_setOf_eq, Set.mem_insert_iff,
+        Set.mem_singleton_iff] at hw ⊢ <;>
+      rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
+      simp_all [Set.ext_iff]
+
 end
