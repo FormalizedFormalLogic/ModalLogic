@@ -17,8 +17,10 @@ mk-all:
     # lakefile.toml, which has no root file/directory and makes mk_all abort; list the
     # libraries that actually have sources instead (extend when a new project lib is added).
     lake exe mk_all --module --lib Fin74
-    lake exe mk_all --module --lib Neighborhood
     lake exe mk_all --module --lib ModalLogicArchive
+    # `Neighborhood` is omitted while its Foundation-free core is being built: the core
+    # redefines `LO.Modal.Formula`, so a root importing both it and the Foundation-based
+    # modules fails to elaborate. Re-add the line once nothing imports `Foundation.*`.
 
 # Count lines of Lean source per project library (requires cloc)
 cloc:
