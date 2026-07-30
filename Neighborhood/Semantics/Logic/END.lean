@@ -70,6 +70,11 @@ instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.Not
     simp [Frame.dia, F.contains_unit] at hd
 
 theorem LogicEP_ssubset_LogicEND : @LogicEP ℕ ⊂ LogicEND := by
-  sorry
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro _ rfl
+    exact LogicEND.complete (fun _ _ _ => valid_axiomP_of_notContainsEmpty)
+  · intro h
+    exact LogicEP.not_mem_axiomD (a := 0) (h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩)))
 
 end
