@@ -109,35 +109,37 @@ lemma CCC!_of_C!_left (h : ψ 🡒 φ ∈ L) : (φ 🡒 χ) 🡒 (ψ 🡒 χ) �
 omit [L.Cl] in
 @[grind =] lemma N!_iff_CO! : ∼φ ∈ L ↔ φ 🡒 ⊥ ∈ L := Iff.rfl
 
-@[simp] lemma efq! : ⊥ 🡒 φ ∈ L := sorry
+@[simp] lemma efq! : ⊥ 🡒 φ ∈ L := C!_trans implyK! dne!
 
-@[grind ⇒] lemma of_O! (h : (⊥ : Formula) ∈ L) : φ ∈ L := sorry
+@[grind ⇒] lemma of_O! (h : (⊥ : Formula) ∈ L) : φ ∈ L := efq! ⨀ h
 
-@[simp] lemma NO! : ∼(⊥ : Formula) ∈ L := sorry
+@[simp] lemma NO! : ∼(⊥ : Formula) ∈ L := C!_id
 
-@[grind ⇒] lemma of_NN! (h : ∼∼φ ∈ L) : φ ∈ L := sorry
+@[grind ⇒] lemma of_NN! (h : ∼∼φ ∈ L) : φ ∈ L := dne! ⨀ h
 
-@[simp] lemma dni! : φ 🡒 ∼∼φ ∈ L := sorry
+@[simp] lemma dni! : φ 🡒 ∼∼φ ∈ L := C!_swap C!_id
 
-lemma dni'! (h : φ ∈ L) : ∼∼φ ∈ L := sorry
+lemma dni'! (h : φ ∈ L) : ∼∼φ ∈ L := dni! ⨀ h
 
-@[simp] lemma CCNN! : (φ 🡒 ψ) 🡒 (∼ψ 🡒 ∼φ) ∈ L := sorry
+@[simp] lemma CCNN! : (φ 🡒 ψ) 🡒 (∼ψ 🡒 ∼φ) ∈ L := CCC!
 
-@[simp] lemma elimContra! : (∼ψ 🡒 ∼φ) 🡒 (φ 🡒 ψ) ∈ L := sorry
+@[simp]
+lemma elimContra! : (∼ψ 🡒 ∼φ) 🡒 (φ 🡒 ψ) ∈ L :=
+  CCC!_of_C!_right (CCC!_of_C!_right dne!) ⨀ (CCC!_of_C!_right CCCCC! ⨀ C!_id)
 
-lemma contra! (h : φ 🡒 ψ ∈ L) : ∼ψ 🡒 ∼φ ∈ L := sorry
+lemma contra! (h : φ 🡒 ψ ∈ L) : ∼ψ 🡒 ∼φ ∈ L := CCNN! ⨀ h
 
-lemma explode! (h₁ : φ ∈ L) (h₂ : ∼φ ∈ L) : ψ ∈ L := sorry
+lemma neg_mdp (hφ : ∼φ ∈ L) (h : φ ∈ L) : (⊥ : Formula) ∈ L := hφ ⨀ h
 
-lemma neg_mdp (hφ : ∼φ ∈ L) (h : φ ∈ L) : (⊥ : Formula) ∈ L := sorry
+lemma explode! (h₁ : φ ∈ L) (h₂ : ∼φ ∈ L) : ψ ∈ L := of_O! <| neg_mdp h₂ h₁
 
-lemma C_of_N (h : ∼φ ∈ L) : φ 🡒 ψ ∈ L := sorry
+lemma C_of_N (h : ∼φ ∈ L) : φ 🡒 ψ ∈ L := C!_trans h efq!
 
-lemma CN!_of_CN!_left (h : ∼φ 🡒 ψ ∈ L) : ∼ψ 🡒 φ ∈ L := sorry
+lemma CN!_of_CN!_left (h : ∼φ 🡒 ψ ∈ L) : ∼ψ 🡒 φ ∈ L := C!_trans (contra! h) dne!
 
-lemma CN!_of_CN!_right (h : φ 🡒 ∼ψ ∈ L) : ψ 🡒 ∼φ ∈ L := sorry
+lemma CN!_of_CN!_right (h : φ 🡒 ∼ψ ∈ L) : ψ 🡒 ∼φ ∈ L := C!_trans dni! (contra! h)
 
-lemma C!_of_CNN! (h : ∼φ 🡒 ∼ψ ∈ L) : ψ 🡒 φ ∈ L := sorry
+lemma C!_of_CNN! (h : ∼φ 🡒 ∼ψ ∈ L) : ψ 🡒 φ ∈ L := elimContra! ⨀ h
 
 /-! ### Conjunction -/
 
