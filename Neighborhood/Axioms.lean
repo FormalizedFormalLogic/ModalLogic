@@ -21,6 +21,20 @@ protected abbrev ImplyS := (φ 🡒 ψ 🡒 χ) 🡒 (φ 🡒 ψ) 🡒 φ 🡒 �
 
 protected abbrev ElimContra := (∼ψ 🡒 ∼φ) 🡒 (φ 🡒 ψ)
 
+protected abbrev DNE := ∼∼φ 🡒 φ
+
+protected abbrev AndElim₁ := φ ⋏ ψ 🡒 φ
+
+protected abbrev AndElim₂ := φ ⋏ ψ 🡒 ψ
+
+protected abbrev AndIntro := φ 🡒 ψ 🡒 φ ⋏ ψ
+
+protected abbrev OrIntro₁ := φ 🡒 φ ⋎ ψ
+
+protected abbrev OrIntro₂ := ψ 🡒 φ ⋎ ψ
+
+protected abbrev OrElim := (φ 🡒 χ) 🡒 (ψ 🡒 χ) 🡒 (φ ⋎ ψ 🡒 χ)
+
 protected abbrev K := □(φ 🡒 ψ) 🡒 □φ 🡒 □ψ
 
 protected abbrev M := □(φ ⋏ ψ) 🡒 (□φ ⋏ □ψ)
