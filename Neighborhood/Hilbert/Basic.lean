@@ -112,57 +112,135 @@ instance : (Hilbert Ax).Cl where
 
 instance : (Hilbert Ax).HasRE where re := Hilbert.re
 
+@[simp] lemma iff_mem : Hilbert Ax φ ↔ φ ∈ Hilbert Ax := Iff.rfl
+
 @[grind ←] lemma axm! (s : Substitution) (h : φ ∈ Ax) : φ⟦s⟧ ∈ Hilbert Ax := axm s h
 
 @[grind ←] lemma axm'! (h : φ ∈ Ax) : φ ∈ Hilbert Ax := by simpa using axm! .id h
 
 /-- Provability in a Hilbert system is closed under substitution. -/
-lemma subst_mem (h : φ ∈ Hilbert Ax) : φ⟦s⟧ ∈ Hilbert Ax := sorry
+lemma subst_mem (h : φ ∈ Hilbert Ax) : φ⟦s⟧ ∈ Hilbert Ax := by
+  induction h with
+  | @axm _ s' hφ => simpa using axm (s := s'.comp s) hφ;
+  | mdp _ _ ih₁ ih₂ => exact mdp ih₁ ih₂;
+  | re _ ih => exact re ih;
+  | _ => simp;
 
 /-- Induction on a proof in a Hilbert system. -/
-protected lemma rec! {motive : Formula → Prop}
-    (axm : ∀ {φ} (s : Substitution), φ ∈ Ax → motive (φ⟦s⟧))
-    (mdp : ∀ {φ ψ}, φ 🡒 ψ ∈ Hilbert Ax → φ ∈ Hilbert Ax → motive (φ 🡒 ψ) → motive φ → motive ψ)
-    (re : ∀ {φ ψ}, φ 🡘 ψ ∈ Hilbert Ax → motive (φ 🡘 ψ) → motive (□φ 🡘 □ψ))
-    (implyK : ∀ φ ψ, motive (Axioms.ImplyK φ ψ))
-    (implyS : ∀ φ ψ χ, motive (Axioms.ImplyS φ ψ χ))
-    (dne : ∀ φ, motive (Axioms.DNE φ))
-    (andElim₁ : ∀ φ ψ, motive (Axioms.AndElim₁ φ ψ))
-    (andElim₂ : ∀ φ ψ, motive (Axioms.AndElim₂ φ ψ))
-    (andIntro : ∀ φ ψ, motive (Axioms.AndIntro φ ψ))
-    (orIntro₁ : ∀ φ ψ, motive (Axioms.OrIntro₁ φ ψ))
-    (orIntro₂ : ∀ φ ψ, motive (Axioms.OrIntro₂ φ ψ))
-    (orElim : ∀ φ ψ χ, motive (Axioms.OrElim φ ψ χ))
-    (h : φ ∈ Hilbert Ax) : motive φ := sorry
+protected lemma rec! {motive : (φ : Formula) → φ ∈ Hilbert Ax → Prop}
+    (axm : ∀ {φ} (s : Substitution), (h : φ ∈ Ax) → motive (φ⟦s⟧) (axm! s h))
+    (mdp : ∀ {φ ψ}, {h₁ : φ 🡒 ψ ∈ Hilbert Ax} → {h₂ : φ ∈ Hilbert Ax} →
+      motive (φ 🡒 ψ) h₁ → motive φ h₂ → motive ψ (h₁ ⨀ h₂))
+    (re : ∀ {φ ψ}, {h : φ 🡘 ψ ∈ Hilbert Ax} → motive (φ 🡘 ψ) h → motive (□φ 🡘 □ψ) (re! h))
+    (implyK : ∀ φ ψ, motive (Axioms.ImplyK φ ψ) (by simp))
+    (implyS : ∀ φ ψ χ, motive (Axioms.ImplyS φ ψ χ) (by simp))
+    (dne : ∀ φ, motive (Axioms.DNE φ) (by simp))
+    (andElim₁ : ∀ φ ψ, motive (Axioms.AndElim₁ φ ψ) (by simp))
+    (andElim₂ : ∀ φ ψ, motive (Axioms.AndElim₂ φ ψ) (by simp))
+    (andIntro : ∀ φ ψ, motive (Axioms.AndIntro φ ψ) (by simp))
+    (orIntro₁ : ∀ φ ψ, motive (Axioms.OrIntro₁ φ ψ) (by simp))
+    (orIntro₂ : ∀ φ ψ, motive (Axioms.OrIntro₂ φ ψ) (by simp))
+    (orElim : ∀ φ ψ χ, motive (Axioms.OrElim φ ψ χ) (by simp)) :
+    ∀ {φ}, (h : φ ∈ Hilbert Ax) → motive φ h := by
+  intro φ h;
+  induction h with
+  | axm s hφ => exact axm s hφ;
+  | mdp _ _ ih₁ ih₂ => exact mdp ih₁ ih₂;
+  | re _ ih => exact re ih;
+  | implyK => apply implyK;
+  | implyS => apply implyS;
+  | dne => apply dne;
+  | andElim₁ => apply andElim₁;
+  | andElim₂ => apply andElim₂;
+  | andIntro => apply andIntro;
+  | orIntro₁ => apply orIntro₁;
+  | orIntro₂ => apply orIntro₂;
+  | orElim => apply orElim;
 
 /-- If every scheme of `Ax₁` is provable in `Hilbert Ax₂`, then `Hilbert Ax₁` is contained in
 `Hilbert Ax₂`. -/
-lemma subset_of_provable_axioms (hs : Ax₁ ⊆ Hilbert Ax₂) : Hilbert Ax₁ ⊆ Hilbert Ax₂ := sorry
+lemma subset_of_provable_axioms (hs : Ax₁ ⊆ Hilbert Ax₂) : Hilbert Ax₁ ⊆ Hilbert Ax₂ := by
+  intro φ h;
+  induction h using Hilbert.rec! with
+  | axm s hφ => exact subst_mem (hs hφ);
+  | mdp ih₁ ih₂ => exact ih₁ ⨀ ih₂;
+  | re ih => exact re! ih;
+  | _ => simp;
 
 lemma subset_of_subset_axioms (h : Ax₁ ⊆ Ax₂) : Hilbert Ax₁ ⊆ Hilbert Ax₂ :=
   subset_of_provable_axioms fun _ hφ => axm'! (h hφ)
 
 open Axiom
 
-instance instHasAxiomM [Ax.HasM] : (Hilbert Ax).HasAxiomM := sorry
+instance instHasAxiomM [Ax.HasM] : (Hilbert Ax).HasAxiomM where
+  M φ ψ := by
+    have h := Hilbert.axm
+      (φ := Axioms.M (.atom (HasM.p Ax)) (.atom (HasM.q Ax)))
+      (s := fun b => if HasM.p Ax = b then φ else if HasM.q Ax = b then ψ else .atom b)
+      HasM.mem_M;
+    simpa [HasM.ne_pq] using h;
 
-instance instHasAxiomC [Ax.HasC] : (Hilbert Ax).HasAxiomC := sorry
+instance instHasAxiomC [Ax.HasC] : (Hilbert Ax).HasAxiomC where
+  C φ ψ := by
+    have h := Hilbert.axm
+      (φ := Axioms.C (.atom (HasC.p Ax)) (.atom (HasC.q Ax)))
+      (s := fun b => if HasC.p Ax = b then φ else if HasC.q Ax = b then ψ else .atom b)
+      HasC.mem_C;
+    simpa [HasC.ne_pq] using h;
 
-instance instHasAxiomN [Ax.HasN] : (Hilbert Ax).HasAxiomN := sorry
+instance instHasAxiomN [Ax.HasN] : (Hilbert Ax).HasAxiomN where
+  N := by simpa using Hilbert.axm (φ := Axioms.N) (s := .id) HasN.mem_N
 
-instance instHasAxiomK [Ax.HasK] : (Hilbert Ax).HasAxiomK := sorry
+instance instHasAxiomK [Ax.HasK] : (Hilbert Ax).HasAxiomK where
+  K φ ψ := by
+    have h := Hilbert.axm
+      (φ := Axioms.K (.atom (HasK.p Ax)) (.atom (HasK.q Ax)))
+      (s := fun b => if HasK.p Ax = b then φ else if HasK.q Ax = b then ψ else .atom b)
+      HasK.mem_K;
+    simpa [HasK.ne_pq] using h;
 
-instance instHasAxiomT [Ax.HasT] : (Hilbert Ax).HasAxiomT := sorry
+instance instHasAxiomT [Ax.HasT] : (Hilbert Ax).HasAxiomT where
+  T φ := by
+    have h := Hilbert.axm
+      (φ := Axioms.T (.atom (HasT.p Ax)))
+      (s := fun b => if HasT.p Ax = b then φ else .atom b)
+      HasT.mem_T;
+    simpa using h;
 
-instance instHasAxiomB [Ax.HasB] : (Hilbert Ax).HasAxiomB := sorry
+instance instHasAxiomB [Ax.HasB] : (Hilbert Ax).HasAxiomB where
+  B φ := by
+    have h := Hilbert.axm
+      (φ := Axioms.B (.atom (HasB.p Ax)))
+      (s := fun b => if HasB.p Ax = b then φ else .atom b)
+      HasB.mem_B;
+    simpa using h;
 
-instance instHasAxiomD [Ax.HasD] : (Hilbert Ax).HasAxiomD := sorry
+instance instHasAxiomD [Ax.HasD] : (Hilbert Ax).HasAxiomD where
+  D φ := by
+    have h := Hilbert.axm
+      (φ := Axioms.D (.atom (HasD.p Ax)))
+      (s := fun b => if HasD.p Ax = b then φ else .atom b)
+      HasD.mem_D;
+    simpa using h;
 
-instance instHasAxiomP [Ax.HasP] : (Hilbert Ax).HasAxiomP := sorry
+instance instHasAxiomP [Ax.HasP] : (Hilbert Ax).HasAxiomP where
+  P := by simpa using Hilbert.axm (φ := Axioms.P) (s := .id) HasP.mem_P
 
-instance instHasAxiomFour [Ax.HasFour] : (Hilbert Ax).HasAxiomFour := sorry
+instance instHasAxiomFour [Ax.HasFour] : (Hilbert Ax).HasAxiomFour where
+  Four φ := by
+    have h := Hilbert.axm
+      (φ := Axioms.Four (.atom (HasFour.p Ax)))
+      (s := fun b => if HasFour.p Ax = b then φ else .atom b)
+      HasFour.mem_Four;
+    simpa using h;
 
-instance instHasAxiomFive [Ax.HasFive] : (Hilbert Ax).HasAxiomFive := sorry
+instance instHasAxiomFive [Ax.HasFive] : (Hilbert Ax).HasAxiomFive where
+  Five φ := by
+    have h := Hilbert.axm
+      (φ := Axioms.Five (.atom (HasFive.p Ax)))
+      (s := fun b => if HasFive.p Ax = b then φ else .atom b)
+      HasFive.mem_Five;
+    simpa using h;
 
 end Hilbert
 
