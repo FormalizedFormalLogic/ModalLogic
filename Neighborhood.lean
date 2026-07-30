@@ -11,8 +11,11 @@ public import Neighborhood.Logic.Cl
 public import Neighborhood.Logic.Context
 public import Neighborhood.Logic.Equiv.EB4_ENB4
 public import Neighborhood.Logic.Equiv.ECT5_ECNT5
+public import Neighborhood.Logic.Equiv.EM45_EMN45
 public import Neighborhood.Logic.Equiv.EMB4_EMCNB4
+public import Neighborhood.Logic.Equiv.EMT5_EMCNT5
 public import Neighborhood.Logic.Equiv.EMTB_EMCNTB
+public import Neighborhood.Logic.Equiv.ET5_ENT5
 public import Neighborhood.Logic.MaximalConsistentSet
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomGeach
@@ -58,6 +61,7 @@ public import Neighborhood.Semantics.Logic.EC5
 public import Neighborhood.Semantics.Logic.ECD
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.ECN4
+public import Neighborhood.Semantics.Logic.ECN5
 public import Neighborhood.Semantics.Logic.ECND
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.ED4
