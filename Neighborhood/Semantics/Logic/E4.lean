@@ -3,94 +3,68 @@ module
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Filtration
 
+/-!
+# The neighborhood logic `LogicE4`
+
+Soundness, consistency and completeness of `LogicE4`, the classical modal logic axiomatised by
+the transitivity axiom `Four`, with respect to the transitive neighborhood frames
+(`Frame.IsTransitive`), together with its finite frame property. Also proves the strict
+inclusion of `LogicE` in `LogicE4`.
+-/
+
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
-namespace Neighborhood
+instance : Frame.simple_blackhole.IsTransitive where
+  trans X := by
+    intro x hx
+    simp only [Frame.box, Set.mem_singleton_iff, Set.mem_setOf_eq] at hx
+    subst hx
+    simp [Frame.box]
 
-instance : Frame.simple_blackhole.IsTransitive := by
-  constructor;
-  simp [Frame.box];
+/-- `LogicE4` is sound with respect to every transitive neighborhood frame. -/
+theorem LogicE4.sound (h : A ∈ LogicE4) {κ} [Nonempty κ] (F : Frame κ) [F.IsTransitive] :
+    F ⊧ A :=
+  Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomFour_of_isTransitive) h
 
-@[reducible] protected alias Frame.IsE4 := Frame.IsTransitive
-protected class Frame.IsFiniteE4 (F : Frame) extends F.IsE4, F.IsFinite
+instance : (@LogicE4 α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole)
+    (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomFour_of_isTransitive)
 
-protected abbrev FrameClass.E4 : FrameClass := { F | F.IsE4 }
-protected abbrev FrameClass.finite_E4 : FrameClass := { F | F.IsFiniteE4 }
+variable [DecidableEq α]
 
-/--
-  | `x` | `∅` | `{0}` | `{1}` | `{0, 1}` |
-  |:---:|:---:|:-----:|:-----:|:--------:|
-  | `0` |     |       |✓      |✓         |
-  | `1` |     |✓      |       |✓         |
--/
-abbrev counterframe_2_3_5 : Frame := ⟨Fin 2, λ x => {{x}ᶜ, Set.univ}⟩
+/-- `LogicE4` is complete with respect to all transitive neighborhood frames. -/
+theorem LogicE4.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsTransitive → F ⊧ A) :
+    A ∈ @LogicE4 α :=
+  (basicCanonicity LogicE4).mem_of_valid
+    (h (basicCanonicity LogicE4).toModel.toFrame inferInstance
+      (basicCanonicity LogicE4).toModel.Val)
 
-@[simp]
-lemma counterframe_2_3_5.not_valid_axiomFour : ¬counterframe_2_3_5 ⊧ Axioms.Four (Formula.atom 0) := by
-  apply not_imp_not.mpr isTransitive_of_valid_axiomFour;
-  by_contra! hC;
-  have := hC.trans {0}
-  rcases @this 1 (by grind;) with (h | h);
-  . simp [Frame.box] at h;
-    tauto_set;
-  . simp [Frame.box, Set.eq_univ_iff_forall] at h;
+/-- `LogicE4` is complete with respect to the finite transitive neighborhood frames (its finite
+frame property). -/
+theorem LogicE4.finite_complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsTransitive → F ⊧ A) :
+    A ∈ @LogicE4 α :=
+  LogicE4.complete <| by
+    intro κ _ F hF V x
+    haveI : F.IsTransitive := hF
+    let M : Model κ α := ⟨F, V⟩
+    haveI : Finite (FilterEqvQuotient M A.subformulas) := FilterEqvQuotient.finite (by simp)
+    apply (transitiveFiltration M A.subformulas).filtration_satisfies _ (by grind) |>.mp
+    exact h (transitiveFiltration M A.subformulas).toModel.toFrame ⟨‹_›⟩
+      transitiveFiltration.isTransitive (transitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
-end Neighborhood
+/-! ### Strict inclusion of `LogicE` -/
 
-namespace E4
+theorem LogicE_ssubset_LogicE4 : @LogicE ℕ ⊂ LogicE4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
+  · intro h
+    have hFour : Axioms.Four (.atom 0) ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    exact Frame.trivial_nontransitive.not_valid_axiomFour
+      (LogicE.sound hFour Frame.trivial_nontransitive)
 
-instance Neighborhood.sound : Sound Modal.E4 FrameClass.E4 := instSound_of_validates_axioms $ by
-  simp only [Semantics.ModelsSet.singleton_iff];
-  intro F hF;
-  replace hF := Set.mem_setOf_eq.mp hF;
-  apply valid_axiomFour_of_isTransitive;
-
-instance consistent : Entailment.Consistent Modal.E4 := consistent_of_sound_frameclass FrameClass.E4 $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  infer_instance;
-
-instance Neighborhood.complete : Complete Modal.E4 FrameClass.E4 := (basicCanonicity Modal.E4).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  infer_instance;
-
-/-- FFP of `Modal.E4` -/
-instance Neighborhood.finite_complete : Complete Modal.E4 FrameClass.finite_E4 := ⟨by
-  intro φ hφ;
-  apply Complete.complete (𝓜 := FrameClass.E4);
-  intro F F_trans V x;
-  replace F_trans := Set.mem_setOf_eq.mp F_trans;
-
-  let M : Model := ⟨F, V⟩;
-  apply transitiveFiltration M φ.subformulas |>.filtration_satisfies _ (by grind) |>.mp;
-  apply hφ;
-  apply Set.mem_setOf_eq.mpr;
-  exact {
-    world_finite := by apply FilterEqvQuotient.finite $ by simp;
-    trans := by apply transitiveFiltration.isTransitive.trans;
-  };
-⟩
-
-end E4
-
-instance : Modal.E ⪱ Modal.E4 := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.Four (.atom 0));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.E);
-      apply not_validOnFrameClass_of_exists_frame;
-      use counterframe_2_3_5;
-      simp;
-
-end LO.Modal
 end
