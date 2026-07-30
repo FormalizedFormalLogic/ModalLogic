@@ -166,6 +166,16 @@ lemma trans_truthset [M.IsTransitive] : (【M (□φ)】 : Set (FilterEqvQuotien
     simpa;
   . rfl;
 
+/-- If the class of `x` belongs to the image of the truthset of `□φ` and `□φ` is in `T`, then `x`
+itself satisfies `□□φ`. -/
+@[grind ⇒]
+lemma mem_boxItr₂_truthset [M.IsTransitive] (hφ : □φ ∈ T) (h : (⟦x⟧ : FilterEqvQuotient M T) ∈ 【M (□φ)】) :
+    x ∈ M (□^[2]φ) := by
+  replace h : x ∈ M (□φ) := iff_mem_truthset hφ |>.mpr h;
+  rw [Model.truthset.eq_boxItr];
+  apply M.trans;
+  simpa using h;
+
 lemma refl_truthset [M.IsReflexive] : (【M (□φ)】 : Set (FilterEqvQuotient M T)) ⊆ 【M φ】 := by
   intro X;
   suffices ∀ (x : M.World), x ∈ M (□φ) → ⟦x⟧ = X → ∃ x, (M φ) x ∧ ⟦x⟧ = X by
@@ -585,13 +595,8 @@ def quasiFilteringTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransiti
           rintro ⟨ψ, _, ⟨Vi, hVi, rfl⟩, ⟨v, hv₁, hv₂⟩⟩;
           grind;
         . suffices ∀ ξ : Ξ, w ∈ M (□^[2]ξ) by apply M.regular_finite_iUnion (ι := Ξ); simpa;
-          rintro ⟨ξ, _, ⟨Ui, hUi, rfl⟩, ⟨v, hv₁, hv₂⟩⟩;
-          replace hv₁ : v ∈ M.box^[2] (M ξ) := M.trans hv₁;
-          grind only [= Set.subset_def, = Finset.mem_union, = Set.setOf_true, of_mem_box,
-            Satisfies.def_box', = Finset.mem_filter, Model.truthset.eq_box,
-            FilterEqvQuotient.iff_eq, toFilterEquivSet.mem_of_mem, Satisfies.def_box,
-            usr Set.mem_setOf_eq, = Set.setOf_false, !Frame.trans,
-            !toFilterEquivSet.iff_mem_truthset]
+          rintro ⟨ξ, hξ, _, hw⟩;
+          exact toFilterEquivSet.mem_boxItr₂_truthset hξ hw;
       . suffices ∀ ψ : Ψ, w ∈ M (□ψ) by
           apply toFilterEquivSet.mem_of_mem;
           replace H : M.box (⋂ ψ : Ψ, M ψ) ⊆ M.box (M φ) := M.mono' $ by
