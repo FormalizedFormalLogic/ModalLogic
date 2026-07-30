@@ -9,7 +9,7 @@ public import Neighborhood.Semantics.Example.Frame1_1
 
 Soundness, consistency and completeness of `LogicET`, the classical modal logic axiomatised by
 the reflexivity axiom `T`, with respect to the reflexive neighborhood frames
-(`Frame.IsReflexive`), and the strict inclusion of `LogicED` in `LogicET`.
+(`Frame.IsReflexive`).
 -/
 
 @[expose] public section

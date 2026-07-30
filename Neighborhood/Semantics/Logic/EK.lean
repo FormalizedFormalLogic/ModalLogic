@@ -9,8 +9,7 @@ public import Neighborhood.Semantics.Example.Frame3_130
 # The neighborhood logic `LogicEK`
 
 Soundness and consistency of `LogicEK`, obtained from `LogicE` by adding every instance of the
-axiom scheme `K`, with respect to all neighborhood frames satisfying the `K`-property, and its
-strict inclusion of `LogicE`.
+axiom scheme `K`, with respect to all neighborhood frames satisfying the `K`-property.
 -/
 
 @[expose] public section

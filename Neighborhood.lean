@@ -59,11 +59,13 @@ public import Neighborhood.Semantics.Logic.EMCN
 public import Neighborhood.Semantics.Logic.EMCN4
 public import Neighborhood.Semantics.Logic.EMK
 public import Neighborhood.Semantics.Logic.EMN
+public import Neighborhood.Semantics.Logic.EMN4
 public import Neighborhood.Semantics.Logic.EMNT4
 public import Neighborhood.Semantics.Logic.EMT
 public import Neighborhood.Semantics.Logic.EMT4
 public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Logic.EN4
+public import Neighborhood.Semantics.Logic.ENB
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.END4
 public import Neighborhood.Semantics.Logic.ENT

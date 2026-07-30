@@ -14,8 +14,7 @@ public import Neighborhood.Semantics.Example.Frame3_8421512
 Soundness, consistency and completeness of `LogicENT4`, the classical modal logic axiomatised by
 `N := □⊤`, the reflexivity axiom `T` and the transitivity axiom `Four` over `LogicE`, with respect
 to the neighborhood frames that contain their unit, are reflexive and are transitive, together
-with its finite frame property. Also proves the strict inclusions of `LogicEN4`, `LogicET4` and
-`LogicENT` in `LogicENT4`.
+with its finite frame property.
 -/
 
 @[expose] public section

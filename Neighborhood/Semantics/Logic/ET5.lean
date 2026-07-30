@@ -11,8 +11,7 @@ public import Neighborhood.Semantics.Example.Frame3_9471106
 
 Soundness, consistency and completeness of `LogicET5`, the classical modal logic axiomatised by
 the reflexivity axiom `T` and the euclideanness axiom `Five` over `LogicE`, with respect to the
-neighborhood frames that are both reflexive and euclidean. Also proves the strict inclusions of
-`LogicENT4` and `LogicE5` in `LogicET5`.
+neighborhood frames that are both reflexive and euclidean.
 -/
 
 @[expose] public section

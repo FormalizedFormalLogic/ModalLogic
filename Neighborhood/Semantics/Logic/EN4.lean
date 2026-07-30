@@ -13,8 +13,7 @@ public import Neighborhood.Semantics.Example.Frame2_172
 
 Soundness, consistency and completeness of `LogicEN4`, the classical modal logic axiomatised by
 both `N := □⊤` and the transitivity axiom `Four` over `LogicE`, with respect to the transitive
-neighborhood frames containing their unit, together with its finite frame property. Also proves
-the strict inclusions of `LogicEN` and `LogicE4` in `LogicEN4`.
+neighborhood frames containing their unit, together with its finite frame property.
 -/
 
 @[expose] public section

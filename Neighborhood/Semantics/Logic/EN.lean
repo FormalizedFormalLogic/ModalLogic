@@ -10,7 +10,7 @@ public import Neighborhood.Semantics.Example.Frame1_0
 
 Soundness, consistency and completeness of `LogicEN`, the classical modal logic axiomatized by
 `N := □⊤` over `LogicE`, with respect to the frames containing their unit
-(`Frame.ContainsUnit`). Also its strict inclusion in `LogicE`.
+(`Frame.ContainsUnit`).
 -/
 
 @[expose] public section

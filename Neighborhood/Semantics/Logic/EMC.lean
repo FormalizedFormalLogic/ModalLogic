@@ -13,8 +13,7 @@ public import Neighborhood.Semantics.Example.Frame1_2
 
 Soundness, consistency and completeness of `LogicEMC`, the classical modal logic axiomatised by
 the monotonicity axiom `M` and the regularity axiom `C`, with respect to the neighborhood frames
-that are both monotonic and regular, and its strict inclusion of `LogicEM`, `LogicEC` and
-`LogicEK`.
+that are both monotonic and regular.
 -/
 
 @[expose] public section

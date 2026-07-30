@@ -12,7 +12,7 @@ public import Neighborhood.Semantics.Example.Frame2_72
 Soundness, consistency and completeness of `LogicET4`, the classical modal logic axiomatised by
 the reflexivity axiom `T` together with the transitivity axiom `Four`, with respect to the
 neighborhood frames that are both reflexive and transitive, together with its finite frame
-property. Also proves the strict inclusions of `LogicE4` and `LogicET` in `LogicET4`.
+property.
 -/
 
 @[expose] public section

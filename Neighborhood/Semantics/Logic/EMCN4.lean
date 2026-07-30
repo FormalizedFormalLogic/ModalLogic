@@ -5,6 +5,7 @@ public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.EMC4
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame2_172
 
 /-!
 # The neighborhood logic `LogicEMCN4`
@@ -12,8 +13,7 @@ public import Neighborhood.Semantics.Example.Frame1_0
 Soundness, consistency and completeness of `LogicEMCN4`, the classical modal logic axiomatised by
 the monotonicity axiom `M`, the regularity axiom `C`, `N := □⊤` and the transitivity axiom `Four`,
 with respect to the neighborhood frames that are monotonic, regular, transitive, and contain their
-unit, together with its finite frame property. Also proves the strict inclusion of `LogicEMC4` in
-`LogicEMCN4`.
+unit, together with its finite frame property.
 -/
 
 @[expose] public section
@@ -73,5 +73,12 @@ theorem LogicEMC4_ssubset_LogicEMCN4 : @LogicEMC4 ℕ ⊂ LogicEMCN4 := by
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ (@LogicEMC4 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_1_0.not_valid_axiomN (LogicEMC4.sound frame_1_0 hN)
+
+theorem LogicEMCN_ssubset_LogicEMCN4 : @LogicEMCN ℕ ⊂ LogicEMCN4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hFour : Axioms.Four #0 ∈ @LogicEMCN ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_172.not_valid_axiomFour (LogicEMCN.sound frame_2_172 hFour)
 
 end
