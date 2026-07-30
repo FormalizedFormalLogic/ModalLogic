@@ -460,12 +460,16 @@ protected instance isReflexive [M.IsReflexive] : (supplementedTransitiveFiltrati
   Frame.supplementation.isReflexive (F := (transitiveFiltration M T).toModel.toFrame).refl
 ⟩
 
-protected instance containsUnit [M.ContainsUnit] (hT : □⊤ ∈ T) : (supplementedTransitiveFiltration M T).toModel.ContainsUnit := by
+@[reducible]
+protected def containsUnit [M.ContainsUnit] (hT : □⊤ ∈ T) : (supplementedTransitiveFiltration M T).toModel.ContainsUnit := by
   constructor;
   ext X;
   suffices X ∈ (supplementedTransitiveFiltration M T).B Set.univ by simpa;
-  have : (transitiveFiltration M T).toModel.ContainsUnit := transitiveFiltration.containsUnit hT;
-  simp [supplementedTransitiveFiltration, (transitiveFiltration M T).toModel.supplementation.contains_unit]
+  haveI := transitiveFiltration.containsUnit (M := M) (T := T) hT;
+  apply Frame.supplementation.mem_box_of_mem_original_box;
+  show X ∈ (transitiveFiltration M T).toModel.toFrame.box Set.univ;
+  rw [Frame.contains_unit];
+  trivial;
 
 end supplementedTransitiveFiltration
 
