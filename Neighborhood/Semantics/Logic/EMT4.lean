@@ -1,0 +1,69 @@
+module
+
+public import Neighborhood.Semantics.Logic.EMT
+public import Neighborhood.Semantics.Logic.E4
+import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame2_8
+
+/-!
+# The neighborhood logic `LogicEMT4`
+
+Soundness, consistency and completeness of `LogicEMT4`, the classical modal logic axiomatised by
+the monotonicity axiom `M`, the reflexivity axiom `T` and the transitivity axiom `Four`, with
+respect to the neighborhood frames that are monotonic, reflexive and transitive, together with its
+finite frame property. Also proves the strict inclusion of `LogicEMT` in `LogicEMT4`.
+-/
+
+@[expose] public section
+
+variable {α : Type u} {A : Formula α}
+
+
+theorem LogicEMT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+    [F.IsReflexive] [F.IsTransitive] :
+    A ∈ LogicEMT4 → F ⊧ A :=
+  Hilbert.sound (by
+    rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
+    · exact valid_axiomM_of_isMonotonic
+    · exact valid_axiomT_of_isReflexive
+    · exact valid_axiomFour_of_isTransitive)
+
+theorem LogicEMT4.consistent : (@LogicEMT4 α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEMT4.sound frame_1_2 hC
+
+instance : Nonempty (MaximalConsistentSet (@LogicEMT4 α)) :=
+  MaximalConsistentSet.nonempty LogicEMT4.consistent
+
+variable [DecidableEq α]
+
+theorem LogicEMT4.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsReflexive] →
+      [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMT4 α :=
+  (supplementedBasicCanonicity LogicEMT4).mem_of_valid
+    (h (supplementedBasicCanonicity LogicEMT4).toModel.toFrame
+      (supplementedBasicCanonicity LogicEMT4).toModel.Val)
+
+theorem LogicEMT4.finite_complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] → [F.IsReflexive] →
+      [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMT4 α :=
+  LogicEMT4.complete <| by
+    intro κ _ F hMono hRefl hTrans V x
+    let M : Model κ α := ⟨F, V⟩
+    haveI : Finite (FilterEqvQuotient M A.subformulas) := FilterEqvQuotient.finite (by simp)
+    apply (supplementedTransitiveFiltration M A.subformulas).filtration_satisfies _
+      (by grind) |>.mp
+    haveI : (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame.IsFinite := ⟨‹_›⟩
+    exact h (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame
+      (supplementedTransitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
+
+
+theorem LogicEMT_ssubset_LogicEMT4 : @LogicEMT ℕ ⊂ LogicEMT4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
+  · intro h
+    have hFour : Axioms.Four #0 ∈ (@LogicEMT ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    exact frame_2_8.not_valid_axiomFour
+      (LogicEMT.sound frame_2_8 hFour)
+
+end

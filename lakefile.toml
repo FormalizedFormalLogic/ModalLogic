@@ -1,5 +1,5 @@
 name = "ModalLogic"
-defaultTargets = ["Fin74"]
+defaultTargets = ["Fin74", "Neighborhood"]
 
 [[lean_lib]]
 name = "ModalLogic"
@@ -9,6 +9,9 @@ name = "ModalLogicArchive"
 
 [[lean_lib]]
 name = "Fin74"
+
+[[lean_lib]]
+name = "Neighborhood"
 
 [[require]]
 name = "Foundation"

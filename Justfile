@@ -18,10 +18,11 @@ mk-all:
     # libraries that actually have sources instead (extend when a new project lib is added).
     lake exe mk_all --module --lib Fin74
     lake exe mk_all --module --lib ModalLogicArchive
+    lake exe mk_all --module --lib Neighborhood
 
 # Count lines of Lean source per project library (requires cloc)
 cloc:
-    cloc --include-lang=Lean Fin74/ ModalLogicArchive/
+    cloc --include-lang=Lean Fin74/ Neighborhood/ ModalLogicArchive/
 
 # Remove unused imports/variables and drop unnecessary `public` (run before merging any work)
 shake:
