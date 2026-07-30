@@ -14,6 +14,9 @@ finite frame's carrier and for the Zorn-style construction of maximal consistent
 
 @[expose] public section
 
+/-- Named alias for the `Finset α → Set α` coercion, which Mathlib only provides anonymously. -/
+@[reducible] def Finset.toSet (s : Finset α) : Set α := (s : Set α)
+
 namespace Set
 
 namespace Fin1
