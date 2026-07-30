@@ -14,7 +14,7 @@ whenever some frame validates `Ax`.
 
 @[expose] public section
 
-variable {α : Type u} {κ : Type u} [Nonempty κ]
+variable {α : Type u} {κ : Type v} [Nonempty κ]
 variable {Ax : FormulaSet α} {A : Formula α} {F : Frame κ}
 
 namespace Hilbert

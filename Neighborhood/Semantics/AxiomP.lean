@@ -12,7 +12,7 @@ frames in which no world has the empty set as one of its neighborhoods.
 
 @[expose] public section
 
-variable {κ : Type u} [Nonempty κ] {α : Type v} {F : Frame κ}
+variable {κ : Type u} [Nonempty κ] {α : Type v} {F : Frame κ} {x : F.World}
 
 namespace Frame
 
@@ -21,15 +21,16 @@ class NotContainsEmpty (F : Frame κ) : Prop where
   not_contains_empty : ∀ x, ∅ ∉ F.𝒩 x
 
 @[simp, grind =>]
-lemma not_contains_empty [F.NotContainsEmpty] {x : F.World} : ∅ ∉ F.𝒩 x :=
+lemma not_contains_empty [F.NotContainsEmpty] : ∅ ∉ F.𝒩 x :=
   NotContainsEmpty.not_contains_empty x
 
 @[simp]
-lemma mem_dia_univ [F.NotContainsEmpty] {x : F.World} : x ∈ F.dia Set.univ := by
+lemma mem_dia_univ [F.NotContainsEmpty] : x ∈ F.dia Set.univ := by
   simp [Frame.dia, Frame.box]
 
-instance : Frame.simple_blackhole.NotContainsEmpty :=
-  ⟨fun _ => by simp [Set.empty_ne_univ]⟩
+instance : Frame.simple_blackhole.NotContainsEmpty := by
+  constructor;
+  simp [Set.empty_ne_univ];
 
 end Frame
 
