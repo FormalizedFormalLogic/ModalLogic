@@ -226,21 +226,53 @@ namespace Logic
 
 variable {L : Logic} [L.Cl] {φ ψ : Formula} {Γ Δ : FormulaFinset}
 
-@[simp] lemma left_Fconj!_intro (h : φ ∈ Γ) : Γ.conj 🡒 φ ∈ L := sorry
+private lemma left_lconj!_intro {l : List Formula} (h : φ ∈ l) : l.foldr (· ⋏ ·) ⊤ 🡒 φ ∈ L := by
+  induction l with
+  | nil => simp at h;
+  | cons ψ l ih =>
+    rcases List.mem_cons.mp h with rfl | h;
+    . exact and₁!;
+    . exact C!_trans and₂! (ih h);
 
-lemma right_Fconj!_intro (b : ∀ ψ ∈ Γ, φ 🡒 ψ ∈ L) : φ 🡒 Γ.conj ∈ L := sorry
+private lemma right_lconj!_intro {l : List Formula} (b : ∀ ψ ∈ l, φ 🡒 ψ ∈ L) :
+    φ 🡒 l.foldr (· ⋏ ·) ⊤ ∈ L := by
+  induction l with
+  | nil => exact CV!;
+  | cons ψ l ih => exact CK!_of_C!_of_C! (b ψ (by simp)) (ih fun χ hχ => b χ (by simp [hχ]));
 
-lemma Fconj!_intro (b : ∀ ψ ∈ Γ, ψ ∈ L) : Γ.conj ∈ L := sorry
+@[simp] lemma left_Fconj!_intro (h : φ ∈ Γ) : Γ.conj 🡒 φ ∈ L :=
+  left_lconj!_intro (Finset.mem_toList.mpr h)
 
-@[grind =] lemma Fconj!_iff_forall_provable : Γ.conj ∈ L ↔ ∀ φ ∈ Γ, φ ∈ L := sorry
+lemma right_Fconj!_intro (b : ∀ ψ ∈ Γ, φ 🡒 ψ ∈ L) : φ 🡒 Γ.conj ∈ L :=
+  right_lconj!_intro fun ψ hψ => b ψ (Finset.mem_toList.mp hψ)
 
-lemma CFconj!_Fconj! (h : Δ ⊆ Γ) : Γ.conj 🡒 Δ.conj ∈ L := sorry
+lemma Fconj!_intro (b : ∀ ψ ∈ Γ, ψ ∈ L) : Γ.conj ∈ L :=
+  right_Fconj!_intro (fun ψ hψ => C!_of_conseq! (b ψ hψ)) ⨀ verum!
 
-lemma EFconjInsertKFconj! : (insert φ Γ).conj 🡘 (φ ⋏ Γ.conj) ∈ L := sorry
+@[grind =] lemma Fconj!_iff_forall_provable : Γ.conj ∈ L ↔ ∀ φ ∈ Γ, φ ∈ L :=
+  ⟨fun h _ hφ => left_Fconj!_intro hφ ⨀ h, Fconj!_intro⟩
 
-@[simp] lemma CFconjUnionKFconj! : (Γ ∪ Δ).conj 🡒 Γ.conj ⋏ Δ.conj ∈ L := sorry
+lemma CFconj!_Fconj! (h : Δ ⊆ Γ) : Γ.conj 🡒 Δ.conj ∈ L :=
+  right_Fconj!_intro fun _ hψ => left_Fconj!_intro (h hψ)
 
-@[simp] lemma CKFconjFconjUnion! : Γ.conj ⋏ Δ.conj 🡒 (Γ ∪ Δ).conj ∈ L := sorry
+lemma EFconjInsertKFconj! : (insert φ Γ).conj 🡘 (φ ⋏ Γ.conj) ∈ L := by
+  apply E!_intro;
+  . exact CK!_of_C!_of_C! (left_Fconj!_intro (by simp)) (CFconj!_Fconj! (by simp));
+  . apply right_Fconj!_intro;
+    intro ψ hψ;
+    rcases Finset.mem_insert.mp hψ with rfl | hψ;
+    . exact and₁!;
+    . exact C!_trans and₂! (left_Fconj!_intro hψ);
+
+@[simp] lemma CFconjUnionKFconj! : (Γ ∪ Δ).conj 🡒 Γ.conj ⋏ Δ.conj ∈ L :=
+  CK!_of_C!_of_C! (CFconj!_Fconj! (by simp)) (CFconj!_Fconj! (by simp))
+
+@[simp] lemma CKFconjFconjUnion! : Γ.conj ⋏ Δ.conj 🡒 (Γ ∪ Δ).conj ∈ L := by
+  apply right_Fconj!_intro;
+  intro ψ hψ;
+  rcases Finset.mem_union.mp hψ with hψ | hψ;
+  . exact C!_trans and₁! (left_Fconj!_intro hψ);
+  . exact C!_trans and₂! (left_Fconj!_intro hψ);
 
 end Logic
 
