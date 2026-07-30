@@ -2,9 +2,11 @@ module
 
 public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Logic.ET4
+public import Neighborhood.Semantics.Logic.ENT
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_170
+public import Neighborhood.Semantics.Example.Frame3_8421512
 
 /-!
 # The neighborhood logic `LogicENT4`
@@ -12,8 +14,8 @@ public import Neighborhood.Semantics.Example.Frame2_170
 Soundness, consistency and completeness of `LogicENT4`, the classical modal logic axiomatised by
 `N := □⊤`, the reflexivity axiom `T` and the transitivity axiom `Four` over `LogicE`, with respect
 to the neighborhood frames that contain their unit, are reflexive and are transitive, together
-with its finite frame property. Also proves the strict inclusions of `LogicEN4` and `LogicET4` in
-`LogicENT4`.
+with its finite frame property. Also proves the strict inclusions of `LogicEN4`, `LogicET4` and
+`LogicENT` in `LogicENT4`.
 -/
 
 @[expose] public section
@@ -80,5 +82,13 @@ theorem LogicET4_ssubset_LogicENT4 : @LogicET4 ℕ ⊂ LogicENT4 := by
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ (@LogicET4 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_1_0.not_valid_axiomN (LogicET4.sound frame_1_0 hN)
+
+theorem LogicENT_ssubset_LogicENT4 : @LogicENT ℕ ⊂ LogicENT4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
+  · intro h
+    have hFour : Axioms.Four #0 ∈ (@LogicENT ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_8421512.not_valid_axiomFour
+      (LogicENT.sound frame_3_8421512 hFour)
 
 end
