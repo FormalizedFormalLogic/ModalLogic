@@ -1,128 +1,60 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
-public import Foundation.Vorspiel.Set.Fin
+public import Neighborhood.Semantics.Supplementation
+
+/-!
+# The neighborhood logic `LogicEM`
+
+Soundness, consistency and completeness of `LogicEM`, the classical modal logic axiomatised by
+the monotonicity axiom `M`, with respect to all monotonic neighborhood frames.
+
+Also proves the strict inclusion of `LogicE` in `LogicEM` (a comparison of two logics lives in
+the stronger logic's module).
+-/
 
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
-namespace Neighborhood
+/-- `LogicEM` is sound with respect to every monotonic neighborhood frame. -/
+theorem LogicEM.sound (h : A ∈ LogicEM) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] :
+    F ⊧ A :=
+  Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; exact valid_axiomM_of_isMonotonic) h
 
-@[reducible] protected alias Frame.IsEM := Frame.IsMonotonic
-protected abbrev FrameClass.EM : FrameClass := { F | F.IsEM }
+instance : (@LogicEM α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole)
+    (by rintro _ ⟨_, _, rfl⟩; exact valid_axiomM_of_isMonotonic)
 
-instance : Frame.simple_whitehole.IsEM where
-  mono := by simp_all;
+variable [DecidableEq α]
 
-abbrev counterframe_axiomC₁ : Frame := {
-  World := Fin 2,
-  𝒩 := λ w =>
-    match w with
-    | 0 => {{0}, {1}, {0, 1}}
-    | 1 => {{1}, {0, 1}}
-}
+/-- `LogicEM` is complete with respect to all monotonic neighborhood frames. -/
+theorem LogicEM.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F ⊧ A) :
+    A ∈ @LogicEM α :=
+  (supplementedBasicCanonicity LogicEM).mem_of_valid
+    (h (supplementedBasicCanonicity LogicEM).toModel.toFrame inferInstance
+      (supplementedBasicCanonicity LogicEM).toModel.Val)
 
-instance : counterframe_axiomC₁.IsEM where
-  mono := by
-    rintro X Y w hw;
-    constructor;
-    . match w with
-      | 0 | 1 =>
-        rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl;
-        case inr.inl =>
-          rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
-          . simp [counterframe_axiomC₁] at hw;
-            tauto_set;
-        all_goals simp_all [counterframe_axiomC₁];
-    . match w with
-      | 0 | 1 =>
-        rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl;
-        case inr.inl =>
-          rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
-          . simp [counterframe_axiomC₁] at hw;
-            tauto_set;
-        all_goals simp_all [counterframe_axiomC₁];
+/-! ### Strict inclusion of `LogicE` -/
 
-@[simp]
-lemma counterframe_axiomC₁.not_validate_axiomC : ¬counterframe_axiomC₁ ⊧ Axioms.C (.atom 0) (.atom 1) := by
-  apply not_imp_not.mpr $ @isRegular_of_valid_axiomC (F := counterframe_axiomC₁);
-  by_contra! hC;
-  have := @hC.regular {0} {1} 0;
-  simp at this;
-  grind;
+theorem LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
+  · intro h
+    have hM : Axioms.M (.atom 0) (.atom 1) ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, _, rfl⟩)
+    let M : Model (Fin 3) ℕ :=
+      ⟨⟨fun w => match w with
+        | 0 => {{1}}
+        | 1 => {{0}, {0, 1}}
+        | 2 => {{0}, {1, 2}}⟩,
+       fun a => match a with
+        | 0 => {0, 1}
+        | 1 => {1, 2}
+        | _ => Set.univ⟩
+    have h0 := LogicE.sound hM M.toFrame M.Val 0
+    simp [M, Forces, Frame.box, Set.ext_iff] at h0
+    grind
 
-end Neighborhood
-
-namespace EM
-
-instance Neighborhood.sound : Sound Modal.EM FrameClass.EM := instSound_of_validates_axioms $ by
-  constructor;
-  rintro _ rfl F hF;
-  simp_all;
-
-instance consistent : Entailment.Consistent Modal.EM := consistent_of_sound_frameclass FrameClass.EM $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  infer_instance;
-
-instance Neighborhood.complete : Complete Modal.EM FrameClass.EM := (supplementedBasicCanonicity Modal.EM).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  infer_instance;
-
-end EM
-
-instance : Modal.EM ⪱ Modal.EMN := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use Axioms.N;
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.EM);
-      apply not_validOnFrameClass_of_exists_frame;
-      use Frame.simple_whitehole;
-      constructor;
-      . apply Set.mem_setOf_eq.mpr; infer_instance;
-      . simp;
-
-instance : Modal.EM ⪱ Modal.EMC := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.C (.atom 0) (.atom 1));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.EM);
-      apply not_validOnFrameClass_of_exists_frame;
-      use counterframe_axiomC₁;
-      constructor;
-      . apply Set.mem_setOf_eq.mpr;
-        infer_instance;
-      . simp;
-
-instance : Modal.EM ⪱ Modal.EMT := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.T (.atom 0));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.EM);
-      apply not_validOnFrameClass_of_exists_frame;
-      use ⟨Fin 1, λ _ => Set.univ⟩;
-      constructor;
-      . exact ⟨by tauto⟩;
-      . apply not_imp_not.mpr isReflexive_of_valid_axiomT;
-        by_contra! hC;
-        simpa [Frame.box] using @hC.refl ∅;
-
-end LO.Modal
 end
