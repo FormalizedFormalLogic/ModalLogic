@@ -14,6 +14,7 @@ public import Neighborhood.Logic.Equiv.EMB4_EMCNB4
 public import Neighborhood.Logic.Equiv.EMC_EMCK
 public import Neighborhood.Logic.Equiv.EMC_EMK
 public import Neighborhood.Logic.Equiv.EMK_EMCK
+public import Neighborhood.Logic.Equiv.EMTB_EMCNTB
 public import Neighborhood.Logic.Equiv.ETB_ENTB
 public import Neighborhood.Logic.MaximalConsistentSet
 public import Neighborhood.Semantics.AxiomC
@@ -55,11 +56,16 @@ public import Neighborhood.Semantics.Logic.E45
 public import Neighborhood.Semantics.Logic.E5
 public import Neighborhood.Semantics.Logic.EB
 public import Neighborhood.Semantics.Logic.EC
+public import Neighborhood.Semantics.Logic.EC4
 public import Neighborhood.Semantics.Logic.EC5
+public import Neighborhood.Semantics.Logic.ECD
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.ECN4
+public import Neighborhood.Semantics.Logic.ECND
 public import Neighborhood.Semantics.Logic.ED
+public import Neighborhood.Semantics.Logic.ED4
 public import Neighborhood.Semantics.Logic.ED5
+public import Neighborhood.Semantics.Logic.EDB
 public import Neighborhood.Semantics.Logic.EK
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.EM4
@@ -68,6 +74,7 @@ public import Neighborhood.Semantics.Logic.EMC4
 public import Neighborhood.Semantics.Logic.EMCD
 public import Neighborhood.Semantics.Logic.EMCN
 public import Neighborhood.Semantics.Logic.EMCN4
+public import Neighborhood.Semantics.Logic.EMCND4
 public import Neighborhood.Semantics.Logic.EMD4
 public import Neighborhood.Semantics.Logic.EMK
 public import Neighborhood.Semantics.Logic.EMN
