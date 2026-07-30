@@ -17,11 +17,12 @@ mk-all:
     # lakefile.toml, which has no root file/directory and makes mk_all abort; list the
     # libraries that actually have sources instead (extend when a new project lib is added).
     lake exe mk_all --module --lib Fin74
+    lake exe mk_all --module --lib ModalNeighborhood
     lake exe mk_all --module --lib ModalLogicArchive
 
 # Count lines of Lean source per project library (requires cloc)
 cloc:
-    cloc --include-lang=Lean Fin74/ ModalLogicArchive/
+    cloc --include-lang=Lean Fin74/ ModalNeighborhood/ ModalLogicArchive/
 
 # Remove unused imports/variables and drop unnecessary `public` (run before merging any work)
 shake:

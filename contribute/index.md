@@ -13,6 +13,7 @@ This repository is a collection of independent formalization projects, one Lake 
 | `Fin74` | "An Incomplete Logic Containing S4" [Fin74] |
 | `SV26` | "Interpolation above S4" [SV26] |
 | `CZ97Cp7` | "Modal Logic" [CZ97], Chapter 7 (algebraic semantics) |
+| `ModalNeighborhood` | neighborhood semantics for the non-normal modal logics of the E family |
 | `ModalLogicArchive` | material carried over from earlier work, not tied to a single paper |
 
 ## How changes land on `main`
