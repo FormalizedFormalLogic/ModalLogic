@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Order.Zorn
 public import Neighborhood.Logic.Context
 public import Neighborhood.Vorspiel
 
@@ -18,11 +19,24 @@ namespace FormulaSet
 
 open Logic Logic.Context
 
-variable {L : Logic} [L.Cl] {T : FormulaSet}
+variable {L : Logic} {T : FormulaSet}
 
 /-- Every consistent set of formulas extends to a maximal one. -/
 lemma exists_consistent_maximal_of_consistent (hT : Consistent L T) :
-    ∃ Z, Consistent L Z ∧ T ⊆ Z ∧ ∀ U, Consistent L U → Z ⊆ U → U = Z := sorry
+    ∃ Z, Consistent L Z ∧ T ⊆ Z ∧ ∀ U, Consistent L U → Z ⊆ U → U = Z := by
+  have hchain : ∀ c ⊆ { X : FormulaSet | Consistent L X }, IsChain (· ⊆ ·) c → c.Nonempty →
+      ∃ ub ∈ { X : FormulaSet | Consistent L X }, ∀ s ∈ c, s ⊆ ub := by
+    intro c hc chain hnc;
+    refine ⟨⋃₀ c, ?_, fun s hs => Set.subset_sUnion_of_mem hs⟩;
+    apply def_consistent.mpr;
+    intro Γ hΓ hC;
+    obtain ⟨U, hUc, hUs⟩ :=
+      Set.subset_mem_chain_of_finite c hnc chain (s := ↑Γ) Γ.finite_toSet hΓ;
+    exact def_consistent.mp (hc hUc) Γ hUs hC;
+  obtain ⟨Z, hTZ, hmax⟩ := zorn_subset_nonempty _ hchain T hT;
+  refine ⟨Z, hmax.prop, hTZ, ?_⟩;
+  intro U hU hZU;
+  exact Set.Subset.antisymm (hmax.2 hU hZU) hZU;
 
 protected alias lindenbaum := exists_consistent_maximal_of_consistent
 
