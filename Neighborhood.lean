@@ -11,12 +11,15 @@ public import Neighborhood.Logic.Cl
 public import Neighborhood.Logic.Context
 public import Neighborhood.Logic.Equiv.EB4_ENB4
 public import Neighborhood.Logic.Equiv.ECT5_ECNT5
+public import Neighborhood.Logic.Equiv.ECTB_ECNTB
 public import Neighborhood.Logic.Equiv.EM45_EMN45
 public import Neighborhood.Logic.Equiv.EM5_EMN5
 public import Neighborhood.Logic.Equiv.EMB4_EMCNB4
+public import Neighborhood.Logic.Equiv.EMCD45_EMCND45
 public import Neighborhood.Logic.Equiv.EMCD5_EMCND5
 public import Neighborhood.Logic.Equiv.EMC_EMCK
 public import Neighborhood.Logic.Equiv.EMC_EMK
+public import Neighborhood.Logic.Equiv.EMDB_EMCNDB
 public import Neighborhood.Logic.Equiv.EMK_EMCK
 public import Neighborhood.Logic.Equiv.EMT5_EMCNT5
 public import Neighborhood.Logic.Equiv.EMTB_EMCNTB
