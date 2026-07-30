@@ -12,8 +12,7 @@ public import Neighborhood.Semantics.Example.Frame2_170
 
 Soundness, consistency and completeness of `LogicENB`, the classical modal logic axiomatised by
 `N := □⊤` and the symmetry axiom `B` over `LogicE`, with respect to the neighborhood frames that
-contain their unit and are symmetric. Also proves the strict inclusions of `LogicEN` and
-`LogicEB` in `LogicENB`.
+contain their unit and are symmetric.
 -/
 
 @[expose] public section
