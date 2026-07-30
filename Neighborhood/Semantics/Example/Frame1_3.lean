@@ -29,6 +29,9 @@ lemma frame_1_3.not_isReflexive : ¬frame_1_3.IsReflexive := fun hR => by
 
 instance : frame_1_3.ContainsUnit := ⟨by simp [Frame.box]⟩
 
+instance : frame_1_3.IsRegular := ⟨by
+  intro X Y; simp [Frame.box, frame_1_3]⟩
+
 lemma frame_1_3.not_isSerial : ¬frame_1_3.IsSerial := by
   intro hS
   have h1 : (0 : Fin 1) ∈ frame_1_3.box (∅ : Set (Fin 1)) := by simp [Frame.box]
