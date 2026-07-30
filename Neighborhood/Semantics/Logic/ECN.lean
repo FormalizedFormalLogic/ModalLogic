@@ -11,7 +11,7 @@ public import Neighborhood.Semantics.Example.Frame2_206
 
 Soundness, consistency and completeness of `LogicECN`, the classical modal logic axiomatised by
 both the regularity axiom `C` and `N := □⊤` over `LogicE`, with respect to the regular
-neighborhood frames containing their unit. Also its strict inclusions in `LogicEC` and `LogicEN`.
+neighborhood frames containing their unit.
 -/
 
 @[expose] public section

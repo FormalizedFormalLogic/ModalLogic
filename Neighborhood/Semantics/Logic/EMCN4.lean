@@ -13,8 +13,7 @@ public import Neighborhood.Semantics.Example.Frame2_172
 Soundness, consistency and completeness of `LogicEMCN4`, the classical modal logic axiomatised by
 the monotonicity axiom `M`, the regularity axiom `C`, `N := □⊤` and the transitivity axiom `Four`,
 with respect to the neighborhood frames that are monotonic, regular, transitive, and contain their
-unit, together with its finite frame property. Also proves the strict inclusion of `LogicEMC4` and
-of `LogicEMCN` in `LogicEMCN4`.
+unit, together with its finite frame property.
 -/
 
 @[expose] public section

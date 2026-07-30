@@ -13,8 +13,7 @@ public import Neighborhood.Semantics.Example.Frame2_206
 Soundness, consistency and completeness of `LogicEMC4`, the classical modal logic axiomatised by
 the monotonicity axiom `M`, the regularity axiom `C` and the transitivity axiom `Four`, with
 respect to the neighborhood frames that are monotonic, regular and transitive, together with its
-finite frame property. Also proves the strict inclusions of `LogicEMC` and `LogicEM4` in
-`LogicEMC4`.
+finite frame property.
 -/
 
 @[expose] public section

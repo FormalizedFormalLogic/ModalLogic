@@ -13,8 +13,7 @@ public import Neighborhood.Semantics.Example.Frame3_9471106
 
 Soundness, consistency and completeness of `LogicETB`, the classical modal logic axiomatised by
 both the reflexivity axiom `T` and the symmetry axiom `B`, with respect to the neighborhood
-frames that are both reflexive and symmetric, and its strict inclusions in `LogicET`, `LogicEB`
-and `LogicENT`.
+frames that are both reflexive and symmetric.
 -/
 
 @[expose] public section

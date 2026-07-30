@@ -12,8 +12,7 @@ public import Neighborhood.Semantics.Example.Frame1_2
 # The neighborhood logic `LogicE`
 
 Soundness, consistency and completeness of `LogicE`, the weakest classical modal logic, with
-respect to all neighborhood frames. Its strict inclusions in the stronger logics live in the
-stronger logics' modules.
+respect to all neighborhood frames.
 
 Also defines two auxiliary countermodels, `frame_1_0` and
 `frame_2_8`, reused by several other neighborhood logics.
