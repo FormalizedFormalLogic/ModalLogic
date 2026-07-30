@@ -1,0 +1,46 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__lean-lsp__lean_goal",
+      "mcp__lean-lsp__lean_multi_attempt",
+      "mcp__lean-lsp__lean_loogle",
+      "mcp__lean-lsp__lean_local_search",
+      "mcp__lean-lsp__lean_diagnostic_messages",
+      "mcp__lean-lsp__lean_hover_info",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git worktree list)",
+      "Bash(just mk-all)",
+      "Bash(just shake)",
+      "Bash(just format-bib)",
+      "Bash(lake build:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/protect-main.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledMcpjsonServers": ["lean-lsp"],
+  "extraKnownMarketplaces": {
+    "lean4-skills": {
+      "source": {
+        "source": "github",
+        "repo": "cameronfreer/lean4-skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "lean4@lean4-skills": true,
+    "lean4-contribute@lean4-skills": true
+  }
+}

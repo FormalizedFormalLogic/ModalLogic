@@ -8,10 +8,14 @@
 .vscode/settings.json
 
 # Claude
+# Local-only: private instructions, machine-local settings, worktrees, and the
+# untracked document store (.claude/docs/{directions,notes,references}).
 CLAUDE.local.md
-
-# Notes
-.notes
+.claude/settings.local.json
+.claude/worktrees/
+.claude/docs/
+.claude/scheduled_tasks.json
+.claude/scheduled_tasks.lock
 
 # Import graph
 import_graph.dot
