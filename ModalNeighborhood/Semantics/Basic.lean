@@ -183,7 +183,7 @@ lemma iff_eq_truthset_univ : M ⊧ φ ↔ (M φ = Set.univ) := by
 
 instance : Semantics.Bot Model where
   models_falsum M := by
-    simp only [Semantics.NotModels, iff_eq_truthset_univ, Neighborhood.Model.truthset.eq_bot];
+    simp only [iff_eq_truthset_univ, Neighborhood.Model.truthset.eq_bot];
     apply Set.nonempty_iff_ne_empty.mp ?_ |>.symm;
     simp;
 

@@ -196,7 +196,7 @@ lemma iff_dia {Γ : 𝓒.toModel} : ◇φ ∈ Γ.1 ↔ Γ ∈ 𝓒.toModel.dia (
     have h := iff_box (Γ := Γ) (φ := ∼φ) |>.not;
     simp only [toModel] at h;
     exact h;
-  _ ↔ _ := by simp only [Frame.dia, Frame.box, toModel, Set.mem_setOf_eq, Set.mem_compl_iff, proofset.eq_neg]; tauto;
+  _ ↔ _ := by simp only [Frame.dia, Frame.box, toModel, proofset.eq_neg]; tauto;
 
 @[grind]
 lemma truthlemma : (proofset 𝓢 φ) = (𝓒.toModel φ) := by
