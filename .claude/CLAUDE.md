@@ -17,7 +17,7 @@ Bibliographic metadata is looked up through the Zotero MCP server (`mcp__zotero_
 
 ## Working in a worktree
 
-Every task, not only proof work, is carried out on a branch in a worktree under `.claude/worktrees/<branch>`; `main` is never edited directly. See `contribute/index.md` for the exact `git worktree add` / `.lake` procedure and for the maintenance edits that are exempt. The hook `.claude/hooks/protect-main.sh` enforces this by denying index- and history-writing git commands while the target repository is on `main`.
+Every task, not only proof work, is carried out on a branch in a worktree under `.claude/worktrees/<branch>`; `main` is never edited directly. See `contribute/index.md` for the exact `git worktree add` / `.lake` procedure and for the maintenance edits that are exempt.
 
 Do not use `gwq`: its worktree paths conflict with the `EnterWorktree` tool. Enter a worktree by calling `EnterWorktree` with an absolute `path` (its `name` argument would skip the `.lake` setup), and leave with `ExitWorktree` in `keep` mode.
 

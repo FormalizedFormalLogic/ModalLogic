@@ -19,7 +19,7 @@ This repository is a collection of independent formalization projects, one Lake 
 
 Every change is developed on a topic branch in a git worktree and lands on `main` as a single squash merge, approved by the repository owner beforehand.
 
-**Committing directly on `main` is not allowed.** The `PreToolUse` hook [`.claude/hooks/protect-main.sh`](../.claude/hooks/protect-main.sh) denies `git commit`/`add`/`merge`/`push`/… whenever the target repository is on `main`. The exceptions are maintenance edits to the repository's own configuration (`.claude/`, `contribute/`, `.gitignore`, `references.bib`, `Justfile`, CI and editor settings) and the approved squash merge itself; prefix the command with `ALLOW_MAIN_WRITE=1` to bypass the hook there.
+**Committing directly on `main` is not allowed.** The exceptions are maintenance edits to the repository's own configuration (`.claude/`, `contribute/`, `.gitignore`, `references.bib`, `Justfile`, CI and editor settings) and the approved squash merge itself.
 
 ```shell
 git worktree add .claude/worktrees/<branch> -b <branch>

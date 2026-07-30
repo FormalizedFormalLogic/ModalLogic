@@ -12,6 +12,7 @@
 # untracked document store (.claude/docs/{directions,notes,references}).
 CLAUDE.local.md
 .claude/settings.local.json
+.claude/hooks/
 .claude/worktrees/
 .claude/docs/
 .claude/scheduled_tasks.json
