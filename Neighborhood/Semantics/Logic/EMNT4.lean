@@ -13,8 +13,7 @@ public import Neighborhood.Semantics.Example.Frame3_9471106
 Soundness, consistency and completeness of `LogicEMNT4`, the classical modal logic axiomatised by
 the monotonicity axiom `M`, `N := □⊤`, the reflexivity axiom `T` and the transitivity axiom `Four`,
 with respect to the neighborhood frames that are monotonic, contain their unit, are reflexive and
-are transitive, together with its finite frame property. Also proves the strict inclusions of
-`LogicEMT4` and `LogicENT4` in `LogicEMNT4`.
+are transitive, together with its finite frame property.
 -/
 
 @[expose] public section

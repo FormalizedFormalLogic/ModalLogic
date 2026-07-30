@@ -9,8 +9,7 @@ public import Neighborhood.Semantics.Example.Frame1_1
 
 Soundness, consistency and completeness of `LogicECP`, the classical modal logic axiomatised by
 both the regularity axiom `C` and the possibility axiom `P` over `LogicE`, with respect to the
-regular neighborhood frames in which no world has the empty set as one of its neighborhoods. Also
-its strict inclusion of `LogicECD`.
+regular neighborhood frames in which no world has the empty set as one of its neighborhoods.
 -/
 
 @[expose] public section

@@ -15,8 +15,7 @@ public import Neighborhood.Semantics.Example.Frame2_238
 
 Soundness, consistency and completeness of `LogicEND`, the classical modal logic axiomatised by
 both `N := □⊤` and the seriality axiom `D` over `LogicE`, with respect to the serial neighborhood
-frames containing their unit. Also its strict inclusions of `LogicEN`, `LogicED`, `LogicEP` and
-`LogicENP`.
+frames containing their unit.
 -/
 
 @[expose] public section

@@ -12,9 +12,6 @@ public import Neighborhood.Semantics.Example.Frame2_137
 Soundness, consistency and completeness of `LogicEMN`, the classical modal logic axiomatised by
 the monotonicity axiom `M` together with `N := □⊤`, with respect to the monotonic frames
 containing their unit.
-
-Also proves the strict inclusions of `LogicEM` and `LogicEN` in `LogicEMN` (a comparison of two
-logics lives in the stronger logic's module).
 -/
 
 @[expose] public section

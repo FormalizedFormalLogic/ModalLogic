@@ -14,9 +14,6 @@ public import Neighborhood.Semantics.Example.Frame1_0
 Soundness, consistency and completeness of `LogicEMCN`, the classical modal logic axiomatised by
 the monotonicity axiom `M`, the regularity axiom `C` and `N := □⊤`, with respect to the
 neighborhood frames that are monotonic, regular, and contain their unit.
-
-Also proves the strict inclusions of `LogicECN`, `LogicEMC` and `LogicEMN` in `LogicEMCN` (a
-comparison of two logics lives in the stronger logic's module).
 -/
 
 @[expose] public section

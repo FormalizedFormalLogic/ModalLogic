@@ -10,7 +10,7 @@ public import Neighborhood.Semantics.Example.Frame2_238
 
 Soundness, consistency and completeness of `LogicEMD`, the classical modal logic axiomatised by
 both the monotonicity axiom `M` and the seriality axiom `D` over `LogicE`, with respect to the
-monotonic and serial neighborhood frames. Also its strict inclusion of `LogicEMP`.
+monotonic and serial neighborhood frames.
 -/
 
 @[expose] public section
