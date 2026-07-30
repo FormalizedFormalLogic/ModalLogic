@@ -1,126 +1,139 @@
 module
 
-public import Neighborhood.Semantics.Logic.END4
 public import Neighborhood.Semantics.Logic.ENT4
 public import Neighborhood.Semantics.Logic.E5
 
+/-!
+# The neighborhood logic `LogicET5`
+
+Soundness, consistency and completeness of `LogicET5`, the classical modal logic axiomatised by
+the reflexivity axiom `T` and the euclideanness axiom `Five` over `LogicE`, with respect to the
+neighborhood frames that are both reflexive and euclidean. Also proves the strict inclusions of
+`LogicENT4` and `LogicE5` in `LogicET5`.
+-/
+
 @[expose] public section
 
-@[simp]
-lemma Set.ne_univ_empty [Nonempty α] : Set.univ (α := α) ≠ ∅ := by simp only [ne_eq,
-  univ_eq_empty_iff, not_isEmpty_of_nonempty, not_false_eq_true];
+variable {α : Type u} {A : Formula α}
 
-namespace LO.Modal
+theorem LogicET5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] [F.IsEuclidean] :
+    A ∈ LogicET5 → F ⊧ A :=
+  Hilbert.sound (by
+    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
+    · exact valid_axiomT_of_isReflexive
+    · exact valid_axiomFive_of_isEuclidean)
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+theorem LogicET5.consistent : (@LogicET5 α).IsConsistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole) (by
+    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
+    · exact valid_axiomT_of_isReflexive
+    · exact valid_axiomFive_of_isEuclidean)
 
-namespace Neighborhood
+instance : (@LogicET5 α).HasAxiomN :=
+  ⟨have hiff : (⊤ : Formula α) 🡘 ◇⊤ ∈ (@LogicET5 α) :=
+      Logic.E_intro Logic.diaTc (Logic.C_of_conseq Logic.verum)
+   Logic.C_of_E_mpr (Logic.re hiff) ⨀ (Logic.axiomFive ⨀ (Logic.diaTc ⨀ Logic.verum))⟩
 
-protected class Frame.IsET5 (F : Frame) extends F.IsReflexive, F.IsEuclidean
-protected abbrev FrameClass.ET5 : FrameClass := { F | F.IsET5 }
-
-variable {F : Frame}
-
-instance : Frame.simple_blackhole.IsET5 where
-  eucl := by
-    intro X x hx;
-    simp_all [Frame.simple_blackhole, Frame.box];
+instance : Nonempty (MaximalConsistentSet (@LogicET5 α)) :=
+  MaximalConsistentSet.nonempty LogicET5.consistent
 
 section
 
-variable [Entailment S (Formula ℕ)] {𝓢 : S} [Entailment.Consistent 𝓢] [Entailment.ET5 𝓢]
+variable [DecidableEq α]
 
-instance : (basicCanonicity 𝓢).toModel.IsEuclidean := by
-  apply Canonicity.isEuclidean';
-  intro X X_np A;
-  suffices X ∉ (basicCanonicity 𝓢).𝒩 A → {w | X ∉ (basicCanonicity 𝓢).𝒩 w} ∈ (basicCanonicity 𝓢).𝒩 A by
-    contrapose!;
-    intro h1 h2;
-    simp only [Set.mem_compl_iff, Set.mem_setOf_eq] at h1 h2;
-    exact h2 (this h1);
-  intro h;
-  have : {B | X ∉ (basicCanonicity 𝓢).𝒩 B} = proofset 𝓢 ⊤ := by
-    suffices ∀ B, X ∉ (basicCanonicity 𝓢).𝒩 B by simpa [Set.eq_univ_iff_forall];
-    rintro _ ⟨φ, _, hφ₂⟩;
-    apply X_np φ;
-    apply hφ₂;
-  exact this ▸ (basicCanonicity 𝓢 |>.def_𝒩 A ⊤ |>.mp $ MaximalConsistentSet.mem_of_prove (by simp));
+omit [DecidableEq α] in
+theorem LogicET5.hasAxiomFour : Axioms.Four A ∈ (@LogicET5 α) :=
+  have h1 : (□A : Formula α) 🡒 ◇□A ∈ (@LogicET5 α) := Logic.diaTc
+  have h2 : ◇□A 🡒 (□A : Formula α) ∈ (@LogicET5 α) :=
+    (Logic.hasAxiomGeachSwap (L := @LogicET5 α) (g := ⟨1, 1, 0, 1⟩)).Geach A
+  have hiff : (□A : Formula α) 🡘 ◇□A ∈ (@LogicET5 α) := Logic.E_intro h1 h2
+  Logic.C_trans (Logic.C_trans h1 Logic.axiomFive)
+    (Logic.C_of_E_mp (Logic.re (Logic.E_symm hiff)))
 
-instance : (basicCanonicity 𝓢).toModel.IsET5 where
+instance : (basicCanonicity (@LogicET5 α)).toModel.IsEuclidean := by
+  apply Canonicity.isEuclidean'
+  intro X hX
+  have hbox : (basicCanonicity (@LogicET5 α)).toModel.box X = ∅ := by
+    ext Ω
+    simp only [Set.mem_empty_iff_false, iff_false]
+    exact fun hΩ => basicCanonicity.not_isNonproofset_of_mem_box hΩ hX
+  rw [hbox]
+  simp [Frame.dia, Frame.contains_unit]
+
+theorem LogicET5.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsEuclidean] → F ⊧ A) :
+    A ∈ @LogicET5 α :=
+  (basicCanonicity LogicET5).mem_of_valid
+    (h (basicCanonicity LogicET5).toModel.toFrame (basicCanonicity LogicET5).toModel.Val)
 
 end
 
-@[simp]
-lemma counterframe_2_3_5.not_valid_axiomT : ¬counterframe_2_3_5 ⊧ Axioms.T (Formula.atom a) := by
-  apply not_imp_not.mpr isReflexive_of_valid_axiomT;
-  by_contra! hC;
-  have := hC.refl {0};
-  have := @this 1;
-  grind;
+theorem LogicENT4_ssubset_LogicET5 : @LogicENT4 ℕ ⊂ LogicET5 := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩)
+    · exact Logic.axiomN
+    · exact Logic.axiomT
+    · exact LogicET5.hasAxiomFour
+  · intro h
+    have hFive : Axioms.Five (.atom 0) ∈ @LogicENT4 ℕ := h Logic.axiomFive
+    let F : Frame (Fin 3) := ⟨fun x => {{x}, Set.univ}⟩
+    haveI : F.ContainsUnit := ⟨by
+      ext x
+      simp only [Frame.box, F, Set.mem_setOf_eq, Set.mem_univ, iff_true]
+      right; rfl⟩
+    have hbox_univ : F.box (Set.univ : Set (Fin 3)) = Set.univ := F.contains_unit
+    have hbox_singleton : ∀ a : Fin 3, F.box ({a} : Set (Fin 3)) = {a} := by
+      intro a
+      have hne : ({a} : Set (Fin 3)) ≠ Set.univ := by
+        obtain ⟨b, hb⟩ := exists_ne a
+        intro heq
+        exact hb (show b ∈ ({a} : Set (Fin 3)) by rw [heq]; exact Set.mem_univ b)
+      ext y
+      simp only [Frame.box, F, Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff,
+        Set.singleton_eq_singleton_iff]
+      constructor
+      · rintro (h | h)
+        · exact h.symm
+        · exact absurd h hne
+      · rintro rfl
+        left; rfl
+    haveI : F.IsReflexive := ⟨by
+      intro X x hx
+      simp only [Frame.box, F, Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff] at hx
+      rcases hx with rfl | rfl
+      · rfl
+      · trivial⟩
+    haveI : F.IsTransitive := ⟨by
+      intro X x hx
+      simp only [Function.iterate_succ, Function.iterate_zero, Function.comp_apply, id_eq]
+      simp only [Frame.box, F, Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff] at hx
+      rcases hx with rfl | rfl
+      · simp [hbox_singleton]
+      · simp [hbox_univ]⟩
+    have hE : F.IsEuclidean := isEuclidean_of_valid_axiomFive (LogicENT4.sound F hFive)
+    have hdia : F.dia ({0, 1} : Set (Fin 3)) = {0, 1} := by
+      simp only [Set.ext_iff, Frame.dia, Frame.box, F, Set.mem_compl_iff, Set.mem_setOf_eq,
+        Set.mem_insert_iff, Set.mem_singleton_iff]
+      decide
+    have hbox : F.box ({0, 1} : Set (Fin 3)) = ∅ := by
+      simp only [Set.ext_iff, Frame.box, F, Set.mem_setOf_eq, Set.mem_insert_iff,
+        Set.mem_singleton_iff, Set.mem_empty_iff_false]
+      decide
+    have h2 := hE.eucl {0, 1}
+    rw [hdia, hbox] at h2
+    exact (Set.nonempty_of_mem (Set.mem_insert 0 {1})).ne_empty (Set.subset_empty_iff.mp h2)
 
-instance : counterframe_axiomFive.IsENT4 where
-  contains_unit := by simp [Frame.box];
-  refl := by rintro X x (rfl | rfl | rfl) <;> tauto_set;
-  trans := by rintro X x (rfl | rfl) <;> . dsimp [Frame.box]; grind;
+theorem LogicE5_ssubset_LogicET5 : @LogicE5 ℕ ⊂ LogicET5 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
+  · intro h
+    have hT : Axioms.T (.atom 0) ∈ @LogicE5 ℕ := h Logic.axiomT
+    haveI : (⟨fun _ => Set.univ⟩ : Frame (Fin 1)).IsEuclidean :=
+      ⟨fun X => by simp [Frame.box, Frame.dia]⟩
+    have hR := isReflexive_of_valid_axiomT
+      (LogicE5.sound (⟨fun _ => Set.univ⟩ : Frame (Fin 1)) hT)
+    have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
+    simp at this
 
-end Neighborhood
-
-namespace ET5
-
-instance Neighborhood.sound : Sound Modal.ET5 FrameClass.ET5 := instSound_of_validates_axioms $ by
-  constructor;
-  rintro _ (rfl | rfl) F (rfl | rfl) <;> simp;
-
-instance consistent : Entailment.Consistent Modal.ET5 := consistent_of_sound_frameclass FrameClass.ET5 $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  infer_instance;
-
-instance Neighborhood.complete : Complete Modal.ET5 FrameClass.ET5 := (basicCanonicity Modal.ET5).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  infer_instance;
-
-end ET5
-
-instance : Modal.ENT4 ⪱ Modal.ET5 := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_provable_axioms;
-    rintro φ (rfl | rfl | rfl) <;> simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.Five (.atom 0));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.ENT4);
-      apply not_validOnFrameClass_of_exists_frame;
-      use counterframe_axiomFive;
-      constructor;
-      . apply Set.mem_setOf_eq.mpr;
-        infer_instance
-      . simp;
-
-instance : Modal.E5 ⪱ Modal.ET5 := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.T (.atom 0));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.E5);
-      apply not_validOnFrameClass_of_exists_frame;
-      use ⟨Fin 2, λ _ => Set.univ⟩;
-      constructor;
-      . apply Set.mem_setOf_eq.mpr;
-        constructor;
-        . intro X x hx;
-          simp_all [Frame.box, Frame.dia];
-      . apply not_imp_not.mpr isReflexive_of_valid_axiomT;
-        by_contra! hC;
-        have := hC.refl {1};
-        have := @this 0;
-        grind;
-
-end LO.Modal
 end
