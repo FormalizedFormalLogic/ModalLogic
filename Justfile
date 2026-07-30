@@ -29,6 +29,11 @@ zoo:
 cloc:
     cloc --include-lang=Lean Fin74/ Neighborhood/ ModalLogicArchive/
 
-# Remove unused imports/variables and drop unnecessary `public` (run before merging any work)
+# Remove unused imports/variables and drop unnecessary `public` (slow; usually only needed
+# when CI complains). Each library must be shaken in a separate invocation: with no module
+# argument shake uses all default targets at once, and loading Fin74 and Neighborhood into
+# one environment clashes (both declare `Formula`), which aborts the whole run.
 shake:
-    lake shake --keep-public --fix
+    lake shake --keep-public --fix Fin74
+    lake shake --keep-public --fix ModalLogicArchive
+    lake shake --keep-public --fix Neighborhood
