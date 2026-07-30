@@ -1,330 +1,264 @@
 module
 
-public import Foundation.Modal.MaximalConsistentSet
 public import Neighborhood.Semantics.Basic
-public import Foundation.Modal.Entailment.EM
+public import Neighborhood.Logic.MaximalConsistentSet
+public import Neighborhood.Logic.Calculus
+
+/-!
+# Canonical neighborhood models
+
+The canonical model construction for the classical non-normal modal logics: the *proofset* of a
+formula is the set of maximal consistent sets containing it, and a *canonicity* datum assigns
+neighborhoods to maximal consistent sets so that `□A` belongs to `Ω` exactly when the proofset of
+`A` is one of `Ω`'s neighborhoods. Every canonicity datum yields a canonical model on which
+membership of a formula in a maximal consistent set agrees with its truth (the truth lemma), from
+which completeness follows by Lindenbaum's lemma.
+-/
 
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {L : Logic α} {A B : Formula α}
 
-open LO.Entailment LO.Modal.Entailment
+/-- Sets of maximal consistent sets of `L`, i.e. candidate proofsets. -/
+abbrev Proofset (L : Logic α) := Set (MaximalConsistentSet L)
 
-section
+/-- The proofset of `A`: the maximal consistent sets of `L` containing `A`. -/
+def proofset (L : Logic α) (A : Formula α) : Proofset L := { Ω | A ∈ Ω }
 
-open MaximalConsistentSet
+/-- A set of maximal consistent sets that is not the proofset of any formula. -/
+def Proofset.IsNonproofset (P : Proofset L) : Prop := ∀ A, P ≠ proofset L A
 
-variable {α : Type*} [DecidableEq α]
-variable {S} [Entailment S (Formula α)]
-variable {𝓢 : S} [Entailment.Cl 𝓢]
+lemma iff_not_isNonproofset_exists {P : Proofset L} :
+    ¬P.IsNonproofset ↔ ∃ A, P = proofset L A := by
+  simp [Proofset.IsNonproofset]
 
-abbrev Proofset (𝓢 : S) := Set (MaximalConsistentSet 𝓢)
-
-def proofset (𝓢 : S) (φ : Formula α) : Proofset 𝓢 := { Γ : MaximalConsistentSet 𝓢 | φ ∈ Γ }
-
-def Proofset.IsNonproofset {𝓢 : S} (P : Proofset 𝓢) := ∀ φ, P ≠ proofset 𝓢 φ
-
-omit [DecidableEq α] [Entailment.Cl 𝓢] in
-lemma iff_not_isNonProofset_exists : ¬P.IsNonproofset ↔ ∃ φ, P = proofset 𝓢 φ := by
-  dsimp [Proofset.IsNonproofset];
-  push Not;
-  tauto;
-
-omit [DecidableEq α] [Entailment.Cl 𝓢] in
 @[simp]
-lemma not_isNonproofset_proofset : ¬(proofset 𝓢 φ).IsNonproofset := by simp [Proofset.IsNonproofset];
-
+lemma not_isNonproofset_proofset : ¬(proofset L A).IsNonproofset := fun h => h A rfl
 
 namespace proofset
 
-local notation "‖" φ "‖" => proofset 𝓢 φ
+variable {Ω : MaximalConsistentSet L}
 
-variable {φ ψ : Formula α} {Γ : MaximalConsistentSet 𝓢}
+@[grind =] lemma iff_mem : A ∈ Ω ↔ Ω ∈ proofset L A := Iff.rfl
 
-omit [DecidableEq α] [Entailment.Cl 𝓢] in
-@[grind]
-lemma iff_mem : φ ∈ Γ ↔ Γ ∈ ‖φ‖ := by simp [proofset];
+lemma mem_of_mem_of_subset (h : proofset L A ⊆ proofset L B) (hA : A ∈ Ω) : B ∈ Ω :=
+  iff_mem.mpr (h (iff_mem.mp hA))
 
-omit [DecidableEq α] [Entailment.Cl 𝓢] in
-lemma mem_of_mem_of_subset (h : ‖φ‖ ⊆ ‖ψ‖) : φ ∈ Γ → ψ ∈ Γ := by
-  intro hφ;
-  grind;
+lemma iff_mem_of_eq (h : proofset L A = proofset L B) : A ∈ Ω ↔ B ∈ Ω := by
+  rw [iff_mem, iff_mem, h]
 
-omit [DecidableEq α] [Entailment.Cl 𝓢] in
-@[grind] lemma iff_mem_of_eq (h : ‖φ‖ = ‖ψ‖) : φ ∈ Γ ↔ ψ ∈ Γ := by grind;
+variable [DecidableEq α] [L.Cl]
 
-lemma eq_top : ‖⊤‖ = Set.univ := by simp [proofset];
+@[simp, grind =] lemma eq_top : proofset L (⊤ : Formula α) = Set.univ := by
+  ext Ω; simp [proofset]
 
-lemma eq_bot : ‖⊥‖ = ∅ := by simp [proofset];
+omit [DecidableEq α] in
+@[simp, grind =] lemma eq_bot : proofset L (⊥ : Formula α) = ∅ := by
+  ext Ω; simp [proofset]
 
-lemma eq_neg : ‖∼φ‖ = ‖φ‖ᶜ := by simp [proofset]; tauto;
+@[simp, grind =] lemma eq_neg : proofset L (∼A) = (proofset L A)ᶜ := by
+  ext Ω; simp [proofset]
 
-lemma eq_imp : ‖φ 🡒 ψ‖ = (‖φ‖ᶜ ∪ ‖ψ‖) := by
-  ext;
-  simp [proofset];
-  tauto;
+@[simp, grind =] lemma eq_imp : proofset L (A 🡒 B) = (proofset L A)ᶜ ∪ proofset L B := by
+  ext Ω; simp [proofset]; tauto
 
-lemma eq_and : ‖φ ⋏ ψ‖ = ‖φ‖ ∩ ‖ψ‖ := by simp [proofset]; tauto;
+@[simp, grind =] lemma eq_and : proofset L (A ⋏ B) = proofset L A ∩ proofset L B := by
+  ext Ω; simp [proofset]
 
-lemma eq_or : ‖φ ⋎ ψ‖ = ‖φ‖ ∪ ‖ψ‖ := by simp [proofset]; tauto;
+@[simp, grind =] lemma eq_or : proofset L (A ⋎ B) = proofset L A ∪ proofset L B := by
+  ext Ω; simp [proofset]; tauto
 
-attribute [simp, grind]
-  eq_top
-  eq_bot
-  eq_neg
-  eq_imp
-  eq_and
-  eq_or
+/-- A formula of `L` is exactly one whose proofset is everything. -/
+lemma iff_provable_eq_univ : A ∈ L ↔ proofset L A = Set.univ := by
+  rw [← MaximalConsistentSet.iff_forall_mem_provable, Set.eq_univ_iff_forall]
+  simp [proofset]
 
-lemma iff_provable_eq_univ : 𝓢 ⊢ φ ↔ ‖φ‖ = Set.univ := by
-  constructor;
-  . intro h;
-    apply Set.eq_univ_of_forall;
-    intro Γ;
-    apply iff_mem.mp;
-    grind;
-  . intro h;
-    apply iff_forall_mem_provable.mp;
-    intro Γ;
-    apply iff_mem.mpr;
-    rw [h];
-    tauto;
+@[grind =]
+lemma imp_subset : A 🡒 B ∈ L ↔ proofset L A ⊆ proofset L B := by
+  rw [← MaximalConsistentSet.iff_forall_mem_provable]
+  constructor
+  · intro h Ω hΩ
+    exact iff_mem.mp (MaximalConsistentSet.iff_mem_imp.mp (h Ω) (iff_mem.mpr hΩ))
+  · intro h Ω
+    exact MaximalConsistentSet.iff_mem_imp.mpr fun hA => iff_mem.mpr (h (iff_mem.mp hA))
 
-@[grind]
-lemma imp_subset : 𝓢 ⊢ φ 🡒 ψ ↔ ‖φ‖ ⊆ ‖ψ‖ := by
-  constructor;
-  . intro h Γ;
-    apply iff_mem_imp.mp $ iff_forall_mem_provable.mpr h Γ;
-  . intro h;
-    apply iff_forall_mem_provable.mp;
-    intro Γ;
-    apply iff_mem_imp.mpr $ @h Γ;
+@[grind =]
+lemma iff_subset : A 🡘 B ∈ L ↔ proofset L A = proofset L B := by
+  rw [Formula.iff_eq, Logic.K_intro_iff, imp_subset, imp_subset]
+  exact Set.Subset.antisymm_iff.symm
 
-@[grind]
-lemma iff_subset : 𝓢 ⊢ φ 🡘 ψ ↔ ‖φ‖ = ‖ψ‖ := by
-  constructor;
-  . intro h;
-    apply Set.eq_of_subset_of_subset <;>
-    . apply imp_subset.mp;
-      cl_prover [h];
-  . intro h;
-    have ⟨h₁, h₂⟩ := Set.Subset.antisymm_iff.mp h;
-    replace h₁ := imp_subset.mpr h₁;
-    replace h₂ := imp_subset.mpr h₂;
-    cl_prover [h₁, h₂];
+lemma eq_boxed_of_eq [L.HasRE] (h : proofset L A = proofset L B) :
+    proofset L (□A) = proofset L (□B) :=
+  iff_subset.mp (Logic.re (iff_subset.mpr h))
 
-omit [Entailment.Cl 𝓢] in
-lemma eq_boxed_of_eq [Entailment.E 𝓢] : ‖φ‖ = ‖ψ‖ → ‖□φ‖ = ‖□ψ‖ := by
-  intro h;
-  apply iff_subset.mp;
-  apply re!;
-  apply iff_subset.mpr;
-  assumption;
-
-omit [Entailment.Cl 𝓢] in
-@[grind]
-lemma box_subset_of_subset [Entailment.EM 𝓢] : ‖φ‖ ⊆ ‖ψ‖ → ‖□φ‖ ⊆ ‖□ψ‖ := by
-  suffices 𝓢 ⊢ φ 🡒 ψ → 𝓢 ⊢ □φ 🡒 □ψ by simpa [imp_subset];
-  apply Entailment.rm!;
+@[grind →]
+lemma box_subset_of_subset [L.HasRE] [L.HasAxiomM] (h : proofset L A ⊆ proofset L B) :
+    proofset L (□A) ⊆ proofset L (□B) :=
+  imp_subset.mp (Logic.rm (imp_subset.mpr h))
 
 end proofset
 
-end
-
-
-namespace Neighborhood
-
-open Formula (atom)
-open Formula.Neighborhood
-open MaximalConsistentSet
-
-variable {S} [Entailment S (Formula ℕ)]
-variable {𝓢 : S} [Entailment.E 𝓢] [Entailment.Consistent 𝓢]
-variable {φ ψ ξ : Formula ℕ}
-
-
-structure Canonicity (𝓢 : S) where
-  𝒩 : MaximalConsistentSet 𝓢 → Set (Set (MaximalConsistentSet 𝓢))
-  def_𝒩 : ∀ X : MaximalConsistentSet 𝓢, ∀ φ, □φ ∈ X ↔ proofset 𝓢 φ ∈ 𝒩 X
-  V : ℕ → Set (MaximalConsistentSet 𝓢)
-  def_V : ∀ a, V a = proofset 𝓢 (.atom a)
+/-- A canonical neighborhood datum for `L`: an assignment of neighborhoods to the maximal
+consistent sets of `L` under which `□A` belongs to `Ω` exactly when the proofset of `A` is one of
+`Ω`'s neighborhoods, together with a valuation reproducing the proofsets of the atoms. -/
+structure Canonicity (L : Logic α) where
+  𝒩 : MaximalConsistentSet L → Set (Set (MaximalConsistentSet L))
+  def_𝒩 : ∀ Ω : MaximalConsistentSet L, ∀ A, □A ∈ Ω ↔ proofset L A ∈ 𝒩 Ω
+  V : α → Set (MaximalConsistentSet L)
+  def_V : ∀ a, V a = proofset L (.atom a)
 
 namespace Canonicity
 
-attribute [simp, grind] def_𝒩 def_V
+attribute [simp] def_𝒩 def_V
 
-variable {𝓒 : Canonicity 𝓢}
+variable [DecidableEq α] [L.Cl] [L.Consistent] {𝓒 : Canonicity L}
 
-def toModel (𝓒 : Canonicity 𝓢) : Model where
-  World := MaximalConsistentSet 𝓢
+/-- The canonical model of `𝓒`. -/
+def toModel (𝓒 : Canonicity L) : Model (MaximalConsistentSet L) α where
   𝒩 := 𝓒.𝒩
   Val := 𝓒.V
 
+omit [DecidableEq α] in
 @[simp]
-lemma box_proofset : 𝓒.toModel.box (proofset 𝓢 φ) = (proofset 𝓢 (□φ)) := by
-  ext w;
-  apply Iff.trans ?_ (𝓒.def_𝒩 w φ).symm;
-  rfl;
+lemma box_proofset : 𝓒.toModel.box (proofset L A) = proofset L (□A) := by
+  ext Ω; exact (𝓒.def_𝒩 Ω A).symm
 
+omit [DecidableEq α] in
 @[simp]
-lemma boxItr_proofset : 𝓒.toModel.box^[n] (proofset 𝓢 φ) = (proofset 𝓢 (□^[n]φ)) := by
-  induction n generalizing φ with
-  | zero => simp;
-  | succ n ih => simp only [Function.iterate_succ, Function.comp_apply, box_proofset, ih];
-
-@[simp]
-lemma dia_proofset : 𝓒.toModel.dia (proofset 𝓢 φ) = (proofset 𝓢 (◇φ)) := by
-  suffices 𝓒.toModel.dia (proofset 𝓢 φ) = (proofset 𝓢 (∼(□(∼φ)))) by tauto;
-  have h := 𝓒.box_proofset (φ := ∼φ);
-  rw [proofset.eq_neg] at h;
-  unfold Frame.dia;
-  rw [proofset.eq_neg];
-  exact congrArg _ h;
+lemma boxItr_proofset {n : ℕ} : 𝓒.toModel.box^[n] (proofset L A) = proofset L (□^[n]A) := by
+  induction n generalizing A with
+  | zero => simp
+  | succ n ih => simp only [Function.iterate_succ, Function.comp_apply, box_proofset, ih]
 
 @[simp]
-lemma diaItr_proofset : 𝓒.toModel.dia^[n] (proofset 𝓢 φ) = (proofset 𝓢 (◇^[n]φ)) := by
-  induction n generalizing φ with
-  | zero => simp;
-  | succ n ih => simp only [Function.iterate_succ, Function.comp_apply, dia_proofset, ih];
+lemma dia_proofset : 𝓒.toModel.dia (proofset L A) = proofset L (◇A) := by
+  rw [proofset.eq_neg, ← box_proofset (𝓒 := 𝓒), proofset.eq_neg]
+  rfl
 
-@[grind]
-lemma iff_box {Γ : 𝓒.toModel} : □φ ∈ Γ.1 ↔ Γ ∈ 𝓒.toModel.box (proofset 𝓢 φ) := by apply 𝓒.def_𝒩
+@[simp]
+lemma diaItr_proofset {n : ℕ} : 𝓒.toModel.dia^[n] (proofset L A) = proofset L (◇^[n]A) := by
+  induction n generalizing A with
+  | zero => simp
+  | succ n ih => simp only [Function.iterate_succ, Function.comp_apply, dia_proofset, ih]
 
-@[grind]
-lemma iff_dia {Γ : 𝓒.toModel} : ◇φ ∈ Γ.1 ↔ Γ ∈ 𝓒.toModel.dia (proofset 𝓢 φ) := calc
-  _ ↔ ∼□(∼φ) ∈ Γ.1 := by rfl;
-  _ ↔ □(∼φ) ∉ Γ.1 := by apply MaximalConsistentSet.iff_mem_neg;
-  _ ↔ (proofset 𝓢 (∼φ)) ∉ (𝓒.𝒩 Γ) := by
-    have h := iff_box (Γ := Γ) (φ := ∼φ) |>.not;
-    simp only [toModel] at h;
-    exact h;
-  _ ↔ _ := by simp only [Frame.dia, Frame.box, toModel, proofset.eq_neg]; tauto;
+omit [DecidableEq α] in
+lemma iff_box {Ω : MaximalConsistentSet L} : □A ∈ Ω ↔ Ω ∈ 𝓒.toModel.box (proofset L A) :=
+  𝓒.def_𝒩 Ω A
 
-@[grind]
-lemma truthlemma : (proofset 𝓢 φ) = (𝓒.toModel φ) := by
-  induction φ with
-  | hatom => apply 𝓒.def_V _ |>.symm;
-  | hfalsum => simp; rfl;
-  | himp φ ψ ihφ ihψ => simp_all only [proofset.eq_imp]; rfl;
-  | hbox φ ihφ =>
-    suffices proofset 𝓢 (□φ) = 𝓒.toModel.box (𝓒.toModel.truthset φ) by simpa;
-    rw [←ihφ, box_proofset];
+lemma iff_dia {Ω : MaximalConsistentSet L} : ◇A ∈ Ω ↔ Ω ∈ 𝓒.toModel.dia (proofset L A) := by
+  have h : ◇A ∈ Ω ↔ □(∼A) ∉ Ω := MaximalConsistentSet.iff_mem_neg (A := □(∼A))
+  rw [h, iff_box (𝓒 := 𝓒), proofset.eq_neg]
+  rfl
 
-lemma completeness {C : FrameClass} (hC : 𝓒.toModel.toFrame ∈ C) : LO.Complete 𝓢 C := by
-  constructor;
-  intro φ hφ;
-  contrapose! hφ;
-  obtain ⟨Γ, hΓ⟩ := lindenbaum $ FormulaSet.unprovable_iff_singleton_neg_consistent.mpr hφ;
-  apply not_validOnFrameClass_of_exists_model_world;
-  use 𝓒.toModel, Γ;
-  constructor;
-  . assumption;
-  . suffices Γ ∉ proofset 𝓢 φ by simpa [Semantics.Models, Satisfies, 𝓒.truthlemma];
-    apply proofset.iff_mem.not.mp;
-    apply MaximalConsistentSet.iff_mem_neg.mp;
-    tauto;
+/-- The truth lemma: the proofset of `A` is exactly the truth set of `A` in `𝓒`'s canonical
+model. -/
+lemma truthlemma : proofset L A = 𝓒.toModel.truthset A := by
+  induction A with
+  | hfalsum => simp
+  | hatom a => exact (𝓒.def_V a).symm
+  | himp A B ihA ihB => simp [ihA, ihB]
+  | hbox A ihA => rw [Model.truthset.eq_box, ← ihA, box_proofset]
+
+/-- Every formula valid on `𝓒`'s canonical model is a theorem of `L`: the generic completeness
+producer for a canonicity datum. -/
+theorem mem_of_valid (𝓒 : Canonicity L) (h : 𝓒.toModel ⊧ A) : A ∈ L := by
+  by_contra hA
+  obtain ⟨Ω, hΩ⟩ :=
+    MaximalConsistentSet.lindenbaum (FormulaSet.unprovable_iff_singleton_neg_consistent.mpr hA)
+  have hΩA : ∼A ∈ Ω := hΩ rfl
+  have hAΩ : Ω ∈ proofset L A := by rw [𝓒.truthlemma]; exact h Ω
+  exact (MaximalConsistentSet.iff_mem_neg.mp hΩA) hAΩ
 
 end Canonicity
 
-
-def basicCanonicity (𝓢 : S) [Entailment.E 𝓢] : Canonicity 𝓢 where
-  𝒩 Γ X := ∃ φ, □φ ∈ Γ ∧ X = proofset 𝓢 φ
+/-- The canonicity datum whose neighborhoods at `Ω` are exactly the proofsets already witnessed
+by a boxed formula of `Ω`. -/
+def basicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] : Canonicity L where
+  𝒩 Ω (X : Proofset L) := ∃ A, □A ∈ Ω ∧ X = proofset L A
   def_𝒩 := by
-    intro X φ;
-    constructor;
-    . intro h;
-      use φ;
-    . rintro ⟨ψ, hψ₁, hψ₂⟩;
-      have := proofset.eq_boxed_of_eq hψ₂;
-      grind;
-  V a := proofset 𝓢 (.atom a);
-  def_V := by simp;
+    intro Ω A
+    constructor
+    · intro h; exact ⟨A, h, rfl⟩
+    · rintro ⟨B, hB, hAB⟩
+      exact (proofset.iff_mem_of_eq (proofset.eq_boxed_of_eq hAB)).mpr hB
+  V a := proofset L (.atom a)
+  def_V _ := rfl
 
 namespace basicCanonicity
 
-lemma iff_mem_box_exists_fml {X A}
-  : A ∈ (basicCanonicity 𝓢).toModel.box X ↔ ∃ φ, X = proofset 𝓢 φ ∧ A ∈ proofset 𝓢 (□φ)
-  := by
-    constructor;
-    . rintro ⟨φ, _, rfl⟩;
-      use φ;
-      simpa;
-    . tauto;
+variable [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent] {X : Proofset L}
+  {Ω : MaximalConsistentSet L}
 
-@[grind]
-lemma not_isNonproofset_of_mem_box {X : Proofset 𝓢} (h : A ∈ (basicCanonicity 𝓢).toModel.box X) : ¬X.IsNonproofset := by
-  obtain ⟨φ, rfl, _⟩ := basicCanonicity.iff_mem_box_exists_fml.mp h;
-  simp;
+lemma iff_mem_box_exists_fml :
+    Ω ∈ (basicCanonicity L).toModel.box X ↔ ∃ A, X = proofset L A ∧ Ω ∈ proofset L (□A) := by
+  constructor
+  · rintro ⟨A, hA, rfl⟩; exact ⟨A, rfl, hA⟩
+  · rintro ⟨A, rfl, hA⟩; exact ⟨A, hA, rfl⟩
 
-lemma iff_mem_dia_forall_fml {X} {Γ : (basicCanonicity 𝓢).toModel}
-  : Γ ∈ (basicCanonicity 𝓢).toModel.dia X ↔ ∀ φ, Xᶜ ≠ proofset 𝓢 φ ∨ Γ ∉ proofset 𝓢 (□φ)
-  := by
-    apply Iff.trans (iff_mem_box_exists_fml.not);
-    push +distrib Not;
-    rfl;
+@[grind →]
+lemma not_isNonproofset_of_mem_box (h : Ω ∈ (basicCanonicity L).toModel.box X) :
+    ¬X.IsNonproofset := by
+  obtain ⟨A, rfl, _⟩ := iff_mem_box_exists_fml.mp h
+  simp
+
+lemma iff_mem_dia_forall_fml :
+    Ω ∈ (basicCanonicity L).toModel.dia X ↔ ∀ A, Xᶜ ≠ proofset L A ∨ Ω ∉ proofset L (□A) := by
+  show Ω ∉ (basicCanonicity L).toModel.box Xᶜ ↔ _
+  simp only [iff_mem_box_exists_fml, not_exists, not_and_or]
 
 end basicCanonicity
 
-
-
-/-- `basicCanonicity` with condition for non-proofset -/
-def relativeBasicCanonicity (𝓢 : S) [Entailment.E 𝓢] (P : MaximalConsistentSet 𝓢 → Set (Proofset 𝓢)) : Canonicity 𝓢 where
-  𝒩 A (X : Proofset 𝓢) := (basicCanonicity 𝓢 |>.𝒩 A X) ∨ (X.IsNonproofset ∧ X ∈ P A);
+/-- `basicCanonicity` together with an extra family `P` of neighborhoods for the non-proofsets
+of each maximal consistent set. -/
+def relativeBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE]
+    (P : MaximalConsistentSet L → Set (Proofset L)) : Canonicity L where
+  𝒩 Ω (X : Proofset L) := (∃ A, □A ∈ Ω ∧ X = proofset L A) ∨ (X.IsNonproofset ∧ X ∈ P Ω)
   def_𝒩 := by
-    intro X φ;
-    constructor;
-    . intro h;
-      left;
-      use φ;
-    . rintro (⟨ψ, hψ₁, hψ₂⟩ | h);
-      . have := proofset.eq_boxed_of_eq hψ₂;
-        grind;
-      . simpa using h.1 φ;
-  V a := proofset 𝓢 (.atom a);
-  def_V := by simp;
+    intro Ω A
+    constructor
+    · intro h; exact Or.inl ⟨A, h, rfl⟩
+    · rintro (⟨B, hB, hAB⟩ | h)
+      · exact (proofset.iff_mem_of_eq (proofset.eq_boxed_of_eq hAB)).mpr hB
+      · exact absurd rfl (h.1 A)
+  V a := proofset L (.atom a)
+  def_V _ := rfl
 
 namespace relativeBasicCanonicity
 
-variable {P} {X : Proofset 𝓢} {A}
+variable [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent]
+  {P : MaximalConsistentSet L → Set (Proofset L)} {X : Proofset L} {Ω : MaximalConsistentSet L}
 
 protected lemma iff_mem_box :
-  (A ∈ (relativeBasicCanonicity 𝓢 P).toModel.box X) ↔
-  ((A ∈ (basicCanonicity 𝓢).toModel.box X) ∨ (X.IsNonproofset ∧ X ∈ P A)) := by
-  constructor;
-  . rintro (h | h);
-    . left; exact h;
-    . right; exact h;
-  . rintro (h | ⟨h₁, h₂⟩);
-    . left; exact h;
-    . right;
-      constructor;
-      . assumption;
-      . assumption;
+    Ω ∈ (relativeBasicCanonicity L P).toModel.box X ↔
+      Ω ∈ (basicCanonicity L).toModel.box X ∨ (X.IsNonproofset ∧ X ∈ P Ω) := Iff.rfl
 
 protected lemma iff_mem_dia :
-  (A ∈ (relativeBasicCanonicity 𝓢 P).toModel.dia X) ↔
-  ((A ∉ (basicCanonicity 𝓢).toModel.box Xᶜ) ∧ ((¬Xᶜ.IsNonproofset) ∨ Xᶜ ∉ P A)) := by
-  suffices A ∉ ((relativeBasicCanonicity 𝓢 P).toModel.box Xᶜ) ↔ A ∉ (basicCanonicity 𝓢).toModel.box Xᶜ ∧ ((¬Xᶜ.IsNonproofset) ∨ Xᶜ ∉ P A) by
-    simpa [Frame.dia];
-  rw [relativeBasicCanonicity.iff_mem_box.not, Proofset.IsNonproofset]
-  push +distrib Not;
-  rw [iff_not_isNonProofset_exists];
-  tauto;
+    Ω ∈ (relativeBasicCanonicity L P).toModel.dia X ↔
+      Ω ∉ (basicCanonicity L).toModel.box Xᶜ ∧ (¬Xᶜ.IsNonproofset ∨ Xᶜ ∉ P Ω) := by
+  show ¬Ω ∈ (relativeBasicCanonicity L P).toModel.box Xᶜ ↔ _
+  rw [relativeBasicCanonicity.iff_mem_box, not_or, not_and_or]
 
 end relativeBasicCanonicity
 
-abbrev minimalRelativeMaximalCanonicity (𝓢 : S) [Entailment.E 𝓢] : Canonicity 𝓢 := relativeBasicCanonicity 𝓢 (λ _ _ => False)
+/-- `relativeBasicCanonicity` with no extra neighborhoods on the non-proofsets. -/
+abbrev minimalRelativeMaximalCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] :
+    Canonicity L :=
+  relativeBasicCanonicity L (fun _ _ => False)
 
-lemma minimalRelativeMaximalCanonicity.iff_minimal : A ∈ (minimalRelativeMaximalCanonicity 𝓢).toModel.box X ↔ A ∈ (basicCanonicity 𝓢).toModel.box X := by
-  constructor;
-  . rintro (h | ⟨h, _⟩);
-    . exact h;
-    . contradiction;
-  . intro h; left; exact h;
+lemma minimalRelativeMaximalCanonicity.iff_minimal [DecidableEq α] [L.Cl] [L.HasRE] [L.Consistent]
+    {X : Proofset L} {Ω : MaximalConsistentSet L} :
+    Ω ∈ (minimalRelativeMaximalCanonicity L).toModel.box X ↔
+      Ω ∈ (basicCanonicity L).toModel.box X := by
+  rw [relativeBasicCanonicity.iff_mem_box]
+  constructor
+  · rintro (h | ⟨_, h⟩)
+    · exact h
+    · exact h.elim
+  · exact Or.inl
 
-abbrev maximalRelativeMaximalCanonicity (𝓢 : S) [Entailment.E 𝓢] : Canonicity 𝓢 := relativeBasicCanonicity 𝓢 (λ _ _ => True)
+/-- `relativeBasicCanonicity` with every non-proofset as an extra neighborhood. -/
+abbrev maximalRelativeMaximalCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] :
+    Canonicity L :=
+  relativeBasicCanonicity L (fun _ _ => True)
 
-end Neighborhood
-
-end LO.Modal
 end
