@@ -10,6 +10,10 @@ public import Neighborhood.Logic.Calculus
 public import Neighborhood.Logic.Cl
 public import Neighborhood.Logic.Context
 public import Neighborhood.Logic.Equiv.EB4_ENB4
+public import Neighborhood.Logic.Equiv.EMC_EMCK
+public import Neighborhood.Logic.Equiv.EMC_EMK
+public import Neighborhood.Logic.Equiv.EMK_EMCK
+public import Neighborhood.Logic.Equiv.ETB_ENTB
 public import Neighborhood.Logic.MaximalConsistentSet
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomGeach

@@ -8,6 +8,7 @@ public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame3_9471106
+public import Neighborhood.Logic.Equiv.ETB_ENTB
 
 /-!
 # The neighborhood logic `LogicETB`
