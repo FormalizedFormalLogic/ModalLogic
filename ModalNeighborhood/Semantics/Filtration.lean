@@ -209,16 +209,19 @@ def toModel {M : Model} {T : FormulaSet ℕ} [T.IsSubformulaClosed] (Fi : Filtra
   Val := Fi.V
 
 @[simp, grind =_]
-lemma toModel_def : Fi.toModel.box X = Fi.B X := by simp [Filtration.toModel, Frame.mk_ℬ, Frame.box]
+lemma toModel_def : Fi.toModel.box X = Fi.B X := by
+  simp [Filtration.toModel, Frame.mk_ℬ, Frame.box];
+  rfl;
 
 theorem filtration (Fi : Filtration M T) (φ) (hφ : φ ∈ T) : (Fi.toModel φ) = 【M φ】 := by
   induction φ with
   | hatom a => apply Fi.V_def;
-  | hfalsum => simp;
+  | hfalsum => simp; rfl;
   | himp φ ψ ihφ ihψ =>
     replace ihφ := ihφ (by grind);
     replace ihψ := ihψ (by grind);
     simp_all [toFilterEquivSet.union, toFilterEquivSet.compl_truthset (show φ ∈ T by grind)];
+    rfl;
   | hbox φ ihφ =>
     replace ihφ := ihφ (by grind);
     apply ihφ ▸ Fi.B_def φ (by grind);
@@ -234,14 +237,16 @@ lemma filtration_satisfies (Fi : Filtration M T) (φ) (hφ : φ ∈ T) {x : M} :
 lemma truthlemma (Fi : Filtration M T) {φ ψ} (hφ : φ ∈ T) (hψ : ψ ∈ T) :
   (Fi.toModel φ) = (Fi.toModel ψ) ↔ (【M φ】 : Set (FilterEqvQuotient M T)) = (【M ψ】) := by
   rw [filtration Fi φ hφ, filtration Fi ψ hψ];
+  rfl;
 
 @[grind .]
 lemma iff_mem_toModel_box_mem_B {Fi : Filtration M T} : W ∈ Fi.toModel.box Y ↔ W ∈ Fi.B Y := by
   simp [Filtration.toModel, Frame.mk_ℬ, Frame.box];
+  rfl;
 
 @[grind =>]
 lemma box_in_out {Fi : Filtration M T} (hφ : □φ ∈ T) : Fi.B 【M φ】 = 【M (□φ)】 := calc
-  _ = Fi.toModel.box 【M.truthset φ】 := by simp [Filtration.toModel, Frame.mk_ℬ, Frame.box];
+  _ = Fi.toModel.box 【M.truthset φ】 := by simp [Filtration.toModel, Frame.mk_ℬ, Frame.box]; rfl;
   _ = Fi.toModel.box (Fi.toModel φ) := by rw [filtration Fi φ (by grind)];
   _ = (Fi.toModel (□φ)) := by simp;
   _ = 【M (□φ)】 := filtration Fi _ hφ
