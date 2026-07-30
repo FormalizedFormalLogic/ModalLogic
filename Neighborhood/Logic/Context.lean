@@ -107,32 +107,56 @@ abbrev Consistent (L : Logic) (T : FormulaSet) : Prop := T *⊬[L] ⊥
 /-- `⊥` is derivable from `T` in `L`. -/
 abbrev Inconsistent (L : Logic) (T : FormulaSet) : Prop := ¬(Consistent L T)
 
+@[grind =] lemma iff_inconsistent : Inconsistent L T ↔ T *⊢[L] ⊥ := not_not
+
 lemma def_consistent :
-    Consistent L T ↔ ∀ Γ : FormulaFinset, ↑Γ ⊆ T → Γ.conj 🡒 ⊥ ∉ L := sorry
+    Consistent L T ↔ ∀ Γ : FormulaFinset, ↑Γ ⊆ T → Γ.conj 🡒 ⊥ ∉ L := by
+  constructor;
+  . intro h Γ hΓ hC;
+    exact h ⟨Γ, hΓ, hC⟩;
+  . rintro h ⟨Γ, hΓ, hC⟩;
+    exact h Γ hΓ hC;
 
 lemma def_inconsistent :
-    Inconsistent L T ↔ ∃ Γ : FormulaFinset, ↑Γ ⊆ T ∧ Γ.conj 🡒 ⊥ ∈ L := sorry
+    Inconsistent L T ↔ ∃ Γ : FormulaFinset, ↑Γ ⊆ T ∧ Γ.conj 🡒 ⊥ ∈ L := iff_inconsistent
 
 section
 
 variable [L.Cl]
 
-lemma emptyset_consistent [L.Consistent] : Consistent L (∅ : FormulaSet) := sorry
+lemma emptyset_consistent [L.Consistent] : Consistent L (∅ : FormulaSet) := by
+  simpa [Consistent] using iff_provable_empty (L := L) (φ := ⊥) |>.not.mpr Logic.not_mem_falsum;
 
-lemma not_mem_falsum_of_consistent (h : Consistent L T) : ⊥ ∉ T := sorry
+lemma not_mem_falsum_of_consistent (h : Consistent L T) : ⊥ ∉ T := fun hC => h (by_axm! hC)
 
-lemma unprovable_either (h : Consistent L T) : ¬(T *⊢[L] φ ∧ T *⊢[L] ∼φ) := sorry
+lemma unprovable_either (h : Consistent L T) : ¬(T *⊢[L] φ ∧ T *⊢[L] ∼φ) := by
+  rintro ⟨h₁, h₂⟩;
+  exact h <| mdp! h₂ h₁;
 
 lemma provable_iff_insert_neg_not_consistent :
-    Inconsistent L (insert (∼φ) T) ↔ T *⊢[L] φ := sorry
+    Inconsistent L (insert (∼φ) T) ↔ T *⊢[L] φ := by
+  constructor;
+  . intro h;
+    exact of_C! dne! <| deduct! <| not_not.mp h;
+  . intro h hC;
+    exact hC <| deductInv! <| of_C! dni! h;
 
 lemma unprovable_iff_insert_neg_consistent :
-    Consistent L (insert (∼φ) T) ↔ T *⊬[L] φ := sorry
+    Consistent L (insert (∼φ) T) ↔ T *⊬[L] φ := by
+  simpa using provable_iff_insert_neg_not_consistent (L := L) (T := T) (φ := φ) |>.not;
 
-lemma unprovable_iff_singleton_neg_consistent : Consistent L {∼φ} ↔ φ ∉ L := sorry
+lemma unprovable_iff_singleton_neg_consistent : Consistent L {∼φ} ↔ φ ∉ L := by
+  rw [show ({∼φ} : FormulaSet) = insert (∼φ) ∅ by simp];
+  exact unprovable_iff_insert_neg_consistent.trans iff_provable_empty.not
 
 lemma either_consistent (h : Consistent L T) (φ) :
-    Consistent L (insert φ T) ∨ Consistent L (insert (∼φ) T) := sorry
+    Consistent L (insert φ T) ∨ Consistent L (insert (∼φ) T) := by
+  by_contra hC;
+  push Not at hC;
+  obtain ⟨hC₁, hC₂⟩ := hC;
+  replace hC₁ : T *⊢[L] ∼φ := deduct! hC₁;
+  replace hC₂ : T *⊢[L] φ := provable_iff_insert_neg_not_consistent.mp (not_not.mpr hC₂);
+  exact h <| mdp! hC₁ hC₂;
 
 end
 
