@@ -21,10 +21,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicET5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] [F.IsEuclidean] :
     A ∈ LogicET5 → F ⊧ A :=
-  Hilbert.sound (by
-    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
-    · exact valid_axiomT_of_isReflexive
-    · exact valid_axiomFive_of_isEuclidean)
+  Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 theorem LogicET5.consistent : (@LogicET5 α).IsConsistent := by
   by_contra! hC

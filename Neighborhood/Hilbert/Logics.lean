@@ -187,10 +187,7 @@ instance : (@LogicET5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by grind;
 /-- The axiom scheme `C` is redundant over `M` and `K`. -/
 theorem LogicEMK_eq_LogicEMCK : (@LogicEMK α) = LogicEMCK := by
   apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_subset_axioms
-    rintro A (hM | hK)
-    · exact Or.inl (Or.inl hM)
-    · exact Or.inr hK
+  · exact Hilbert.subset_of_subset_axioms (by grind)
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, C, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomK
@@ -198,10 +195,7 @@ theorem LogicEMK_eq_LogicEMCK : (@LogicEMK α) = LogicEMCK := by
 /-- The axiom `N` is redundant over `T` and `B`. -/
 theorem LogicETB_eq_LogicENTB : (@LogicETB α) = LogicENTB := by
   apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_subset_axioms
-    rintro A (hT | hB)
-    · exact Or.inl (Or.inr hT)
-    · exact Or.inr hB
+  · exact Hilbert.subset_of_subset_axioms (by grind)
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((rfl | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
       first | exact Logic.axiomN | exact Logic.axiomT | exact Logic.axiomB

@@ -17,11 +17,6 @@ minimal, transitive, supplemented transitive and quasi-filtering transitive filt
 
 open FormulaSet.IsSubformulaClosed
 
-attribute [grind]
-  FormulaSet.IsSubformulaClosed.of_mem_imp₁
-  FormulaSet.IsSubformulaClosed.of_mem_imp₂
-  FormulaSet.IsSubformulaClosed.of_mem_box
-
 variable {κ : Type u} [Nonempty κ] {α : Type v} [DecidableEq α]
   {M : Model κ α} {T : FormulaSet α} [T.IsSubformulaClosed] {x y : M.World} {φ ψ : Formula α}
 

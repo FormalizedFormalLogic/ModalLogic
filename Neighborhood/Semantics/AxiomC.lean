@@ -42,14 +42,10 @@ lemma Frame.regular_finite_iUnion [F.IsRegular] {ι : Type*} [Fintype ι] [Nonem
     (⋂ i : ι, F.box (X i)) ⊆ F.box (⋂ i : ι, X i) := by
   simpa using Frame.regular_finset_iUnion (F := F) Finset.univ X (by simp)
 
-@[simp, grind]
+@[simp, grind .]
 theorem valid_axiomC_of_isRegular [F.IsRegular] {A B : Formula α} : F ⊧ Axioms.C A B := by
   intro V x
-  rw [forces_imp]
-  intro h
-  rw [forces_and] at h
-  rw [forces_box, Model.truthset.eq_and]
-  exact F.regular ⟨forces_box.mp h.1, forces_box.mp h.2⟩
+  grind [Frame.regular]
 
 theorem isRegular_of_valid_axiomC (h : ∀ A B : Formula ℕ, F ⊧ Axioms.C A B) : F.IsRegular := by
   constructor

@@ -18,7 +18,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicEB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] :
     A ∈ LogicEB → F ⊧ A :=
-  Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomB_of_isSymmetric)
+  Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
 theorem LogicEB.consistent : (@LogicEB α).IsConsistent := by
   by_contra! hC
@@ -29,7 +29,7 @@ theorem LogicE_ssubset_LogicEB : (@LogicE ℕ) ⊂ LogicEB := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hB : Axioms.B #0 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    have hB : Axioms.B #0 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm (by grind))
     have hS : frame_1_0.IsSymmetric := isSymmetric_of_valid_axiomB (LogicE.sound _ hB)
     have := hS.symm {0} (show (0 : Fin 1) ∈ _ by simp)
     simp [Frame.box] at this

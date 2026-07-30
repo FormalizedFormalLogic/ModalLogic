@@ -25,10 +25,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEMC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] :
     A ∈ LogicEMC → F ⊧ A :=
-  Hilbert.sound (by
-    rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩)
-    · exact valid_axiomM_of_isMonotonic
-    · exact valid_axiomC_of_isRegular)
+  Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) <;> simp)
 
 theorem LogicEMC.consistent : (@LogicEMC α).IsConsistent := by
   by_contra! hC
@@ -50,16 +47,14 @@ theorem LogicEM_ssubset_LogicEMC : @LogicEM ℕ ⊂ LogicEMC := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicEM ℕ :=
-      h (ProvableHilbert.axm (Or.inr ⟨_, _, rfl⟩))
+    have hC : Axioms.C #0 #1 ∈ @LogicEM ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_2_206.not_valid_axiomC (LogicEM.sound frame_2_206 hC)
 
 theorem LogicEC_ssubset_LogicEMC : @LogicEC ℕ ⊂ LogicEMC := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hM : Axioms.M #0 #1 ∈ @LogicEC ℕ :=
-      h (ProvableHilbert.axm (Or.inl ⟨_, _, rfl⟩))
+    have hM : Axioms.M #0 #1 ∈ @LogicEC ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_3_137520.not_valid_axiomM (LogicEC.sound frame_3_137520 hM)
 
 theorem LogicEK_ssubset_LogicEMC : @LogicEK ℕ ⊂ LogicEMC := by
@@ -68,8 +63,7 @@ theorem LogicEK_ssubset_LogicEMC : @LogicEK ℕ ⊂ LogicEMC := by
     rintro _ ⟨A, B, rfl⟩
     exact Logic.axiomK_of_MC
   · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicEK ℕ :=
-      h (ProvableHilbert.axm (Or.inr ⟨_, _, rfl⟩))
+    have hC : Axioms.C #0 #1 ∈ @LogicEK ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_4_11259170869739560.not_valid_axiomC
       (LogicEK.sound frame_4_11259170869739560 hC)
 

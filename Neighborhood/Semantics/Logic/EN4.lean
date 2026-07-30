@@ -25,11 +25,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsTransitive] :
     A ∈ LogicEN4 → F ⊧ A :=
-  Hilbert.sound
-    (fun _ hB => by
-      rcases hB with rfl | ⟨_, rfl⟩
-      · exact valid_axiomN_of_containsUnit
-      · exact valid_axiomFour_of_isTransitive)
+  Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
 
 theorem LogicEN4.consistent : (@LogicEN4 α).IsConsistent := by
   by_contra! hC
@@ -71,7 +67,7 @@ theorem LogicEN_ssubset_LogicEN4 : @LogicEN ℕ ⊂ LogicEN4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hFour : Axioms.Four #0 ∈ (@LogicEN ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    have hFour : Axioms.Four #0 ∈ (@LogicEN ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_172.not_valid_axiomFour
       (LogicEN.sound frame_2_172 hFour)
 
@@ -79,7 +75,7 @@ theorem LogicE4_ssubset_LogicEN4 : @LogicE4 ℕ ⊂ LogicEN4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicE4 ℕ) := h (ProvableHilbert.axm (Or.inl rfl))
+    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicE4 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_1_0.not_valid_axiomN (LogicE4.sound frame_1_0 hN)
 
 end

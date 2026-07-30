@@ -22,11 +22,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEND.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsSerial] :
     A ∈ LogicEND → F ⊧ A :=
-  Hilbert.sound
-    (fun _ hB => by
-      rcases hB with rfl | ⟨_, rfl⟩
-      · exact valid_axiomN_of_containsUnit
-      · exact valid_axiomD_of_isSerial)
+  Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
 
 theorem LogicEND.consistent : (@LogicEND α).IsConsistent := by
   by_contra! hC
@@ -48,7 +44,7 @@ theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ @LogicED ℕ := h (ProvableHilbert.axm (Or.inl rfl))
+    have hN : (Axioms.N : Formula ℕ) ∈ @LogicED ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_0.not_valid_axiomN (LogicED.sound frame_1_0 hN)
 
 instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.NotContainsEmpty where
@@ -63,6 +59,6 @@ theorem LogicEP_ssubset_LogicEND : @LogicEP ℕ ⊂ LogicEND := by
     rintro _ rfl
     exact LogicEND.complete (fun _ _ _ => valid_axiomP_of_notContainsEmpty)
   · intro h
-    exact LogicEP.not_mem_axiomD (a := 0) (h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩)))
+    exact LogicEP.not_mem_axiomD (a := 0) (h (ProvableHilbert.axm (by grind)))
 
 end

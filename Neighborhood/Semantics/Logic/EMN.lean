@@ -25,9 +25,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEMN.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.ContainsUnit] :
     A ∈ LogicEMN → F ⊧ A :=
-  Hilbert.sound
-    (by rintro _ (⟨_, _, rfl⟩ | rfl)
-        exacts [valid_axiomM_of_isMonotonic, valid_axiomN_of_containsUnit])
+  Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | rfl) <;> simp)
 
 theorem LogicEMN.consistent : (@LogicEMN α).IsConsistent := by
   by_contra! hC
@@ -49,15 +47,14 @@ theorem LogicEM_ssubset_LogicEMN : @LogicEM ℕ ⊂ LogicEMN := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEM ℕ := h (ProvableHilbert.axm (Or.inr rfl))
+    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEM ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_0.not_valid_axiomN (LogicEM.sound frame_1_0 hN)
 
 theorem LogicEN_ssubset_LogicEMN : @LogicEN ℕ ⊂ LogicEMN := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
-    have hM : Axioms.M #0 #1 ∈ (@LogicEN ℕ) :=
-      h (ProvableHilbert.axm (Or.inl ⟨_, _, rfl⟩))
+    have hM : Axioms.M #0 #1 ∈ (@LogicEN ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_137.not_valid_axiomM (LogicEN.sound _ hM)
 
 end

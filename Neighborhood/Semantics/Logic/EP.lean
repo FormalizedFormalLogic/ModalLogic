@@ -20,10 +20,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicEP.sound {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
     A ∈ LogicEP → F ⊧ A :=
-  Hilbert.sound
-    (fun B hB => by
-      simp only [Set.mem_singleton_iff] at hB; subst hB
-      exact valid_axiomP_of_notContainsEmpty)
+  Hilbert.sound (by rintro _ rfl; simp)
 
 theorem LogicEP.consistent : (@LogicEP α).IsConsistent := by
   by_contra! hC
@@ -34,7 +31,7 @@ theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hP : (Axioms.P : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm rfl)
+    have hP : (Axioms.P : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_1.not_valid_axiomP (LogicE.sound _ hP)
 
 theorem LogicEP.not_mem_axiomD {a : ℕ} : Axioms.D #a ∉ @LogicEP ℕ := fun hD =>

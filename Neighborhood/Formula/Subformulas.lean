@@ -130,9 +130,9 @@ namespace FormulaSet.IsSubformulaClosed
 
 variable [DecidableEq α] {A B : Formula α} {Γ : FormulaSet α} [Γ.IsSubformulaClosed]
 
-lemma of_mem_imp₁ : A 🡒 B ∈ Γ → A ∈ Γ := SubformulaClosed.of_mem_imp₁ IsSubformulaClosed.closed
-lemma of_mem_imp₂ : A 🡒 B ∈ Γ → B ∈ Γ := SubformulaClosed.of_mem_imp₂ IsSubformulaClosed.closed
-lemma of_mem_box : □A ∈ Γ → A ∈ Γ := SubformulaClosed.of_mem_box IsSubformulaClosed.closed
+@[grind →] lemma of_mem_imp₁ : A 🡒 B ∈ Γ → A ∈ Γ := SubformulaClosed.of_mem_imp₁ IsSubformulaClosed.closed
+@[grind →] lemma of_mem_imp₂ : A 🡒 B ∈ Γ → B ∈ Γ := SubformulaClosed.of_mem_imp₂ IsSubformulaClosed.closed
+@[grind →] lemma of_mem_box : □A ∈ Γ → A ∈ Γ := SubformulaClosed.of_mem_box IsSubformulaClosed.closed
 
 end FormulaSet.IsSubformulaClosed
 

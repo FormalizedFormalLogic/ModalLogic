@@ -22,7 +22,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicEM.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] :
     A ∈ LogicEM → F ⊧ A :=
-  Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; exact valid_axiomM_of_isMonotonic)
+  Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; simp)
 
 theorem LogicEM.consistent : (@LogicEM α).IsConsistent := by
   by_contra! hC
@@ -44,7 +44,7 @@ theorem LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hM : Axioms.M #0 #1 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, _, rfl⟩)
+    have hM : Axioms.M #0 #1 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_3_137264.not_valid_axiomM (LogicE.sound _ hM)
 
 end

@@ -31,7 +31,7 @@ lemma mem_dia_univ [F.NotContainsEmpty] : x ∈ F.dia Set.univ := by
 end Frame
 
 /-- `P` is valid on any frame in which no world has the empty set as one of its neighborhoods. -/
-@[simp]
+@[simp, grind .]
 theorem valid_axiomP_of_notContainsEmpty [F.NotContainsEmpty] : F ⊧ (Axioms.P : Formula α) := by
   intro V x
   simp [Forces, Frame.box]
