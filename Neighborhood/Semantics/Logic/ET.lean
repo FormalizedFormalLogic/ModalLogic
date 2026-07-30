@@ -1,77 +1,61 @@
 module
 
+public import Neighborhood.Semantics.Hilbert
+public import Neighborhood.Semantics.Completeness
+public import Neighborhood.Semantics.AxiomGeach
+public import Neighborhood.Hilbert.Logics
 public import Neighborhood.Semantics.Logic.ED
+
+/-!
+# The neighborhood logic `LogicET`
+
+Soundness, consistency and completeness of `LogicET`, the classical modal logic axiomatised by
+the reflexivity axiom `T`, with respect to the reflexive neighborhood frames
+(`Frame.IsReflexive`), and the strict inclusion of `LogicED` in `LogicET`.
+-/
 
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
+/-- `LogicET` is sound with respect to every reflexive neighborhood frame. -/
+theorem LogicET.sound (h : A ∈ LogicET) {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] : F ⊧ A :=
+  Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomT_of_isReflexive) h
 
-namespace Neighborhood
+instance : Frame.simple_blackhole.IsReflexive where
+  refl X x hx := by
+    simp only [Frame.box, Frame.simple_blackhole, Set.mem_singleton_iff, Set.mem_setOf_eq] at hx
+    subst hx
+    trivial
 
-instance : Frame.simple_blackhole.IsReflexive := by
-  constructor;
-  intro X x;
-  simp_all;
+instance : (@LogicET α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole)
+    (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomT_of_isReflexive)
 
-@[reducible] protected alias Frame.IsET := Frame.IsReflexive
-protected class Frame.IsFiniteET (F : Frame) extends F.IsET, F.IsFinite
+variable [DecidableEq α]
 
-protected abbrev FrameClass.ET : FrameClass := { F | F.IsET }
-protected abbrev FrameClass.finite_ET : FrameClass := { F | F.IsFiniteET }
+/-- `LogicET` is complete with respect to all reflexive neighborhood frames. -/
+theorem LogicET.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsReflexive → F ⊧ A) :
+    A ∈ @LogicET α :=
+  (basicCanonicity LogicET).mem_of_valid
+    (h (basicCanonicity LogicET).toModel.toFrame inferInstance
+      (basicCanonicity LogicET).toModel.Val)
 
-instance {F : Frame} [F.IsReflexive] : F.IsSerial where
-  serial := by
-    intro X x hx;
-    apply F.refl_dual;
-    exact F.refl hx;
+/-! ### Strict inclusion of `LogicED` -/
 
-end Neighborhood
+theorem LogicED_ssubset_LogicET : @LogicED ℕ ⊂ LogicET := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro _ ⟨A, rfl⟩
+    exact Logic.C_trans Logic.axiomT Logic.diaTc
+  · intro h
+    have hT : Axioms.T (.atom 0) ∈ @LogicED ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    haveI : (⟨fun _ => {∅}⟩ : Frame (Fin 1)).IsSerial :=
+      ⟨fun X x hx => by simp_all [Frame.dia, Frame.box]⟩
+    have hR := isReflexive_of_valid_axiomT (LogicED.sound hT (⟨fun _ => {∅}⟩ : Frame (Fin 1)))
+    have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
+    simp at this
 
-
-namespace ET
-
-instance Neighborhood.sound : Sound Modal.ET FrameClass.ET := instSound_of_validates_axioms $ by
-  simp only [Semantics.ModelsSet.singleton_iff];
-  intro F hF;
-  replace hF := Set.mem_setOf_eq.mp hF;
-  apply valid_axiomT_of_isReflexive;
-
-instance consistent : Entailment.Consistent Modal.ET := consistent_of_sound_frameclass FrameClass.ET $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  infer_instance;
-
-instance Neighborhood.complete : Complete Modal.ET FrameClass.ET := (basicCanonicity Modal.ET).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  infer_instance;
-
-end ET
-
-
-instance : Modal.ED ⪱ Modal.ET := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_provable_axioms;
-    rintro φ rfl; simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.T (.atom 0));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.ED);
-      apply not_validOnFrameClass_of_exists_frame;
-      use ⟨Fin 1, λ _ => {∅}⟩;
-      constructor;
-      . apply Set.mem_setOf_eq.mpr;
-        constructor;
-        . intro X x;
-          simp_all;
-      . apply not_imp_not.mpr isReflexive_of_valid_axiomT;
-        by_contra! hC;
-        simpa [Frame.box] using @hC.refl ∅;
-
-end LO.Modal
 end
