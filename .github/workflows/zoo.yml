@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: extractions/setup-just@v4
-      - uses: typst-community/setup-typst@v4
+      - uses: typst-community/setup-typst@v5
       - name: Setup elan
         run: |
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
@@ -57,9 +57,9 @@ jobs:
           cp zoo/neighborhood.png zoo/neighborhood.json _site/
 
       - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
