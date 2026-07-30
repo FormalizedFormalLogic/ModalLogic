@@ -1,35 +1,58 @@
 module
 
-public import Neighborhood.Semantics.Logic.Incomparability.ED_EP
+public import Neighborhood.Semantics.Hilbert
+public import Neighborhood.Semantics.Completeness
+public import Neighborhood.Semantics.AxiomN
+public import Neighborhood.Semantics.AxiomGeach
+public import Neighborhood.Semantics.AxiomP
+public import Neighborhood.Hilbert.Logics
+public import Neighborhood.Semantics.Logic.ED
+public import Neighborhood.Semantics.Logic.EP
+
+/-!
+# The neighborhood logic `LogicEND`
+
+Soundness, consistency and completeness of `LogicEND`, the classical modal logic axiomatised by
+both `N := □⊤` and the seriality axiom `D` over `LogicE`, with respect to the serial neighborhood
+frames containing their unit. Also its strict inclusions of `LogicED` and `LogicEP`.
+-/
 
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
-namespace Neighborhood
+/-- `LogicEND` is sound with respect to every serial neighborhood frame containing its unit. -/
+theorem LogicEND.sound (h : A ∈ LogicEND) {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
+    [F.IsSerial] : F ⊧ A :=
+  Hilbert.sound
+    (fun _ hB => by
+      rcases hB with rfl | ⟨_, rfl⟩
+      · exact valid_axiomN_of_containsUnit
+      · exact valid_axiomD_of_isSerial) h
 
-protected class Frame.IsEND (F : Frame) extends F.ContainsUnit, F.IsSerial where
-protected abbrev FrameClass.END : FrameClass := { F | F.IsEND }
+instance : (@LogicEND α).Consistent := by
+  sorry
 
-end Neighborhood
+variable [DecidableEq α]
 
+/-- `LogicEND` is complete with respect to all serial frames containing their unit. -/
+theorem LogicEND.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.ContainsUnit → F.IsSerial → F ⊧ A) :
+    A ∈ @LogicEND α := by
+  sorry
 
-namespace END
+/-! ### Strict inclusions of `LogicED` and `LogicEP` -/
 
-instance Neighborhood.sound : Sound Modal.END FrameClass.END := instSound_of_validates_axioms $ by
-  constructor;
-  rintro _ (rfl | rfl) F (rfl | rfl) <;> simp;
+theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by
+  sorry
 
-instance consistent : Entailment.Consistent Modal.END := consistent_of_sound_frameclass FrameClass.END $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  constructor;
+/-- A serial frame containing its unit has no world with the empty set as a neighborhood. -/
+instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.NotContainsEmpty := by
+  sorry
 
-end END
+theorem LogicEP_ssubset_LogicEND : @LogicEP ℕ ⊂ LogicEND := by
+  sorry
 
-end LO.Modal
 end
