@@ -17,9 +17,7 @@ the stronger logic's module).
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicEM` is sound with respect to every monotonic neighborhood frame. -/
 theorem LogicEM.sound (h : A ∈ LogicEM) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] :
     F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; exact valid_axiomM_of_isMonotonic) h
@@ -30,14 +28,12 @@ instance : (@LogicEM α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicEM` is complete with respect to all monotonic neighborhood frames. -/
 theorem LogicEM.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F ⊧ A) :
     A ∈ @LogicEM α :=
   (supplementedBasicCanonicity LogicEM).mem_of_valid
     (h (supplementedBasicCanonicity LogicEM).toModel.toFrame inferInstance
       (supplementedBasicCanonicity LogicEM).toModel.Val)
 
-/-! ### Strict inclusion of `LogicE` -/
 
 theorem LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM := by
   constructor

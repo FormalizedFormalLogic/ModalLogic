@@ -18,9 +18,7 @@ inclusion of `LogicE` in `LogicED`.
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness and consistency -/
 
-/-- `LogicED` is sound with respect to every serial neighborhood frame. -/
 theorem LogicED.sound (h : A ∈ LogicED) {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] : F ⊧ A :=
   Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomD_of_isSerial) h
 
@@ -34,7 +32,6 @@ instance : (@LogicED α).Consistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomD_of_isSerial)
 
-/-! ### Strict inclusion of `LogicE` -/
 
 theorem LogicE_ssubset_LogicED : @LogicE ℕ ⊂ LogicED := by
   constructor

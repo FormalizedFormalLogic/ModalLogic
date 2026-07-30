@@ -28,9 +28,7 @@ variable {α : Type u} {A : Formula α}
 lemma Set.inter_eq_univ {s t : Set α} : s ∩ t = Set.univ ↔ s = Set.univ ∧ t = Set.univ := by
   simpa using Set.sInter_eq_univ (S := ({s, t} : Set (Set α)))
 
-/-! ### Auxiliary countermodels -/
 
-/-- The one-world frame whose only world has no neighborhood at all. -/
 abbrev Frame.simple_whitehole : Frame Unit := ⟨fun _ => ∅⟩
 
 @[simp]
@@ -39,7 +37,6 @@ lemma Frame.simple_whitehole.not_valid_axiomN :
   Frame.Validate.not_of_exists_valuation_world
     ⟨fun _ => ∅, (), by simp [NotForces, Forces, Frame.box]⟩
 
-/-- A reflexive, monotonic and regular frame on two worlds that is not transitive. -/
 abbrev Frame.trivial_nontransitive : Frame (Fin 2) :=
   ⟨fun w => match w with | 0 => ∅ | 1 => {Set.univ}⟩
 
@@ -63,9 +60,7 @@ lemma Frame.trivial_nontransitive.not_valid_axiomFour :
     ¬Frame.trivial_nontransitive ⊧ (Axioms.Four (.atom 0) : Formula ℕ) :=
   fun h => Frame.trivial_nontransitive.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicE` is sound with respect to every neighborhood frame. -/
 theorem LogicE.sound (h : A ∈ LogicE) {κ} [Nonempty κ] (F : Frame κ) : F ⊧ A :=
   Hilbert.sound (fun B hB => by simp at hB) h
 
@@ -74,7 +69,6 @@ instance : (@LogicE α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicE` is complete with respect to all neighborhood frames. -/
 theorem LogicE.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F ⊧ A) :
     A ∈ @LogicE α :=
   (basicCanonicity LogicE).mem_of_valid

@@ -18,9 +18,7 @@ are both reflexive and symmetric, and its strict inclusions in `LogicET` and `Lo
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness and consistency -/
 
-/-- `LogicETB` is sound with respect to every reflexive and symmetric neighborhood frame. -/
 theorem LogicETB.sound (h : A ∈ LogicETB) {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     [F.IsSymmetric] : F ⊧ A :=
   Hilbert.sound
@@ -36,9 +34,7 @@ instance : (@LogicETB α).Consistent :=
       · exact valid_axiomT_of_isReflexive
       · exact valid_axiomB_of_isSymmetric)
 
-/-! ### Strict inclusions in `LogicET` and `LogicEB` -/
 
-/-- The one-world frame with no neighborhoods at all is (vacuously) reflexive. -/
 instance : Frame.simple_whitehole.IsReflexive :=
   ⟨fun X => by simp [Frame.box, Frame.simple_whitehole]⟩
 

@@ -20,10 +20,7 @@ comparison of two logics lives in the stronger logic's module).
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicEMCN` is sound with respect to every monotonic and regular neighborhood frame containing
-its unit. -/
 theorem LogicEMCN.sound (h : A ∈ LogicEMCN) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.ContainsUnit] : F ⊧ A :=
   Hilbert.sound (by
@@ -41,8 +38,6 @@ instance : (@LogicEMCN α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicEMCN` is complete with respect to all monotonic and regular neighborhood frames
-containing their unit. -/
 theorem LogicEMCN.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsRegular →
       F.ContainsUnit → F ⊧ A) :
@@ -51,10 +46,7 @@ theorem LogicEMCN.complete
     (h (supplementedBasicCanonicity LogicEMCN).toModel.toFrame inferInstance inferInstance
       inferInstance (supplementedBasicCanonicity LogicEMCN).toModel.Val)
 
-/-! ### Strict inclusion of `LogicECN` -/
 
-/-- A regular frame on two worlds, containing its unit, that refutes the monotonicity axiom
-`M`. -/
 abbrev Frame.ECN_counterframe_for_M : Frame (Fin 2) := ⟨fun _ => {∅, Set.univ}⟩
 
 instance : Frame.ECN_counterframe_for_M.IsRegular where
@@ -88,7 +80,6 @@ theorem LogicECN_ssubset_LogicEMCN : @LogicECN ℕ ⊂ LogicEMCN := by
     exact Frame.ECN_counterframe_for_M.not_valid_axiomM
       (LogicECN.sound hM Frame.ECN_counterframe_for_M)
 
-/-! ### Strict inclusion of `LogicEMC` -/
 
 theorem LogicEMC_ssubset_LogicEMCN : @LogicEMC ℕ ⊂ LogicEMCN := by
   constructor
@@ -97,10 +88,7 @@ theorem LogicEMC_ssubset_LogicEMCN : @LogicEMC ℕ ⊂ LogicEMCN := by
     have hN : (Axioms.N : Formula ℕ) ∈ @LogicEMC ℕ := h (ProvableHilbert.axm (Or.inr rfl))
     exact Frame.simple_whitehole.not_valid_axiomN (LogicEMC.sound hN Frame.simple_whitehole)
 
-/-! ### Strict inclusion of `LogicEMN` -/
 
-/-- `Frame.counterframe_axiomC₁` (from the strict inclusion of `LogicEM` in `LogicEMC`) also
-contains its unit, which is all that is needed to refute `C` inside `LogicEMN`. -/
 instance : Frame.counterframe_axiomC₁.ContainsUnit := ⟨by
   rw [Set.Fin2.eq_univ]
   ext w

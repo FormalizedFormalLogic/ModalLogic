@@ -18,9 +18,7 @@ logics lives in the stronger logic's module).
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicEMN` is sound with respect to every monotonic frame containing its unit. -/
 theorem LogicEMN.sound (h : A ∈ LogicEMN) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.ContainsUnit] : F ⊧ A :=
   Hilbert.sound
@@ -34,7 +32,6 @@ instance : (@LogicEMN α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicEMN` is complete with respect to all monotonic frames containing their unit. -/
 theorem LogicEMN.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.ContainsUnit → F ⊧ A) :
     A ∈ @LogicEMN α :=
@@ -42,7 +39,6 @@ theorem LogicEMN.complete
     (h (supplementedBasicCanonicity LogicEMN).toModel.toFrame inferInstance inferInstance
       (supplementedBasicCanonicity LogicEMN).toModel.Val)
 
-/-! ### Strict inclusions of `LogicEM` and `LogicEN` -/
 
 instance : Frame.simple_whitehole.IsMonotonic where
   mono := by simp_all [Frame.simple_whitehole, Frame.box]

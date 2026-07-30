@@ -17,10 +17,7 @@ finite frame property. Also proves the strict inclusion of `LogicEMC` in `LogicE
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicEMC4` is sound with respect to every monotonic, regular and transitive neighborhood
-frame. -/
 theorem LogicEMC4.sound (h : A ∈ LogicEMC4) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.IsTransitive] : F ⊧ A :=
   Hilbert.sound (by
@@ -38,8 +35,6 @@ instance : (@LogicEMC4 α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicEMC4` is complete with respect to all monotonic, regular and transitive neighborhood
-frames. -/
 theorem LogicEMC4.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsRegular → F.IsTransitive →
       F ⊧ A) : A ∈ @LogicEMC4 α :=
@@ -47,8 +42,6 @@ theorem LogicEMC4.complete
     (h (supplementedBasicCanonicity LogicEMC4).toModel.toFrame inferInstance inferInstance
       inferInstance (supplementedBasicCanonicity LogicEMC4).toModel.Val)
 
-/-- `LogicEMC4` is complete with respect to the finite monotonic, regular and transitive
-neighborhood frames (its finite frame property). -/
 theorem LogicEMC4.finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsMonotonic → F.IsRegular →
       F.IsTransitive → F ⊧ A) : A ∈ @LogicEMC4 α :=
@@ -63,7 +56,6 @@ theorem LogicEMC4.finite_complete
       quasiFilteringTransitiveFiltration.isTransitive
       (quasiFilteringTransitiveFiltration M A.subformulas (by simp)).toModel.Val ⟦x⟧
 
-/-! ### Strict inclusion of `LogicEMC` -/
 
 theorem LogicEMC_ssubset_LogicEMC4 : @LogicEMC ℕ ⊂ LogicEMC4 := by
   constructor

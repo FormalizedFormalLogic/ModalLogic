@@ -18,10 +18,7 @@ the strict inclusions of `LogicEN` and `LogicE4` in `LogicEN4`.
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicEN4` is sound with respect to every transitive neighborhood frame containing its
-unit. -/
 theorem LogicEN4.sound (h : A ∈ LogicEN4) {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsTransitive] : F ⊧ A :=
   Hilbert.sound
@@ -39,8 +36,6 @@ instance : (@LogicEN4 α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicEN4` is complete with respect to all transitive neighborhood frames containing their
-unit. -/
 theorem LogicEN4.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.ContainsUnit → F.IsTransitive → F ⊧ A) :
     A ∈ @LogicEN4 α :=
@@ -48,8 +43,6 @@ theorem LogicEN4.complete
     (h (basicCanonicity LogicEN4).toModel.toFrame inferInstance inferInstance
       (basicCanonicity LogicEN4).toModel.Val)
 
-/-- The finite closure of `A.subformulas` under `□⊤`, used to filtrate a model while retaining
-enough structure to witness `ContainsUnit`. -/
 instance : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
   closed B hB C hC := by
@@ -57,8 +50,6 @@ instance : FormulaSet.IsSubformulaClosed
     · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
-/-- `LogicEN4` is complete with respect to the finite transitive neighborhood frames containing
-their unit (its finite frame property). -/
 theorem LogicEN4.finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.ContainsUnit → F.IsTransitive →
       F ⊧ A) : A ∈ @LogicEN4 α :=
@@ -72,10 +63,7 @@ theorem LogicEN4.finite_complete
     exact h (transitiveFiltration M T).toModel.toFrame ⟨‹_›⟩ ‹_›
       transitiveFiltration.isTransitive (transitiveFiltration M T).toModel.Val ⟦x⟧
 
-/-! ### Strict inclusions of `LogicEN` and `LogicE4` -/
 
-/-- A frame on two worlds containing its unit but not transitive: the neighborhoods of `x` are
-exactly `{x}ᶜ` and the whole carrier. -/
 abbrev Frame.trivial_containsUnit : Frame (Fin 2) := ⟨fun x => {{x}ᶜ, Set.univ}⟩
 
 instance : Frame.trivial_containsUnit.ContainsUnit := ⟨by

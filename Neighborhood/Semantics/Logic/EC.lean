@@ -18,7 +18,6 @@ inclusion in `LogicE`.
 
 variable {α : Type u} {A : Formula α}
 
-/-- `LogicEC` is sound with respect to every regular neighborhood frame. -/
 theorem LogicEC.sound (h : A ∈ LogicEC) {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] : F ⊧ A :=
   Hilbert.sound (fun _ hB => by
     obtain ⟨_, _, rfl⟩ := hB; exact valid_axiomC_of_isRegular) h
@@ -29,14 +28,12 @@ instance : (@LogicEC α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicEC` is complete with respect to all regular neighborhood frames. -/
 theorem LogicEC.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsRegular → F ⊧ A) :
     A ∈ @LogicEC α :=
   (basicCanonicity LogicEC).mem_of_valid
     (h (basicCanonicity LogicEC).toModel.toFrame inferInstance
       (basicCanonicity LogicEC).toModel.Val)
 
-/-! ### Strict inclusion of `LogicE` -/
 
 theorem LogicE_ssubset_LogicEC : (@LogicE ℕ) ⊂ LogicEC := by
   constructor

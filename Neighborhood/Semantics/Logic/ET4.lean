@@ -17,9 +17,7 @@ property. Also proves the strict inclusions of `LogicE4` and `LogicET` in `Logic
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicET4` is sound with respect to every reflexive and transitive neighborhood frame. -/
 theorem LogicET4.sound (h : A ∈ LogicET4) {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     [F.IsTransitive] : F ⊧ A :=
   Hilbert.sound (by
@@ -35,7 +33,6 @@ instance : (@LogicET4 α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicET4` is complete with respect to all reflexive and transitive neighborhood frames. -/
 theorem LogicET4.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsReflexive → F.IsTransitive → F ⊧ A) :
     A ∈ @LogicET4 α :=
@@ -43,8 +40,6 @@ theorem LogicET4.complete
     (h (basicCanonicity LogicET4).toModel.toFrame inferInstance inferInstance
       (basicCanonicity LogicET4).toModel.Val)
 
-/-- `LogicET4` is complete with respect to the finite reflexive and transitive neighborhood
-frames (its finite frame property). -/
 theorem LogicET4.finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsReflexive → F.IsTransitive →
       F ⊧ A) :
@@ -60,7 +55,6 @@ theorem LogicET4.finite_complete
       transitiveFiltration.isReflexive transitiveFiltration.isTransitive
       (transitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
-/-! ### Strict inclusions of `LogicE4` and `LogicET` -/
 
 theorem LogicE4_ssubset_LogicET4 : @LogicE4 ℕ ⊂ LogicET4 := by
   constructor

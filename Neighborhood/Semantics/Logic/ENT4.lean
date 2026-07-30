@@ -18,10 +18,7 @@ with its finite frame property. Also proves the strict inclusions of `LogicEN4` 
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicENT4` is sound with respect to every neighborhood frame that contains its unit, is
-reflexive and is transitive. -/
 theorem LogicENT4.sound (h : A ∈ LogicENT4) {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsReflexive] [F.IsTransitive] : F ⊧ A :=
   Hilbert.sound
@@ -41,8 +38,6 @@ instance : (@LogicENT4 α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicENT4` is complete with respect to all neighborhood frames that contain their unit, are
-reflexive and are transitive. -/
 theorem LogicENT4.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.ContainsUnit → F.IsReflexive →
       F.IsTransitive → F ⊧ A) :
@@ -51,8 +46,6 @@ theorem LogicENT4.complete
     (h (basicCanonicity LogicENT4).toModel.toFrame inferInstance inferInstance inferInstance
       (basicCanonicity LogicENT4).toModel.Val)
 
-/-- The finite closure of `A.subformulas` under `□⊤`, used to filtrate a model while retaining
-enough structure to witness `ContainsUnit`. -/
 instance : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
   closed B hB C hC := by
@@ -60,8 +53,6 @@ instance : FormulaSet.IsSubformulaClosed
     · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
-/-- `LogicENT4` is complete with respect to the finite neighborhood frames that contain their
-unit, are reflexive and are transitive (its finite frame property). -/
 theorem LogicENT4.finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.ContainsUnit → F.IsReflexive →
       F.IsTransitive → F ⊧ A) :
@@ -78,10 +69,7 @@ theorem LogicENT4.finite_complete
     exact h (transitiveFiltration M T).toModel.toFrame ⟨‹_›⟩ ‹_› transitiveFiltration.isReflexive
       transitiveFiltration.isTransitive (transitiveFiltration M T).toModel.Val ⟦x⟧
 
-/-! ### Strict inclusions of `LogicEN4` and `LogicET4` -/
 
-/-- A frame on two worlds that contains its unit and is transitive, but is not reflexive: the
-neighborhoods of every world are exactly `{1}` and the whole carrier. -/
 abbrev Frame.trivial_containsUnit_transitive : Frame (Fin 2) := ⟨fun _ => {{(1 : Fin 2)}, Set.univ}⟩
 
 instance : Frame.trivial_containsUnit_transitive.ContainsUnit := ⟨by
@@ -111,7 +99,6 @@ lemma Frame.trivial_containsUnit_transitive.not_valid_axiomT :
     ¬Frame.trivial_containsUnit_transitive ⊧ (Axioms.T (.atom 0) : Formula ℕ) :=
   fun h => Frame.trivial_containsUnit_transitive.not_isReflexive (isReflexive_of_valid_axiomT h)
 
-/-- The one-world frame with no neighborhoods at all is (vacuously) reflexive. -/
 instance : Frame.simple_whitehole.IsReflexive :=
   ⟨fun X => by simp [Frame.box, Frame.simple_whitehole]⟩
 

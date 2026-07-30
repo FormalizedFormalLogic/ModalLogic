@@ -16,7 +16,6 @@ inclusion of `LogicE` in `LogicE4`.
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
 instance : Frame.simple_blackhole.IsTransitive where
   trans X := by
@@ -25,7 +24,6 @@ instance : Frame.simple_blackhole.IsTransitive where
     subst hx
     simp [Frame.box]
 
-/-- `LogicE4` is sound with respect to every transitive neighborhood frame. -/
 theorem LogicE4.sound (h : A ∈ LogicE4) {κ} [Nonempty κ] (F : Frame κ) [F.IsTransitive] :
     F ⊧ A :=
   Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomFour_of_isTransitive) h
@@ -36,15 +34,12 @@ instance : (@LogicE4 α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicE4` is complete with respect to all transitive neighborhood frames. -/
 theorem LogicE4.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsTransitive → F ⊧ A) :
     A ∈ @LogicE4 α :=
   (basicCanonicity LogicE4).mem_of_valid
     (h (basicCanonicity LogicE4).toModel.toFrame inferInstance
       (basicCanonicity LogicE4).toModel.Val)
 
-/-- `LogicE4` is complete with respect to the finite transitive neighborhood frames (its finite
-frame property). -/
 theorem LogicE4.finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsTransitive → F ⊧ A) :
     A ∈ @LogicE4 α :=
@@ -57,7 +52,6 @@ theorem LogicE4.finite_complete
     exact h (transitiveFiltration M A.subformulas).toModel.toFrame ⟨‹_›⟩
       transitiveFiltration.isTransitive (transitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
-/-! ### Strict inclusion of `LogicE` -/
 
 theorem LogicE_ssubset_LogicE4 : @LogicE ℕ ⊂ LogicE4 := by
   constructor

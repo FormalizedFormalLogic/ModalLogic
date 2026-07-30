@@ -17,7 +17,6 @@ axiom `B`, with respect to the symmetric neighborhood frames, and its strict inc
 
 variable {α : Type u} {A : Formula α}
 
-/-- The one-world frame `Frame.simple_blackhole` is symmetric. -/
 instance : Frame.simple_blackhole.IsSymmetric := by
   constructor
   intro X x hx
@@ -27,7 +26,6 @@ instance : Frame.simple_blackhole.IsSymmetric := by
     simp at hx
   simp [Frame.box, Frame.dia, hne]
 
-/-- `LogicEB` is sound with respect to every symmetric neighborhood frame. -/
 theorem LogicEB.sound (h : A ∈ LogicEB) {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] : F ⊧ A :=
   Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomB_of_isSymmetric) h
 
@@ -35,7 +33,6 @@ instance : (@LogicEB α).Consistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomB_of_isSymmetric)
 
-/-! ### Strict inclusion of `LogicE` -/
 
 theorem LogicE_ssubset_LogicEB : (@LogicE ℕ) ⊂ LogicEB := by
   constructor

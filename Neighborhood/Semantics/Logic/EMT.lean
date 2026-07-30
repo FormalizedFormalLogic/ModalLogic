@@ -21,9 +21,7 @@ that are both monotonic and reflexive, and its strict inclusion of `LogicEM`.
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicEMT` is sound with respect to every monotonic and reflexive neighborhood frame. -/
 theorem LogicEMT.sound (h : A ∈ LogicEMT) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsReflexive] : F ⊧ A :=
   Hilbert.sound (by
@@ -39,7 +37,6 @@ instance : (@LogicEMT α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicEMT` is complete with respect to all monotonic and reflexive neighborhood frames. -/
 theorem LogicEMT.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsReflexive → F ⊧ A) :
     A ∈ @LogicEMT α :=
@@ -47,7 +44,6 @@ theorem LogicEMT.complete
     (h (supplementedBasicCanonicity LogicEMT).toModel.toFrame inferInstance inferInstance
       (supplementedBasicCanonicity LogicEMT).toModel.Val)
 
-/-! ### Strict inclusion of `LogicEM` -/
 
 theorem LogicEM_ssubset_LogicEMT : @LogicEM ℕ ⊂ LogicEMT := by
   constructor

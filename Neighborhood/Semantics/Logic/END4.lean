@@ -17,10 +17,7 @@ inclusion of `LogicEND` in `LogicEND4`.
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness and consistency -/
 
-/-- `LogicEND4` is sound with respect to every serial and transitive neighborhood frame
-containing its unit. -/
 theorem LogicEND4.sound (h : A ∈ LogicEND4) {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsSerial] [F.IsTransitive] : F ⊧ A :=
   Hilbert.sound
@@ -38,11 +35,7 @@ instance : (@LogicEND4 α).Consistent :=
       · exact valid_axiomD_of_isSerial
       · exact valid_axiomFour_of_isTransitive)
 
-/-! ### Strict inclusion of `LogicEND` -/
 
-/-- `Frame.trivial_containsUnit` (from the strict inclusion of `LogicEN` in `LogicEN4`) is
-serial: its only neighborhoods at any world are the complement of the singleton and the whole
-carrier, neither of which is the complement of the other. -/
 instance : Frame.trivial_containsUnit.IsSerial where
   serial X x hx := by
     simp only [Frame.trivial_containsUnit, Frame.box, Set.mem_setOf_eq, Set.mem_insert_iff,

@@ -15,7 +15,6 @@ strict inclusion of `LogicE`.
 
 variable {α : Type u} {A : Formula α}
 
-/-- `LogicEK` is sound with respect to every neighborhood frame satisfying the `K`-property. -/
 theorem LogicEK.sound (h : A ∈ LogicEK) {κ} [Nonempty κ] (F : Frame κ) [F.HasPropertyK] :
     F ⊧ A :=
   Hilbert.sound (fun B hB => by obtain ⟨A, B, rfl⟩ := hB; exact valid_axiomK_of_hasPropertyK) h
@@ -24,7 +23,6 @@ instance : (@LogicEK α).Consistent :=
   Hilbert.consistent_of (F := Frame.simple_blackhole)
     (fun B hB => by obtain ⟨A, B, rfl⟩ := hB; exact valid_axiomK_of_hasPropertyK)
 
-/-! ### Strict inclusion of `LogicE` -/
 
 theorem LogicE_ssubset_LogicEK : @LogicE ℕ ⊂ LogicEK := by
   constructor

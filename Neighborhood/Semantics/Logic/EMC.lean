@@ -23,9 +23,7 @@ that are both monotonic and regular, and its strict inclusion of `LogicEM`, `Log
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicEMC` is sound with respect to every monotonic and regular neighborhood frame. -/
 theorem LogicEMC.sound (h : A ∈ LogicEMC) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] : F ⊧ A :=
   Hilbert.sound (by
@@ -41,7 +39,6 @@ instance : (@LogicEMC α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicEMC` is complete with respect to all monotonic and regular neighborhood frames. -/
 theorem LogicEMC.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsRegular → F ⊧ A) :
     A ∈ @LogicEMC α :=
@@ -49,9 +46,7 @@ theorem LogicEMC.complete
     (h (supplementedBasicCanonicity LogicEMC).toModel.toFrame inferInstance inferInstance
       (supplementedBasicCanonicity LogicEMC).toModel.Val)
 
-/-! ### Strict inclusion of `LogicEM` -/
 
-/-- A monotonic frame on two worlds that refutes the regularity axiom `C`. -/
 abbrev Frame.counterframe_axiomC₁ : Frame (Fin 2) :=
   ⟨fun w => match w with
     | 0 => {{0}, {1}, {0, 1}}
@@ -86,9 +81,7 @@ theorem LogicEM_ssubset_LogicEMC : @LogicEM ℕ ⊂ LogicEMC := by
       h (ProvableHilbert.axm (Or.inr ⟨_, _, rfl⟩))
     exact Frame.counterframe_axiomC₁.not_valid_axiomC (LogicEM.sound hC Frame.counterframe_axiomC₁)
 
-/-! ### Strict inclusion of `LogicEC` -/
 
-/-- A regular frame on three worlds that refutes the monotonicity axiom `M`. -/
 abbrev Frame.counterframe_axiomM₁ : Frame (Fin 3) :=
   ⟨fun w => match w with
     | 0 => {{1}}
@@ -117,10 +110,7 @@ theorem LogicEC_ssubset_LogicEMC : @LogicEC ℕ ⊂ LogicEMC := by
       h (ProvableHilbert.axm (Or.inl ⟨_, _, rfl⟩))
     exact Frame.counterframe_axiomM₁.not_valid_axiomM (LogicEC.sound hM Frame.counterframe_axiomM₁)
 
-/-! ### Strict inclusion of `LogicEK` -/
 
-/-- A frame on four worlds satisfying the `K`-property, refuting both the monotonicity axiom `M`
-and the regularity axiom `C`. -/
 abbrev Frame.EK_counterframe_for_M_and_C : Frame (Fin 4) := ⟨fun _ => {{0, 1}, {0, 2}}⟩
 
 instance : Frame.EK_counterframe_for_M_and_C.HasPropertyK where

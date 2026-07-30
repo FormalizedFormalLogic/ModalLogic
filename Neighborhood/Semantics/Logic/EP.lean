@@ -19,8 +19,6 @@ empty set as one of its neighborhoods (`Frame.NotContainsEmpty`). Also its stric
 
 variable {α : Type u} {A : Formula α}
 
-/-- `LogicEP` is sound with respect to every frame in which no world has the empty set as one
-of its neighborhoods. -/
 theorem LogicEP.sound (h : A ∈ LogicEP) {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
     F ⊧ A :=
   Hilbert.sound
@@ -34,7 +32,6 @@ instance : (@LogicEP α).Consistent :=
       simp only [Set.mem_singleton_iff] at hB; subst hB
       exact valid_axiomP_of_notContainsEmpty)
 
-/-! ### Strict inclusion in `LogicE`, and unprovability of `D` -/
 
 theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
   constructor
@@ -45,8 +42,6 @@ theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
       (F := (⟨fun _ => {∅}⟩ : Frame (Fin 1))) (LogicE.sound hP _)
     simpa using this.not_contains_empty (x := 0)
 
-/-- A two-world frame with no empty neighborhood that is not serial: witnesses that `D` is not a
-theorem of `LogicEP`. -/
 abbrev Frame.trivial_nonserial : Frame (Fin 2) :=
   ⟨fun w => match w with | 0 => {{0}} | 1 => {{0}, {1}, {0, 1}}⟩
 

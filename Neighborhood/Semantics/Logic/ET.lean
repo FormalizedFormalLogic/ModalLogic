@@ -18,9 +18,7 @@ the reflexivity axiom `T`, with respect to the reflexive neighborhood frames
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicET` is sound with respect to every reflexive neighborhood frame. -/
 theorem LogicET.sound (h : A ∈ LogicET) {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] : F ⊧ A :=
   Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomT_of_isReflexive) h
 
@@ -36,14 +34,12 @@ instance : (@LogicET α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicET` is complete with respect to all reflexive neighborhood frames. -/
 theorem LogicET.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsReflexive → F ⊧ A) :
     A ∈ @LogicET α :=
   (basicCanonicity LogicET).mem_of_valid
     (h (basicCanonicity LogicET).toModel.toFrame inferInstance
       (basicCanonicity LogicET).toModel.Val)
 
-/-! ### Strict inclusion of `LogicED` -/
 
 theorem LogicED_ssubset_LogicET : @LogicED ℕ ⊂ LogicET := by
   constructor

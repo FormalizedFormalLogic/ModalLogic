@@ -15,9 +15,7 @@ neighborhood frames containing their unit. Also its strict inclusions in `LogicE
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
-/-- `LogicECN` is sound with respect to every regular neighborhood frame containing its unit. -/
 theorem LogicECN.sound (h : A ∈ LogicECN) {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
     [F.ContainsUnit] : F ⊧ A :=
   Hilbert.sound
@@ -35,8 +33,6 @@ instance : (@LogicECN α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicECN` is complete with respect to all regular neighborhood frames containing their
-unit. -/
 theorem LogicECN.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsRegular → F.ContainsUnit → F ⊧ A) :
     A ∈ @LogicECN α :=
@@ -44,9 +40,7 @@ theorem LogicECN.complete
     (h (basicCanonicity LogicECN).toModel.toFrame inferInstance inferInstance
       (basicCanonicity LogicECN).toModel.Val)
 
-/-! ### Strict inclusions in `LogicEC` and `LogicEN` -/
 
-/-- `Frame.simple_whitehole` is (vacuously) regular, since it has no neighborhoods at all. -/
 instance : Frame.simple_whitehole.IsRegular := ⟨by simp [Frame.box, Frame.simple_whitehole]⟩
 
 theorem LogicEC_ssubset_LogicECN : @LogicEC ℕ ⊂ LogicECN := by
@@ -56,8 +50,6 @@ theorem LogicEC_ssubset_LogicECN : @LogicEC ℕ ⊂ LogicECN := by
     have hN : (Axioms.N : Formula ℕ) ∈ @LogicEC ℕ := h (ProvableHilbert.axm (Or.inr rfl))
     exact Frame.simple_whitehole.not_valid_axiomN (LogicEC.sound hN Frame.simple_whitehole)
 
-/-- A two-world frame containing its unit but not regular: `{0}` and `{1}` are both neighborhoods
-of `0`, but their intersection `∅` is not. -/
 abbrev Frame.trivial_nonregular : Frame (Fin 2) :=
   ⟨fun w => match w with | 0 => {{0}, {1}, Set.univ} | 1 => {{1}, Set.univ}⟩
 

@@ -14,12 +14,10 @@ Also its strict inclusion in `LogicE`.
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness, consistency and completeness -/
 
 instance : Frame.simple_blackhole.IsEuclidean where
   eucl X x hx := by simp_all [Frame.box, Frame.dia]
 
-/-- `LogicE5` is sound with respect to every euclidean frame. -/
 theorem LogicE5.sound (h : A ∈ @LogicE5 α) {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
     F ⊧ A :=
   Hilbert.sound (fun B hB => by obtain ⟨B, rfl⟩ := hB; exact valid_axiomFive_of_isEuclidean) h
@@ -30,14 +28,12 @@ instance : (@LogicE5 α).Consistent :=
 
 variable [DecidableEq α]
 
-/-- `LogicE5` is complete with respect to all euclidean frames. -/
 theorem LogicE5.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsEuclidean → F ⊧ A) :
     A ∈ @LogicE5 α :=
   (maximalRelativeMaximalCanonicity LogicE5).mem_of_valid
     (h (maximalRelativeMaximalCanonicity LogicE5).toModel.toFrame inferInstance
       (maximalRelativeMaximalCanonicity LogicE5).toModel.Val)
 
-/-! ### Strict inclusion in `LogicE` -/
 
 theorem LogicE_ssubset_LogicE5 : @LogicE ℕ ⊂ LogicE5 := by
   constructor

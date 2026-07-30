@@ -18,10 +18,7 @@ the coincidence `LogicEMK_eq_LogicEMCK` — the strict inclusion of `LogicEM` in
 
 variable {α : Type u} {A : Formula α}
 
-/-! ### Soundness and consistency -/
 
-/-- `LogicEMK` is sound with respect to every monotonic neighborhood frame satisfying the
-`K`-property. -/
 theorem LogicEMK.sound (h : A ∈ LogicEMK) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.HasPropertyK] : F ⊧ A :=
   Hilbert.sound
@@ -33,7 +30,6 @@ instance : (@LogicEMK α).Consistent :=
     (by rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩)
         exacts [valid_axiomM_of_isMonotonic, valid_axiomK_of_hasPropertyK])
 
-/-! ### Strict inclusions of `LogicEK` and `LogicEM` -/
 
 theorem LogicEK_ssubset_LogicEMK : @LogicEK ℕ ⊂ LogicEMK := by
   constructor
@@ -78,7 +74,6 @@ theorem LogicEM_ssubset_LogicEMK : @LogicEM ℕ ⊂ LogicEMK := by
     have h0 := LogicEM.sound hK M.toFrame M.Val 0
     simp [M, Forces, Frame.box, Set.ext_iff] at h0
 
-/-! ### Strict inclusion of `LogicEM` in `LogicEMCK` -/
 
 theorem LogicEM_ssubset_LogicEMCK : @LogicEM ℕ ⊂ LogicEMCK := by
   rw [← LogicEMK_eq_LogicEMCK]
