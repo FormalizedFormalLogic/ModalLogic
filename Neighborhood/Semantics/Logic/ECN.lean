@@ -1,75 +1,81 @@
 module
 
-public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Logic.EC
-public import Foundation.Vorspiel.Set.Fin
+public import Neighborhood.Semantics.Logic.EN
+
+/-!
+# The neighborhood logic `LogicECN`
+
+Soundness, consistency and completeness of `LogicECN`, the classical modal logic axiomatised by
+both the regularity axiom `C` and `N := □⊤` over `LogicE`, with respect to the regular
+neighborhood frames containing their unit. Also its strict inclusions in `LogicEC` and `LogicEN`.
+-/
 
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
-namespace Neighborhood
+/-- `LogicECN` is sound with respect to every regular neighborhood frame containing its unit. -/
+theorem LogicECN.sound (h : A ∈ LogicECN) {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
+    [F.ContainsUnit] : F ⊧ A :=
+  Hilbert.sound
+    (fun _ hB => by
+      rcases hB with ⟨_, _, rfl⟩ | rfl
+      · exact valid_axiomC_of_isRegular
+      · exact valid_axiomN_of_containsUnit) h
 
-protected class Frame.IsECN (F : Frame) extends F.IsRegular, F.ContainsUnit where
-protected abbrev FrameClass.ECN : FrameClass := { F | F.IsECN }
+instance : (@LogicECN α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole)
+    (fun _ hB => by
+      rcases hB with ⟨_, _, rfl⟩ | rfl
+      · exact valid_axiomC_of_isRegular
+      · exact valid_axiomN_of_containsUnit)
 
-end Neighborhood
+variable [DecidableEq α]
 
-namespace ECN
+/-- `LogicECN` is complete with respect to all regular neighborhood frames containing their
+unit. -/
+theorem LogicECN.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsRegular → F.ContainsUnit → F ⊧ A) :
+    A ∈ @LogicECN α :=
+  (basicCanonicity LogicECN).mem_of_valid
+    (h (basicCanonicity LogicECN).toModel.toFrame inferInstance inferInstance
+      (basicCanonicity LogicECN).toModel.Val)
 
-instance Neighborhood.sound : Sound Modal.ECN FrameClass.ECN := instSound_of_validates_axioms $ by
-  constructor;
-  rintro _ (rfl | rfl) F (rfl | rfl) <;> simp;
+/-! ### Strict inclusions in `LogicEC` and `LogicEN` -/
 
-instance consistent : Entailment.Consistent Modal.ECN := consistent_of_sound_frameclass FrameClass.ECN $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  constructor;
+/-- `Frame.simple_whitehole` is (vacuously) regular, since it has no neighborhoods at all. -/
+instance : Frame.simple_whitehole.IsRegular := ⟨by simp [Frame.box, Frame.simple_whitehole]⟩
 
-instance Neighborhood.complete : Complete Modal.ECN FrameClass.ECN := (basicCanonicity Modal.ECN).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  constructor;
+theorem LogicEC_ssubset_LogicECN : @LogicEC ℕ ⊂ LogicECN := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
+  · intro h
+    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEC ℕ := h (ProvableHilbert.axm (Or.inr rfl))
+    exact Frame.simple_whitehole.not_valid_axiomN (LogicEC.sound hN Frame.simple_whitehole)
 
-end ECN
+/-- A two-world frame containing its unit but not regular: `{0}` and `{1}` are both neighborhoods
+of `0`, but their intersection `∅` is not. -/
+abbrev Frame.trivial_nonregular : Frame (Fin 2) :=
+  ⟨fun w => match w with | 0 => {{0}, {1}, Set.univ} | 1 => {{1}, Set.univ}⟩
 
-instance : Modal.ECN ⪱ Modal.EMCN := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.M (.atom 0) (.atom 1));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.ECN);
-      apply not_validOnFrameClass_of_exists_model_world;
-      let M : Model := {
-        World := Fin 2,
-        𝒩 := λ w => {∅, {0, 1}},
-        Val := λ w =>
-          match w with
-          | 0 => {0}
-          | 1 => {1}
-          | _ => Set.univ
-      };
-      use M, 0;
-      constructor;
-      . exact {
-          contains_unit := by
-            ext x;
-            match x with | 0 | 1 => simp_all [M, Set.Fin2.eq_univ];
-          regular := by
-            rintro X Y w ⟨hwX, hwY⟩;
-            simp_all only [Fin.isValue, Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff, M];
-            rcases hwX with (rfl | rfl) <;>
-            rcases hwY with (rfl | rfl) <;>
-            simp;
-        }
-      . simp [M, Semantics.Models, Satisfies];
-        grind;
+instance : Frame.trivial_nonregular.ContainsUnit := ⟨by
+  ext x; match x with | 0 | 1 => simp [Frame.box, Frame.trivial_nonregular]⟩
 
-end LO.Modal
+theorem LogicEN_ssubset_LogicECN : @LogicEN ℕ ⊂ LogicECN := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
+  · intro h
+    have hC : Axioms.C (.atom 0) (.atom 1) ∈ @LogicEN ℕ := h (ProvableHilbert.axm (Or.inl ⟨_, _, rfl⟩))
+    let M : Model (Fin 2) ℕ :=
+      ⟨Frame.trivial_nonregular,
+       fun a => match a with
+        | 0 => {0}
+        | 1 => {1}
+        | _ => Set.univ⟩
+    have h0 := LogicEN.sound hC M.toFrame M.Val 0
+    simp [M, Forces, Frame.box, Frame.trivial_nonregular, Set.ext_iff] at h0
+
 end
