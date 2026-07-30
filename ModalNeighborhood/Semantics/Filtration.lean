@@ -496,6 +496,10 @@ def quasiFilteringTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransiti
           . exact Or.inr $ Finset.mem_filter.mpr ⟨hYi, hU⟩;
         . intro hYi;
           rcases Finset.mem_union.mp hYi with h | h <;> exact Finset.mem_filter.mp h |>.1;
+      have hYVU : ∀ Xi, Xi ∈ Ys ↔ (Xi ∈ Vs ∨ Xi ∈ Us) := by
+        intro Xi;
+        rw [eYVU];
+        exact Finset.mem_union;
 
       let Ψ := {ψ // □ψ ∈ T ∧ (∃ Vi ∈ Ys, Vi = 【M ψ】) ∧ W ∈ 【M (□ψ)】};
       have : Fintype Ψ := by
@@ -505,52 +509,56 @@ def quasiFilteringTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransiti
       have : Fintype Ξ := by
         apply Fintype.subtype (s := { ξ ∈ □⁻¹'hT.toFinset | (∃ Ui ∈ Ys, Ui = 【M (□ξ)】) ∧ W ∈ 【M (□ξ)】 });
         simp [Finset.LO.preboxItr];
-      have H : (⋂ ψ : Ψ, 【M ψ】) ∩ (⋂ ξ : Ξ, 【M (□ξ)】) ⊆ (【M φ】 : Set (FilterEqvQuotient M T)) := by calc
-        _ = (⋂ ψ : Ψ, 【M ψ】) ∩ (⋂ Ui ∈ Us, Ui) := by
-          suffices (⋂ ψ : Ξ, 【M (□ψ)】) = (⋂ Ui ∈ Us, Ui) by congr;
-          ext A;
-          suffices
-            (∀ ξ, □ξ ∈ T → 【M (□ξ)】 ∈ Ys → W ∈ 【M (□ξ)】 → A ∈ 【M (□ξ)】) ↔
-            (∀ ξ, □ξ ∈ T → ∀ Yi ∈ Ys, Yi = 【M (□ξ)】 → W ∈ 【M (□ξ)】 → A ∈ Yi) by
-            simp [Ξ, Us];
-            tauto;
-          constructor;
-          . rintro h _ _ _ _ rfl;
-            apply h <;> assumption;
-          . rintro h _ _ _ _;
-            apply h <;> tauto;
-        _ = (⋂ Vi ∈ Vs, Vi) ∩ (⋂ Ui ∈ Us, Ui) := by
-          suffices (⋂ ψ : Ψ, 【M ψ】) = (⋂ Vi ∈ Vs, Vi) by congr;
-          ext A;
-          suffices
-            (∀ ψ, □ψ ∈ T → 【M ψ】 ∈ Ys → W ∈ 【M (□ψ)】 → A ∈ 【M ψ】) ↔
-            (∀ ψ, □ψ ∈ T → ∀ Yi ∈ Ys, Yi = 【M ψ】 → W ∈ 【M (□ψ)】 → A ∈ Yi) by
-            simp [Ψ, Vs];
-            tauto;
-          constructor;
-          . rintro h _ _ _ _ rfl;
-            apply h <;> assumption;
-          . rintro h _ _ _ _;
-            apply h <;> tauto;
-        _ = ⋂ Xi ∈ Ys, Xi := by
-          ext A;
-          simp only [Set.mem_inter_iff, Set.mem_iInter, eYVU, Finset.mem_union];
-          constructor;
-          . rintro ⟨hV, hU⟩ i (hi | hi);
-            . exact hV i hi;
-            . exact hU i hi;
-          . rintro h;
+      have H : (⋂ ψ : Ψ, 【M ψ】) ∩ (⋂ ξ : Ξ, 【M (□ξ)】) ⊆ (【M φ】 : Set (FilterEqvQuotient M T)) := by
+        -- The chain is kept purely equational: `calc` cannot mix `Eq` and `⊆` here, because the
+        -- two sides live in types that agree only after unfolding the filtration frame.
+        have e : (⋂ ψ : Ψ, 【M ψ】) ∩ (⋂ ξ : Ξ, 【M (□ξ)】) = (⋂ Xi ∈ Ys, Xi : Set (FilterEqvQuotient M T)) := by calc
+          _ = (⋂ ψ : Ψ, 【M ψ】) ∩ (⋂ Ui ∈ Us, Ui) := by
+            suffices (⋂ ψ : Ξ, 【M (□ψ)】) = (⋂ Ui ∈ Us, Ui) by congr;
+            ext A;
+            suffices
+              (∀ ξ, □ξ ∈ T → 【M (□ξ)】 ∈ Ys → W ∈ 【M (□ξ)】 → A ∈ 【M (□ξ)】) ↔
+              (∀ ξ, □ξ ∈ T → ∀ Yi ∈ Ys, Yi = 【M (□ξ)】 → W ∈ 【M (□ξ)】 → A ∈ Yi) by
+              simp [Ξ, Us];
+              tauto;
             constructor;
-            . intro i hi;
-              apply h;
-              left;
-              assumption;
-            . intro i hi;
-              apply h;
-              right;
-              assumption;
-        _ = Y             := by grind;
-        _ ⊆ 【M φ】         := by assumption;
+            . rintro h _ _ _ _ rfl;
+              apply h <;> assumption;
+            . rintro h _ _ _ _;
+              apply h <;> tauto;
+          _ = (⋂ Vi ∈ Vs, Vi) ∩ (⋂ Ui ∈ Us, Ui) := by
+            suffices (⋂ ψ : Ψ, 【M ψ】) = (⋂ Vi ∈ Vs, Vi) by congr;
+            ext A;
+            suffices
+              (∀ ψ, □ψ ∈ T → 【M ψ】 ∈ Ys → W ∈ 【M (□ψ)】 → A ∈ 【M ψ】) ↔
+              (∀ ψ, □ψ ∈ T → ∀ Yi ∈ Ys, Yi = 【M ψ】 → W ∈ 【M (□ψ)】 → A ∈ Yi) by
+              simp [Ψ, Vs];
+              tauto;
+            constructor;
+            . rintro h _ _ _ _ rfl;
+              apply h <;> assumption;
+            . rintro h _ _ _ _;
+              apply h <;> tauto;
+          _ = ⋂ Xi ∈ Ys, Xi := by
+            ext A;
+            constructor;
+            . rintro ⟨hV, hU⟩;
+              apply Set.mem_iInter₂.mpr;
+              intro i hi;
+              rcases (hYVU i).mp hi with hi | hi;
+              . exact Set.mem_iInter₂.mp hV i hi;
+              . exact Set.mem_iInter₂.mp hU i hi;
+            . intro h;
+              replace h := Set.mem_iInter₂.mp h;
+              constructor;
+              . apply Set.mem_iInter₂.mpr;
+                intro i hi;
+                exact h i $ (hYVU i).mpr $ Or.inl hi;
+              . apply Set.mem_iInter₂.mpr;
+                intro i hi;
+                exact h i $ (hYVU i).mpr $ Or.inr hi;
+        rw [e];
+        exact hYs₂ ▸ hY;
       obtain ⟨w, rfl⟩ := Quotient.exists_rep W;
       by_cases hΨ : Nonempty Ψ <;> by_cases hΞ : Nonempty Ξ;
       . suffices w ∈ M.box ((⋂ ψ : Ψ, M ψ) ∩ (⋂ ξ : Ξ, M (□ξ))) by
