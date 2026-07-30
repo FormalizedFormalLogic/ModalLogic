@@ -101,6 +101,7 @@ lemma CCC!_of_C!_left (h : L ⊢ ψ 🡒 φ) : L ⊢ (φ 🡒 χ) 🡒 (ψ 🡒 
 
 /-! ### Negation -/
 
+omit [L.Cl] in
 @[grind =] lemma N!_iff_CO! : L ⊢ ∼φ ↔ L ⊢ φ 🡒 ⊥ := Iff.rfl
 
 @[simp] lemma efq! : L ⊢ ⊥ 🡒 φ := sorry
