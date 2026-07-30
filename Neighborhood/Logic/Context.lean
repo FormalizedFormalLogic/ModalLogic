@@ -32,33 +32,64 @@ variable {L : Logic} {T U : FormulaSet} {φ ψ χ : Formula}
 @[grind =]
 lemma iff_exists_finset : T *⊢[L] φ ↔ ∃ Γ : FormulaFinset, ↑Γ ⊆ T ∧ Γ.conj 🡒 φ ∈ L := Iff.rfl
 
-lemma weakening! (hs : T ⊆ U) (h : T *⊢[L] φ) : U *⊢[L] φ := sorry
+lemma weakening! (hs : T ⊆ U) (h : T *⊢[L] φ) : U *⊢[L] φ := by
+  obtain ⟨Γ, hΓ, hφ⟩ := h;
+  exact ⟨Γ, hΓ.trans hs, hφ⟩;
 
 section
 
 variable [L.Cl]
 
 /-- A theorem of `L` is derivable from any set of assumptions. -/
-lemma of! (h : φ ∈ L) : T *⊢[L] φ := sorry
+lemma of! (h : φ ∈ L) : T *⊢[L] φ := ⟨∅, by simp, C!_of_conseq! h⟩
 
 /-- An assumption is derivable from itself. -/
-lemma by_axm! (h : φ ∈ T) : T *⊢[L] φ := sorry
+lemma by_axm! (h : φ ∈ T) : T *⊢[L] φ := ⟨{φ}, by simpa, left_Fconj!_intro (by simp)⟩
 
-lemma mdp! (h₁ : T *⊢[L] φ 🡒 ψ) (h₂ : T *⊢[L] φ) : T *⊢[L] ψ := sorry
+lemma mdp! (h₁ : T *⊢[L] φ 🡒 ψ) (h₂ : T *⊢[L] φ) : T *⊢[L] ψ := by
+  obtain ⟨Γ₁, hΓ₁, h₁⟩ := h₁;
+  obtain ⟨Γ₂, hΓ₂, h₂⟩ := h₂;
+  refine ⟨Γ₁ ∪ Γ₂, ?_, ?_⟩;
+  . simp only [Finset.coe_union];
+    exact Set.union_subset hΓ₁ hΓ₂;
+  . exact mdp₁!
+      (C!_trans (C!_trans CFconjUnionKFconj! and₁!) h₁)
+      (C!_trans (C!_trans CFconjUnionKFconj! and₂!) h₂);
 
-lemma deductInv! (h : T *⊢[L] φ 🡒 ψ) : insert φ T *⊢[L] ψ := sorry
+lemma deductInv! (h : T *⊢[L] φ 🡒 ψ) : insert φ T *⊢[L] ψ :=
+  mdp! (weakening! (Set.subset_insert _ _) h) (by_axm! (Set.mem_insert _ _))
 
-lemma deduct! (h : insert φ T *⊢[L] ψ) : T *⊢[L] φ 🡒 ψ := sorry
+lemma deduct! (h : insert φ T *⊢[L] ψ) : T *⊢[L] φ 🡒 ψ := by
+  obtain ⟨Γ, hΓ, hψ⟩ := h;
+  refine ⟨Γ.erase φ, ?_, ?_⟩;
+  . intro x hx;
+    simp only [Finset.coe_erase, Set.mem_sdiff, Set.mem_singleton_iff] at hx;
+    have := hΓ hx.1;
+    grind;
+  . have h₁ : (insert φ (Γ.erase φ) : FormulaFinset).conj 🡒 ψ ∈ L := by
+      apply C!_trans ?_ hψ;
+      apply CFconj!_Fconj!;
+      intro x hx;
+      simp only [Finset.mem_insert, Finset.mem_erase];
+      grind;
+    exact C!_swap <| CK!_iff_CC!.mp <| C!_trans (C_of_E_mpr! EFconjInsertKFconj!) h₁;
 
 @[grind =] lemma iff_deduct! : insert φ T *⊢[L] ψ ↔ T *⊢[L] φ 🡒 ψ := ⟨deduct!, deductInv!⟩
 
-@[grind =] lemma iff_provable_empty : ∅ *⊢[L] φ ↔ φ ∈ L := sorry
+@[grind =] lemma iff_provable_empty : ∅ *⊢[L] φ ↔ φ ∈ L := by
+  constructor;
+  . rintro ⟨Γ, hΓ, hφ⟩;
+    replace hΓ : Γ = ∅ := by simpa [Finset.coe_eq_empty] using hΓ;
+    subst hΓ;
+    exact hφ ⨀ (by simp [FormulaFinset.conj]);
+  . apply of!;
 
 /-- Transfer of a unary rule of `L` to derivability from assumptions. -/
-lemma of_C! (hL : φ 🡒 ψ ∈ L) (h : T *⊢[L] φ) : T *⊢[L] ψ := sorry
+lemma of_C! (hL : φ 🡒 ψ ∈ L) (h : T *⊢[L] φ) : T *⊢[L] ψ := mdp! (of! hL) h
 
 /-- Transfer of a binary rule of `L` to derivability from assumptions. -/
-lemma of_C!_of_C! (hL : φ 🡒 ψ 🡒 χ ∈ L) (h₁ : T *⊢[L] φ) (h₂ : T *⊢[L] ψ) : T *⊢[L] χ := sorry
+lemma of_C!_of_C! (hL : φ 🡒 ψ 🡒 χ ∈ L) (h₁ : T *⊢[L] φ) (h₂ : T *⊢[L] ψ) : T *⊢[L] χ :=
+  mdp! (of_C! hL h₁) h₂
 
 end
 
