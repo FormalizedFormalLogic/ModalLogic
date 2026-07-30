@@ -27,6 +27,14 @@ lemma frame_2_170.not_valid_axiomT :
 instance : frame_2_170.ContainsUnit := ⟨by
   ext x; simp [Frame.box, frame_2_170]⟩
 
+instance : frame_2_170.IsMonotonic where
+  mono X Y w hw := by
+    simp only [Frame.box, frame_2_170, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hw ⊢
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
+      simp_all [Set.ext_iff]
+
 instance : frame_2_170.IsTransitive where
   trans X := by
     intro x hx

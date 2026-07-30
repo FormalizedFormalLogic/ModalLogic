@@ -52,6 +52,13 @@ instance : frame_3_9471106.IsTransitive := ⟨by
   · simp [frame_3_9471106.box_singleton]
   · simp [frame_3_9471106.contains_unit]⟩
 
+@[simp]
+lemma frame_3_9471106.not_valid_axiomM :
+    ¬frame_3_9471106 ⊧ (Axioms.M #0 #1 : Formula ℕ) :=
+  Frame.Validate.not_of_exists_valuation_world
+    ⟨fun a => match a with | 0 => {0, 1} | 1 => {0, 2} | _ => Set.univ, 0, by
+      unfold NotForces Forces; simp [Frame.box, frame_3_9471106, Set.ext_iff]; decide⟩
+
 lemma frame_3_9471106.not_isEuclidean : ¬frame_3_9471106.IsEuclidean := fun hE => by
   have hdia : frame_3_9471106.dia ({0, 1} : Set (Fin 3)) = {0, 1} := by
     simp only [Set.ext_iff, Frame.dia, Frame.box, Set.mem_compl_iff, Set.mem_setOf_eq,
