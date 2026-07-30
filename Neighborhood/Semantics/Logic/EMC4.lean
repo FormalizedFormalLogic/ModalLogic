@@ -1,61 +1,76 @@
 module
 
 public import Neighborhood.Semantics.Logic.EMC
+public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Filtration
+
+/-!
+# The neighborhood logic `LogicEMC4`
+
+Soundness, consistency and completeness of `LogicEMC4`, the classical modal logic axiomatised by
+the monotonicity axiom `M`, the regularity axiom `C` and the transitivity axiom `Four`, with
+respect to the neighborhood frames that are monotonic, regular and transitive, together with its
+finite frame property. Also proves the strict inclusion of `LogicEMC` in `LogicEMC4`.
+-/
 
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
-namespace Neighborhood
+/-- `LogicEMC4` is sound with respect to every monotonic, regular and transitive neighborhood
+frame. -/
+theorem LogicEMC4.sound (h : A ∈ LogicEMC4) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+    [F.IsRegular] [F.IsTransitive] : F ⊧ A :=
+  Hilbert.sound (by
+    rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩)
+    · exact valid_axiomM_of_isMonotonic
+    · exact valid_axiomC_of_isRegular
+    · exact valid_axiomFour_of_isTransitive) h
 
-protected class Frame.IsEMC4 (F : Frame) extends F.IsMonotonic, F.IsRegular, F.IsTransitive where
-protected abbrev FrameClass.EMC4 : FrameClass := { F | F.IsEMC4 }
+instance : (@LogicEMC4 α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole) (by
+    rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩)
+    · exact valid_axiomM_of_isMonotonic
+    · exact valid_axiomC_of_isRegular
+    · exact valid_axiomFour_of_isTransitive)
 
-protected class Frame.IsFiniteEMC4 (F : Frame) extends F.IsEMC4, F.IsFinite where
-protected abbrev FrameClass.finite_EMC4 : FrameClass := { F | F.IsFiniteEMC4 }
+variable [DecidableEq α]
 
-end Neighborhood
+/-- `LogicEMC4` is complete with respect to all monotonic, regular and transitive neighborhood
+frames. -/
+theorem LogicEMC4.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsRegular → F.IsTransitive →
+      F ⊧ A) : A ∈ @LogicEMC4 α :=
+  (supplementedBasicCanonicity LogicEMC4).mem_of_valid
+    (h (supplementedBasicCanonicity LogicEMC4).toModel.toFrame inferInstance inferInstance
+      inferInstance (supplementedBasicCanonicity LogicEMC4).toModel.Val)
 
-namespace EMC4
+/-- `LogicEMC4` is complete with respect to the finite monotonic, regular and transitive
+neighborhood frames (its finite frame property). -/
+theorem LogicEMC4.finite_complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsMonotonic → F.IsRegular →
+      F.IsTransitive → F ⊧ A) : A ∈ @LogicEMC4 α :=
+  LogicEMC4.complete <| by
+    intro κ _ F hMono hReg hTrans V x
+    let M : Model κ α := ⟨F, V⟩
+    haveI : Finite (FilterEqvQuotient M A.subformulas) := FilterEqvQuotient.finite (by simp)
+    apply (quasiFilteringTransitiveFiltration M A.subformulas (by simp)).filtration_satisfies _
+      (by grind) |>.mp
+    exact h (quasiFilteringTransitiveFiltration M A.subformulas (by simp)).toModel.toFrame ⟨‹_›⟩
+      quasiFilteringTransitiveFiltration.isMonotonic quasiFilteringTransitiveFiltration.isRegular
+      quasiFilteringTransitiveFiltration.isTransitive
+      (quasiFilteringTransitiveFiltration M A.subformulas (by simp)).toModel.Val ⟦x⟧
 
-instance Neighborhood.sound : Sound Modal.EMC4 FrameClass.EMC4 := instSound_of_validates_axioms $ by
-  constructor;
-  rintro _ (rfl | rfl | rfl) F (rfl | rfl) <;> simp;
+/-! ### Strict inclusion of `LogicEMC` -/
 
-instance consistent : Entailment.Consistent Modal.EMC4 := consistent_of_sound_frameclass FrameClass.EMC4 $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  constructor;
+theorem LogicEMC_ssubset_LogicEMC4 : @LogicEMC ℕ ⊂ LogicEMC4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
+  · intro h
+    have hFour : Axioms.Four (.atom 0) ∈ (@LogicEMC ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    exact Frame.trivial_nontransitive.not_valid_axiomFour
+      (LogicEMC.sound hFour Frame.trivial_nontransitive)
 
-instance Neighborhood.complete : Complete Modal.EMC4 FrameClass.EMC4 := (supplementedBasicCanonicity Modal.EMC4).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  constructor;
-
-/-- FFP of `Modal.EMC4` -/
-instance Neighborhood.finite_complete : Complete Modal.EMC4 FrameClass.finite_EMC4 := ⟨by
-  intro φ hφ;
-  apply Complete.complete (𝓜 := FrameClass.EMC4);
-  intro F F_trans V x;
-  replace F_trans := Set.mem_setOf_eq.mp F_trans;
-
-  let M : Model := ⟨F, V⟩;
-  apply quasiFilteringTransitiveFiltration M φ.subformulas (by simp) |>.filtration_satisfies _ (by grind) |>.mp;
-  apply hφ;
-  apply Set.mem_setOf_eq.mpr;
-  exact {
-    world_finite := by apply FilterEqvQuotient.finite $ by simp;
-    trans := by apply quasiFilteringTransitiveFiltration.isTransitive.trans;
-    mono := by apply quasiFilteringTransitiveFiltration.isMonotonic.mono;
-    regular := by apply quasiFilteringTransitiveFiltration.isRegular.regular;
-  };
-⟩
-
-end EMC4
-
-end LO.Modal
 end
