@@ -22,11 +22,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEMT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsReflexive] [F.IsTransitive] :
     A ∈ LogicEMT4 → F ⊧ A :=
-  Hilbert.sound (by
-    rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
-    · exact valid_axiomM_of_isMonotonic
-    · exact valid_axiomT_of_isReflexive
-    · exact valid_axiomFour_of_isTransitive)
+  Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 theorem LogicEMT4.consistent : (@LogicEMT4 α).IsConsistent := by
   by_contra! hC
@@ -62,7 +58,7 @@ theorem LogicEMT_ssubset_LogicEMT4 : @LogicEMT ℕ ⊂ LogicEMT4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hFour : Axioms.Four #0 ∈ (@LogicEMT ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    have hFour : Axioms.Four #0 ∈ (@LogicEMT ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_8.not_valid_axiomFour
       (LogicEMT.sound frame_2_8 hFour)
 

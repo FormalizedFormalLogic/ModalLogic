@@ -19,7 +19,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicET.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] :
     A ∈ LogicET → F ⊧ A :=
-  Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomT_of_isReflexive)
+  Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
 theorem LogicET.consistent : (@LogicET α).IsConsistent := by
   by_contra! hC
@@ -43,7 +43,7 @@ theorem LogicED_ssubset_LogicET : @LogicED ℕ ⊂ LogicET := by
     rintro _ ⟨A, rfl⟩
     exact Logic.C_trans Logic.axiomT Logic.diaTc
   · intro h
-    have hT : Axioms.T #0 ∈ @LogicED ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    have hT : Axioms.T #0 ∈ @LogicED ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_1.not_isReflexive (isReflexive_of_valid_axiomT (LogicED.sound frame_1_1 hT))
 
 end

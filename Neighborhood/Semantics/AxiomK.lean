@@ -28,6 +28,7 @@ section
 
 variable {κ : Type u} [Nonempty κ] {α : Type v} {F : Frame κ} {A B : Formula α}
 
+@[simp, grind .]
 theorem valid_axiomK_of_hasPropertyK [F.HasPropertyK] : F ⊧ Axioms.K A B := by
   intro V x
   simp only [forces_imp, forces_box]

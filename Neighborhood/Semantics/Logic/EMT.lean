@@ -21,10 +21,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEMT.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsReflexive] :
     A ∈ LogicEMT → F ⊧ A :=
-  Hilbert.sound (by
-    rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩)
-    · exact valid_axiomM_of_isMonotonic
-    · exact valid_axiomT_of_isReflexive)
+  Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 theorem LogicEMT.consistent : (@LogicEMT α).IsConsistent := by
   by_contra! hC
@@ -47,7 +44,7 @@ theorem LogicEM_ssubset_LogicEMT : @LogicEM ℕ ⊂ LogicEMT := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
-    have hT : Axioms.T #0 ∈ @LogicEM ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    have hT : Axioms.T #0 ∈ @LogicEM ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT (LogicEM.sound frame_1_3 hT))
 
 end

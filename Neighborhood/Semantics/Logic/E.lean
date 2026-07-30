@@ -26,7 +26,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicE.sound {κ} [Nonempty κ] (F : Frame κ) :
     A ∈ LogicE → F ⊧ A :=
-  Hilbert.sound (fun B hB => by simp at hB)
+  Hilbert.sound (by rintro _ ⟨⟩)
 
 theorem LogicE.consistent : (@LogicE α).IsConsistent := by
   by_contra! hC

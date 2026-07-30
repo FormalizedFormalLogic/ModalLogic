@@ -18,8 +18,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicEC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] :
     A ∈ LogicEC → F ⊧ A :=
-  Hilbert.sound (fun _ hB => by
-    obtain ⟨_, _, rfl⟩ := hB; exact valid_axiomC_of_isRegular)
+  Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; simp)
 
 theorem LogicEC.consistent : (@LogicEC α).IsConsistent := by
   by_contra! hC
@@ -41,7 +40,7 @@ theorem LogicE_ssubset_LogicEC : (@LogicE ℕ) ⊂ LogicEC := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hC : Axioms.C #0 #1 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, _, rfl⟩)
+    have hC : Axioms.C #0 #1 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_22.not_valid_axiomC (LogicE.sound _ hC)
 
 end

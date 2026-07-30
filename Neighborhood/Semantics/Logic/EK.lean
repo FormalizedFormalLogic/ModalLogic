@@ -19,7 +19,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicEK.sound {κ} [Nonempty κ] (F : Frame κ) [F.HasPropertyK] :
     A ∈ LogicEK → F ⊧ A :=
-  Hilbert.sound (fun B hB => by obtain ⟨A, B, rfl⟩ := hB; exact valid_axiomK_of_hasPropertyK)
+  Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; simp)
 
 theorem LogicEK.consistent : (@LogicEK α).IsConsistent := by
   by_contra! hC
@@ -30,7 +30,7 @@ theorem LogicE_ssubset_LogicEK : @LogicE ℕ ⊂ LogicEK := by
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
-    have hK : Axioms.K #0 #1 ∈ @LogicE ℕ := h (ProvableHilbert.axm ⟨_, _, rfl⟩)
+    have hK : Axioms.K #0 #1 ∈ @LogicE ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_3_130.not_valid_axiomK (LogicE.sound _ hK)
 
 end
