@@ -78,6 +78,12 @@ abbrev LogicEMT : Logic α := Hilbert $
 instance : (@LogicEMT α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
 instance : (@LogicEMT α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
 
+abbrev LogicENT : Logic α := Hilbert $
+  { Axioms.N } ∪
+  { Axioms.T A | (A) }
+instance : (@LogicENT α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicENT α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
+
 abbrev LogicED : Logic α := Hilbert { Axioms.D A | (A) }
 instance : (@LogicED α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
 
