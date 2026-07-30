@@ -1,108 +1,47 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
-public import Foundation.Modal.PLoN.Logic.N
+public import Neighborhood.Semantics.AxiomN
+
+/-!
+# The neighborhood logic `LogicEN`
+
+Soundness, consistency and completeness of `LogicEN`, the classical modal logic axiomatized by
+`N := □⊤` over `LogicE`, with respect to the frames containing their unit
+(`Frame.ContainsUnit`). Also its strict inclusion in `LogicE`.
+-/
 
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Formula (atom)
-open Entailment
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
-namespace Neighborhood
+/-- `LogicEN` is sound with respect to every frame containing its unit. -/
+theorem LogicEN.sound (h : A ∈ @LogicEN α) {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] :
+    F ⊧ A :=
+  Hilbert.sound (fun B hB => by simp only [Set.mem_singleton_iff] at hB; grind) h
 
-@[reducible] protected alias Frame.IsEN := Frame.ContainsUnit
-protected abbrev FrameClass.EN : FrameClass := { F | F.IsEN }
+instance : (@LogicEN α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole)
+    (fun B hB => by simp only [Set.mem_singleton_iff] at hB; grind)
 
-end Neighborhood
+variable [DecidableEq α]
 
+/-- `LogicEN` is complete with respect to all frames containing their unit. -/
+theorem LogicEN.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.ContainsUnit → F ⊧ A) :
+    A ∈ @LogicEN α :=
+  (basicCanonicity LogicEN).mem_of_valid
+    (h (basicCanonicity LogicEN).toModel.toFrame inferInstance
+      (basicCanonicity LogicEN).toModel.Val)
 
-namespace EN
+/-! ### Strict inclusion in `LogicE` -/
 
-instance Neighborhood.sound : Sound Modal.EN FrameClass.EN := instSound_of_validates_axioms $ by
-  constructor;
-  rintro _ (rfl | rfl) F hF;
-  simp_all;
+theorem LogicE_ssubset_LogicEN : @LogicE ℕ ⊂ LogicEN := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
+  · intro h
+    have hN : (Axioms.N : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm rfl)
+    exact Frame.simple_whitehole.not_valid_axiomN (LogicE.sound hN Frame.simple_whitehole)
 
-instance consistent : Entailment.Consistent Modal.EN := consistent_of_sound_frameclass FrameClass.EN $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  infer_instance;
-
-instance Neighborhood.complete : Complete Modal.EN FrameClass.EN := (basicCanonicity Modal.EN).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  infer_instance;
-
-end EN
-
-
-instance : Modal.EN ⪱ Modal.ECN := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.C (.atom 0) (.atom 1));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.EN);
-      apply not_validOnFrameClass_of_exists_model_world;
-      let M : Model := {
-        World := Fin 2,
-        𝒩 := λ w =>
-          match w with
-          | 0 => {{0}, {1}, {0, 1}, Set.univ}
-          | 1 => {{1}, {0, 1}, Set.univ},
-        Val := λ w =>
-          match w with
-          | 0 => {0}
-          | 1 => {1}
-          | _ => Set.univ
-      };
-      use M, 0;
-      constructor;
-      . exact {
-          contains_unit := by
-            ext x;
-            match x with | 0 | 1 => simp_all [M]
-        }
-      . simp! [M, Semantics.Models, Satisfies];
-        tauto_set;
-
-instance : Modal.EN ⪱ Modal.EMN := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.M (.atom 0) (.atom 1));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.EN);
-      apply not_validOnFrameClass_of_exists_model_world;
-      let M : Model := {
-        World := Fin 2,
-        𝒩 := λ w =>
-          match w with
-          | 0 => {∅, Set.univ}
-          | 1 => {Set.univ},
-        Val := λ w =>
-          match w with
-          | 0 => {0}
-          | 1 => {1}
-          | _ => Set.univ
-      };
-      use M, 0;
-      constructor;
-      . exact {
-          contains_unit := by
-            ext x;
-            match x with | 0 | 1 => simp_all [M]
-        }
-      . simp [M, Semantics.Models, Satisfies];
-
-
-end LO.Modal
 end
