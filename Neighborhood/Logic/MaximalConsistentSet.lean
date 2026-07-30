@@ -13,8 +13,6 @@ consistent sets of a logic together with the behaviour of membership under the c
 
 @[expose] public section
 
-namespace LO.Modal
-
 namespace FormulaSet
 
 open Logic Logic.Context
@@ -184,7 +182,5 @@ lemma neg_iff (h : φ ∈ Ω₁ ↔ ψ ∈ Ω₂) : ∼φ ∈ Ω₁ ↔ ∼ψ �
 end
 
 end MaximalConsistentSet
-
-end LO.Modal
 
 end

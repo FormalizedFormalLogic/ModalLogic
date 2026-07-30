@@ -15,8 +15,6 @@ and `⊥`, the toolkit is stated directly in terms of them.
 
 @[expose] public section
 
-namespace LO.Modal
-
 namespace Logic
 
 variable {L : Logic} {φ φ₁ φ₂ ψ ψ₁ ψ₂ χ ξ : Formula}
@@ -278,7 +276,5 @@ lemma EFconjInsertKFconj! : (insert φ Γ).conj 🡘 (φ ⋏ Γ.conj) ∈ L := b
   . exact C!_trans and₂! (left_Fconj!_intro hψ);
 
 end Logic
-
-end LO.Modal
 
 end

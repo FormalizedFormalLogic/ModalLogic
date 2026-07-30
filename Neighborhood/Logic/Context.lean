@@ -12,8 +12,6 @@ the deduction theorem and the resulting notion of a consistent set of formulas.
 
 @[expose] public section
 
-namespace LO.Modal
-
 /-- `φ` is derivable from the assumptions `T` in the logic `L`. -/
 def Logic.CProvable (L : Logic) (T : FormulaSet) (φ : Formula) : Prop :=
   ∃ Γ : FormulaFinset, ↑Γ ⊆ T ∧ Γ.conj 🡒 φ ∈ L
@@ -161,7 +159,5 @@ lemma either_consistent (h : Consistent L T) (φ) :
 end
 
 end FormulaSet
-
-end LO.Modal
 
 end

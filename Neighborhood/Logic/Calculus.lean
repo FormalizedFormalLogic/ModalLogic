@@ -11,8 +11,6 @@ and the derived monotonicity rule `RM`.
 
 @[expose] public section
 
-namespace LO.Modal
-
 namespace Logic
 
 variable {L : Logic} {φ ψ χ : Formula} {n : ℕ} {g : Axioms.Geach.Taple}
@@ -155,7 +153,5 @@ end
 end
 
 end Logic
-
-end LO.Modal
 
 end

@@ -16,8 +16,6 @@ disjunction, biimplication and `◇` are reducible abbreviations of those, so th
 
 @[expose] public section
 
-namespace LO.Modal
-
 /-- Formulas of propositional modal logic. -/
 inductive Formula where
   | atom   : ℕ → Formula
@@ -142,7 +140,7 @@ def Formula.subst (s : Substitution) : Formula → Formula
   | □φ     => □(φ.subst s)
   | φ 🡒 ψ  => φ.subst s 🡒 ψ.subst s
 
-@[inherit_doc] notation:80 φ "⟦" s "⟧" => Modal.Formula.subst s φ
+@[inherit_doc] notation:80 φ "⟦" s "⟧" => Formula.subst s φ
 
 namespace Formula.subst
 
@@ -185,7 +183,5 @@ def Substitution.comp (s₁ s₂ : Substitution) : Substitution := fun a => (s�
 lemma Formula.subst.def_comp {s₁ s₂ : Substitution} {φ : Formula} :
     φ⟦s₁.comp s₂⟧ = φ⟦s₁⟧⟦s₂⟧ := by
   induction φ <;> simp_all [Substitution.comp];
-
-end LO.Modal
 
 end

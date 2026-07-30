@@ -13,8 +13,6 @@ the corresponding closure condition of the generated logic follows by substituti
 
 @[expose] public section
 
-namespace LO.Modal
-
 /-- A set of axiom schemes, each taken up to substitution. -/
 abbrev Axiom := Set Formula
 
@@ -243,7 +241,5 @@ instance instHasAxiomFive [Ax.HasFive] : (Hilbert Ax).HasAxiomFive where
     simpa using h;
 
 end Hilbert
-
-end LO.Modal
 
 end

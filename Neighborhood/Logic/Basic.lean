@@ -11,8 +11,6 @@ membership `φ ∈ L`, and comparison of logics is inclusion of the underlying s
 
 @[expose] public section
 
-namespace LO.Modal
-
 /-- A logic, i.e. a set of formulas regarded as the set of its theorems. -/
 abbrev Logic := Set Formula
 
@@ -28,7 +26,5 @@ variable {L : Logic}
 lemma not_mem_falsum [L.Consistent] : (⊥ : Formula) ∉ L := Consistent.not_mem_falsum
 
 end Logic
-
-end LO.Modal
 
 end

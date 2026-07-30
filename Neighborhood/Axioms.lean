@@ -11,7 +11,7 @@ abbreviations for the corresponding formulas.
 
 @[expose] public section
 
-namespace LO.Modal.Axioms
+namespace Axioms
 
 variable (φ ψ χ : Formula)
 
@@ -71,6 +71,6 @@ protected structure Geach.Taple where
 /-- Axiom for Geach convergence. -/
 protected abbrev Geach (g : Geach.Taple) (φ : Formula) := (◇^[g.i](□^[g.m]φ)) 🡒 (□^[g.j](◇^[g.n]φ))
 
-end LO.Modal.Axioms
+end Axioms
 
 end

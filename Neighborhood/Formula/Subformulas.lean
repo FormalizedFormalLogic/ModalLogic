@@ -11,8 +11,6 @@ formulas.
 
 @[expose] public section
 
-namespace LO.Modal
-
 /-- The finite set of subformulas of a formula, including the formula itself. -/
 @[grind =]
 def Formula.subformulas : Formula → FormulaFinset
@@ -137,7 +135,5 @@ end FormulaSet.IsSubformulaClosed
 
 instance {φ : Formula} : FormulaSet.IsSubformulaClosed ↑φ.subformulas where
   closed := fun _ hψ ↦ Formula.subformulas.subset_of_mem hψ
-
-end LO.Modal
 
 end
