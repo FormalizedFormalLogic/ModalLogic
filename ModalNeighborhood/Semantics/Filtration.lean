@@ -408,7 +408,8 @@ protected instance isReflexive [M.IsReflexive] : (transitiveFiltration M T).toMo
     assumption;
   . assumption;
 
-protected instance containsUnit [M.ContainsUnit] (hT : □⊤ ∈ T) : (transitiveFiltration M T).toModel.ContainsUnit := by
+@[reducible]
+protected def containsUnit [M.ContainsUnit] (hT : □⊤ ∈ T) : (transitiveFiltration M T).toModel.ContainsUnit := by
   constructor;
   ext X;
   suffices X ∈ (transitiveFiltration M T).B Set.univ by simpa;
