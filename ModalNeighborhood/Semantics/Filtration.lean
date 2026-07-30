@@ -2,14 +2,16 @@ module
 
 public import ModalNeighborhood.Semantics.IntersectionClosure
 
-@[expose] public section
+/-!
+# Filtration of neighborhood semantics
 
-/-
-  Filtration of neighborhood semantics.
+Filtrations of neighborhood models through a subformula-closed set of formulas, together with the
+minimal, transitive, supplemented transitive and quasi-filtering transitive filtrations.
 
-  References:
-  - K. Kopnev, "The Finite Model Property of Some Non-normal Modal Logics with the Transitivity Axiom", https://arxiv.org/abs/2305.08605
+- [Kop23, Section 5]
 -/
+
+@[expose] public section
 
 namespace LO.Modal
 
@@ -199,6 +201,12 @@ lemma mono'_truthset [M.IsMonotonic] (hψ : ψ ∈ T) (h : (【M φ】 : Set (Fi
 end toFilterEquivSet
 
 
+/-- A filtration of the model `M` through the subformula-closed set `T`: a model on the quotient
+`FilterEqvQuotient M T` whose box agrees with `M`'s box on the images of the truthsets of formulas
+of `T`, and whose valuation is the image of `M`'s valuation.
+
+- [Kop23, Definition 5.1]
+-/
 structure Filtration (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaClosed] where
   B : Set (FilterEqvQuotient M T) → Set (FilterEqvQuotient M T)
   B_def : ∀ φ, (□φ ∈ T) → B 【M φ】 = 【M.box (M φ)】
@@ -220,6 +228,10 @@ lemma toModel_def : Fi.toModel.box X = Fi.B X := by
   simp [Filtration.toModel, Frame.mk_ℬ, Frame.box];
   rfl;
 
+/-- In a filtration, the truthset of every formula of `T` is the image of its truthset in `M`.
+
+- [Kop23, Theorem 5.2]
+-/
 theorem filtration (Fi : Filtration M T) (φ) (hφ : φ ∈ T) : (Fi.toModel φ) = 【M φ】 := by
   induction φ with
   | hatom a => apply Fi.V_def;
@@ -241,6 +253,11 @@ lemma filtration_satisfies (Fi : Filtration M T) (φ) (hφ : φ ∈ T) {x : M} :
     apply Ryx φ hφ |>.mp hy;
   . tauto;
 
+/-- Two formulas of `T` have the same truthset in a filtration iff the images of their truthsets in
+`M` coincide.
+
+- [Kop23, Lemma 5.3]
+-/
 lemma truthlemma (Fi : Filtration M T) {φ ψ} (hφ : φ ∈ T) (hψ : ψ ∈ T) :
   (Fi.toModel φ) = (Fi.toModel ψ) ↔ (【M φ】 : Set (FilterEqvQuotient M T)) = (【M ψ】) := by
   rw [filtration Fi φ hφ, filtration Fi ψ hψ];
@@ -251,6 +268,10 @@ lemma iff_mem_toModel_box_mem_B {Fi : Filtration M T} : W ∈ Fi.toModel.box Y �
   simp [Filtration.toModel, Frame.mk_ℬ, Frame.box];
   rfl;
 
+/-- The defining property of a filtration, read as an equation between images of truthsets.
+
+- [Kop23, Lemma 5.8]
+-/
 @[grind =>]
 lemma box_in_out {Fi : Filtration M T} (hφ : □φ ∈ T) : Fi.B 【M φ】 = 【M (□φ)】 := calc
   _ = Fi.toModel.box 【M.truthset φ】 := by simp [Filtration.toModel, Frame.mk_ℬ, Frame.box]; rfl;
@@ -270,6 +291,12 @@ lemma transitive_lemma (hφ : φ ∈ T) (hψ : □ψ ∈ T) (Fi : Filtration M T
 end Filtration
 
 open Classical in
+/-- The minimal filtration: `B X` is the image of the truthset of `□φ` whenever `X` is the image of
+the truthset of some `φ` with `□φ ∈ T`, and `∅` otherwise. Its `B_def` field is the
+well-definedness of this assignment.
+
+- [Kop23, Definition 5.4, Proposition 5.5]
+-/
 def minimalFiltration (M : Model) (T : FormulaSet ℕ) [T.IsSubformulaClosed] : Filtration M T where
   B X := if h : ∃ φ, □φ ∈ T ∧ X = 【M φ】 then 【M.box (M h.choose)】 else ∅
   B_def := by
@@ -306,6 +333,12 @@ lemma minimalFiltration.iff_mem_B : W ∈ (minimalFiltration M T).B X ↔ ∃ φ
 
 
 open Classical in
+/-- The transitive filtration: the minimal filtration united with the closure of its range, i.e.
+`B X` additionally contains `X` itself whenever `X` is in the range of the minimal filtration's
+box.
+
+- [Kop23, Definition 5.6, Definition 5.7, Lemma 5.9]
+-/
 def transitiveFiltration (M : Model) [M.IsTransitive] (T : FormulaSet ℕ) [T.IsSubformulaClosed] : Filtration M T where
   B X := ((minimalFiltration M T).B X) ∪ (if ∃ Y, X = (minimalFiltration M T).B Y then X else ∅)
   B_def := by
@@ -368,6 +401,10 @@ lemma iff_mem_B :
         rw [Filtration.box_in_out hφ]
       . tauto;
 
+/-- The transitive filtration of a transitive model is transitive.
+
+- [Kop23, Lemma 5.10]
+-/
 protected instance isTransitive : (transitiveFiltration M T).toModel.IsTransitive := by
   constructor;
   -- State the goal at the type `Set (FilterEqvQuotient M T)`, so that the `simp` set matches.
@@ -410,6 +447,10 @@ protected instance isTransitive : (transitiveFiltration M T).toModel.IsTransitiv
           . grind;
         . grind;
 
+/-- The transitive filtration of a reflexive model is reflexive.
+
+- [Kop23, Lemma 5.12]
+-/
 protected instance isReflexive [M.IsReflexive] : (transitiveFiltration M T).toModel.IsReflexive := by
   constructor;
   rintro X W hW;
@@ -434,6 +475,11 @@ end transitiveFiltration
 
 
 open Classical in
+/-- The supplementation of the transitive filtration, which is again a filtration when the model is
+monotonic and transitive.
+
+- [Kop23, Lemma 5.11]
+-/
 def supplementedTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransitive] (T : FormulaSet ℕ) [T.IsSubformulaClosed] : Filtration M T where
   B := (transitiveFiltration M T).toModel.supplementation.box
   B_def := by
@@ -485,6 +531,11 @@ end supplementedTransitiveFiltration
 
 
 open Classical in
+/-- The rm-closure (intersection closure followed by supplementation) of the transitive filtration,
+which is again a filtration when the model is monotonic, transitive and regular.
+
+- [Kop23, Definition 5.16, Lemma 5.18]
+-/
 def quasiFilteringTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransitive] [M.IsRegular] (T : FormulaSet ℕ) [T.IsSubformulaClosed] (hT : T.Finite) : Filtration M T where
   V := (transitiveFiltration M T).V
   V_def := by simp;
