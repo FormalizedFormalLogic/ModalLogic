@@ -13,17 +13,17 @@ and the derived monotonicity rule `RM`.
 
 namespace Logic
 
-variable {L : Logic} {φ ψ χ : Formula} {n : ℕ} {g : Axioms.Geach.Taple}
+variable {α : Type u} {L : Logic α} {A B C : Formula α} {n : ℕ} {g : Axioms.Geach.Taple}
 
 /-! ### Rules -/
 
 /-- Closure of a logic under the congruence rule for `□`. -/
-class HasRE (L : Logic) where
-  re : ∀ {φ ψ : Formula}, φ 🡘 ψ ∈ L → □φ 🡘 □ψ ∈ L
+class HasRE (L : Logic α) where
+  re : ∀ {A B : Formula α}, A 🡘 B ∈ L → □A 🡘 □B ∈ L
 
-lemma re! [L.HasRE] : φ 🡘 ψ ∈ L → □φ 🡘 □ψ ∈ L := HasRE.re
+lemma re! [L.HasRE] : A 🡘 B ∈ L → □A 🡘 □B ∈ L := HasRE.re
 
-lemma multire! [L.HasRE] (h : φ 🡘 ψ ∈ L) : □^[n]φ 🡘 □^[n]ψ ∈ L := by
+lemma multire! [L.HasRE] (h : A 🡘 B ∈ L) : □^[n]A 🡘 □^[n]B ∈ L := by
   induction n with
   | zero => simpa;
   | succ n ih => simpa using re! ih;
@@ -31,62 +31,62 @@ lemma multire! [L.HasRE] (h : φ 🡘 ψ ∈ L) : □^[n]φ 🡘 □^[n]ψ ∈ L
 /-! ### Axiom schemes -/
 
 /-- A logic containing the axiom scheme `K`. -/
-class HasAxiomK (L : Logic) where
-  K : ∀ (φ ψ : Formula), Axioms.K φ ψ ∈ L
+class HasAxiomK (L : Logic α) where
+  K : ∀ (A B : Formula α), Axioms.K A B ∈ L
 
 /-- A logic containing the axiom scheme `M`. -/
-class HasAxiomM (L : Logic) where
-  M : ∀ (φ ψ : Formula), Axioms.M φ ψ ∈ L
+class HasAxiomM (L : Logic α) where
+  M : ∀ (A B : Formula α), Axioms.M A B ∈ L
 
 /-- A logic containing the axiom scheme `C`. -/
-class HasAxiomC (L : Logic) where
-  C : ∀ (φ ψ : Formula), Axioms.C φ ψ ∈ L
+class HasAxiomC (L : Logic α) where
+  C : ∀ (A B : Formula α), Axioms.C A B ∈ L
 
 /-- A logic containing the axiom `N`. -/
-class HasAxiomN (L : Logic) where
+class HasAxiomN (L : Logic α) where
   N : Axioms.N ∈ L
 
 /-- A logic containing the axiom scheme `T`. -/
-class HasAxiomT (L : Logic) where
-  T : ∀ (φ : Formula), Axioms.T φ ∈ L
+class HasAxiomT (L : Logic α) where
+  T : ∀ (A : Formula α), Axioms.T A ∈ L
 
 /-- A logic containing the axiom scheme `B`. -/
-class HasAxiomB (L : Logic) where
-  B : ∀ (φ : Formula), Axioms.B φ ∈ L
+class HasAxiomB (L : Logic α) where
+  B : ∀ (A : Formula α), Axioms.B A ∈ L
 
 /-- A logic containing the axiom scheme `D`. -/
-class HasAxiomD (L : Logic) where
-  D : ∀ (φ : Formula), Axioms.D φ ∈ L
+class HasAxiomD (L : Logic α) where
+  D : ∀ (A : Formula α), Axioms.D A ∈ L
 
 /-- A logic containing the axiom `P`. -/
-class HasAxiomP (L : Logic) where
+class HasAxiomP (L : Logic α) where
   P : Axioms.P ∈ L
 
 /-- A logic containing the axiom scheme `Four`. -/
-class HasAxiomFour (L : Logic) where
-  Four : ∀ (φ : Formula), Axioms.Four φ ∈ L
+class HasAxiomFour (L : Logic α) where
+  Four : ∀ (A : Formula α), Axioms.Four A ∈ L
 
 /-- A logic containing the axiom scheme `Five`. -/
-class HasAxiomFive (L : Logic) where
-  Five : ∀ (φ : Formula), Axioms.Five φ ∈ L
+class HasAxiomFive (L : Logic α) where
+  Five : ∀ (A : Formula α), Axioms.Five A ∈ L
 
 /-- A logic containing the Geach axiom scheme with parameters `g`. -/
-class HasAxiomGeach (g : Axioms.Geach.Taple) (L : Logic) where
-  Geach : ∀ (φ : Formula), Axioms.Geach g φ ∈ L
+class HasAxiomGeach (g : Axioms.Geach.Taple) (L : Logic α) where
+  Geach : ∀ (A : Formula α), Axioms.Geach g A ∈ L
 
-@[simp] lemma axiomK! [L.HasAxiomK] : □(φ 🡒 ψ) 🡒 □φ 🡒 □ψ ∈ L := HasAxiomK.K ..
-@[simp] lemma axiomM! [L.HasAxiomM] : □(φ ⋏ ψ) 🡒 (□φ ⋏ □ψ) ∈ L := HasAxiomM.M ..
-@[simp] lemma axiomC! [L.HasAxiomC] : (□φ ⋏ □ψ) 🡒 □(φ ⋏ ψ) ∈ L := HasAxiomC.C ..
-@[simp] lemma axiomN! [L.HasAxiomN] : □(⊤ : Formula) ∈ L := HasAxiomN.N
-@[simp] lemma axiomT! [L.HasAxiomT] : □φ 🡒 φ ∈ L := HasAxiomT.T ..
-@[simp] lemma axiomB! [L.HasAxiomB] : φ 🡒 □◇φ ∈ L := HasAxiomB.B ..
-@[simp] lemma axiomD! [L.HasAxiomD] : □φ 🡒 ◇φ ∈ L := HasAxiomD.D ..
-@[simp] lemma axiomP! [L.HasAxiomP] : ∼□(⊥ : Formula) ∈ L := HasAxiomP.P
-@[simp] lemma axiomFour! [L.HasAxiomFour] : □φ 🡒 □□φ ∈ L := HasAxiomFour.Four ..
-@[simp] lemma axiomFive! [L.HasAxiomFive] : ◇φ 🡒 □◇φ ∈ L := HasAxiomFive.Five ..
+@[simp] lemma axiomK! [L.HasAxiomK] : □(A 🡒 B) 🡒 □A 🡒 □B ∈ L := HasAxiomK.K ..
+@[simp] lemma axiomM! [L.HasAxiomM] : □(A ⋏ B) 🡒 (□A ⋏ □B) ∈ L := HasAxiomM.M ..
+@[simp] lemma axiomC! [L.HasAxiomC] : (□A ⋏ □B) 🡒 □(A ⋏ B) ∈ L := HasAxiomC.C ..
+@[simp] lemma axiomN! [L.HasAxiomN] : □(⊤ : Formula α) ∈ L := HasAxiomN.N
+@[simp] lemma axiomT! [L.HasAxiomT] : □A 🡒 A ∈ L := HasAxiomT.T ..
+@[simp] lemma axiomB! [L.HasAxiomB] : A 🡒 □◇A ∈ L := HasAxiomB.B ..
+@[simp] lemma axiomD! [L.HasAxiomD] : □A 🡒 ◇A ∈ L := HasAxiomD.D ..
+@[simp] lemma axiomP! [L.HasAxiomP] : ∼□(⊥ : Formula α) ∈ L := HasAxiomP.P
+@[simp] lemma axiomFour! [L.HasAxiomFour] : □A 🡒 □□A ∈ L := HasAxiomFour.Four ..
+@[simp] lemma axiomFive! [L.HasAxiomFive] : ◇A 🡒 □◇A ∈ L := HasAxiomFive.Five ..
 
 @[simp]
-lemma axiomGeach! [L.HasAxiomGeach g] : ◇^[g.i](□^[g.m]φ) 🡒 □^[g.j](◇^[g.n]φ) ∈ L :=
+lemma axiomGeach! [L.HasAxiomGeach g] : ◇^[g.i](□^[g.m]A) 🡒 □^[g.j](◇^[g.n]A) ∈ L :=
   HasAxiomGeach.Geach ..
 
 instance [L.HasAxiomT] : L.HasAxiomGeach ⟨0, 0, 1, 0⟩ := ⟨fun _ => axiomT!⟩
@@ -99,19 +99,19 @@ section
 
 variable [L.Cl]
 
-@[simp] lemma axiomK'! [L.HasAxiomK] (h : □(φ 🡒 ψ) ∈ L) : □φ 🡒 □ψ ∈ L := axiomK! ⨀ h
-@[simp] lemma axiomK''! [L.HasAxiomK] (h₁ : □(φ 🡒 ψ) ∈ L) (h₂ : □φ ∈ L) : □ψ ∈ L := axiomK'! h₁ ⨀ h₂
-lemma axiomM'! [L.HasAxiomM] (h : □(φ ⋏ ψ) ∈ L) : □φ ⋏ □ψ ∈ L := axiomM! ⨀ h
-lemma axiomC'! [L.HasAxiomC] (h : □φ ⋏ □ψ ∈ L) : □(φ ⋏ ψ) ∈ L := axiomC! ⨀ h
-@[simp] lemma axiomT'! [L.HasAxiomT] (h : □φ ∈ L) : φ ∈ L := axiomT! ⨀ h
-lemma axiomD'! [L.HasAxiomD] (h : □φ ∈ L) : ◇φ ∈ L := axiomD! ⨀ h
-@[simp] lemma axiomB'! [L.HasAxiomB] (h : φ ∈ L) : □◇φ ∈ L := axiomB! ⨀ h
+@[simp] lemma axiomK'! [L.HasAxiomK] (h : □(A 🡒 B) ∈ L) : □A 🡒 □B ∈ L := axiomK! ⨀ h
+@[simp] lemma axiomK''! [L.HasAxiomK] (h₁ : □(A 🡒 B) ∈ L) (h₂ : □A ∈ L) : □B ∈ L := axiomK'! h₁ ⨀ h₂
+lemma axiomM'! [L.HasAxiomM] (h : □(A ⋏ B) ∈ L) : □A ⋏ □B ∈ L := axiomM! ⨀ h
+lemma axiomC'! [L.HasAxiomC] (h : □A ⋏ □B ∈ L) : □(A ⋏ B) ∈ L := axiomC! ⨀ h
+@[simp] lemma axiomT'! [L.HasAxiomT] (h : □A ∈ L) : A ∈ L := axiomT! ⨀ h
+lemma axiomD'! [L.HasAxiomD] (h : □A ∈ L) : ◇A ∈ L := axiomD! ⨀ h
+@[simp] lemma axiomB'! [L.HasAxiomB] (h : A ∈ L) : □◇A ∈ L := axiomB! ⨀ h
 
 /-! ### The monotonicity rule -/
 
 /-- The monotonicity rule for `□`, derived from `RE` and the axiom scheme `M`. -/
-lemma rm! [L.HasRE] [L.HasAxiomM] (h : φ 🡒 ψ ∈ L) : □φ 🡒 □ψ ∈ L := by
-  have h₁ : □φ 🡒 □(φ ⋏ ψ) ∈ L :=
+lemma rm! [L.HasRE] [L.HasAxiomM] (h : A 🡒 B ∈ L) : □A 🡒 □B ∈ L := by
+  have h₁ : □A 🡒 □(A ⋏ B) ∈ L :=
     C_of_E_mp! <| re! <| E!_intro (CK!_of_C!_of_C! C!_id h) and₁!;
   exact C!_trans (C!_trans h₁ axiomM!) and₂!;
 
@@ -123,26 +123,26 @@ variable [L.HasRE]
 
 /-- The axiom scheme `C` is derivable from `M` and `K`. -/
 instance [L.HasAxiomM] [L.HasAxiomK] : L.HasAxiomC := ⟨by
-  intro φ ψ;
-  have h₁ : □φ 🡒 □(ψ 🡒 φ) ∈ L := rm! implyK!;
-  have h₂ : □(ψ 🡒 φ) 🡒 □(ψ 🡒 φ ⋏ ψ) ∈ L :=
+  intro A B;
+  have h₁ : □A 🡒 □(B 🡒 A) ∈ L := rm! implyK!;
+  have h₂ : □(B 🡒 A) 🡒 □(B 🡒 A ⋏ B) ∈ L :=
     C_of_E_mp! <| re! <| E!_intro
       (CK!_iff_CC!.mp <| CK!_of_C!_of_C! (mdp₁! and₁! and₂!) and₂!)
       (CCC!_of_C!_right and₁!);
   exact mdp₁! (C!_trans (C!_trans and₁! (C!_trans h₁ h₂)) axiomK!) and₂!;⟩
 
 /-- The axiom scheme `K` is derivable from `M` and `C`. -/
-lemma axiomK!_of_MC [L.HasAxiomM] [L.HasAxiomC] : □(φ 🡒 ψ) 🡒 □φ 🡒 □ψ ∈ L :=
+lemma axiomK!_of_MC [L.HasAxiomM] [L.HasAxiomC] : □(A 🡒 B) 🡒 □A 🡒 □B ∈ L :=
   CK!_iff_CC!.mp <| C!_trans axiomC! <| rm! <| mdp₁! and₁! and₂!
 
 variable [L.HasAxiomT]
 
 omit [L.HasRE] in
 /-- The dual of the axiom scheme `T`. -/
-lemma diaTc! : φ 🡒 ◇φ ∈ L := C!_trans dni! (contra! axiomT!)
+lemma diaTc! : A 🡒 ◇A ∈ L := C!_trans dni! (contra! axiomT!)
 
 /-- The necessitation rule, derived from `RE` and the axiom schemes `T` and `B`. -/
-lemma nec! [L.HasAxiomB] (h : φ ∈ L) : □φ ∈ L :=
+lemma nec! [L.HasAxiomB] (h : A ∈ L) : □A ∈ L :=
   C_of_E_mpr! (re! <| E!_intro diaTc! (C!_of_conseq! h)) ⨀ (axiomB! ⨀ h)
 
 /-- The axiom `N` is derivable from `T` and `B`. -/
