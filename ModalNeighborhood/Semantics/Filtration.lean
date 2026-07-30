@@ -488,13 +488,14 @@ def quasiFilteringTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransiti
       let Us := { Ui ∈ Ys | ∃ ψ, □ψ ∈ T ∧ Ui = 【M (□ψ)】 ∧ W ∈ 【M (□ψ)】 };
       have eYVU : Ys = Vs ∪ Us := by
         ext Yi;
-        simp only [Finset.mem_union, Finset.mem_filter, Vs, Us];
         constructor;
         . intro hYi;
+          apply Finset.mem_union.mpr;
           rcases transitiveFiltration.iff_mem_B.mp $ hYs₃ Yi hYi with (hV | hU);
-          . left; tauto;
-          . right; tauto;
-        . tauto_set;
+          . exact Or.inl $ Finset.mem_filter.mpr ⟨hYi, hV⟩;
+          . exact Or.inr $ Finset.mem_filter.mpr ⟨hYi, hU⟩;
+        . intro hYi;
+          rcases Finset.mem_union.mp hYi with h | h <;> exact Finset.mem_filter.mp h |>.1;
 
       let Ψ := {ψ // □ψ ∈ T ∧ (∃ Vi ∈ Ys, Vi = 【M ψ】) ∧ W ∈ 【M (□ψ)】};
       have : Fintype Ψ := by
