@@ -56,50 +56,53 @@ lemma mdp! : φ 🡒 ψ ∈ L → φ ∈ L → ψ ∈ L := Cl.mdp
 
 /-! ### Implication -/
 
-lemma C!_of_conseq! (h : φ ∈ L) : ψ 🡒 φ ∈ L := sorry
+lemma C!_of_conseq! (h : φ ∈ L) : ψ 🡒 φ ∈ L := implyK! ⨀ h
 
 alias dhyp! := C!_of_conseq!
 
-@[simp] lemma C!_id : φ 🡒 φ ∈ L := sorry
+@[simp] lemma C!_id : φ 🡒 φ ∈ L := implyS! (ψ := φ 🡒 φ) ⨀ implyK! ⨀ implyK!
 
-@[grind →] lemma mdp₁! (hχ : φ 🡒 ψ 🡒 χ ∈ L) (hψ : φ 🡒 ψ ∈ L) : φ 🡒 χ ∈ L := sorry
+@[grind →] lemma mdp₁! (hχ : φ 🡒 ψ 🡒 χ ∈ L) (hψ : φ 🡒 ψ ∈ L) : φ 🡒 χ ∈ L := implyS! ⨀ hχ ⨀ hψ
 
 @[inherit_doc] infixl:90 "⨀₁" => mdp₁!
 
 @[grind →]
-lemma mdp₂! (hξ : φ 🡒 ψ 🡒 χ 🡒 ξ ∈ L) (hχ : φ 🡒 ψ 🡒 χ ∈ L) : φ 🡒 ψ 🡒 ξ ∈ L := sorry
+lemma mdp₂! (hξ : φ 🡒 ψ 🡒 χ 🡒 ξ ∈ L) (hχ : φ 🡒 ψ 🡒 χ ∈ L) : φ 🡒 ψ 🡒 ξ ∈ L :=
+  C!_of_conseq! implyS! ⨀₁ hξ ⨀₁ hχ
 
 @[inherit_doc] infixl:90 "⨀₂" => mdp₂!
 
 @[grind →]
 lemma mdp₃! {ζ} (hζ : φ 🡒 ψ 🡒 χ 🡒 ξ 🡒 ζ ∈ L) (hξ : φ 🡒 ψ 🡒 χ 🡒 ξ ∈ L) :
-    φ 🡒 ψ 🡒 χ 🡒 ζ ∈ L := sorry
+    φ 🡒 ψ 🡒 χ 🡒 ζ ∈ L :=
+  C!_of_conseq! (C!_of_conseq! implyS!) ⨀₂ hζ ⨀₂ hξ
 
 @[inherit_doc] infixl:90 "⨀₃" => mdp₃!
 
 @[grind →]
 lemma mdp₄! {ζ ζ'} (hζ' : φ 🡒 ψ 🡒 χ 🡒 ξ 🡒 ζ 🡒 ζ' ∈ L) (hζ : φ 🡒 ψ 🡒 χ 🡒 ξ 🡒 ζ ∈ L) :
-    φ 🡒 ψ 🡒 χ 🡒 ξ 🡒 ζ' ∈ L := sorry
+    φ 🡒 ψ 🡒 χ 🡒 ξ 🡒 ζ' ∈ L :=
+  C!_of_conseq! (C!_of_conseq! (C!_of_conseq! implyS!)) ⨀₃ hζ' ⨀₃ hζ
 
 @[inherit_doc] infixl:90 "⨀₄" => mdp₄!
 
-@[grind <=] lemma C!_trans (hψ : φ 🡒 ψ ∈ L) (hχ : ψ 🡒 χ ∈ L) : φ 🡒 χ ∈ L := sorry
+@[grind <=] lemma C!_trans (hψ : φ 🡒 ψ ∈ L) (hχ : ψ 🡒 χ ∈ L) : φ 🡒 χ ∈ L := mdp₁! (C!_of_conseq! hχ) hψ
 
-lemma C!_swap (h : φ 🡒 ψ 🡒 χ ∈ L) : ψ 🡒 φ 🡒 χ ∈ L := sorry
+lemma C!_swap (h : φ 🡒 ψ 🡒 χ ∈ L) : ψ 🡒 φ 🡒 χ ∈ L := C!_trans implyK! (implyS! ⨀ h)
 
-@[grind .] lemma CCCC! : φ 🡒 ψ 🡒 χ 🡒 φ ∈ L := sorry
+@[grind .] lemma CCCC! : φ 🡒 ψ 🡒 χ 🡒 φ ∈ L := C!_trans implyK! implyK!
 
-@[simp] lemma CCC! : (φ 🡒 ψ) 🡒 (ψ 🡒 χ) 🡒 (φ 🡒 χ) ∈ L := sorry
+@[simp] lemma CCC! : (φ 🡒 ψ) 🡒 (ψ 🡒 χ) 🡒 (φ 🡒 χ) ∈ L := C!_swap (C!_trans implyK! implyS!)
 
-@[simp] lemma CCCCC! : (φ 🡒 ψ 🡒 χ) 🡒 (ψ 🡒 φ 🡒 χ) ∈ L := sorry
+lemma CCC!_of_C!_right (h : ψ 🡒 χ ∈ L) : (φ 🡒 ψ) 🡒 (φ 🡒 χ) ∈ L := implyS! ⨀ C!_of_conseq! h
 
-lemma CCC!_of_C!_right (h : ψ 🡒 χ ∈ L) : (φ 🡒 ψ) 🡒 (φ 🡒 χ) ∈ L := sorry
+lemma CCC!_of_C!_left (h : ψ 🡒 φ ∈ L) : (φ 🡒 χ) 🡒 (ψ 🡒 χ) ∈ L := CCC! ⨀ h
 
-lemma CCC!_of_C!_left (h : ψ 🡒 φ ∈ L) : (φ 🡒 χ) 🡒 (ψ 🡒 χ) ∈ L := sorry
+@[simp] lemma CCCCC! : (φ 🡒 ψ 🡒 χ) 🡒 (ψ 🡒 φ 🡒 χ) ∈ L := C!_trans implyS! (CCC!_of_C!_left implyK!)
 
-@[simp] lemma verum! : (⊤ : Formula) ∈ L := sorry
+@[simp] lemma verum! : (⊤ : Formula) ∈ L := C!_id
 
-@[simp] lemma CV! : φ 🡒 ⊤ ∈ L := sorry
+@[simp] lemma CV! : φ 🡒 ⊤ ∈ L := C!_of_conseq! verum!
 
 /-! ### Negation -/
 
