@@ -11,7 +11,7 @@ name = "ModalLogicArchive"
 name = "Fin74"
 
 [[lean_lib]]
-name = "ModalNeighborhood"
+name = "Neighborhood"
 
 [[require]]
 name = "Foundation"

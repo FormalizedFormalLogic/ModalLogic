@@ -1,9 +1,9 @@
-# ModalNeighborhood の脱 Foundation 化 設計文書
+# Neighborhood の脱 Foundation 化 設計文書
 
-`ModalNeighborhood`（41ファイル・約4200行）を，外部パッケージ `Foundation` への依存から切り離し，
+`Neighborhood`（41ファイル・約4200行）を，外部パッケージ `Foundation` への依存から切り離し，
 Mathlib のみに依存する自己完結ライブラリにするための設計とステップ分割．
 
-- 対象: `ModalNeighborhood/` 配下のみ．`Fin74` は Foundation（`Foundation.Vorspiel.Set.Basic`）への依存が残るため，`lakefile.toml` の `require Foundation` 自体は当面残す．`ModalNeighborhood` のどのモジュールも `Foundation.*` を import しない状態が完成条件．
+- 対象: `Neighborhood/` 配下のみ．`Fin74` は Foundation（`Foundation.Vorspiel.Set.Basic`）への依存が残るため，`lakefile.toml` の `require Foundation` 自体は当面残す．`Neighborhood` のどのモジュールも `Foundation.*` を import しない状態が完成条件．
 - 本文書中の Lean 風の型表記はすべて擬似コードであり，実装時の正確な構文は実装担当が確定する．
 
 ---
@@ -12,9 +12,9 @@ Mathlib のみに依存する自己完結ライブラリにするための設計
 
 ### 1.1 依存の層構造
 
-`ModalNeighborhood` が Foundation から借りているものは，実ソースを精査した結果，次の6層に整理できる．
+`Neighborhood` が Foundation から借りているものは，実ソースを精査した結果，次の6層に整理できる．
 
-| 層 | Foundation 側モジュール | 内容 | ModalNeighborhood での使われ方 |
+| 層 | Foundation 側モジュール | 内容 | Neighborhood での使われ方 |
 |---|---|---|---|
 | (A) 記法クラス | `Logic/LogicSymbol`（740行）・`Modal/LogicSymbol`（500行） | `Tilde`/`Arrow`/`Wedge`/`Vee`/`Box`/`Dia`/`LogicalConnective`/`BasicModalLogicalConnective`/`ŁukasiewiczAbbrev`/`DiaByBox` の型クラス群と `□^[n]`・`◇^[n]` | `□`・`◇`・`∼`・`🡒`・`⋏`・`⋎`・`🡘` の記法と，`Box.boxItr` 反復記法．全域で使用 |
 | (B) 論理式 | `Modal/Formula/Basic`（709行） | `Formula α`（primitive: `atom`/`falsum`/`imp`/`box`），派生記号は abbrev（`∼φ := φ 🡒 ⊥`，`◇φ := ∼□∼φ`，`⋏`/`⋎` は Łukasiewicz 式），`subformulas`，`subst`，`Encodable`，`Letterless` ほか | `Formula ℕ` のみ使用．`subformulas`/`IsSubformulaClosed` は filtration 系（現在コメントアウト中，別 worktree で開発中）と `EN4.lean` が使用．`Letterless`・`Encodable`・`atoms` は不使用 |
@@ -44,7 +44,7 @@ Mathlib のみに依存する自己完結ライブラリにするための設計
 
 ### 1.3 隠れた依存（見落としやすいもの）
 
-- **`⊢!`（Type レベル証明項）と `⊢`（Prop）の2層構造**: Foundation は `Prf : S → F → Type` を持ち，各補題が `def foo : 𝓢 ⊢! …` と `lemma foo! : 𝓢 ⊢ …` の2本立て．`ModalNeighborhood` が使うのは **`!` 付き（Prop）側のみ**（grep 確認: `re!`・`rm!`・`axiomT!`・`axiomFour!`・`axiomD!`・`axiomGeach!`・`mem_of_prove`・`mdp_provable` 程度）．
+- **`⊢!`（Type レベル証明項）と `⊢`（Prop）の2層構造**: Foundation は `Prf : S → F → Type` を持ち，各補題が `def foo : 𝓢 ⊢! …` と `lemma foo! : 𝓢 ⊢ …` の2本立て．`Neighborhood` が使うのは **`!` 付き（Prop）側のみ**（grep 確認: `re!`・`rm!`・`axiomT!`・`axiomFour!`・`axiomD!`・`axiomGeach!`・`mem_of_prove`・`mdp_provable` 程度）．
 - **`simp`/`grind` が暗黙に使う属性**: 既存 41 ファイルの証明は，`axiomM!` 等に付いた `@[simp]` や `Logic.iff_provable` の `@[grind =]` に強く依存して `simp`/`by simp`/`by grind` で閉じている（例: `Logic/E.lean` の `. simp;` は `Hilbert.WithRE.axm'!`＋`@[simp] axiomM!` で閉じている）．移植時に**属性の付与位置を Foundation と同一に保つ**ことが，既存証明を無傷で通すための実質的な互換性条件になる．
 - **`◇` が definitional abbrev であること**: `MaximalConsistentSet` や `Canonicity.iff_dia` の証明は `◇φ = ∼□∼φ` が `rfl` で成り立つことを使っている（`_ ↔ ∼□(∼φ) ∈ Γ.1 := by rfl`）．新 `Formula` でも `◇` を abbrev にしなければならない．
 - **`Semantics.set_models_iff`（`⊧*` の展開）**: `Hilbert.lean` の `consistent_of_sound_frameclass` が使用．
@@ -85,7 +85,7 @@ Mathlib のみに依存する自己完結ライブラリにするための設計
   - 近傍意味論の中核再帰（`Model.truthset`）と完全性の truth lemma（`Canonicity.truthlemma`）は `atom`/`⊥`/`🡒`/`□` の4ケース帰納であり，現行コードはこの構成に最適化済み．`□` は `𝒩` に直結する意味論の主役なので primitive にすべきで，`◇` は `∼□∼` の abbrev が正しい（`Frame.dia := (box ·ᶜ)ᶜ` と定義的に対応し，`Satisfies.dia_dual` や MCS の `iff_dia` が `rfl` ベースで通る）．
   - Fin74 は逆に `◇` を primitive（`□ := ∼◇∼`）としたが，あれは S4 の `◇` 中心の組合せ論のため．近傍意味論では逆にすべきで，**変更しない＝既存41ファイルの帰納法が一切崩れない**ことが最大の利点．
   - `∼`・`⋏`・`⋎`・`⊤`・`🡘` は Foundation の `ŁukasiewiczAbbrev` と同じ定義（`∼φ := φ 🡒 ⊥`，`φ ⋎ ψ := ∼φ 🡒 ψ`，`φ ⋏ ψ := ∼(φ 🡒 ∼ψ)`，`⊤ := ∼⊥`，`🡘 := (→)⋏(←)`）の abbrev にする．これにより `truthset.eq_and`・`eq_or`・`eq_neg` 等の既存 simp 補題の証明が変更なしで通り，かつ MCS の `∼φ ∈ Γ ↔ φ🡒⊥ ∈ Γ` が定義的になって Foundation の `NegationEquiv` 類が不要になる．
-- 原子型を `ℕ` に固定する理由: `ModalNeighborhood` の全使用箇所が `Formula ℕ`．固定すれば `[DecidableEq α]` の伝搬（`subformulas`・MCS 系の仮定）が全て消える．CLAUDE.md の「プロジェクトごとに証明しやすい形で個別に用意する」方針とも一致．汎用化が必要になった時点で generalize すればよい．
+- 原子型を `ℕ` に固定する理由: `Neighborhood` の全使用箇所が `Formula ℕ`．固定すれば `[DecidableEq α]` の伝搬（`subformulas`・MCS 系の仮定）が全て消える．CLAUDE.md の「プロジェクトごとに証明しやすい形で個別に用意する」方針とも一致．汎用化が必要になった時点で generalize すればよい．
 - 記法は Fin74 と同様に素の `notation`/`infixr` で直接 `Formula` に付ける．Foundation の `LogicalConnective` 塔（1,240行）はゼロ行になる．`□^[n]`・`◇^[n]` は `Formula.multibox : ℕ → Formula → Formula`・`multidia` を再帰定義し，同じ表層記法 `□^[n]φ`・`◇^[n]φ` を与える（`AxiomGeach.lean`・`Completeness.lean` の `boxItr_proofset` 等が使用）．
 - 付随 API: `subst`（`φ⟦s⟧` 記法，`Substitution := ℕ → Formula`，`Substitution.comp`），`subformulas : Formula → Finset Formula`（`subset_of_mem`・`mem_imp`/`mem_box`/`mem_neg`/`mem_and`/`mem_or` の grind 補題），`FormulaSet.IsSubformulaClosed`．**filtration worktree が Foundation 名で参照しているため，これらの名前・シグネチャは Foundation と揃える**．`Encodable`・`Letterless`・`atoms`・`toString`・`cases_neg`/`rec_neg` 系は不使用のため移植しない（必要になったら追加）．
 - 既存41ファイルへの影響: primitive と abbrev の定義が Foundation と同一なので，帰納法・simp 集合は原理的に無傷．書き換えは (a) `Formula ℕ` → `Formula`（型引数の削除），(b) `Formula.atom` の綴り（そのまま），(c) `open Formula (atom)` 等の open 行の調整程度で，**機械的置換の範疇**．
@@ -103,7 +103,7 @@ Mathlib のみに依存する自己完結ライブラリにするための設計
   - `FormulaSet.Consistent` 系: `def_consistent`（有限部分集合特徴付け），`emptyset_consistent`，`either_consistent`，`unprovable_iff_insert_neg_consistent`，`unprovable_iff_singleton_neg_consistent`，`not_mem_falsum_of_consistent`．
   - `lindenbaum`（Zorn: Mathlib `zorn_subset_nonempty`＋鎖の有限部分集合補題）．
   - `MaximalConsistentSet L`（subtype），`membership_iff`（`φ ∈ Ω ↔ Ω.1 *⊢[L] φ`），`either_mem`，`equality_def`/`intro_equality`，`mem_verum`，`not_mem_falsum`，`iff_mem_neg`，`iff_mem_negneg`，`iff_mem_imp`，`iff_mem_and`，`iff_mem_or`，`mdp`，`mem_of_prove`，`mdp_provable`，`iff_forall_mem_provable`，`neg_iff`/`neg_imp`，`iff_congr`．
-  - **移植しないもの**: `iff_mem_box`/`iff_mem_boxItr`/`iff_mem_dia`（Foundation では `Entailment.K` 前提の関係意味論用補題．E 系では成り立たず，`ModalNeighborhood` の実使用も無い．API 表面の 1 回ずつのヒットは `Canonicity.iff_box`/`iff_dia`＝Neighborhood 側の同名宣言との衝突），`mem_box_dual`/`mem_dia_dual`（`◇` が abbrev なので不要），`iff_mem_conj`・`intro_union_consistent`・`not_singleton_consistent`（不使用）．
+  - **移植しないもの**: `iff_mem_box`/`iff_mem_boxItr`/`iff_mem_dia`（Foundation では `Entailment.K` 前提の関係意味論用補題．E 系では成り立たず，`Neighborhood` の実使用も無い．API 表面の 1 回ずつのヒットは `Canonicity.iff_box`/`iff_dia`＝Neighborhood 側の同名宣言との衝突），`mem_box_dual`/`mem_dia_dual`（`◇` が abbrev なので不要），`iff_mem_conj`・`intro_union_consistent`・`not_singleton_consistent`（不使用）．
 - 支える命題論理補題（§2.1 の `Logic.Cl` 上）: `C_id`（`φ🡒φ`），`imp_trans!`，`verum!`，EFQ（`of_O!`: `⊥🡒φ`．`elimContra` から導出），DNI/DNE，対偶系（`contra!` 等），`K!_intro`/`K!_left`/`K!_right`（`⋏`），`A!_intro_left`/`A!_intro_right`/`of_C!_of_C!_of_A!`（`⋎` の場合分け），`neg_mdp`，`E_intro`/`E_symm`/`E_trans`/`K!_left`・`K!_right` の `🡘` 版，`CN_of_CN_left` 系の必要分，連言の出し入れ（`Finset.conj` と要素の相互導出）．目安 30〜40 補題．`∼φ` が `φ 🡒 ⊥` の abbrev なので Foundation の `N!_iff_CO!` 系（否定↔含意⊥の変換）はすべて `rfl`/不要になる．
 - `cl_prover` は移植しない．使用2箇所（`proofset.iff_subset` の両方向）は「`⊢ φ 🡘 ψ` から `⊢ φ 🡒 ψ`」「`⊢ φ🡒ψ` と `⊢ ψ🡒φ` から `⊢ φ 🡘 ψ`」で，それぞれ `K!_left`/`K!_right`・`K!_intro` の1行に置換できる．MCS 内部の `cl_prover` 使用（Foundation 版 `not_singleton_consistent` 等）は当該補題ごと移植対象外．
 - **採らなかった選択肢**: (i) `cl_prover` 相当のタクティク自作（決定手続き）— 使用箇所が2箇所では割に合わない．(ii) 命題論理部分の完全性を経由して「トートロジーは可証」を一般定理にする — それ自体が別プロジェクト規模．(iii) Foundation の `Context`/`FiniteContext` 構造体（`Entailment` インスタンス化して MCS 補題を型クラス機構に乗せる方式）の踏襲 — `Logic` 特化では構造体を挟む意味がなく，素の `∃ Γ` 定義の方が `obtain` で直接扱えて証明が短い．
@@ -135,7 +135,7 @@ Mathlib のみに依存する自己完結ライブラリにするための設計
 新設モジュール（すべて Mathlib のみ import; 名前空間は既存コードとの互換のため `LO`／`LO.Modal` を維持）:
 
 ```
-ModalNeighborhood/
+Neighborhood/
   Vorspiel.lean                 -- Set.Fin1/Fin2.all_cases ほか集合小補題（doubleton_subset,
                                 --  subset_mem_chain_of_finite）．Mathlib に既存なら再エクスポートせず削る
   Formula/Basic.lean            -- Formula（atom ℕ / ⊥ / 🡒 / □），派生 abbrev（∼ ⋏ ⋎ ⊤ 🡘 ◇），
@@ -199,7 +199,7 @@ Vorspiel ─┬─→ Formula/Basic ─┬─→ Formula/Subformulas
 
 | # | ステップ | 内容 | 依存 | 難易度 |
 |---|---|---|---|---|
-| S0 | Vorspiel | `Set.Fin1/Fin2.all_cases`・`eq_powerset`・付随 simp 補題（Foundation `Vorspiel/Set/Fin` 87行の必要部分），`Set.doubleton_subset`，`Set.subset_mem_chain_of_finite`（Mathlib に相当補題があれば移植せず使う）を `ModalNeighborhood/Vorspiel.lean` に | なし | ★ |
+| S0 | Vorspiel | `Set.Fin1/Fin2.all_cases`・`eq_powerset`・付随 simp 補題（Foundation `Vorspiel/Set/Fin` 87行の必要部分），`Set.doubleton_subset`，`Set.subset_mem_chain_of_finite`（Mathlib に相当補題があれば移植せず使う）を `Neighborhood/Vorspiel.lean` に | なし | ★ |
 
 ### Phase 1: 新コアの構築
 
@@ -239,7 +239,7 @@ S1〜S18 の並列性: S1→{S2,S3} 後，{S4→S5→S6} を通せば {S7 系列
 | S23 | 小公理ファイル切替 | `AxiomM`/`AxiomC`/`AxiomK`/`AxiomN`/`AxiomP`（各37〜84行）を各1エージェントで並列切替 | S21（AxiomN/C），S19（M/K/P） | ★ |
 | S24 | Supplementation・IntersectionClosure 切替 | 2ファイル並列 | S22, S23 | ★ |
 | S25a〜g | Logic/*.lean 切替（28ファイル） | ファイル単位で並列．おおよそ (a) `E` (b) `EM`/`EC`/`EN`(PLoN import 削除)/`ECN`/`EMN`/`EMC`/`EMCN` (c) `ET`/`EMT`/`ED`/`EP`/`EB`/`ETB` (d) `E4`/`EN4`/`ET4`/`ENT4`/`END`/`END4` (e) `EMT4`/`EMC4`/`EMCN4`/`EMNT4` (f) `E5`/`ET5`/`EK`/`EMK` (g) `Incomparability/ED_EP` の7グループ・ファイル単位でさらに分割可 | S24（実質は各ファイルの import 先） | ★〜★★ |
-| S26 | 総仕上げ | `ModalNeighborhood.lean`（all-import）更新，`grep -rn "Foundation" ModalNeighborhood/` が空であることの確認，`just mk-all`→`just shake`→`lake build`，`Logic/E.lean` の重複 instance（`Modal.E ⪱ Modal.EM`・`⪱ EC`・`⪱ EN` が2回ずつ宣言されている）の整理 | S25 | ★ |
+| S26 | 総仕上げ | `Neighborhood.lean`（all-import）更新，`grep -rn "Foundation" Neighborhood/` が空であることの確認，`just mk-all`→`just shake`→`lake build`，`Logic/E.lean` の重複 instance（`Modal.E ⪱ Modal.EM`・`⪱ EC`・`⪱ EN` が2回ずつ宣言されている）の整理 | S25 | ★ |
 
 合計 27 ステップ（S25 をファイル単位に割れば 50 超まで細分化可能）．
 
@@ -251,7 +251,7 @@ S1〜S18 の並列性: S1→{S2,S3} 後，{S4→S5→S6} を通せば {S7 系列
 
 以下は sed 的置換＋import 差し替えのみ．
 
-- `public import Foundation.…` → 対応する `public import ModalNeighborhood.…`．
+- `public import Foundation.…` → 対応する `public import Neighborhood.…`．
 - `Formula ℕ` → `Formula`，`Logic ℕ` → `Logic`，`Axiom ℕ` → `Axiom`．
 - `variable {S} [Entailment S (Formula ℕ)] {𝓢 : S}` → `variable {L : Logic}`，および `𝓢` → `L`（`Completeness.lean`・`AxiomGeach.lean`・`AxiomN.lean`・`AxiomC.lean`・`ET5.lean`・`ETB.lean` 等の完全性節）．
 - クラス名: `Entailment.E 𝓢` → `L.IsE`，`Entailment.EM` → `L.IsEM`，…，`Entailment.HasAxiomT 𝓢` → `L.HasAxiomT`，`Entailment.Cl` → `L.Cl`，`Entailment.Consistent 𝓢` → `L.Consistent`，`Entailment.Incomparable` → `Logic.Incomparable`（または同名を `LO.Entailment` 名前空間ごと維持して置換ゼロにする．実装時にどちらかへ統一）．
@@ -271,7 +271,7 @@ S1〜S18 の並列性: S1→{S2,S3} 後，{S4→S5→S6} を通せば {S7 系列
 ### 5.3 移行時の検証
 
 - 各切替ステップは対象ファイルの `lake build`（モジュール指定）を通してからコミット．
-- S26 で `grep -rn "import Foundation" ModalNeighborhood/` が空・全体 `lake build`・`just mk-all`/`just shake` を確認．
+- S26 で `grep -rn "import Foundation" Neighborhood/` が空・全体 `lake build`・`just mk-all`/`just shake` を確認．
 - `AxiomGeach.lean` 316行のコメント内 `sorry` は元からのもの（コメントアウトされた `isSymmetric`）であり，本作業では現状維持．
 
 ---
@@ -681,7 +681,7 @@ import しない）で確認済み．
 | T13 | Supplementation・IntersectionClosure | `Frame κ → Frame κ` 化（`[Entailment.EM]` → `[L.Cl][L.HasRE][L.HasAxiomM]`） | T12 | ★ |
 | T14 | Logic/E.lean（テンプレート） | 1ファイルを丁寧に最終形へ: `validates_axioms`・`soundness`・`unprovable_of_countermodel`・`completeness`・`Consistent` instance・`⊂` 定理群（重複3組の統合込み）・反例書き換え（R7-6）．ここで書式を確定 | T13 | ★★★ |
 | T15 | 残り Logic 27ファイル | T14 の書式を機械適用（3〜4ファイルずつコミット）．`EN.lean` の PLoN import 削除，`finite_completeness` を持つファイルは R7-7 の形 | T14 | ★〜★★ |
-| T16 | ED_EP・総仕上げ | `Incomparable` → 2定理化，`grep -rn "Foundation" ModalNeighborhood/` 空確認，`just mk-all` → `just shake` → `lake build`，プラン番号コメントの除去確認 | T15 | ★ |
+| T16 | ED_EP・総仕上げ | `Incomparable` → 2定理化，`grep -rn "Foundation" Neighborhood/` 空確認，`just mk-all` → `just shake` → `lake build`，プラン番号コメントの除去確認 | T15 | ★ |
 | T17 | Filtration の追随 | （nbhd-filtration 統合後）`Filtration`/`FilterEqvQuotient` の κ 化・型合わせ workaround 除去・8論理の `finite_completeness` 復活 | T16＋filtration 統合 | ★★ |
 
 実施順序: **nbhd-filtration のマージを待ってから T9 以降に着手するのが望ましい**が，

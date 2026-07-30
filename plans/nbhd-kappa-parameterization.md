@@ -1,13 +1,13 @@
-# ModalNeighborhood の Frame/Model κ パラメータ化 設計文書
+# Neighborhood の Frame/Model κ パラメータ化 設計文書
 
-`ModalNeighborhood` の近傍フレーム・モデルを，Fin74 と同様に「世界の型 `κ : Type u` を構造体の
+`Neighborhood` の近傍フレーム・モデルを，Fin74 と同様に「世界の型 `κ : Type u` を構造体の
 パラメータとして受け取る」形にリファクタリングするための設計とステップ分割．
 
-- 対象: `ModalNeighborhood/Semantics/` 配下（本 worktree の27ファイル＋別 worktree で修正中の
+- 対象: `Neighborhood/Semantics/` 配下（本 worktree の27ファイル＋別 worktree で修正中の
   `Filtration.lean`）．
 - 本文書中の Lean 風の型表記はすべて擬似コード（型シグネチャの意図を示すもの）であり，
   正確な構文は実装担当が確定する．
-- 調査は次の実物を読んで行った: `ModalNeighborhood/Semantics/Basic.lean`・`Hilbert.lean`・
+- 調査は次の実物を読んで行った: `Neighborhood/Semantics/Basic.lean`・`Hilbert.lean`・
   `Completeness.lean`・`Supplementation.lean`・`Logic/E4.lean`・`Logic/Incomparability/ED_EP.lean`，
   `Fin74/Kripke/Basic.lean`・`Fin74/Result/Incomplete.lean`，Foundation の
   `Logic/Semantics.lean`・`Logic/Entailment.lean`（`Sound`/`Complete`），nbhd-filtration worktree の
@@ -132,7 +132,7 @@
 - Fin74 は `theorem fine_logic_kripke_incomplete : (∀ {κ} (F : Frame κ), F ⊧ LogicFi → F ⊧ ∼E) ∧ …`
   （`Result/Incomplete.lean` 実物確認）のように，その場の全称量化で書きフレームクラス型を
   持たない．これは Fin74 が「主定理1本」のプロジェクトだから成り立つ書き方である．
-- `ModalNeighborhood` では `Sound L C`・`Complete L C` という**型クラスの第2引数に置く対象**が
+- `Neighborhood` では `Sound L C`・`Complete L C` という**型クラスの第2引数に置く対象**が
   フレームクラスの存在意義であり，28論理×（健全性・完全性・無矛盾性・有限モデル性）＝
   100個超の instance と，それを消費する `Sound.not_provable_of_countermodel (𝓜 := FrameClass.ED)`
   型の呼び出し（40回超）がこの機構に乗っている．廃止すると Sound/Complete の型クラス運用が
