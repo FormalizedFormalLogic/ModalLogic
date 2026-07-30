@@ -32,8 +32,12 @@ theorem LogicEND.sound (h : A ∈ LogicEND) {κ} [Nonempty κ] (F : Frame κ) [F
       · exact valid_axiomN_of_containsUnit
       · exact valid_axiomD_of_isSerial) h
 
-instance : (@LogicEND α).Consistent := by
-  sorry
+instance : (@LogicEND α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole)
+    (fun _ hB => by
+      rcases hB with rfl | ⟨_, rfl⟩
+      · exact valid_axiomN_of_containsUnit
+      · exact valid_axiomD_of_isSerial)
 
 variable [DecidableEq α]
 
