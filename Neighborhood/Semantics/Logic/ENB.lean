@@ -1,14 +1,17 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
+public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame2_170
 
 /-!
 # The neighborhood logic `LogicENB`
 
 Soundness, consistency and completeness of `LogicENB`, the classical modal logic axiomatised by
 `N := □⊤` and the symmetry axiom `B` over `LogicE`, with respect to the neighborhood frames that
-contain their unit and are symmetric.
+contain their unit and are symmetric. Also proves the strict inclusion of `LogicEN` in
+`LogicENB`.
 -/
 
 @[expose] public section
@@ -42,5 +45,13 @@ theorem LogicENB.complete
       (intermediateRelativeMaximalCanonicity LogicENB).toModel.Val)
 
 end
+
+
+theorem LogicEN_ssubset_LogicENB : @LogicEN ℕ ⊂ LogicENB := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
+  · intro h
+    have hB : Axioms.B #0 ∈ @LogicEN ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_170.not_valid_axiomB (LogicEN.sound frame_2_170 hB)
 
 end
