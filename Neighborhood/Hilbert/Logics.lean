@@ -96,6 +96,104 @@ instance : (@LogicEND α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
 abbrev LogicEP : Logic α := Hilbert { Axioms.P }
 instance : (@LogicEP α).HasAxiomP := Hilbert.hasAxiomP_of rfl
 
+abbrev LogicECD : Logic α := Hilbert $
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.D A | (A) }
+instance : (@LogicECD α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicECD α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
+
+abbrev LogicECP : Logic α := Hilbert $
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.P }
+instance : (@LogicECP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicECP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicEMD : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.D A | (A) }
+instance : (@LogicEMD α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMD α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
+
+abbrev LogicEMP : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.P }
+instance : (@LogicEMP α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicENP : Logic α := Hilbert $
+  { Axioms.N } ∪
+  { Axioms.P }
+instance : (@LogicENP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicENP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicEMND : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.N } ∪
+  { Axioms.D A | (A) }
+instance : (@LogicEMND α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMND α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicEMND α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
+
+abbrev LogicEMNP : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.N } ∪
+  { Axioms.P }
+instance : (@LogicEMNP α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMNP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicEMNP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicECND : Logic α := Hilbert $
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.N } ∪
+  { Axioms.D A | (A) }
+instance : (@LogicECND α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicECND α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicECND α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
+
+abbrev LogicECNP : Logic α := Hilbert $
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.N } ∪
+  { Axioms.P }
+instance : (@LogicECNP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicECNP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicECNP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicEMCD : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.D A | (A) }
+instance : (@LogicEMCD α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMCD α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicEMCD α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
+
+abbrev LogicEMCP : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.P }
+instance : (@LogicEMCP α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMCP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicEMCP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicEMCND : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.N } ∪
+  { Axioms.D A | (A) }
+instance : (@LogicEMCND α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMCND α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicEMCND α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicEMCND α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
+
+abbrev LogicEMCNP : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.N } ∪
+  { Axioms.P }
+instance : (@LogicEMCNP α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMCNP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicEMCNP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicEMCNP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
 abbrev LogicEB : Logic α := Hilbert { Axioms.B A | (A) }
 instance : (@LogicEB α).HasAxiomB := Hilbert.hasAxiomB_of $ by grind;
 
@@ -237,5 +335,37 @@ theorem LogicEMC_eq_LogicEMCK : (@LogicEMC α) = LogicEMCK := by
 /-- `EMC`, `EMK`, and `EMCK` are all the same logic. -/
 theorem LogicEMC_eq_LogicEMK : (@LogicEMC α) = LogicEMK :=
   LogicEMC_eq_LogicEMCK.trans LogicEMK_eq_LogicEMCK.symm
+
+/-- Over `ECN`, the axiom `P` and the axiom scheme `D` axiomatise the same logic. -/
+theorem LogicECNP_eq_LogicECND : (@LogicECNP α) = LogicECND := by
+  apply Set.Subset.antisymm
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A ((⟨B, C, rfl⟩ | rfl) | rfl) <;>
+      first | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomP_of_ND
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A ((⟨B, C, rfl⟩ | rfl) | ⟨B, rfl⟩) <;>
+      first | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomD
+
+/-- Over `EMC`, the axiom `P` and the axiom scheme `D` axiomatise the same logic. -/
+theorem LogicEMCP_eq_LogicEMCD : (@LogicEMCP α) = LogicEMCD := by
+  apply Set.Subset.antisymm
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | rfl) <;>
+      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomP_of_MD
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, rfl⟩) <;>
+      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomD
+
+/-- Over `EMCN` (i.e. over the normal base `K`), the axiom `P` and the axiom scheme `D`
+axiomatise the same logic. -/
+theorem LogicEMCNP_eq_LogicEMCND : (@LogicEMCNP α) = LogicEMCND := by
+  apply Set.Subset.antisymm
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A (((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | rfl) | rfl) <;>
+      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN |
+        exact Logic.axiomP_of_ND
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A (((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | rfl) | ⟨B, rfl⟩) <;>
+      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomD
 
 end
