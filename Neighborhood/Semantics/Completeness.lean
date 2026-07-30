@@ -98,6 +98,17 @@ lemma box_subset_of_subset [L.HasRE] [L.HasAxiomM] (h : proofset L A ⊆ proofse
 
 end proofset
 
+section
+
+variable [DecidableEq α] [L.Cl] {X : Proofset L}
+
+/-- The complement of a non-proofset is itself a non-proofset. -/
+lemma Proofset.IsNonproofset.compl (hX : X.IsNonproofset) : Xᶜ.IsNonproofset := by
+  intro A hA
+  exact hX (∼A) (by rw [← compl_compl X, hA, proofset.eq_neg])
+
+end
+
 /-- A canonical neighborhood datum for `L`: an assignment of neighborhoods to the maximal
 consistent sets of `L` under which `□A` belongs to `Ω` exactly when the proofset of `A` is one of
 `Ω`'s neighborhoods, together with a valuation reproducing the proofsets of the atoms. -/
@@ -238,6 +249,17 @@ protected lemma iff_mem_dia :
   show ¬Ω ∈ (relativeBasicCanonicity L P).toModel.box Xᶜ ↔ _
   rw [relativeBasicCanonicity.iff_mem_box, not_or, not_and_or]
 
+/-- On a non-proofset, membership in a neighborhood of `(relativeBasicCanonicity L P).toModel`
+reduces to membership in `P Ω`: the alternative of being a boxed proofset is impossible. -/
+protected lemma iff_mem_box_of_isNonproofset (hX : X.IsNonproofset) :
+    Ω ∈ (relativeBasicCanonicity L P).toModel.box X ↔ X ∈ P Ω := by
+  rw [relativeBasicCanonicity.iff_mem_box]
+  constructor
+  · rintro (h | ⟨_, h⟩)
+    · exact absurd hX (basicCanonicity.not_isNonproofset_of_mem_box h)
+    · exact h
+  · exact fun h => Or.inr ⟨hX, h⟩
+
 end relativeBasicCanonicity
 
 /-- `relativeBasicCanonicity` with no extra neighborhoods on the non-proofsets. -/
@@ -260,5 +282,31 @@ lemma minimalRelativeMaximalCanonicity.iff_minimal [DecidableEq α] [L.Cl] [L.Ha
 abbrev maximalRelativeMaximalCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] :
     Canonicity L :=
   relativeBasicCanonicity L (fun _ _ => True)
+
+/-- `relativeBasicCanonicity` with the non-proofsets containing `Ω` as `Ω`'s extra neighborhoods,
+`P Ω X := Ω ∈ X`. Pointwise this sits between `minimalRelativeMaximalCanonicity` (`P := False`)
+and `maximalRelativeMaximalCanonicity` (`P := True`), and it is exactly this intermediate choice
+that makes the canonical model symmetric.
+
+- [Che80, Theorem 9.8] -/
+abbrev intermediateRelativeMaximalCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] :
+    Canonicity L :=
+  relativeBasicCanonicity L (fun Ω X => Ω ∈ X)
+
+namespace intermediateRelativeMaximalCanonicity
+
+variable [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)] {X : Proofset L}
+
+lemma box_eq_of_isNonproofset (hX : X.IsNonproofset) :
+    (intermediateRelativeMaximalCanonicity L).toModel.box X = X := by
+  ext Ω
+  exact relativeBasicCanonicity.iff_mem_box_of_isNonproofset hX
+
+lemma dia_eq_of_isNonproofset (hX : X.IsNonproofset) :
+    (intermediateRelativeMaximalCanonicity L).toModel.dia X = X := by
+  show ((intermediateRelativeMaximalCanonicity L).toModel.box Xᶜ)ᶜ = X
+  rw [box_eq_of_isNonproofset hX.compl, compl_compl]
+
+end intermediateRelativeMaximalCanonicity
 
 end
