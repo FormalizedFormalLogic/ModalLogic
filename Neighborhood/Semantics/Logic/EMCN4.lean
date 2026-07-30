@@ -3,9 +3,13 @@ module
 public import Neighborhood.Semantics.Logic.EMCN
 public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.EMC4
+public import Neighborhood.Semantics.Logic.EMN4
+public import Neighborhood.Semantics.Logic.EMN4
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_172
+public import Neighborhood.Semantics.Example.Frame2_206
+public import Neighborhood.Semantics.Example.Frame2_206
 
 /-!
 # The neighborhood logic `LogicEMCN4`
@@ -13,8 +17,8 @@ public import Neighborhood.Semantics.Example.Frame2_172
 Soundness, consistency and completeness of `LogicEMCN4`, the classical modal logic axiomatised by
 the monotonicity axiom `M`, the regularity axiom `C`, `N := □⊤` and the transitivity axiom `Four`,
 with respect to the neighborhood frames that are monotonic, regular, transitive, and contain their
-unit, together with its finite frame property. Also proves the strict inclusion of `LogicEMC4` and
-of `LogicEMCN` in `LogicEMCN4`.
+unit, together with its finite frame property. Also proves the strict inclusions of `LogicEMC4`,
+`LogicEMCN` and `LogicEMN4` in `LogicEMCN4`.
 -/
 
 @[expose] public section
@@ -42,13 +46,6 @@ theorem LogicEMCN4.complete
   (supplementedBasicCanonicity LogicEMCN4).mem_of_valid
     (h (supplementedBasicCanonicity LogicEMCN4).toModel.toFrame
       (supplementedBasicCanonicity LogicEMCN4).toModel.Val)
-
-instance : FormulaSet.IsSubformulaClosed
-    ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
-  closed B hB C hC := by
-    rcases hB with hB | hB
-    · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
-    · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
 theorem LogicEMCN4.finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] → [F.IsRegular] →
@@ -81,5 +78,12 @@ theorem LogicEMCN_ssubset_LogicEMCN4 : @LogicEMCN ℕ ⊂ LogicEMCN4 := by
   · intro h
     have hFour : Axioms.Four #0 ∈ @LogicEMCN ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_2_172.not_valid_axiomFour (LogicEMCN.sound frame_2_172 hFour)
+
+theorem LogicEMN4_ssubset_LogicEMCN4 : @LogicEMN4 ℕ ⊂ LogicEMCN4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hC : Axioms.C #0 #1 ∈ @LogicEMN4 ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_206.not_valid_axiomC (LogicEMN4.sound frame_2_206 hC)
 
 end
