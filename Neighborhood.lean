@@ -48,6 +48,7 @@ public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.E5
 public import Neighborhood.Semantics.Logic.EB
 public import Neighborhood.Semantics.Logic.EC
+public import Neighborhood.Semantics.Logic.ECD
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.EK
