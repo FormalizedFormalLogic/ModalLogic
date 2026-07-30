@@ -16,6 +16,11 @@ variable {α : Type u}
 
 abbrev frame_1_1 : Frame (Fin 1) := ⟨fun _ => {∅}⟩
 
+instance : frame_1_1.IsRegular := ⟨by
+  intro X Y x ⟨hX, hY⟩
+  simp only [Frame.box, frame_1_1, Set.mem_setOf_eq, Set.mem_singleton_iff] at hX hY ⊢
+  simp [hX, hY]⟩
+
 instance : frame_1_1.IsSerial := ⟨fun X x hx => by simp_all [Frame.dia, Frame.box]⟩
 
 instance : frame_1_1.IsSymmetric := ⟨fun X => by
