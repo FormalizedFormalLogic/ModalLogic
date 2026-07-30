@@ -4,7 +4,6 @@ public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomN
 public import Neighborhood.Semantics.AxiomGeach
-public import Neighborhood.Semantics.Completeness
 
 /-!
 # Supplementation of a neighborhood frame

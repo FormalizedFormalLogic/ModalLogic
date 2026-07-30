@@ -1,11 +1,6 @@
 module
 
-public import Neighborhood.Semantics.Hilbert
-public import Neighborhood.Semantics.Completeness
 public import Neighborhood.Semantics.AxiomN
-public import Neighborhood.Semantics.AxiomGeach
-public import Neighborhood.Semantics.AxiomP
-public import Neighborhood.Hilbert.Logics
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.EP
 

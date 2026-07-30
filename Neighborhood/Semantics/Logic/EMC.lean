@@ -1,10 +1,5 @@
 module
 
-public import Neighborhood.Semantics.Hilbert
-public import Neighborhood.Semantics.Completeness
-public import Neighborhood.Semantics.Supplementation
-public import Neighborhood.Semantics.AxiomK
-public import Neighborhood.Hilbert.Logics
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.EC
 public import Neighborhood.Semantics.Logic.EK

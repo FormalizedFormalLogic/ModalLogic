@@ -1,10 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Supplementation
-public import Mathlib.Data.Finset.Image
-public import Mathlib.Data.Finset.Lattice.Lemmas
 public import Mathlib.Order.CompleteLattice.Finset
-public import Mathlib.Data.Fintype.Sets
 
 /-!
 # Intersection closure and quasi-filtration of a neighborhood frame

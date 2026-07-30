@@ -2,7 +2,6 @@ module
 
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.E4
-public import Neighborhood.Semantics.Filtration
 
 /-!
 # The neighborhood logic `LogicEMC4`

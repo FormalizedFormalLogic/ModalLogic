@@ -1,9 +1,6 @@
 module
 
-public import Neighborhood.Axioms
-public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.Completeness
-public import Mathlib.Data.Fintype.Basic
 
 /-!
 # Axiom `C` on neighborhood frames

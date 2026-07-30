@@ -1,9 +1,5 @@
 module
 
-public import Neighborhood.Semantics.Hilbert
-public import Neighborhood.Semantics.Completeness
-public import Neighborhood.Semantics.AxiomGeach
-public import Neighborhood.Hilbert.Logics
 public import Neighborhood.Semantics.Logic.E
 
 /-!

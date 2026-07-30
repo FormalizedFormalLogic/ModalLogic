@@ -2,7 +2,6 @@ module
 
 public import Neighborhood.Axioms
 public import Neighborhood.Semantics.Basic
-public import Mathlib.Tactic.TautoSet
 
 /-!
 # The monotonicity frame condition and axiom `M`

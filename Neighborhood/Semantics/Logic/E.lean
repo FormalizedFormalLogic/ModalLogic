@@ -1,7 +1,6 @@
 module
 
 public import Neighborhood.Semantics.Hilbert
-public import Neighborhood.Semantics.Completeness
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomGeach

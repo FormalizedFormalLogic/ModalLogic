@@ -1,8 +1,6 @@
 module
 
-public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.Completeness
-public import Neighborhood.Axioms
 
 /-!
 # The Geach axiom family

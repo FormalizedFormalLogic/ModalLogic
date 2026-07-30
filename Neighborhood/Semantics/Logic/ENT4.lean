@@ -2,7 +2,6 @@ module
 
 public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Logic.ET4
-public import Neighborhood.Semantics.Filtration
 
 /-!
 # The neighborhood logic `LogicENT4`

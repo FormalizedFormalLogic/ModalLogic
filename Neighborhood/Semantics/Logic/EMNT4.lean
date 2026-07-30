@@ -3,7 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.EMT4
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.ENT4
-public import Neighborhood.Semantics.Filtration
 
 /-!
 # The neighborhood logic `LogicEMNT4`
