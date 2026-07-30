@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Semantics.IntersectionClosure
 public import Neighborhood.Formula.Subformulas
+public import Mathlib.Data.Set.Finite.Powerset
 
 /-!
 # Filtration of neighborhood semantics
@@ -146,7 +147,7 @@ lemma eq_univ : (【Set.univ】  : Set (FilterEqvQuotient M T)) = Set.univ := by
   ext X;
   obtain ⟨x, rfl⟩ := Quotient.exists_rep X;
   suffices ∃ y, (FilterEqvSetoid M T) y x by simp [toFilterEquivSet];
-  use x;
+  exact ⟨x, fun _ _ => Iff.rfl⟩;
 
 @[simp, grind =]
 lemma contains_unit [M.ContainsUnit] : (【M (□⊤)】  : Set (FilterEqvQuotient M T)) = Set.univ := by
@@ -217,13 +218,12 @@ variable {Fi : Filtration M T}
 
 def toModel {M : Model κ α} {T : FormulaSet α} [T.IsSubformulaClosed] (Fi : Filtration M T) :
     Model (FilterEqvQuotient M T) α where
-  toFrame := Frame.mk_ℬ Fi.B
+  toFrame := Frame.ofBox Fi.B
   Val := Fi.V
 
 @[simp, grind =_]
 lemma toModel_def : Fi.toModel.box X = Fi.B X := by
-  simp [Filtration.toModel, Frame.mk_ℬ, Frame.box];
-  rfl;
+  simp [Filtration.toModel, Frame.ofBox, Frame.box];
 
 /-- In a filtration, the truthset of every formula of `T` is the image of its truthset in `M`.
 
@@ -232,12 +232,11 @@ lemma toModel_def : Fi.toModel.box X = Fi.B X := by
 theorem filtration (Fi : Filtration M T) (φ) (hφ : φ ∈ T) : (Fi.toModel φ) = 【M φ】 := by
   induction φ with
   | hatom a => apply Fi.V_def;
-  | hfalsum => simp; rfl;
+  | hfalsum => simp;
   | himp φ ψ ihφ ihψ =>
     replace ihφ := ihφ (by grind);
     replace ihψ := ihψ (by grind);
     simp_all [toFilterEquivSet.union, toFilterEquivSet.compl_truthset (show φ ∈ T by grind)];
-    rfl;
   | hbox φ ihφ =>
     replace ihφ := ihφ (by grind);
     apply ihφ ▸ Fi.B_def φ (by grind);
@@ -259,12 +258,10 @@ lemma filtration_satisfies (Fi : Filtration M T) (φ) (hφ : φ ∈ T) {x : M.Wo
 lemma truthlemma (Fi : Filtration M T) {φ ψ} (hφ : φ ∈ T) (hψ : ψ ∈ T) :
   (Fi.toModel φ) = (Fi.toModel ψ) ↔ (【M φ】 : Set (FilterEqvQuotient M T)) = (【M ψ】) := by
   rw [filtration Fi φ hφ, filtration Fi ψ hψ];
-  rfl;
 
 @[grind .]
 lemma iff_mem_toModel_box_mem_B {Fi : Filtration M T} : W ∈ Fi.toModel.box Y ↔ W ∈ Fi.B Y := by
-  simp [Filtration.toModel, Frame.mk_ℬ, Frame.box];
-  rfl;
+  simp [Filtration.toModel, Frame.ofBox, Frame.box];
 
 /-- The defining property of a filtration, read as an equation between images of truthsets.
 
@@ -272,7 +269,7 @@ lemma iff_mem_toModel_box_mem_B {Fi : Filtration M T} : W ∈ Fi.toModel.box Y �
 -/
 @[grind =>]
 lemma box_in_out {Fi : Filtration M T} (hφ : □φ ∈ T) : Fi.B 【M φ】 = 【M (□φ)】 := calc
-  _ = Fi.toModel.box 【M.truthset φ】 := by simp [Filtration.toModel, Frame.mk_ℬ, Frame.box]; rfl;
+  _ = Fi.toModel.box 【M.truthset φ】 := by simp [Filtration.toModel, Frame.ofBox, Frame.box];
   _ = Fi.toModel.box (Fi.toModel φ) := by rw [filtration Fi φ (by grind)];
   _ = (Fi.toModel (□φ)) := by simp;
   _ = 【M (□φ)】 := filtration Fi _ hφ
@@ -312,7 +309,7 @@ def minimalFiltration (M : Model κ α) (T : FormulaSet α) [T.IsSubformulaClose
 lemma minimalFiltration.iff_mem_B : W ∈ (minimalFiltration M T).B X ↔ ∃ φ, □φ ∈ T ∧ X = 【M.truthset φ】 ∧ W ∈ 【M.truthset (□φ)】 := by
   constructor;
   . intro h;
-    dsimp [minimalFiltration, Filtration.toModel, Frame.mk_ℬ, Frame.box] at h;
+    dsimp [minimalFiltration, Filtration.toModel, Frame.ofBox, Frame.box] at h;
     split_ifs at h with hY;
     . use hY.choose;
       refine ⟨?_, ?_, ?_⟩
@@ -321,7 +318,7 @@ lemma minimalFiltration.iff_mem_B : W ∈ (minimalFiltration M T).B X ↔ ∃ φ
       . simpa;
     . contradiction;
   . rintro ⟨φ, hφ, rfl, hW⟩;
-    dsimp [minimalFiltration, Filtration.toModel, Frame.mk_ℬ, Frame.box];
+    dsimp [minimalFiltration, Filtration.toModel, Frame.ofBox, Frame.box];
     split_ifs with h;
     . suffices W ∈ 【M.truthset (□h.choose)】 by exact this;
       exact (minimalFiltration M T).mem_box_in_out h.choose_spec.1 |>.mp $ h.choose_spec.2 ▸ (minimalFiltration M T).mem_box_in_out hφ |>.mpr hW;
@@ -357,7 +354,7 @@ def transitiveFiltration (M : Model κ α) [M.IsTransitive] (T : FormulaSet α) 
     . intro hX;
       left;
       suffices X ∈ if h : ∃ ψ, □ψ ∈ T ∧ 【M.truthset φ】 = 【M.truthset ψ】 then 【M.box (M h.choose)】 else ∅ by
-        simpa [Filtration.toModel, Frame.mk_ℬ, Model.truthset.eq_atom, Set.mem_setOf_eq];
+        simpa [Filtration.toModel, Frame.ofBox, Model.truthset.eq_atom, Set.mem_setOf_eq];
       split_ifs with h;
       . have := h.choose_spec;
         rwa [←(toFilterEquivSet.eq_original_truthset_of_eq (by grind) (by grind) this.2)];
@@ -430,14 +427,14 @@ protected instance isTransitive : (transitiveFiltration M T).toModel.IsTransitiv
       . assumption;
       . split_ifs at hW with hif₁;
         . obtain ⟨Y, hY⟩ := hif₁;
-          dsimp [minimalFiltration, Filtration.toModel, Frame.mk_ℬ, Frame.box] at hY;
+          dsimp [minimalFiltration, Filtration.toModel, Frame.ofBox, Frame.box] at hY;
           split_ifs at hY with hif₂;
           . generalize eψ : hif₂.choose = ψ at hif₂ hY;
             have hψ : □ψ ∈ T := eψ ▸ hif₂.choose_spec.1;
             replace hY : X = 【M (□ψ)】 := hY;
             subst hY;
             replace hW := toFilterEquivSet.trans_truthset hW;
-            obtain ⟨φ, hφ₁, hφ₂, _⟩ := by simpa [minimalFiltration, Filtration.toModel, Frame.mk_ℬ, Frame.box] using h;
+            obtain ⟨φ, hφ₁, hφ₂, _⟩ := by simpa [minimalFiltration, Filtration.toModel, Frame.ofBox, Frame.box] using h;
             have : (【M (□φ)】 : Set (FilterEqvQuotient M T)) = 【M (□□ψ)】 := (minimalFiltration M T).transitive_lemma (by grind) (by grind) $ by
               rw [(minimalFiltration M T).box_in_out hψ];
               exact hφ₂.symm;
