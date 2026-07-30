@@ -643,14 +643,16 @@ def quasiFilteringTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransiti
         exact toFilterEquivSet.mem_boxItr₂_truthset hξ hw;
       . exfalso;
         apply hYs₁;
-        suffices (Vs = ∅ ∧ Us = ∅) by simp [eYVU, this.1, this.2];
+        suffices (Vs = ∅ ∧ Us = ∅) by
+          rw [eYVU, this.1, this.2];
+          exact Finset.union_empty _;
         constructor;
         . suffices ∀ Yi ∈ Ys, ∀ ψ, □ψ ∈ T → Yi = 【M ψ】 → ⟦w⟧ ∉ 【M (□ψ)】 by simpa [Vs];
-          rintro _ _ ψ hψ rfl;
-          apply (show ∀ ψ, □ψ ∈ T → 【M ψ】 ∈ Ys → ⟦w⟧ ∉ 【M (□ψ)】 by simpa [Ψ] using hΨ) <;> assumption;
+          rintro Yi hYi ψ hψ rfl hw;
+          exact hΨ ⟨⟨ψ, hψ, ⟨_, hYi, rfl⟩, hw⟩⟩;
         . suffices ∀ Yi ∈ Ys, ∀ ξ, □ξ ∈ T → Yi = 【M (□ξ)】 → ⟦w⟧ ∉ 【M (□ξ)】 by simpa [Us];
-          rintro _ _ ξ hξ rfl;
-          apply (show ∀ ξ, □ξ ∈ T → 【M (□ξ)】 ∈ Ys → ⟦w⟧ ∉ 【M (□ξ)】 by simpa [Ξ] using hΞ) <;> assumption;
+          rintro Yi hYi ξ hξ rfl hw;
+          exact hΞ ⟨⟨ξ, hξ, ⟨_, hYi, rfl⟩, hw⟩⟩;
     . intro h;
       apply Frame.quasiFiltering.mem_box_of_mem_original_box;
       apply transitiveFiltration.iff_mem_B.mpr;
