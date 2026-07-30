@@ -1,8 +1,6 @@
 module
 
 public import Mathlib.Data.Finset.Basic
-public import Mathlib.Logic.Function.Iterate
-public import Mathlib.Order.Notation
 
 /-!
 # Modal formulas

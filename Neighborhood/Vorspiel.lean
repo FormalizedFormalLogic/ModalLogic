@@ -1,6 +1,5 @@
 module
 
-public import Mathlib.Data.Set.Insert
 public import Mathlib.Data.Set.Lattice
 public import Mathlib.Data.Set.Finite.Basic
 public import Mathlib.Order.Preorder.Chain
