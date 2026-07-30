@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  # Required so these checks also run against the queue's speculative merge
+  # commit; otherwise a merge queue entry has no status checks to wait on.
+  merge_group:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Print lake and lean version
+        run: |
+          lake --version
+          lean --version
+
+      # Restore project cache
+      - name: Get Mathlib cache
+        run: lake exe cache get
+      - name: Restore cache
+        id: cache-restore
+        uses: actions/cache/restore@v6
+        with:
+          path: .lake/ModalLogic-x86_64-unknown-linux-gnu.tar.gz
+          # Cache entries are immutable, so the key includes the commit SHA to always save fresh.
+          # Branch isolation is already enforced by the cache's built-in scoping.
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}
+      - name: Unpack project cache
+        if: hashFiles('.lake/ModalLogic-x86_64-unknown-linux-gnu.tar.gz') != ''
+        run: lake unpack
+
+      - name: Build
+        run: lake build
+
+      - name: Pack project cache
+        run: lake pack
+      - name: Save project cache
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/cache/save@v6
+        with:
+          path: .lake/ModalLogic-x86_64-unknown-linux-gnu.tar.gz
+          key: ${{ steps.cache-restore.outputs.cache-primary-key }}
+
+  check-references:
+    name: Check references.bib format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: extractions/setup-just@v4
+      - name: Install bibtool
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bibtool
+      - name: Check references.bib is formatted
+        run: |
+          just format-bib
+          if [ -n "$(git diff)" ]; then
+            echo "references.bib is not formatted. Please run 'just format-bib' and commit the changes."
+            exit 1
+          fi
+
+  mk-all-check:
+    name: Check mk_all executed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: extractions/setup-just@v4
+      - name: Setup elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Get Mathlib cache
+        run: lake exe cache get
+      - name: Check mk_all executed
+        run: |
+          just mk-all
+          if [ -n "$(git diff)" ]; then
+            echo "Files were modified by mk_all. Please run 'just mk-all' and commit the changes."
+            exit 1
+          fi
