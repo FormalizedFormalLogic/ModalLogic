@@ -9,9 +9,10 @@ import Neighborhood.Semantics.Example.Frame1_3
 /-!
 # The neighborhood logic `LogicETB`
 
-Soundness and consistency of `LogicETB`, the classical modal logic axiomatised by both the
-reflexivity axiom `T` and the symmetry axiom `B`, with respect to the neighborhood frames that
-are both reflexive and symmetric, and its strict inclusions in `LogicET` and `LogicEB`.
+Soundness, consistency and completeness of `LogicETB`, the classical modal logic axiomatised by
+both the reflexivity axiom `T` and the symmetry axiom `B`, with respect to the neighborhood
+frames that are both reflexive and symmetric, and its strict inclusions in `LogicET` and
+`LogicEB`.
 -/
 
 @[expose] public section
@@ -27,6 +28,24 @@ theorem LogicETB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
 theorem LogicETB.consistent : (@LogicETB α).IsConsistent := by
   by_contra! hC
   simpa using LogicETB.sound frame_1_2 hC
+
+instance : Nonempty (MaximalConsistentSet (@LogicETB α)) :=
+  MaximalConsistentSet.nonempty LogicETB.consistent
+
+section
+
+variable [DecidableEq α]
+
+/-- `LogicETB` is complete with respect to the neighborhood frames that are both reflexive and
+symmetric, again via the intermediate canonical model of [Che80, Exercise 9.39(b)]. -/
+theorem LogicETB.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsSymmetric] → F ⊧ A) :
+    A ∈ @LogicETB α :=
+  (intermediateRelativeMaximalCanonicity LogicETB).mem_of_valid
+    (h (intermediateRelativeMaximalCanonicity LogicETB).toModel.toFrame
+      (intermediateRelativeMaximalCanonicity LogicETB).toModel.Val)
+
+end
 
 theorem LogicET_ssubset_LogicETB : @LogicET ℕ ⊂ LogicETB := by
   constructor

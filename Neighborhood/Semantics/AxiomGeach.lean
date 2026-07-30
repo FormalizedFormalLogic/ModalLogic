@@ -461,6 +461,10 @@ protected instance isSymmetric [L.HasAxiomB] :
   rw [dia_eq_of_isNonproofset hX, box_eq_of_isNonproofset hX]
   exact hΩ
 
+protected instance isReflexive [L.HasAxiomT] :
+    (intermediateRelativeMaximalCanonicity L).toModel.IsReflexive :=
+  relativeBasicCanonicity.isReflexive (by tauto)
+
 end intermediateRelativeMaximalCanonicity
 
 end
