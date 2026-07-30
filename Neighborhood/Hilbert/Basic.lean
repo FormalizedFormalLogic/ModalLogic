@@ -123,7 +123,7 @@ lemma subset_of_provable_axioms (h : Ax₁ ⊆ Hilbert Ax₂) : Hilbert Ax₁ �
   induction hA using ProvableHilbert.rec with
   | axm hmem => exact h hmem
   | mdp _ _ ih₁ ih₂ => exact ih₁ ⨀ ih₂
-  | re _ ih => exact re! ih
+  | re _ ih => exact re ih
   | _ => simp
 
 /-- Monotonicity of `Hilbert` in its axiom set. -/

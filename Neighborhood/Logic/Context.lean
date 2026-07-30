@@ -32,7 +32,7 @@ variable {L : Logic α} {T U : FormulaSet α} {A B C : Formula α}
 @[grind =]
 lemma iff_exists_finset : T *⊢[L] A ↔ ∃ Γ : FormulaFinset α, ↑Γ ⊆ T ∧ Γ.conj 🡒 A ∈ L := Iff.rfl
 
-lemma weakening! (hs : T ⊆ U) (h : T *⊢[L] A) : U *⊢[L] A := by
+lemma weakening (hs : T ⊆ U) (h : T *⊢[L] A) : U *⊢[L] A := by
   obtain ⟨Γ, hΓ, hA⟩ := h;
   exact ⟨Γ, hΓ.trans hs, hA⟩;
 
@@ -41,27 +41,27 @@ section
 variable [L.Cl]
 
 /-- A theorem of `L` is derivable from any set of assumptions. -/
-lemma of! (h : A ∈ L) : T *⊢[L] A := ⟨∅, by simp, C!_of_conseq! h⟩
+lemma of (h : A ∈ L) : T *⊢[L] A := ⟨∅, by simp, C_of_conseq h⟩
 
 /-- An assumption is derivable from itself. -/
-lemma by_axm! (h : A ∈ T) : T *⊢[L] A := ⟨{A}, by simpa, left_Fconj!_intro (by simp)⟩
+lemma by_axm (h : A ∈ T) : T *⊢[L] A := ⟨{A}, by simpa, left_Fconj_intro (by simp)⟩
 
 variable [DecidableEq α]
 
-lemma mdp! (h₁ : T *⊢[L] A 🡒 B) (h₂ : T *⊢[L] A) : T *⊢[L] B := by
+lemma mdp (h₁ : T *⊢[L] A 🡒 B) (h₂ : T *⊢[L] A) : T *⊢[L] B := by
   obtain ⟨Γ₁, hΓ₁, h₁⟩ := h₁;
   obtain ⟨Γ₂, hΓ₂, h₂⟩ := h₂;
   refine ⟨Γ₁ ∪ Γ₂, ?_, ?_⟩;
   . simp only [Finset.coe_union];
     exact Set.union_subset hΓ₁ hΓ₂;
-  . exact mdp₁!
-      (C!_trans (C!_trans CFconjUnionKFconj! and₁!) h₁)
-      (C!_trans (C!_trans CFconjUnionKFconj! and₂!) h₂);
+  . exact mdp₁
+      (C_trans (C_trans CFconjUnionKFconj and₁) h₁)
+      (C_trans (C_trans CFconjUnionKFconj and₂) h₂);
 
-lemma deductInv! (h : T *⊢[L] A 🡒 B) : insert A T *⊢[L] B :=
-  mdp! (weakening! (Set.subset_insert _ _) h) (by_axm! (Set.mem_insert _ _))
+lemma deductInv (h : T *⊢[L] A 🡒 B) : insert A T *⊢[L] B :=
+  mdp (weakening (Set.subset_insert _ _) h) (by_axm (Set.mem_insert _ _))
 
-lemma deduct! (h : insert A T *⊢[L] B) : T *⊢[L] A 🡒 B := by
+lemma deduct (h : insert A T *⊢[L] B) : T *⊢[L] A 🡒 B := by
   obtain ⟨Γ, hΓ, hB⟩ := h;
   refine ⟨Γ.erase A, ?_, ?_⟩;
   . intro x hx;
@@ -69,14 +69,14 @@ lemma deduct! (h : insert A T *⊢[L] B) : T *⊢[L] A 🡒 B := by
     have := hΓ hx.1;
     grind;
   . have h₁ : (insert A (Γ.erase A) : FormulaFinset α).conj 🡒 B ∈ L := by
-      apply C!_trans ?_ hB;
-      apply CFconj!_Fconj!;
+      apply C_trans ?_ hB;
+      apply CFconj_Fconj;
       intro x hx;
       simp only [Finset.mem_insert, Finset.mem_erase];
       grind;
-    exact C!_swap <| CK!_iff_CC!.mp <| C!_trans (C_of_E_mpr! EFconjInsertKFconj!) h₁;
+    exact C_swap <| CK_iff_CC.mp <| C_trans (C_of_E_mpr EFconjInsertKFconj) h₁;
 
-@[grind =] lemma iff_deduct! : insert A T *⊢[L] B ↔ T *⊢[L] A 🡒 B := ⟨deduct!, deductInv!⟩
+@[grind =] lemma iff_deduct : insert A T *⊢[L] B ↔ T *⊢[L] A 🡒 B := ⟨deduct, deductInv⟩
 
 omit [DecidableEq α] in
 @[grind =] lemma iff_provable_empty : ∅ *⊢[L] A ↔ A ∈ L := by
@@ -85,14 +85,14 @@ omit [DecidableEq α] in
     replace hΓ : Γ = ∅ := by simpa [Finset.coe_eq_empty] using hΓ;
     subst hΓ;
     exact hA ⨀ (by simp [FormulaFinset.conj]);
-  . apply of!;
+  . apply of;
 
 /-- Transfer of a unary rule of `L` to derivability from assumptions. -/
-lemma of_C! (hL : A 🡒 B ∈ L) (h : T *⊢[L] A) : T *⊢[L] B := mdp! (of! hL) h
+lemma of_C (hL : A 🡒 B ∈ L) (h : T *⊢[L] A) : T *⊢[L] B := mdp (of hL) h
 
 /-- Transfer of a binary rule of `L` to derivability from assumptions. -/
-lemma of_C!_of_C! (hL : A 🡒 B 🡒 C ∈ L) (h₁ : T *⊢[L] A) (h₂ : T *⊢[L] B) : T *⊢[L] C :=
-  mdp! (of_C! hL h₁) h₂
+lemma of_C_of_C (hL : A 🡒 B 🡒 C ∈ L) (h₁ : T *⊢[L] A) (h₂ : T *⊢[L] B) : T *⊢[L] C :=
+  mdp (of_C hL h₁) h₂
 
 end
 
@@ -132,19 +132,19 @@ lemma emptyset_consistent [L.Consistent] : Consistent L (∅ : FormulaSet α) :=
   simpa [Consistent] using iff_provable_empty (L := L) (A := ⊥) |>.not.mpr Logic.not_mem_falsum;
 
 omit [DecidableEq α] in
-lemma not_mem_falsum_of_consistent (h : Consistent L T) : ⊥ ∉ T := fun hC => h (by_axm! hC)
+lemma not_mem_falsum_of_consistent (h : Consistent L T) : ⊥ ∉ T := fun hC => h (by_axm hC)
 
 lemma unprovable_either (h : Consistent L T) : ¬(T *⊢[L] A ∧ T *⊢[L] ∼A) := by
   rintro ⟨h₁, h₂⟩;
-  exact h <| mdp! h₂ h₁;
+  exact h <| mdp h₂ h₁;
 
 lemma provable_iff_insert_neg_not_consistent :
     Inconsistent L (insert (∼A) T) ↔ T *⊢[L] A := by
   constructor;
   . intro h;
-    exact of_C! dne! <| deduct! <| not_not.mp h;
+    exact of_C dne <| deduct <| not_not.mp h;
   . intro h hC;
-    exact hC <| deductInv! <| of_C! dni! h;
+    exact hC <| deductInv <| of_C dni h;
 
 lemma unprovable_iff_insert_neg_consistent :
     Consistent L (insert (∼A) T) ↔ T *⊬[L] A := by
@@ -159,9 +159,9 @@ lemma either_consistent (h : Consistent L T) (A) :
   by_contra hC;
   push Not at hC;
   obtain ⟨hC₁, hC₂⟩ := hC;
-  replace hC₁ : T *⊢[L] ∼A := deduct! hC₁;
+  replace hC₁ : T *⊢[L] ∼A := deduct hC₁;
   replace hC₂ : T *⊢[L] A := provable_iff_insert_neg_not_consistent.mp (not_not.mpr hC₂);
-  exact h <| mdp! hC₁ hC₂;
+  exact h <| mdp hC₁ hC₂;
 
 end
 

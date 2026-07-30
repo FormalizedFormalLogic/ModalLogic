@@ -317,7 +317,7 @@ theorem EMK_eq_EMCK : (EMK (α := α)) = EMCK := by
     · exact Or.inr hK
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, C, rfl⟩) <;>
-      first | exact Logic.axiomM! | exact Logic.axiomC! | exact Logic.axiomK!
+      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomK
 
 /-- The axiom `N` is redundant over `T` and `B`. -/
 theorem ETB_eq_ENTB : (ETB (α := α)) = ENTB := by
@@ -328,6 +328,6 @@ theorem ETB_eq_ENTB : (ETB (α := α)) = ENTB := by
     · exact Or.inr hB
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((rfl | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
-      first | exact Logic.axiomN! | exact Logic.axiomT! | exact Logic.axiomB!
+      first | exact Logic.axiomN | exact Logic.axiomT | exact Logic.axiomB
 
 end

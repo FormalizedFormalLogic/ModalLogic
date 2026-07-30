@@ -95,21 +95,21 @@ lemma either_mem (Ω : MaximalConsistentSet L) (A) : A ∈ Ω ∨ ∼A ∈ Ω :=
 
 lemma membership_iff : A ∈ Ω ↔ Ω.1 *⊢[L] A := by
   constructor;
-  . exact by_axm!;
+  . exact by_axm;
   . intro h;
     suffices ∼A ∉ Ω.1 by exact or_iff_not_imp_right.mp (Ω.either_mem A) this;
     intro hC;
-    exact Ω.consistent <| mdp! (by_axm! hC) h;
+    exact Ω.consistent <| mdp (by_axm hC) h;
 
 omit [DecidableEq α] in
 @[simp] lemma not_mem_falsum : ⊥ ∉ Ω := not_mem_falsum_of_consistent Ω.consistent
 
-@[simp] lemma mem_verum : ⊤ ∈ Ω := membership_iff.mpr <| of! verum!
+@[simp] lemma mem_verum : ⊤ ∈ Ω := membership_iff.mpr <| of verum
 
 @[simp] lemma iff_mem_neg : ∼A ∈ Ω ↔ A ∉ Ω := by
   constructor;
   . intro hn hA;
-    exact Ω.consistent <| mdp! (membership_iff.mp hn) (membership_iff.mp hA);
+    exact Ω.consistent <| mdp (membership_iff.mp hn) (membership_iff.mp hA);
   . intro hA;
     have h : Consistent L (insert (∼A) Ω.1) :=
       unprovable_iff_insert_neg_consistent.mpr <| membership_iff.not.mp hA;
@@ -124,7 +124,7 @@ lemma iff_forall_mem_provable : (∀ Ω : MaximalConsistentSet L, A ∈ Ω) ↔ 
     obtain ⟨Ω, hΩ⟩ := lindenbaum <| unprovable_iff_singleton_neg_consistent.mpr h;
     exact ⟨Ω, iff_mem_neg.mp <| hΩ rfl⟩;
   . intro h Ω;
-    exact membership_iff.mpr <| of! h;
+    exact membership_iff.mpr <| of h;
 
 @[grind ←] lemma mem_of_prove (h : A ∈ L) : A ∈ Ω := iff_forall_mem_provable.mpr h Ω
 
@@ -133,11 +133,11 @@ lemma iff_forall_mem_provable : (∀ Ω : MaximalConsistentSet L, A ∈ Ω) ↔ 
 @[simp, grind =] lemma iff_mem_imp : A 🡒 B ∈ Ω ↔ (A ∈ Ω → B ∈ Ω) := by
   constructor;
   . intro hAB hA;
-    exact membership_iff.mpr <| mdp! (membership_iff.mp hAB) (membership_iff.mp hA);
+    exact membership_iff.mpr <| mdp (membership_iff.mp hAB) (membership_iff.mp hA);
   . intro h;
     rcases or_iff_not_imp_left.mpr (fun hn => h (not_not.mp hn)) with hA | hB;
-    . exact membership_iff.mpr <| of_C! CNC! <| membership_iff.mp <| iff_mem_neg.mpr hA;
-    . exact membership_iff.mpr <| of_C! implyK! <| membership_iff.mp hB;
+    . exact membership_iff.mpr <| of_C CNC <| membership_iff.mp <| iff_mem_neg.mpr hA;
+    . exact membership_iff.mpr <| of_C implyK <| membership_iff.mp hB;
 
 lemma mdp (hAB : A 🡒 B ∈ Ω) (hA : A ∈ Ω) : B ∈ Ω := iff_mem_imp.mp hAB hA
 
@@ -147,9 +147,9 @@ lemma mdp_provable (hAB : A 🡒 B ∈ L) (hA : A ∈ Ω) : B ∈ Ω := mdp (mem
   simp only [membership_iff];
   constructor;
   . intro h;
-    exact ⟨of_C! and₁! h, of_C! and₂! h⟩;
+    exact ⟨of_C and₁ h, of_C and₂ h⟩;
   . rintro ⟨h₁, h₂⟩;
-    exact of_C!_of_C! and₃! h₁ h₂;
+    exact of_C_of_C and₃ h₁ h₂;
 
 @[simp] lemma iff_mem_or : A ⋎ B ∈ Ω ↔ A ∈ Ω ∨ B ∈ Ω := by
   constructor;
@@ -159,14 +159,14 @@ lemma mdp_provable (hAB : A 🡒 B ∈ L) (hA : A ∈ Ω) : B ∈ Ω := mdp (mem
     replace h := membership_iff.mp h;
     have h₁ := membership_iff.mp <| iff_mem_neg.mpr hC.1;
     have h₂ := membership_iff.mp <| iff_mem_neg.mpr hC.2;
-    exact Ω.consistent <| mdp! (of_C!_of_C! or₃! h₁ h₂) h;
+    exact Ω.consistent <| Logic.Context.mdp (of_C_of_C or₃ h₁ h₂) h;
   . rintro (h | h);
-    . exact membership_iff.mpr <| of_C! or₁! <| membership_iff.mp h;
-    . exact membership_iff.mpr <| of_C! or₂! <| membership_iff.mp h;
+    . exact membership_iff.mpr <| of_C or₁ <| membership_iff.mp h;
+    . exact membership_iff.mpr <| of_C or₂ <| membership_iff.mp h;
 
 lemma iff_congr (h : Ω.1 *⊢[L] A 🡘 B) : A ∈ Ω ↔ B ∈ Ω := by
   simp only [membership_iff];
-  exact ⟨mdp! (of_C! and₁! h), mdp! (of_C! and₂! h)⟩;
+  exact ⟨Logic.Context.mdp (of_C and₁ h), Logic.Context.mdp (of_C and₂ h)⟩;
 
 lemma intro_equality (h : ∀ A, A ∈ Ω₁.1 → A ∈ Ω₂.1) : Ω₁ = Ω₂ := by
   apply equality_def.mpr;
