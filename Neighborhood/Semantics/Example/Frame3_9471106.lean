@@ -59,6 +59,25 @@ lemma frame_3_9471106.not_valid_axiomM :
     ⟨fun a => match a with | 0 => {0, 1} | 1 => {0, 2} | _ => Set.univ, 0, by
       unfold NotForces Forces; simp [Frame.box, frame_3_9471106, Set.ext_iff]; decide⟩
 
+lemma frame_3_9471106.not_isSymmetric : ¬frame_3_9471106.IsSymmetric := fun hS => by
+  have hbox2 : frame_3_9471106.box ({2} : Set (Fin 3)) = {2} := frame_3_9471106.box_singleton 2
+  have hdia : frame_3_9471106.dia ({0, 1} : Set (Fin 3)) = {0, 1} := by
+    have hcompl : ({0, 1} : Set (Fin 3))ᶜ = {2} := by
+      ext x; fin_cases x <;> simp
+    simp only [Frame.dia, hcompl, hbox2]
+    ext x; fin_cases x <;> simp
+  have hbox : frame_3_9471106.box ({0, 1} : Set (Fin 3)) = ∅ := by
+    simp only [Set.ext_iff, Frame.box, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff, Set.mem_empty_iff_false]
+    decide
+  have h := hS.symm ({0, 1} : Set (Fin 3))
+  rw [hdia, hbox] at h
+  exact absurd (h (show (0 : Fin 3) ∈ ({0, 1} : Set (Fin 3)) by simp)) (by simp)
+
+lemma frame_3_9471106.not_valid_axiomB :
+    ¬frame_3_9471106 ⊧ (Axioms.B #0 : Formula ℕ) :=
+  fun h => frame_3_9471106.not_isSymmetric (isSymmetric_of_valid_axiomB h)
+
 lemma frame_3_9471106.not_isEuclidean : ¬frame_3_9471106.IsEuclidean := fun hE => by
   have hdia : frame_3_9471106.dia ({0, 1} : Set (Fin 3)) = {0, 1} := by
     simp only [Set.ext_iff, Frame.dia, Frame.box, Set.mem_compl_iff, Set.mem_setOf_eq,
