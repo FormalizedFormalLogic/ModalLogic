@@ -10,6 +10,7 @@ public import Neighborhood.Logic.Calculus
 public import Neighborhood.Logic.Cl
 public import Neighborhood.Logic.Context
 public import Neighborhood.Logic.Equiv.EB4_ENB4
+public import Neighborhood.Logic.Equiv.ECT5_ECNT5
 public import Neighborhood.Logic.Equiv.EM45_EMN45
 public import Neighborhood.Logic.Equiv.EMB4_EMCNB4
 public import Neighborhood.Logic.Equiv.EMC_EMCK
