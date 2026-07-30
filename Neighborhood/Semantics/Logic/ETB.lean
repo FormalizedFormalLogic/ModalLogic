@@ -2,16 +2,20 @@ module
 
 public import Neighborhood.Semantics.Logic.ET
 public import Neighborhood.Semantics.Logic.EB
+public import Neighborhood.Semantics.Logic.EN
 import Neighborhood.Semantics.Example.Frame1_2
 import Neighborhood.Semantics.Example.Frame1_0
 import Neighborhood.Semantics.Example.Frame1_3
+import Neighborhood.Semantics.Example.Frame2_170
 
 /-!
 # The neighborhood logic `LogicETB`
 
 Soundness and consistency of `LogicETB`, the classical modal logic axiomatised by both the
 reflexivity axiom `T` and the symmetry axiom `B`, with respect to the neighborhood frames that
-are both reflexive and symmetric, and its strict inclusions in `LogicET` and `LogicEB`.
+are both reflexive and symmetric, and its strict inclusions in `LogicET` and `LogicEB`. Also
+proves the strict inclusion of `LogicEN` in `LogicENTB` — and, combined with the coincidence
+`LogicETB_eq_LogicENTB`, in `LogicETB`.
 -/
 
 @[expose] public section
@@ -43,5 +47,16 @@ theorem LogicEB_ssubset_LogicETB : @LogicEB ℕ ⊂ LogicETB := by
   · intro h
     have hT : Axioms.T #0 ∈ @LogicEB ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT (LogicEB.sound frame_1_3 hT))
+
+theorem LogicEN_ssubset_LogicENTB : @LogicEN ℕ ⊂ LogicENTB := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hT : Axioms.T #0 ∈ @LogicEN ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_170.not_valid_axiomT (LogicEN.sound frame_2_170 hT)
+
+theorem LogicEN_ssubset_LogicETB : @LogicEN ℕ ⊂ LogicETB := by
+  rw [LogicETB_eq_LogicENTB]
+  exact LogicEN_ssubset_LogicENTB
 
 end
