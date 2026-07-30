@@ -25,9 +25,9 @@ instance : Frame.simple_blackhole.IsReflexive where
     subst hx
     trivial
 
-theorem LogicET.consistent : (@LogicET α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomT_of_isReflexive)
+theorem LogicET.consistent : (@LogicET α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicET.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicET α)) :=
   MaximalConsistentSet.nonempty LogicET.consistent

@@ -28,13 +28,9 @@ theorem LogicEND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
       · exact valid_axiomD_of_isSerial
       · exact valid_axiomFour_of_isTransitive)
 
-theorem LogicEND4.consistent : (@LogicEND4 α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (by
-      rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩)
-      · exact valid_axiomN_of_containsUnit
-      · exact valid_axiomD_of_isSerial
-      · exact valid_axiomFour_of_isTransitive)
+theorem LogicEND4.consistent : (@LogicEND4 α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEND4.sound Frame.simple_blackhole hC
 
 
 instance : Frame.trivial_containsUnit.IsSerial where

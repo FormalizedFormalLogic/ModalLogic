@@ -26,10 +26,9 @@ theorem LogicEMK.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     (by rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩)
         exacts [valid_axiomM_of_isMonotonic, valid_axiomK_of_hasPropertyK])
 
-theorem LogicEMK.consistent : (@LogicEMK α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (by rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩)
-        exacts [valid_axiomM_of_isMonotonic, valid_axiomK_of_hasPropertyK])
+theorem LogicEMK.consistent : (@LogicEMK α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEMK.sound Frame.simple_blackhole hC
 
 
 theorem LogicEK_ssubset_LogicEMK : @LogicEK ℕ ⊂ LogicEMK := by

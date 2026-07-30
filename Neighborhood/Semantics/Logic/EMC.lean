@@ -27,11 +27,9 @@ theorem LogicEMC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     · exact valid_axiomM_of_isMonotonic
     · exact valid_axiomC_of_isRegular)
 
-theorem LogicEMC.consistent : (@LogicEMC α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole) (by
-    rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩)
-    · exact valid_axiomM_of_isMonotonic
-    · exact valid_axiomC_of_isRegular)
+theorem LogicEMC.consistent : (@LogicEMC α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEMC.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEMC α)) :=
   MaximalConsistentSet.nonempty LogicEMC.consistent

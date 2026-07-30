@@ -19,9 +19,9 @@ theorem LogicEC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] :
   Hilbert.sound (fun _ hB => by
     obtain ⟨_, _, rfl⟩ := hB; exact valid_axiomC_of_isRegular)
 
-theorem LogicEC.consistent : (@LogicEC α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole) (fun _ hB => by
-    obtain ⟨_, _, rfl⟩ := hB; exact valid_axiomC_of_isRegular)
+theorem LogicEC.consistent : (@LogicEC α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEC.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEC α)) :=
   MaximalConsistentSet.nonempty LogicEC.consistent

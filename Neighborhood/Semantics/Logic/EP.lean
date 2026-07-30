@@ -22,11 +22,9 @@ theorem LogicEP.sound {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
       simp only [Set.mem_singleton_iff] at hB; subst hB
       exact valid_axiomP_of_notContainsEmpty)
 
-theorem LogicEP.consistent : (@LogicEP α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun B hB => by
-      simp only [Set.mem_singleton_iff] at hB; subst hB
-      exact valid_axiomP_of_notContainsEmpty)
+theorem LogicEP.consistent : (@LogicEP α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEP.sound Frame.simple_blackhole hC
 
 
 theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
@@ -50,11 +48,8 @@ lemma Frame.trivial_nonserial.not_isSerial : ¬Frame.trivial_nonserial.IsSerial 
   have h2 : (1 : Fin 2) ∉ Frame.trivial_nonserial.dia {1} := by simp [Frame.dia, Frame.box]
   exact h2 (hS.serial {1} h1)
 
-theorem LogicEP.not_mem_axiomD {a : ℕ} : Axioms.D (.atom a) ∉ @LogicEP ℕ :=
-  Hilbert.not_mem_of_not_valid (F := Frame.trivial_nonserial)
-    (fun B hB => by
-      simp only [Set.mem_singleton_iff] at hB; subst hB
-      exact valid_axiomP_of_notContainsEmpty)
-    (fun h => Frame.trivial_nonserial.not_isSerial (isSerial_of_valid_axiomD h))
+theorem LogicEP.not_mem_axiomD {a : ℕ} : Axioms.D (.atom a) ∉ @LogicEP ℕ := fun hD =>
+  Frame.trivial_nonserial.not_isSerial <| isSerial_of_valid_axiomD <|
+    LogicEP.sound Frame.trivial_nonserial hD
 
 end

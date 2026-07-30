@@ -23,11 +23,9 @@ theorem LogicET5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] [F.IsEu
     · exact valid_axiomT_of_isReflexive
     · exact valid_axiomFive_of_isEuclidean)
 
-theorem LogicET5.consistent : (@LogicET5 α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole) (by
-    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
-    · exact valid_axiomT_of_isReflexive
-    · exact valid_axiomFive_of_isEuclidean)
+theorem LogicET5.consistent : (@LogicET5 α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicET5.sound Frame.simple_blackhole hC
 
 instance : (@LogicET5 α).HasAxiomN :=
   ⟨have hiff : (⊤ : Formula α) 🡘 ◇⊤ ∈ (@LogicET5 α) :=

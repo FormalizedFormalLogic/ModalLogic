@@ -26,12 +26,9 @@ theorem LogicEND.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
       · exact valid_axiomN_of_containsUnit
       · exact valid_axiomD_of_isSerial)
 
-theorem LogicEND.consistent : (@LogicEND α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun _ hB => by
-      rcases hB with rfl | ⟨_, rfl⟩
-      · exact valid_axiomN_of_containsUnit
-      · exact valid_axiomD_of_isSerial)
+theorem LogicEND.consistent : (@LogicEND α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEND.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEND α)) :=
   MaximalConsistentSet.nonempty LogicEND.consistent

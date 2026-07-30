@@ -25,9 +25,9 @@ instance : Frame.simple_blackhole.IsSerial where
     subst hx
     simp [Frame.dia, Frame.box, Set.ext_iff]
 
-theorem LogicED.consistent : (@LogicED α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomD_of_isSerial)
+theorem LogicED.consistent : (@LogicED α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicED.sound Frame.simple_blackhole hC
 
 
 theorem LogicE_ssubset_LogicED : @LogicE ℕ ⊂ LogicED := by

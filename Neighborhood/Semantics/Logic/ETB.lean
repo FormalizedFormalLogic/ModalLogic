@@ -28,12 +28,9 @@ theorem LogicETB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
       · exact valid_axiomT_of_isReflexive
       · exact valid_axiomB_of_isSymmetric)
 
-theorem LogicETB.consistent : (@LogicETB α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun _ hB => by
-      rcases hB with ⟨_, rfl⟩ | ⟨_, rfl⟩
-      · exact valid_axiomT_of_isReflexive
-      · exact valid_axiomB_of_isSymmetric)
+theorem LogicETB.consistent : (@LogicETB α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicETB.sound Frame.simple_blackhole hC
 
 
 instance : Frame.simple_whitehole.IsReflexive :=

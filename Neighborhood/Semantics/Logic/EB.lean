@@ -27,9 +27,9 @@ theorem LogicEB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] :
     A ∈ LogicEB → F ⊧ A :=
   Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomB_of_isSymmetric)
 
-theorem LogicEB.consistent : (@LogicEB α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomB_of_isSymmetric)
+theorem LogicEB.consistent : (@LogicEB α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEB.sound Frame.simple_blackhole hC
 
 
 theorem LogicE_ssubset_LogicEB : (@LogicE ℕ) ⊂ LogicEB := by

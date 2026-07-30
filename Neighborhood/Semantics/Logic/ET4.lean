@@ -25,11 +25,9 @@ theorem LogicET4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     · exact valid_axiomT_of_isReflexive
     · exact valid_axiomFour_of_isTransitive)
 
-theorem LogicET4.consistent : (@LogicET4 α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole) (by
-    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
-    · exact valid_axiomT_of_isReflexive
-    · exact valid_axiomFour_of_isTransitive)
+theorem LogicET4.consistent : (@LogicET4 α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicET4.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicET4 α)) :=
   MaximalConsistentSet.nonempty LogicET4.consistent

@@ -20,9 +20,9 @@ theorem LogicEN.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] :
     A ∈ @LogicEN α → F ⊧ A :=
   Hilbert.sound (fun B hB => by simp only [Set.mem_singleton_iff] at hB; grind)
 
-theorem LogicEN.consistent : (@LogicEN α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun B hB => by simp only [Set.mem_singleton_iff] at hB; grind)
+theorem LogicEN.consistent : (@LogicEN α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEN.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEN α)) :=
   MaximalConsistentSet.nonempty LogicEN.consistent

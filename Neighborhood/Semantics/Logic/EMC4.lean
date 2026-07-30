@@ -26,12 +26,9 @@ theorem LogicEMC4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     · exact valid_axiomC_of_isRegular
     · exact valid_axiomFour_of_isTransitive)
 
-theorem LogicEMC4.consistent : (@LogicEMC4 α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole) (by
-    rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩)
-    · exact valid_axiomM_of_isMonotonic
-    · exact valid_axiomC_of_isRegular
-    · exact valid_axiomFour_of_isTransitive)
+theorem LogicEMC4.consistent : (@LogicEMC4 α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEMC4.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEMC4 α)) :=
   MaximalConsistentSet.nonempty LogicEMC4.consistent

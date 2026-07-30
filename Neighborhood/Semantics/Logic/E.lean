@@ -64,8 +64,9 @@ theorem LogicE.sound {κ} [Nonempty κ] (F : Frame κ) :
     A ∈ LogicE → F ⊧ A :=
   Hilbert.sound (fun B hB => by simp at hB)
 
-theorem LogicE.consistent : (@LogicE α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole) (fun B hB => by simp at hB)
+theorem LogicE.consistent : (@LogicE α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicE.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicE α)) :=
   MaximalConsistentSet.nonempty LogicE.consistent

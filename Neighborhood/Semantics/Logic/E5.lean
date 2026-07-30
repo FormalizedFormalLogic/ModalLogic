@@ -22,9 +22,9 @@ theorem LogicE5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
     A ∈ @LogicE5 α → F ⊧ A :=
   Hilbert.sound (fun B hB => by obtain ⟨B, rfl⟩ := hB; exact valid_axiomFive_of_isEuclidean)
 
-theorem LogicE5.consistent : (@LogicE5 α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun B hB => by obtain ⟨B, rfl⟩ := hB; exact valid_axiomFive_of_isEuclidean)
+theorem LogicE5.consistent : (@LogicE5 α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicE5.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicE5 α)) :=
   MaximalConsistentSet.nonempty LogicE5.consistent

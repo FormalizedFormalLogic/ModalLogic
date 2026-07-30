@@ -22,9 +22,9 @@ theorem LogicEM.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] :
     A ∈ LogicEM → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; exact valid_axiomM_of_isMonotonic)
 
-theorem LogicEM.consistent : (@LogicEM α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (by rintro _ ⟨_, _, rfl⟩; exact valid_axiomM_of_isMonotonic)
+theorem LogicEM.consistent : (@LogicEM α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEM.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEM α)) :=
   MaximalConsistentSet.nonempty LogicEM.consistent

@@ -28,9 +28,9 @@ theorem LogicE4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsTransitive] :
     A ∈ LogicE4 → F ⊧ A :=
   Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomFour_of_isTransitive)
 
-theorem LogicE4.consistent : (@LogicE4 α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomFour_of_isTransitive)
+theorem LogicE4.consistent : (@LogicE4 α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicE4.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicE4 α)) :=
   MaximalConsistentSet.nonempty LogicE4.consistent

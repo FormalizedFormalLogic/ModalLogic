@@ -7,9 +7,7 @@ public import Neighborhood.Semantics.Basic
 # Soundness of Hilbert-style neighborhood calculi
 
 Soundness of `Hilbert Ax` with respect to any frame validating every axiom of `Ax`: every
-formula provable from `Ax` is valid on `F` as soon as `F` validates every member of `Ax`. From
-this we derive that formulas refuted on `F` are unprovable, and that `Hilbert Ax` is consistent
-whenever some frame validates `Ax`.
+formula provable from `Ax` is valid on `F` as soon as `F` validates every member of `Ax`.
 -/
 
 @[expose] public section
@@ -35,14 +33,6 @@ theorem sound (hAx : ∀ B ∈ Ax, F ⊧ B) : A ∈ Hilbert Ax → F ⊧ A := by
   | orIntro₁ A B => intro V x; grind
   | orIntro₂ A B => intro V x; grind
   | orElim A B C => intro V x; grind
-
-/-- A formula refuted on `F` is not provable from an axiom set validated by `F`. -/
-theorem not_mem_of_not_valid (hAx : ∀ B ∈ Ax, F ⊧ B) (h : ¬F ⊧ A) : A ∉ Hilbert Ax :=
-  fun hA => h (sound hAx hA)
-
-/-- `Hilbert Ax` is consistent whenever some frame validates every axiom of `Ax`. -/
-theorem consistent_of (hAx : ∀ B ∈ Ax, F ⊧ B) : (Hilbert Ax).IsConsistent :=
-  not_mem_of_not_valid hAx (Frame.Validate.not_bot (F := F))
 
 end Hilbert
 

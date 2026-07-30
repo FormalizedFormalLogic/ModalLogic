@@ -25,12 +25,9 @@ theorem LogicECN.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
       · exact valid_axiomC_of_isRegular
       · exact valid_axiomN_of_containsUnit)
 
-theorem LogicECN.consistent : (@LogicECN α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun _ hB => by
-      rcases hB with ⟨_, _, rfl⟩ | rfl
-      · exact valid_axiomC_of_isRegular
-      · exact valid_axiomN_of_containsUnit)
+theorem LogicECN.consistent : (@LogicECN α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicECN.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicECN α)) :=
   MaximalConsistentSet.nonempty LogicECN.consistent

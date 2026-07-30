@@ -28,12 +28,9 @@ theorem LogicEN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
       · exact valid_axiomN_of_containsUnit
       · exact valid_axiomFour_of_isTransitive)
 
-theorem LogicEN4.consistent : (@LogicEN4 α).IsConsistent :=
-  Hilbert.consistent_of (F := Frame.simple_blackhole)
-    (fun _ hB => by
-      rcases hB with rfl | ⟨_, rfl⟩
-      · exact valid_axiomN_of_containsUnit
-      · exact valid_axiomFour_of_isTransitive)
+theorem LogicEN4.consistent : (@LogicEN4 α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEN4.sound Frame.simple_blackhole hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEN4 α)) :=
   MaximalConsistentSet.nonempty LogicEN4.consistent
