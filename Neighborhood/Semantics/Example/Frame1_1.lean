@@ -18,6 +18,15 @@ abbrev frame_1_1 : Frame (Fin 1) := ⟨fun _ => {∅}⟩
 
 instance : frame_1_1.IsSerial := ⟨fun X x hx => by simp_all [Frame.dia, Frame.box]⟩
 
+instance : frame_1_1.IsSymmetric := ⟨fun X => by
+  rcases Set.Fin1.all_cases X with rfl | rfl <;>
+    simp [Frame.dia, Frame.box, Set.Fin1.eq_univ]⟩
+
+@[simp]
+lemma frame_1_1.not_valid_axiomN : ¬frame_1_1 ⊧ (Axioms.N : Formula α) :=
+  Frame.Validate.not_of_exists_valuation_world
+    ⟨fun _ => ∅, 0, by simp [NotForces, Forces, Frame.box]⟩
+
 lemma frame_1_1.not_isReflexive : ¬frame_1_1.IsReflexive := fun hR => by
   simpa using hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
 
