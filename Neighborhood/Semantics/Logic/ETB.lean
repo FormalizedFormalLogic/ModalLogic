@@ -3,6 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.ET
 public import Neighborhood.Semantics.Logic.EB
 public import Neighborhood.Semantics.Logic.ENT
+public import Neighborhood.Semantics.Logic.ENB
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame1_3
@@ -72,5 +73,17 @@ theorem LogicENT_ssubset_LogicENTB : @LogicENT ℕ ⊂ LogicENTB := by
   · intro h
     have hB : Axioms.B #0 ∈ @LogicENT ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_3_9471106.not_valid_axiomB (LogicENT.sound frame_3_9471106 hB)
+
+theorem LogicENB_ssubset_LogicENTB : @LogicENB ℕ ⊂ LogicENTB := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hT : Axioms.T #0 ∈ @LogicENB ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_1_3.not_isReflexive
+      (isReflexive_of_valid_axiomT (LogicENB.sound frame_1_3 hT))
+
+theorem LogicENB_ssubset_LogicETB : @LogicENB ℕ ⊂ LogicETB := by
+  rw [LogicETB_eq_LogicENTB]
+  exact LogicENB_ssubset_LogicENTB
 
 end
