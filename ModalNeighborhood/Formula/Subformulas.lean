@@ -1,7 +1,6 @@
 module
 
 public import ModalNeighborhood.Formula.Basic
-public import ModalNeighborhood.Vorspiel
 
 /-!
 # Subformulas
@@ -96,7 +95,7 @@ lemma subset_of_mem (hψ : ψ ∈ φ.subformulas) : ψ.subformulas ⊆ φ.subfor
 end Formula.subformulas
 
 /-- A set of formulas is subformula-closed when it contains all subformulas of its members. -/
-def FormulaSet.SubformulaClosed (Γ : FormulaSet) : Prop := ∀ φ ∈ Γ, φ.subformulas.toSet ⊆ Γ
+def FormulaSet.SubformulaClosed (Γ : FormulaSet) : Prop := ∀ φ ∈ Γ, ↑φ.subformulas ⊆ Γ
 
 namespace FormulaSet.SubformulaClosed
 
@@ -136,7 +135,7 @@ lemma of_mem_box : □φ ∈ Γ → φ ∈ Γ := SubformulaClosed.of_mem_box IsS
 
 end FormulaSet.IsSubformulaClosed
 
-instance {φ : Formula} : FormulaSet.IsSubformulaClosed φ.subformulas.toSet where
+instance {φ : Formula} : FormulaSet.IsSubformulaClosed ↑φ.subformulas where
   closed := fun _ hψ ↦ Formula.subformulas.subset_of_mem hψ
 
 end LO.Modal
