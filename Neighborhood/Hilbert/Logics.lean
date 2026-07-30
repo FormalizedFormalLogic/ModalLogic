@@ -1041,14 +1041,6 @@ theorem LogicEMK_eq_LogicEMCK : (@LogicEMK α) = LogicEMCK := by
     rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, C, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomK
 
-/-- The axiom `N` is redundant over `T` and `B`. -/
-theorem LogicETB_eq_LogicENTB : (@LogicETB α) = LogicENTB := by
-  apply Set.Subset.antisymm
-  · exact Hilbert.subset_of_subset_axioms (by grind)
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((rfl | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
-      first | exact Logic.axiomN | exact Logic.axiomT | exact Logic.axiomB
-
 /-- The axiom scheme `K` is redundant over `M` and `C`. -/
 theorem LogicEMC_eq_LogicEMCK : (@LogicEMC α) = LogicEMCK := by
   apply Set.Subset.antisymm
