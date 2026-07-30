@@ -23,6 +23,17 @@ lemma frame_2_79.not_isSerial : ¬frame_2_79.IsSerial := fun hS => by
   have := hS.serial {1} (show (1 : Fin 2) ∈ _ by simp [Frame.box])
   simp [Frame.dia, Frame.box] at this
 
+instance : frame_2_79.IsRegular where
+  regular X Y := by
+    intro x hx
+    simp only [Frame.box, frame_2_79, Set.mem_setOf_eq] at hx ⊢
+    match x with
+    | 0 =>
+      rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+        rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
+        simp_all
+    | 1 => trivial
+
 instance : frame_2_79.IsEuclidean where
   eucl X := by
     have hbox0 : frame_2_79.box ({0} : Set (Fin 2)) = Set.univ := by

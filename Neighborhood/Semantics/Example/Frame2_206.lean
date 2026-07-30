@@ -43,6 +43,26 @@ instance : frame_2_206.ContainsUnit := ⟨by
   ext w
   fin_cases w <;> simp [Frame.box, frame_2_206]⟩
 
+instance : frame_2_206.IsEuclidean where
+  eucl X := by
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl
+    · have hdia : frame_2_206.dia ({0, 1} : Set (Fin 2)) = Set.univ := by
+        ext y; fin_cases y <;> simp [Frame.dia, Frame.box, frame_2_206, Set.ext_iff]
+      have hbox : frame_2_206.box (Set.univ : Set (Fin 2)) = Set.univ := by
+        ext y; fin_cases y <;> simp [Frame.box, frame_2_206, Set.ext_iff]
+      rw [hdia, hbox]
+    · have hdia : frame_2_206.dia ({0} : Set (Fin 2)) = ∅ := by
+        ext y; fin_cases y <;> simp [Frame.dia, Frame.box, frame_2_206, Set.ext_iff]
+      rw [hdia]; exact Set.empty_subset _
+    · have hdia : frame_2_206.dia ({1} : Set (Fin 2)) = {1} := by
+        ext y; fin_cases y <;> simp [Frame.dia, Frame.box, frame_2_206, Set.ext_iff]
+      have hbox : frame_2_206.box ({1} : Set (Fin 2)) = Set.univ := by
+        ext y; fin_cases y <;> simp [Frame.box, frame_2_206, Set.ext_iff]
+      rw [hdia, hbox]; exact Set.subset_univ _
+    · have hdia : frame_2_206.dia (∅ : Set (Fin 2)) = ∅ := by
+        ext y; fin_cases y <;> simp [Frame.dia, Frame.box, frame_2_206, Set.ext_iff]
+      rw [hdia]; exact Set.empty_subset _
+
 instance : frame_2_206.IsTransitive where
   trans X := by
     intro w hw

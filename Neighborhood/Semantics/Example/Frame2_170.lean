@@ -50,6 +50,25 @@ instance : frame_2_170.IsMonotonic where
       rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
       simp_all [Set.ext_iff]
 
+instance : frame_2_170.IsRegular where
+  regular X Y := by
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
+        intro w hw <;>
+          simp_all [Frame.box, frame_2_170, Set.ext_iff]
+
+instance : frame_2_170.IsSerial where
+  serial X := by
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      intro w hw <;>
+        simp_all [Frame.box, Frame.dia, frame_2_170, Set.ext_iff]
+
+instance : frame_2_170.IsEuclidean where
+  eucl X := by
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      intro w hw <;>
+        simp_all [Frame.box, Frame.dia, frame_2_170, Set.ext_iff]
+
 instance : frame_2_170.IsTransitive where
   trans X := by
     intro x hx

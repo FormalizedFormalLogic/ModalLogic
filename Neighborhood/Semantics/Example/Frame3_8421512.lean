@@ -38,6 +38,44 @@ lemma frame_3_8421512.box_singleton_zero :
   ext w
   fin_cases w <;> simp [Frame.box, frame_3_8421512, Set.ext_iff] <;> decide
 
+lemma frame_3_8421512.box_mono {X Y : Set (Fin 3)} (h : X ⊆ Y) :
+    frame_3_8421512.box X ⊆ frame_3_8421512.box Y := by
+  intro w hw
+  change X ∈ frame_3_8421512.𝒩 w at hw
+  change Y ∈ frame_3_8421512.𝒩 w
+  fin_cases w <;>
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hw ⊢
+  · rcases hw with rfl | rfl
+    · have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+      have h1 : (1 : Fin 3) ∈ Y := h (by simp)
+      by_cases h2 : (2 : Fin 3) ∈ Y
+      · right; ext i; fin_cases i <;> simp_all
+      · left; ext i; fin_cases i <;> simp_all
+    · right; ext i
+      have : i ∈ (Set.univ : Set (Fin 3)) := trivial
+      have := h this
+      fin_cases i <;> simp_all
+  · rw [hw] at h
+    exact Set.univ_subset_iff.mp h
+  · rw [hw] at h
+    exact Set.univ_subset_iff.mp h
+
+instance : frame_3_8421512.IsMonotonic where
+  mono _ _ := Set.subset_inter
+    (frame_3_8421512.box_mono Set.inter_subset_left)
+    (frame_3_8421512.box_mono Set.inter_subset_right)
+
+instance : frame_3_8421512.IsRegular where
+  regular X Y w hw := by
+    have hw' : X ∈ frame_3_8421512.𝒩 w ∧ Y ∈ frame_3_8421512.𝒩 w := hw
+    change X ∩ Y ∈ frame_3_8421512.𝒩 w
+    fin_cases w <;>
+      simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hw' ⊢
+    · obtain ⟨hX, hY⟩ := hw'
+      rcases hX with rfl | rfl <;> rcases hY with rfl | rfl <;> simp
+    · obtain ⟨rfl, rfl⟩ := hw'; simp
+    · obtain ⟨rfl, rfl⟩ := hw'; simp
+
 lemma frame_3_8421512.not_isTransitive :
     ¬frame_3_8421512.IsTransitive := by
   intro hC
