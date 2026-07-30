@@ -24,7 +24,8 @@ namespace Logic
 
 variable {L : Logic}
 
-@[simp, grind .] lemma not_mem_falsum [L.Consistent] : (⊥ : Formula) ∉ L := Consistent.not_mem_falsum
+@[simp, grind .]
+lemma not_mem_falsum [L.Consistent] : (⊥ : Formula) ∉ L := Consistent.not_mem_falsum
 
 end Logic
 

@@ -86,7 +86,8 @@ lemma mdp₄! {ζ ζ'} (hζ' : φ 🡒 ψ 🡒 χ 🡒 ξ 🡒 ζ 🡒 ζ' ∈ L
 
 @[inherit_doc] infixl:90 "⨀₄" => mdp₄!
 
-@[grind <=] lemma C!_trans (hψ : φ 🡒 ψ ∈ L) (hχ : ψ 🡒 χ ∈ L) : φ 🡒 χ ∈ L := mdp₁! (C!_of_conseq! hχ) hψ
+@[grind <=]
+lemma C!_trans (hψ : φ 🡒 ψ ∈ L) (hχ : ψ 🡒 χ ∈ L) : φ 🡒 χ ∈ L := mdp₁! (C!_of_conseq! hχ) hψ
 
 lemma C!_swap (h : φ 🡒 ψ 🡒 χ ∈ L) : ψ 🡒 φ 🡒 χ ∈ L := C!_trans implyK! (implyS! ⨀ h)
 
@@ -133,7 +134,9 @@ lemma neg_mdp (hφ : ∼φ ∈ L) (h : φ ∈ L) : (⊥ : Formula) ∈ L := hφ 
 
 lemma explode! (h₁ : φ ∈ L) (h₂ : ∼φ ∈ L) : ψ ∈ L := of_O! <| neg_mdp h₂ h₁
 
-lemma C_of_N (h : ∼φ ∈ L) : φ 🡒 ψ ∈ L := C!_trans h efq!
+@[simp] lemma CNC! : ∼φ 🡒 φ 🡒 ψ ∈ L := C!_swap CCC! ⨀ efq!
+
+lemma C_of_N (h : ∼φ ∈ L) : φ 🡒 ψ ∈ L := CNC! ⨀ h
 
 lemma CN!_of_CN!_left (h : ∼φ 🡒 ψ ∈ L) : ∼ψ 🡒 φ ∈ L := C!_trans (contra! h) dne!
 
