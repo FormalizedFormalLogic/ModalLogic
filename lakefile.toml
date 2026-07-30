@@ -10,6 +10,9 @@ name = "ModalLogicArchive"
 [[lean_lib]]
 name = "Fin74"
 
+[[lean_lib]]
+name = "ModalNeighborhood"
+
 [[require]]
 name = "Foundation"
 git = "https://github.com/FormalizedFormalLogic/Foundation"
