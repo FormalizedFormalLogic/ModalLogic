@@ -33,4 +33,30 @@ instance : frame_1_0.IsSerial where
 instance : frame_1_0.IsReflexive :=
   ⟨fun X => by simp [Frame.box, frame_1_0]⟩
 
+lemma frame_1_0.not_isSymmetric : ¬frame_1_0.IsSymmetric := fun hS => by
+  have h := hS.symm ({0} : Set (Fin 1))
+  have hdia : frame_1_0.dia ({0} : Set (Fin 1)) = Set.univ := by
+    ext x; simp [Frame.dia, Frame.box, frame_1_0]
+  have hbox : frame_1_0.box (Set.univ : Set (Fin 1)) = ∅ := by
+    ext x; simp [Frame.box, frame_1_0]
+  rw [hdia, hbox] at h
+  exact absurd (h (show (0 : Fin 1) ∈ ({0} : Set (Fin 1)) by simp)) (by simp)
+
+lemma frame_1_0.not_valid_axiomB :
+    ¬frame_1_0 ⊧ (Axioms.B #0 : Formula ℕ) :=
+  fun h => frame_1_0.not_isSymmetric (isSymmetric_of_valid_axiomB h)
+
+lemma frame_1_0.not_isEuclidean : ¬frame_1_0.IsEuclidean := fun hE => by
+  have h := hE.eucl ({0} : Set (Fin 1))
+  have hdia : frame_1_0.dia ({0} : Set (Fin 1)) = Set.univ := by
+    ext x; simp [Frame.dia, Frame.box, frame_1_0]
+  have hbox : frame_1_0.box (Set.univ : Set (Fin 1)) = ∅ := by
+    ext x; simp [Frame.box, frame_1_0]
+  rw [hdia, hbox] at h
+  exact absurd (show Set.univ ⊆ (∅ : Set (Fin 1)) from h) (by simp)
+
+lemma frame_1_0.not_valid_axiomFive :
+    ¬frame_1_0 ⊧ (Axioms.Five #0 : Formula ℕ) :=
+  fun h => frame_1_0.not_isEuclidean (isEuclidean_of_valid_axiomFive h)
+
 end
