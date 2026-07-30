@@ -177,7 +177,7 @@ namespace Canonicity
 
 variable {𝓒 : Canonicity 𝓢}
 
-protected def isGeachean (g) [Entailment.HasAxiomGeach g 𝓢]
+@[reducible] protected def isGeachean (g) [Entailment.HasAxiomGeach g 𝓢]
   (h : ∀ X : Proofset 𝓢, X.IsNonproofset → 𝓒.toModel.dia^[g.i] (𝓒.toModel.box^[g.m] X) ⊆ 𝓒.toModel.box^[g.j] (𝓒.toModel.dia^[g.n] X))
   : 𝓒.toModel.IsGeachConvergent g := by
   constructor;
@@ -192,37 +192,37 @@ protected def isGeachean (g) [Entailment.HasAxiomGeach g 𝓢]
     apply MaximalConsistentSet.mdp_provable ?_ hX;
     simp;
 
-def isReflexive [Entailment.HasAxiomT 𝓢]
+@[reducible] def isReflexive [Entailment.HasAxiomT 𝓢]
   (h : ∀ X : Proofset 𝓢, X.IsNonproofset → 𝓒.toModel.box X ⊆ X) : 𝓒.toModel.IsReflexive := by
   have := Canonicity.isGeachean ⟨0, 0, 1, 0⟩ h;
   infer_instance
 
-def isTransitive [Entailment.HasAxiomFour 𝓢]
+@[reducible] def isTransitive [Entailment.HasAxiomFour 𝓢]
   (h : ∀ X : Proofset 𝓢, X.IsNonproofset → 𝓒.toModel.box X ⊆ 𝓒.toModel.box^[2] X) : 𝓒.toModel.IsTransitive := by
   have := Canonicity.isGeachean ⟨0, 2, 1, 0⟩ h;
   infer_instance
 
-def isSerial [Entailment.HasAxiomD 𝓢]
+@[reducible] def isSerial [Entailment.HasAxiomD 𝓢]
   (h : ∀ X : Proofset 𝓢, X.IsNonproofset → 𝓒.toModel.box X ⊆ 𝓒.toModel.dia X) : 𝓒.toModel.IsSerial := by
   have := Canonicity.isGeachean ⟨0, 0, 1, 1⟩ h;
   infer_instance
 
-def isEuclidean [Entailment.HasAxiomFive 𝓢]
+@[reducible] def isEuclidean [Entailment.HasAxiomFive 𝓢]
   (h : ∀ X : Proofset 𝓢, X.IsNonproofset → 𝓒.toModel.dia X ⊆ 𝓒.toModel.box (𝓒.toModel.dia X)) : 𝓒.toModel.IsEuclidean := by
   have := Canonicity.isGeachean ⟨1, 1, 0, 1⟩ h;
   infer_instance
 
-def isEuclidean' [Entailment.HasAxiomFive 𝓢]
+@[reducible] def isEuclidean' [Entailment.HasAxiomFive 𝓢]
   (h : ∀ X : Proofset 𝓢, X.IsNonproofset → 𝓒.toModel.dia (𝓒.toModel.box X) ⊆ (𝓒.toModel.box X)) : 𝓒.toModel.IsEuclidean := by
   apply Frame.IsEuclidean.of_dual;
   apply Canonicity.isGeachean ⟨1, 1, 1, 0⟩ h |>.gconv;
 
-def isSymmetric [Entailment.HasAxiomB 𝓢]
+@[reducible] def isSymmetric [Entailment.HasAxiomB 𝓢]
   (h : ∀ X : Proofset 𝓢, X.IsNonproofset → X ⊆ 𝓒.toModel.box (𝓒.toModel.dia X)) : 𝓒.toModel.IsSymmetric := by
   have := Canonicity.isGeachean ⟨0, 1, 0, 1⟩ h;
   infer_instance
 
-def isSymmetric' [Entailment.HasAxiomB 𝓢]
+@[reducible] def isSymmetric' [Entailment.HasAxiomB 𝓢]
   (h : ∀ X : Proofset 𝓢, X.IsNonproofset → 𝓒.toModel.dia (𝓒.toModel.box X) ⊆ X) : 𝓒.toModel.IsSymmetric := by
   apply Frame.IsSymmetric.of_dual;
   apply Canonicity.isGeachean ⟨1, 0, 1, 0⟩ h |>.gconv;
@@ -256,7 +256,7 @@ namespace relativeBasicCanonicity
 
 variable {P} {X : Proofset 𝓢} {A : (relativeBasicCanonicity 𝓢 P).toModel.World}
 
-protected def isSerial [Entailment.HasAxiomD 𝓢]
+@[reducible] protected def isSerial [Entailment.HasAxiomD 𝓢]
   (hP : ∀ X : Proofset 𝓢, X.IsNonproofset → ∀ A, X ∈ P A → A ∈ (relativeBasicCanonicity 𝓢 P).toModel.dia X)
   : (relativeBasicCanonicity 𝓢 P).toModel.IsSerial := by
   apply Canonicity.isSerial;
@@ -267,7 +267,7 @@ protected def isSerial [Entailment.HasAxiomD 𝓢]
     . exfalso; exact basicCanonicity.not_isNonproofset_of_mem_box h $ hX;
     . assumption;
 
-protected def isReflexive [Entailment.HasAxiomT 𝓢]
+@[reducible] protected def isReflexive [Entailment.HasAxiomT 𝓢]
   (hP : ∀ X : Proofset 𝓢, X.IsNonproofset → ∀ A, X ∈ P A → A ∈ X)
   : (relativeBasicCanonicity 𝓢 P).toModel.IsReflexive := by
   apply Canonicity.isReflexive;
@@ -278,7 +278,7 @@ protected def isReflexive [Entailment.HasAxiomT 𝓢]
     . exfalso; exact basicCanonicity.not_isNonproofset_of_mem_box h $ hX;
     . assumption;
 
-protected def isTransitive [Entailment.HasAxiomFour 𝓢]
+@[reducible] protected def isTransitive [Entailment.HasAxiomFour 𝓢]
   (hP : ∀ X : Proofset 𝓢, X.IsNonproofset → ∀ A, X ∈ P A → A ∈ (relativeBasicCanonicity 𝓢 P).toModel.box^[2] X)
   : (relativeBasicCanonicity 𝓢 P).toModel.IsTransitive := by
   apply Canonicity.isTransitive;
@@ -289,7 +289,7 @@ protected def isTransitive [Entailment.HasAxiomFour 𝓢]
     . exfalso; exact basicCanonicity.not_isNonproofset_of_mem_box h $ hX;
     . assumption;
 
-protected def isEuclidean [Entailment.HasAxiomFive 𝓢]
+@[reducible] protected def isEuclidean [Entailment.HasAxiomFive 𝓢]
   (hP : ∀ X : Proofset 𝓢, X.IsNonproofset → ∀ A, Xᶜ ∉ P A → A ∈ (relativeBasicCanonicity 𝓢 P).toModel.box ((relativeBasicCanonicity 𝓢 P).toModel.dia X))
   : (relativeBasicCanonicity 𝓢 P).toModel.IsEuclidean := by
   apply Canonicity.isEuclidean;
