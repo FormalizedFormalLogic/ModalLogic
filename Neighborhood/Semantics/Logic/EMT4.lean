@@ -4,61 +4,73 @@ public import Neighborhood.Semantics.Logic.EMT
 public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Filtration
 
+/-!
+# The neighborhood logic `LogicEMT4`
+
+Soundness, consistency and completeness of `LogicEMT4`, the classical modal logic axiomatised by
+the monotonicity axiom `M`, the reflexivity axiom `T` and the transitivity axiom `Four`, with
+respect to the neighborhood frames that are monotonic, reflexive and transitive, together with its
+finite frame property. Also proves the strict inclusion of `LogicEMT` in `LogicEMT4`.
+-/
+
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
+/-- `LogicEMT4` is sound with respect to every monotonic, reflexive and transitive neighborhood
+frame. -/
+theorem LogicEMT4.sound (h : A ∈ LogicEMT4) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+    [F.IsReflexive] [F.IsTransitive] : F ⊧ A :=
+  Hilbert.sound (by
+    rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
+    · exact valid_axiomM_of_isMonotonic
+    · exact valid_axiomT_of_isReflexive
+    · exact valid_axiomFour_of_isTransitive) h
 
-namespace Neighborhood
+instance : (@LogicEMT4 α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole) (by
+    rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
+    · exact valid_axiomM_of_isMonotonic
+    · exact valid_axiomT_of_isReflexive
+    · exact valid_axiomFour_of_isTransitive)
 
-protected class Frame.IsEMT4 (F : Frame) extends F.IsMonotonic, F.IsReflexive, F.IsTransitive where
-protected abbrev FrameClass.EMT4 : FrameClass := { F | F.IsEMT4 }
+variable [DecidableEq α]
 
-protected class Frame.IsFiniteEMT4 (F : Frame) extends F.IsEMT4, F.IsFinite
-protected abbrev FrameClass.finite_EMT4 : FrameClass := { F | F.IsFiniteEMT4 }
+/-- `LogicEMT4` is complete with respect to all monotonic, reflexive and transitive neighborhood
+frames. -/
+theorem LogicEMT4.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsReflexive →
+      F.IsTransitive → F ⊧ A) : A ∈ @LogicEMT4 α :=
+  (supplementedBasicCanonicity LogicEMT4).mem_of_valid
+    (h (supplementedBasicCanonicity LogicEMT4).toModel.toFrame inferInstance inferInstance
+      inferInstance (supplementedBasicCanonicity LogicEMT4).toModel.Val)
 
-end Neighborhood
+/-- `LogicEMT4` is complete with respect to the finite monotonic, reflexive and transitive
+neighborhood frames (its finite frame property). -/
+theorem LogicEMT4.finite_complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsFinite → F.IsMonotonic → F.IsReflexive →
+      F.IsTransitive → F ⊧ A) : A ∈ @LogicEMT4 α :=
+  LogicEMT4.complete <| by
+    intro κ _ F hMono hRefl hTrans V x
+    let M : Model κ α := ⟨F, V⟩
+    haveI : Finite (FilterEqvQuotient M A.subformulas) := FilterEqvQuotient.finite (by simp)
+    apply (supplementedTransitiveFiltration M A.subformulas).filtration_satisfies _
+      (by grind) |>.mp
+    exact h (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame ⟨‹_›⟩
+      supplementedTransitiveFiltration.isMonotonic supplementedTransitiveFiltration.isReflexive
+      supplementedTransitiveFiltration.isTransitive
+      (supplementedTransitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
+/-! ### Strict inclusion of `LogicEMT` -/
 
-namespace EMT4
+theorem LogicEMT_ssubset_LogicEMT4 : @LogicEMT ℕ ⊂ LogicEMT4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
+  · intro h
+    have hFour : Axioms.Four (.atom 0) ∈ (@LogicEMT ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    exact Frame.trivial_nontransitive.not_valid_axiomFour
+      (LogicEMT.sound hFour Frame.trivial_nontransitive)
 
-instance Neighborhood.sound : Sound Modal.EMT4 FrameClass.EMT4 := instSound_of_validates_axioms $ by
-  constructor;
-  rintro _ (rfl | rfl | rfl) F (rfl | rfl) <;> simp;
-
-instance consistent : Entailment.Consistent Modal.EMT4 := consistent_of_sound_frameclass FrameClass.EMT4 $ by
-  use Frame.simple_blackhole;
-  apply Set.mem_setOf_eq.mpr;
-  constructor;
-
-instance Neighborhood.complete : Complete Modal.EMT4 FrameClass.EMT4 := (supplementedBasicCanonicity Modal.EMT4).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  constructor;
-
-/-- FFP of `Modal.EMT4` -/
-instance Neighborhood.finite_complete : Complete Modal.EMT4 FrameClass.finite_EMT4 := ⟨by
-  intro φ hφ;
-  apply Complete.complete (𝓜 := FrameClass.EMT4);
-  intro F F_trans V x;
-  replace F_trans := Set.mem_setOf_eq.mp F_trans;
-
-  let M : Model := ⟨F, V⟩;
-  apply supplementedTransitiveFiltration M φ.subformulas |>.filtration_satisfies _ (by grind) |>.mp;
-  apply hφ;
-  apply Set.mem_setOf_eq.mpr;
-  exact {
-    world_finite := by apply FilterEqvQuotient.finite $ by simp;
-    trans := by apply supplementedTransitiveFiltration.isTransitive.trans;
-    mono := by apply supplementedTransitiveFiltration.isMonotonic.mono;
-    refl := by apply supplementedTransitiveFiltration.isReflexive.refl;
-  };
-⟩
-
-end EMT4
-
-end LO.Modal
 end
