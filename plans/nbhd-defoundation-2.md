@@ -151,10 +151,17 @@ Per logic `X` (template: `Logic/E.lean`, written first):
   `Canonicity.mem_of_valid` after equipping the canonical frame with the conditions.
 - Finite frame property (the 8 filtration logics): plain theorems quantifying over
   `[F.IsFinite]` frames.
-- Inclusions: `theorem LogicE_ssubset_LogicEM : (LogicE (α := ℕ)) ⊂ LogicEM` — `⊆` via
+- Inclusions: `theorem LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM` — `⊆` via
   `Hilbert.subset_of_subset_axioms`-style reasoning, `≠` via an explicit countermodel
   (`Frame (Fin n)` with a concrete `𝒩`) and soundness. Same for every `⪱` fact in the old
   files; `Incomparable` in `ED_EP` becomes two non-inclusion theorems.
+- **Placement (user instruction 2026-07-30, recorded in `contribute/style.md`)**: a
+  strict-inclusion lemma lives in the *stronger* logic's module — `LogicE_ssubset_LogicEM`
+  is in `Logic/EM.lean`, not `Logic/E.lean`. Old files stated `X ⪱ Y` in scattered places;
+  redistribute by the larger side. Old `EM ⪱ EMCK` (EMCK has no module) stays in `EMK.lean`
+  next to the coincidence `LogicEMK_eq_LogicEMCK`.
+- **Annotation style (user instruction 2026-07-30, ditto)**: `@LogicE α` / `@LogicE ℕ`,
+  never `LogicE (α := α)`; and no annotation at all when the type is inferable.
 
 Countermodels change shape from `⟨World := Fin 3, 𝒩, Val⟩` to
 `M : Model (Fin 3) ℕ := ⟨⟨𝒩⟩, Val⟩`.

@@ -138,7 +138,9 @@ instance [L.HasAxiomFour] : (supplementedBasicCanonicity L).toModel.IsTransitive
 /-- The supplementation of `relativeBasicCanonicity L P`, augmented with the monotonicity axiom
 `M` and a compatibility condition `hP` ensuring that every extra neighborhood `Y` witnessing a
 non-proofset `X` at `Ω` (with `Y ⊆ X`) forces `□A ∈ Ω` whenever `Y ⊆ proofset L A`. -/
-def supplementedRelativeCanonicity (L : Logic α) (P : MaximalConsistentSet L → Set (Proofset L))
+def supplementedRelativeCanonicity (L : Logic α)
+    [L.Cl] [L.HasRE] [L.HasAxiomM] [L.Consistent]
+    (P : MaximalConsistentSet L → Set (Proofset L))
     (hP : ∀ Y : Proofset L, Y.IsNonproofset → ∀ Ω, Y ∈ P Ω → ∀ A, Y ⊆ proofset L A → □A ∈ Ω) :
     Canonicity L where
   𝒩 := (relativeBasicCanonicity L P).toModel.supplementation.𝒩
