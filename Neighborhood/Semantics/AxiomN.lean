@@ -1,67 +1,43 @@
 module
 
-public import Neighborhood.Semantics.Completeness
-public import Foundation.Modal.Entailment.EN
+public import Neighborhood.Axioms
+public import Neighborhood.Semantics.Basic
+
+/-!
+# Axiom `N` on neighborhood frames
+
+The frame condition corresponding to the axiom `N := □⊤`: the whole carrier is a neighborhood of
+every world. This is exactly the requirement that `N` be valid on the frame.
+-/
 
 @[expose] public section
 
-namespace LO.Modal.Neighborhood
+variable {κ : Type u} [Nonempty κ] {α : Type v} {F : Frame κ}
 
-open Formula.Neighborhood
-
-variable {F : Frame}
-
-class Frame.ContainsUnit (F : Frame) : Prop where
+/-- A frame contains its unit: the whole carrier is a neighborhood of every world. -/
+class Frame.ContainsUnit (F : Frame κ) : Prop where
   contains_unit : F.box Set.univ = Set.univ
 
-lemma Frame.contains_unit [Frame.ContainsUnit F] : F.box Set.univ = Set.univ := Frame.ContainsUnit.contains_unit
+lemma Frame.contains_unit [F.ContainsUnit] : F.box Set.univ = Set.univ :=
+  Frame.ContainsUnit.contains_unit
 
 @[simp]
-lemma Frame.univ_mem [Frame.ContainsUnit F] (x) : Set.univ ∈ F.𝒩 x := by
-  have : x ∈ F.box Set.univ := by rw [F.contains_unit]; trivial;
-  simpa [Frame.box] using this;
+lemma Frame.univ_mem [F.ContainsUnit] (x : F.World) : Set.univ ∈ F.𝒩 x := by
+  have : x ∈ F.box Set.univ := by rw [F.contains_unit]; trivial
+  simpa [Frame.box] using this
 
-instance : Frame.simple_blackhole.ContainsUnit := ⟨by ext x; simp⟩
+instance : (Frame.simple_blackhole).ContainsUnit := ⟨by
+  ext x
+  simp [Frame.box]⟩
 
-@[simp]
-lemma valid_axiomN_of_ContainsUnit [F.ContainsUnit] : F ⊧ Axioms.N := by
-  intro V x;
-  simp [Satisfies, F.contains_unit];
+@[simp, grind]
+theorem valid_axiomN_of_containsUnit [F.ContainsUnit] : F ⊧ (Axioms.N : Formula α) := by
+  intro V x
+  simp [Forces, F.contains_unit]
 
-lemma containsUnit_of_valid_axiomN (h : F ⊧ Axioms.N) : F.ContainsUnit := by
-  constructor;
-  ext x;
-  simpa [Satisfies] using @h (λ _ => Set.univ) x;
+theorem containsUnit_of_valid_axiomN (h : F ⊧ (Axioms.N : Formula ℕ)) : F.ContainsUnit := by
+  constructor
+  ext x
+  simpa [Forces] using h (fun _ => Set.univ) x
 
-section
-
-variable [Entailment S (Formula ℕ)]
-variable {𝓢 : S} [Entailment.Consistent 𝓢] [Entailment.E 𝓢]
-
-open Entailment
-open MaximalConsistentSet
-open proofset
-
-instance [Entailment.HasAxiomN 𝓢] : (basicCanonicity 𝓢).toModel.ContainsUnit := by
-  constructor;
-  ext x;
-  constructor;
-  . intro _; trivial;
-  . intro _;
-    show ∃ φ, □φ ∈ x.1 ∧ Set.univ = proofset 𝓢 φ;
-    exact ⟨⊤, MaximalConsistentSet.mem_of_prove (by simp), by simp [proofset.eq_top]⟩;
-
-instance [Entailment.HasAxiomN 𝓢] : (relativeBasicCanonicity 𝓢 P).toModel.ContainsUnit := by
-  constructor;
-  ext x;
-  suffices Set.univ ∈ (relativeBasicCanonicity 𝓢 P).toModel.𝒩 x by simpa;
-  left;
-  use ⊤;
-  refine ⟨MaximalConsistentSet.mem_of_prove (by simp), ?_⟩;
-  simp only [proofset.eq_top]; rfl;
-
-end
-
-
-end LO.Modal.Neighborhood
 end
