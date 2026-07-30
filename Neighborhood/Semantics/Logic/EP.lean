@@ -1,70 +1,69 @@
 module
 
+public import Neighborhood.Semantics.Hilbert
+public import Neighborhood.Semantics.AxiomP
+public import Neighborhood.Semantics.AxiomGeach
+public import Neighborhood.Hilbert.Logics
 public import Neighborhood.Semantics.Logic.E
-public import Foundation.Vorspiel.Set.Fin
+
+/-!
+# The neighborhood logic `LogicEP`
+
+Soundness and consistency of `LogicEP`, the classical modal logic axiomatised by the
+possibility axiom `P := ∼□⊥`, with respect to the neighborhood frames in which no world has the
+empty set as one of its neighborhoods (`Frame.NotContainsEmpty`). Also its strict inclusion in
+`LogicE`, and that `D` is not among its theorems.
+-/
 
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-- `LogicEP` is sound with respect to every frame in which no world has the empty set as one
+of its neighborhoods. -/
+theorem LogicEP.sound (h : A ∈ LogicEP) {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
+    F ⊧ A :=
+  Hilbert.sound
+    (fun B hB => by
+      simp only [Set.mem_singleton_iff] at hB; subst hB
+      exact valid_axiomP_of_notContainsEmpty) h
 
-namespace Neighborhood
+instance : (@LogicEP α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole)
+    (fun B hB => by
+      simp only [Set.mem_singleton_iff] at hB; subst hB
+      exact valid_axiomP_of_notContainsEmpty)
 
-instance : Frame.simple_blackhole.NotContainsEmpty := by
-  constructor;
-  simp only [Set.mem_singleton_iff, forall_const];
-  tauto_set;
+/-! ### Strict inclusion in `LogicE`, and unprovability of `D` -/
 
+theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
+  · intro h
+    have hP : (Axioms.P : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm rfl)
+    have := notContainsEmpty_of_valid_axiomP
+      (F := (⟨fun _ => {∅}⟩ : Frame (Fin 1))) (LogicE.sound hP _)
+    simpa using this.not_contains_empty (x := 0)
 
-@[reducible] protected alias Frame.IsEP := Frame.NotContainsEmpty
-protected abbrev FrameClass.EP : FrameClass := { F | F.IsEP }
+/-- A two-world frame with no empty neighborhood that is not serial: witnesses that `D` is not a
+theorem of `LogicEP`. -/
+abbrev Frame.trivial_nonserial : Frame (Fin 2) :=
+  ⟨fun w => match w with | 0 => {{0}} | 1 => {{0}, {1}, {0, 1}}⟩
 
+instance : Frame.trivial_nonserial.NotContainsEmpty :=
+  ⟨fun x => by match x with | 0 => simp | 1 => simp; tauto_set⟩
 
-end Neighborhood
+lemma Frame.trivial_nonserial.not_isSerial : ¬Frame.trivial_nonserial.IsSerial := by
+  intro hS
+  have h1 : (1 : Fin 2) ∈ Frame.trivial_nonserial.box {1} := by simp [Frame.box]
+  have h2 : (1 : Fin 2) ∉ Frame.trivial_nonserial.dia {1} := by simp [Frame.dia, Frame.box]
+  exact h2 (hS.serial {1} h1)
 
+theorem LogicEP.not_mem_axiomD {a : ℕ} : Axioms.D (.atom a) ∉ @LogicEP ℕ :=
+  Hilbert.not_mem_of_not_valid (F := Frame.trivial_nonserial)
+    (fun B hB => by
+      simp only [Set.mem_singleton_iff] at hB; subst hB
+      exact valid_axiomP_of_notContainsEmpty)
+    (fun h => Frame.trivial_nonserial.not_isSerial (isSerial_of_valid_axiomD h))
 
-namespace EP
-
-instance Neighborhood.sound : Sound Modal.EP FrameClass.EP := instSound_of_validates_axioms $ by
-  simp only [Semantics.ModelsSet.singleton_iff];
-  intro F hF;
-  replace hF := Set.mem_setOf_eq.mp hF;
-  simp;
-
-instance consistent : Entailment.Consistent Modal.EP := consistent_of_sound_frameclass FrameClass.EP $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  infer_instance;
-
-@[simp]
-lemma unprovable_AxiomD : Modal.EP ⊬ Axioms.D (.atom a) := by
-  apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.EP);
-  apply not_validOnFrameClass_of_exists_frame;
-  use ⟨Fin 2, λ w => match w with | 0 => {{0}} | 1 => {{0},{1},{0,1}}⟩
-  constructor;
-  . constructor;
-    intro x;
-    match x with | 0 => simp; | 1 => simp; tauto_set;
-  . apply not_imp_not.mpr isSerial_of_valid_axiomD;
-    by_contra! hC;
-    have := @hC |>.serial {1} 1;
-    simp [Frame.box, Frame.dia] at this;
-
-end EP
-
-instance : Modal.EP ⪱ Modal.END := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_provable_axioms;
-    rintro _ rfl;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use Axioms.D (.atom 0);
-    constructor;
-    . simp;
-    . exact EP.unprovable_AxiomD;
-
-end LO.Modal
 end
