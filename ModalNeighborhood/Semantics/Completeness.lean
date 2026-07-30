@@ -113,6 +113,7 @@ lemma iff_subset : 𝓢 ⊢ φ 🡘 ψ ↔ ‖φ‖ = ‖ψ‖ := by
     replace h₂ := imp_subset.mpr h₂;
     cl_prover [h₁, h₂];
 
+omit [Entailment.Cl 𝓢] in
 lemma eq_boxed_of_eq [Entailment.E 𝓢] : ‖φ‖ = ‖ψ‖ → ‖□φ‖ = ‖□ψ‖ := by
   intro h;
   apply iff_subset.mp;
@@ -120,6 +121,7 @@ lemma eq_boxed_of_eq [Entailment.E 𝓢] : ‖φ‖ = ‖ψ‖ → ‖□φ‖ =
   apply iff_subset.mpr;
   assumption;
 
+omit [Entailment.Cl 𝓢] in
 @[grind]
 lemma box_subset_of_subset [Entailment.EM 𝓢] : ‖φ‖ ⊆ ‖ψ‖ → ‖□φ‖ ⊆ ‖□ψ‖ := by
   suffices 𝓢 ⊢ φ 🡒 ψ → 𝓢 ⊢ □φ 🡒 □ψ by simpa [imp_subset];
