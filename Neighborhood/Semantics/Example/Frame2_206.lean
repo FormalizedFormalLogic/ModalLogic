@@ -43,4 +43,14 @@ instance : frame_2_206.ContainsUnit := ⟨by
   ext w
   fin_cases w <;> simp [Frame.box, frame_2_206]⟩
 
+instance : frame_2_206.IsTransitive where
+  trans X := by
+    intro w hw
+    simp only [Function.iterate_succ, Function.iterate_zero, Function.comp_apply, id_eq]
+    fin_cases w <;>
+      simp only [Frame.box, frame_2_206, Set.mem_setOf_eq, Set.mem_insert_iff,
+        Set.mem_singleton_iff] at hw ⊢ <;>
+      rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      simp_all [Set.ext_iff]
+
 end
