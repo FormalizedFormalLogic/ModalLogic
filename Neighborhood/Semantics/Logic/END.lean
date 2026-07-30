@@ -3,6 +3,8 @@ module
 public import Neighborhood.Semantics.AxiomN
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.EP
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.SimpleWhitehole
 
 /-!
 # The neighborhood logic `LogicEND`
@@ -41,10 +43,6 @@ theorem LogicEND.complete
   (basicCanonicity LogicEND).mem_of_valid
     (h (basicCanonicity LogicEND).toModel.toFrame
       (basicCanonicity LogicEND).toModel.Val)
-
-
-instance : Frame.simple_whitehole.IsSerial where
-  serial X x hx := by simp [Frame.box, Frame.simple_whitehole] at hx
 
 theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by
   constructor

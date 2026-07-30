@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.AxiomN
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.SimpleWhitehole
 
 /-!
 # The neighborhood logic `LogicEN`

@@ -1,6 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
+import Neighborhood.Semantics.Example.SimpleBlackhole
 
 /-!
 # The neighborhood logic `LogicEC`

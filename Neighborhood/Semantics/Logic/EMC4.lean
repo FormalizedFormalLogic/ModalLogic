@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.E4
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.TrivialNontransitive
 
 /-!
 # The neighborhood logic `LogicEMC4`

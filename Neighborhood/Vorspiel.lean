@@ -100,4 +100,8 @@ lemma subset_mem_chain_of_finite (c : Set (Set α)) (hc : Set.Nonempty c)
 
 end Set
 
+@[simp]
+lemma Set.inter_eq_univ {s t : Set α} : s ∩ t = Set.univ ↔ s = Set.univ ∧ t = Set.univ := by
+  simpa using Set.sInter_eq_univ (S := ({s, t} : Set (Set α)))
+
 end

@@ -1,6 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Logic.ED
+import Neighborhood.Semantics.Example.SimpleBlackhole
 
 /-!
 # The neighborhood logic `LogicET`
@@ -18,12 +19,6 @@ variable {α : Type u} {A : Formula α}
 theorem LogicET.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] :
     A ∈ LogicET → F ⊧ A :=
   Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomT_of_isReflexive)
-
-instance : Frame.simple_blackhole.IsReflexive where
-  refl X x hx := by
-    simp only [Frame.box, Frame.simple_blackhole, Set.mem_singleton_iff, Set.mem_setOf_eq] at hx
-    subst hx
-    trivial
 
 theorem LogicET.consistent : (@LogicET α).IsConsistent := by
   by_contra! hC

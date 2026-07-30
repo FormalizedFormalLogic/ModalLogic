@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.ENT4
 public import Neighborhood.Semantics.Logic.E5
+import Neighborhood.Semantics.Example.SimpleBlackhole
 
 /-!
 # The neighborhood logic `LogicET5`

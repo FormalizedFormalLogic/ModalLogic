@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.EN
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.SimpleWhitehole
 
 /-!
 # The neighborhood logic `LogicEMN`
@@ -41,10 +43,6 @@ theorem LogicEMN.complete
   (supplementedBasicCanonicity LogicEMN).mem_of_valid
     (h (supplementedBasicCanonicity LogicEMN).toModel.toFrame
       (supplementedBasicCanonicity LogicEMN).toModel.Val)
-
-
-instance : Frame.simple_whitehole.IsMonotonic where
-  mono := by simp_all [Frame.simple_whitehole, Frame.box]
 
 theorem LogicEM_ssubset_LogicEMN : @LogicEM ℕ ⊂ LogicEMN := by
   constructor

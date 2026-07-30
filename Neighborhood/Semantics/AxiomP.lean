@@ -28,10 +28,6 @@ lemma not_contains_empty [F.NotContainsEmpty] : ∅ ∉ F.𝒩 x :=
 lemma mem_dia_univ [F.NotContainsEmpty] : x ∈ F.dia Set.univ := by
   simp [Frame.dia, Frame.box]
 
-instance : Frame.simple_blackhole.NotContainsEmpty := by
-  constructor;
-  simp [Set.empty_ne_univ];
-
 end Frame
 
 /-- `P` is valid on any frame in which no world has the empty set as one of its neighborhoods. -/

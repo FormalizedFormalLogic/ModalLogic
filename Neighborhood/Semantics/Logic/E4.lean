@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Filtration
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.TrivialNontransitive
 
 /-!
 # The neighborhood logic `LogicE4`
@@ -15,14 +17,6 @@ inclusion of `LogicE` in `LogicE4`.
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
-
-
-instance : Frame.simple_blackhole.IsTransitive where
-  trans X := by
-    intro x hx
-    simp only [Frame.box, Set.mem_singleton_iff, Set.mem_setOf_eq] at hx
-    subst hx
-    simp [Frame.box]
 
 theorem LogicE4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsTransitive] :
     A ∈ LogicE4 → F ⊧ A :=

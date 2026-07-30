@@ -1,6 +1,8 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.SimpleWhitehole
 
 /-!
 # The neighborhood logic `LogicEB`
@@ -13,15 +15,6 @@ axiom `B`, with respect to the symmetric neighborhood frames, and its strict inc
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
-
-instance : Frame.simple_blackhole.IsSymmetric := by
-  constructor
-  intro X x hx
-  have hne : Xᶜ ≠ Set.univ := by
-    simp only [ne_eq, Set.compl_univ_iff]
-    rintro rfl
-    simp at hx
-  simp [Frame.box, Frame.dia, hne]
 
 theorem LogicEB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] :
     A ∈ LogicEB → F ⊧ A :=

@@ -1,6 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
+import Neighborhood.Semantics.Example.SimpleBlackhole
 
 /-!
 # The neighborhood logic `LogicE5`
@@ -13,10 +14,6 @@ Also its strict inclusion in `LogicE`.
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
-
-
-instance : Frame.simple_blackhole.IsEuclidean where
-  eucl X x hx := by simp_all [Frame.box, Frame.dia]
 
 theorem LogicE5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
     A ∈ @LogicE5 α → F ⊧ A :=

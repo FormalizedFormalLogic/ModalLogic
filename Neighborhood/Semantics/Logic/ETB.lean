@@ -1,10 +1,9 @@
 module
 
-public import Neighborhood.Semantics.Hilbert
-public import Neighborhood.Semantics.AxiomGeach
-public import Neighborhood.Hilbert.Logics
 public import Neighborhood.Semantics.Logic.ET
 public import Neighborhood.Semantics.Logic.EB
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.SimpleWhitehole
 
 /-!
 # The neighborhood logic `LogicETB`
@@ -31,10 +30,6 @@ theorem LogicETB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
 theorem LogicETB.consistent : (@LogicETB α).IsConsistent := by
   by_contra! hC
   simpa using LogicETB.sound Frame.simple_blackhole hC
-
-
-instance : Frame.simple_whitehole.IsReflexive :=
-  ⟨fun X => by simp [Frame.box, Frame.simple_whitehole]⟩
 
 theorem LogicET_ssubset_LogicETB : @LogicET ℕ ⊂ LogicETB := by
   constructor

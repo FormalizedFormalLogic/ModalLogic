@@ -25,10 +25,6 @@ lemma Frame.univ_mem [F.ContainsUnit] (x : F.World) : Set.univ ∈ F.𝒩 x := b
   have : x ∈ F.box Set.univ := by rw [F.contains_unit]; trivial
   simpa [Frame.box] using this
 
-instance : (Frame.simple_blackhole).ContainsUnit := ⟨by
-  ext x
-  simp [Frame.box]⟩
-
 @[simp, grind]
 theorem valid_axiomN_of_containsUnit [F.ContainsUnit] : F ⊧ (Axioms.N : Formula α) := by
   intro V x

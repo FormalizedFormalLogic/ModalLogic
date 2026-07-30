@@ -2,7 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EN4
-import Mathlib.Tactic.FinCases
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.TrivialContainsUnit
 
 /-!
 # The neighborhood logic `LogicEND4`
@@ -31,14 +32,6 @@ theorem LogicEND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
 theorem LogicEND4.consistent : (@LogicEND4 α).IsConsistent := by
   by_contra! hC
   simpa using LogicEND4.sound Frame.simple_blackhole hC
-
-
-instance : Frame.trivial_containsUnit.IsSerial where
-  serial X x hx := by
-    simp only [Frame.trivial_containsUnit, Frame.box, Set.mem_setOf_eq, Set.mem_insert_iff,
-      Set.mem_singleton_iff] at hx
-    rcases hx with rfl | rfl <;> fin_cases x <;>
-      simp [Frame.box, Frame.dia, Frame.trivial_containsUnit, Set.ext_iff]
 
 theorem LogicEND_ssubset_LogicEND4 : @LogicEND ℕ ⊂ LogicEND4 := by
   constructor

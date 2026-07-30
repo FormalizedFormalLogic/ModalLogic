@@ -1,6 +1,8 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.TrivialNonserial
 
 /-!
 # The neighborhood logic `LogicEP`
@@ -35,18 +37,6 @@ theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
     have := notContainsEmpty_of_valid_axiomP
       (F := (⟨fun _ => {∅}⟩ : Frame (Fin 1))) (LogicE.sound _ hP)
     simpa using this.not_contains_empty (x := 0)
-
-abbrev Frame.trivial_nonserial : Frame (Fin 2) :=
-  ⟨fun w => match w with | 0 => {{0}} | 1 => {{0}, {1}, {0, 1}}⟩
-
-instance : Frame.trivial_nonserial.NotContainsEmpty :=
-  ⟨fun x => by match x with | 0 => simp | 1 => simp; tauto_set⟩
-
-lemma Frame.trivial_nonserial.not_isSerial : ¬Frame.trivial_nonserial.IsSerial := by
-  intro hS
-  have h1 : (1 : Fin 2) ∈ Frame.trivial_nonserial.box {1} := by simp [Frame.box]
-  have h2 : (1 : Fin 2) ∉ Frame.trivial_nonserial.dia {1} := by simp [Frame.dia, Frame.box]
-  exact h2 (hS.serial {1} h1)
 
 theorem LogicEP.not_mem_axiomD {a : ℕ} : Axioms.D (.atom a) ∉ @LogicEP ℕ := fun hD =>
   Frame.trivial_nonserial.not_isSerial <| isSerial_of_valid_axiomD <|

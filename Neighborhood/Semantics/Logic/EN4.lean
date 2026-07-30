@@ -4,6 +4,9 @@ public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Filtration
 import Mathlib.Tactic.FinCases
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.SimpleWhitehole
+import Neighborhood.Semantics.Example.TrivialContainsUnit
 
 /-!
 # The neighborhood logic `LogicEN4`
@@ -64,32 +67,6 @@ theorem LogicEN4.finite_complete
     haveI : (transitiveFiltration M T).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (transitiveFiltration M T).toModel.toFrame (transitiveFiltration M T).toModel.Val ⟦x⟧
 
-
-abbrev Frame.trivial_containsUnit : Frame (Fin 2) := ⟨fun x => {{x}ᶜ, Set.univ}⟩
-
-instance : Frame.trivial_containsUnit.ContainsUnit := ⟨by
-  ext x; fin_cases x <;> simp [Frame.box, Frame.trivial_containsUnit]⟩
-
-lemma Frame.trivial_containsUnit.not_isTransitive :
-    ¬Frame.trivial_containsUnit.IsTransitive := by
-  intro hC
-  have hbox0 : Frame.trivial_containsUnit.box ({0} : Set (Fin 2)) = {1} := by
-    ext y; fin_cases y <;> simp [Frame.box, Frame.trivial_containsUnit, Set.ext_iff]
-  have hbox1 : Frame.trivial_containsUnit.box ({1} : Set (Fin 2)) = {0} := by
-    ext y; fin_cases y <;> simp [Frame.box, Frame.trivial_containsUnit, Set.ext_iff]
-  have hiter : Frame.trivial_containsUnit.box^[2] ({0} : Set (Fin 2)) = {0} := by
-    show Frame.trivial_containsUnit.box (Frame.trivial_containsUnit.box {0}) = {0}
-    rw [hbox0, hbox1]
-  have h1 : (1 : Fin 2) ∈ Frame.trivial_containsUnit.box ({0} : Set (Fin 2)) := by
-    rw [hbox0]; rfl
-  have h2 := hC.trans ({0} : Set (Fin 2)) h1
-  rw [hiter] at h2
-  simp at h2
-
-lemma Frame.trivial_containsUnit.not_valid_axiomFour :
-    ¬Frame.trivial_containsUnit ⊧ (Axioms.Four (.atom 0) : Formula ℕ) :=
-  fun h => Frame.trivial_containsUnit.not_isTransitive (isTransitive_of_valid_axiomFour h)
-
 theorem LogicEN_ssubset_LogicEN4 : @LogicEN ℕ ⊂ LogicEN4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
@@ -97,9 +74,6 @@ theorem LogicEN_ssubset_LogicEN4 : @LogicEN ℕ ⊂ LogicEN4 := by
     have hFour : Axioms.Four (.atom 0) ∈ (@LogicEN ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
     exact Frame.trivial_containsUnit.not_valid_axiomFour
       (LogicEN.sound Frame.trivial_containsUnit hFour)
-
-instance : Frame.simple_whitehole.IsTransitive where
-  trans X := by simp [Frame.box]
 
 theorem LogicE4_ssubset_LogicEN4 : @LogicE4 ℕ ⊂ LogicEN4 := by
   constructor

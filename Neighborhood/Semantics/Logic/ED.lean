@@ -1,6 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
+import Neighborhood.Semantics.Example.SimpleBlackhole
 
 /-!
 # The neighborhood logic `LogicED`
@@ -18,12 +19,6 @@ variable {α : Type u} {A : Formula α}
 theorem LogicED.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] :
     A ∈ LogicED → F ⊧ A :=
   Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomD_of_isSerial)
-
-instance : Frame.simple_blackhole.IsSerial where
-  serial X x hx := by
-    simp only [Frame.box, Set.mem_singleton_iff, Set.mem_setOf_eq] at hx
-    subst hx
-    simp [Frame.dia, Frame.box, Set.ext_iff]
 
 theorem LogicED.consistent : (@LogicED α).IsConsistent := by
   by_contra! hC

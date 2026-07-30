@@ -3,6 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.EMT4
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.ENT4
+import Neighborhood.Semantics.Example.SimpleBlackhole
 
 /-!
 # The neighborhood logic `LogicEMNT4`

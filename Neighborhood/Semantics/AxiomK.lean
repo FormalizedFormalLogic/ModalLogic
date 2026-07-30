@@ -22,13 +22,6 @@ class HasPropertyK (F : Frame κ) : Prop where
 
 export HasPropertyK (K)
 
-instance : Frame.simple_blackhole.HasPropertyK where
-  K X Y w hw := by
-    simp only [Frame.box, Set.mem_setOf_eq, Set.mem_singleton_iff] at hw ⊢
-    obtain ⟨h₁, h₂⟩ := hw
-    subst h₂
-    simpa using h₁
-
 end Frame
 
 section

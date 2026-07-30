@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Supplementation
+import Neighborhood.Semantics.Example.SimpleBlackhole
 
 /-!
 # The neighborhood logic `LogicEM`

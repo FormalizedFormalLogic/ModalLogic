@@ -56,9 +56,6 @@ def ofBox (B : Set κ → Set κ) : Frame κ := ⟨fun x => { X | x ∈ B X }⟩
 class IsFinite (F : Frame κ) : Prop where
   world_finite : Finite F.World
 
-/-- The one-world frame whose only neighborhood is the whole carrier. -/
-abbrev simple_blackhole : Frame Unit := ⟨fun _ => { Set.univ }⟩
-
 end Frame
 
 /-- A neighborhood model: a frame together with a valuation of the propositional variables. -/

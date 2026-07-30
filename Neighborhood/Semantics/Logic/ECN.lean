@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.EC
 public import Neighborhood.Semantics.Logic.EN
+import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.SimpleWhitehole
 
 /-!
 # The neighborhood logic `LogicECN`
@@ -40,9 +42,6 @@ theorem LogicECN.complete
   (basicCanonicity LogicECN).mem_of_valid
     (h (basicCanonicity LogicECN).toModel.toFrame
       (basicCanonicity LogicECN).toModel.Val)
-
-
-instance : Frame.simple_whitehole.IsRegular := ⟨by simp [Frame.box, Frame.simple_whitehole]⟩
 
 theorem LogicEC_ssubset_LogicECN : @LogicEC ℕ ⊂ LogicECN := by
   constructor
