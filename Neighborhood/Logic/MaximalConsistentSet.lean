@@ -69,44 +69,115 @@ section
 
 variable [L.Cl]
 
+omit [L.Cl] in
 /-- Every consistent set of formulas is contained in a maximal consistent set. -/
-lemma exists_of_consistent (hT : Consistent L T) : ∃ Ω : MaximalConsistentSet L, T ⊆ Ω.1 := sorry
+lemma exists_of_consistent (hT : Consistent L T) : ∃ Ω : MaximalConsistentSet L, T ⊆ Ω.1 := by
+  obtain ⟨Z, hZ, hTZ, hmax⟩ := FormulaSet.lindenbaum hT;
+  refine ⟨⟨Z, hZ, ?_⟩, hTZ⟩;
+  rintro U ⟨hU₁, hU₂⟩ hC;
+  have := hmax U hC hU₁;
+  subst this;
+  simp_all;
 
 alias lindenbaum := exists_of_consistent
 
-instance [L.Consistent] : Nonempty (MaximalConsistentSet L) := sorry
+instance [L.Consistent] : Nonempty (MaximalConsistentSet L) :=
+  ⟨lindenbaum (T := ∅) emptyset_consistent |>.choose⟩
 
-lemma either_mem (Ω : MaximalConsistentSet L) (φ) : φ ∈ Ω ∨ ∼φ ∈ Ω := sorry
+lemma either_mem (Ω : MaximalConsistentSet L) (φ) : φ ∈ Ω ∨ ∼φ ∈ Ω := by
+  by_contra hC;
+  push Not at hC;
+  rcases either_consistent Ω.consistent φ with h | h;
+  . exact Ω.maximal' hC.1 h;
+  . exact Ω.maximal' hC.2 h;
 
-lemma membership_iff : φ ∈ Ω ↔ Ω.1 *⊢[L] φ := sorry
+lemma membership_iff : φ ∈ Ω ↔ Ω.1 *⊢[L] φ := by
+  constructor;
+  . exact by_axm!;
+  . intro h;
+    suffices ∼φ ∉ Ω.1 by exact or_iff_not_imp_right.mp (Ω.either_mem φ) this;
+    intro hC;
+    exact Ω.consistent <| mdp! (by_axm! hC) h;
 
-@[simp] lemma not_mem_falsum : ⊥ ∉ Ω := sorry
+@[simp] lemma not_mem_falsum : ⊥ ∉ Ω := not_mem_falsum_of_consistent Ω.consistent
 
-@[simp] lemma mem_verum : ⊤ ∈ Ω := sorry
+@[simp] lemma mem_verum : ⊤ ∈ Ω := membership_iff.mpr <| of! verum!
 
-@[simp] lemma iff_mem_neg : ∼φ ∈ Ω ↔ φ ∉ Ω := sorry
+@[simp] lemma iff_mem_neg : ∼φ ∈ Ω ↔ φ ∉ Ω := by
+  constructor;
+  . intro hn hφ;
+    exact Ω.consistent <| mdp! (membership_iff.mp hn) (membership_iff.mp hφ);
+  . intro hφ;
+    have h : Consistent L (insert (∼φ) Ω.1) :=
+      unprovable_iff_insert_neg_consistent.mpr <| membership_iff.not.mp hφ;
+    have : ¬(Ω.1 ⊂ insert (∼φ) Ω.1) := fun hC => Ω.maximal hC h;
+    have : insert (∼φ) Ω.1 ⊆ Ω.1 := by simpa [Set.ssubset_def] using this;
+    exact this (Set.mem_insert _ _);
 
-lemma iff_forall_mem_provable : (∀ Ω : MaximalConsistentSet L, φ ∈ Ω) ↔ φ ∈ L := sorry
+lemma iff_forall_mem_provable : (∀ Ω : MaximalConsistentSet L, φ ∈ Ω) ↔ φ ∈ L := by
+  constructor;
+  . contrapose!;
+    intro h;
+    obtain ⟨Ω, hΩ⟩ := lindenbaum <| unprovable_iff_singleton_neg_consistent.mpr h;
+    exact ⟨Ω, iff_mem_neg.mp <| hΩ rfl⟩;
+  . intro h Ω;
+    exact membership_iff.mpr <| of! h;
 
 @[grind ←] lemma mem_of_prove (h : φ ∈ L) : φ ∈ Ω := iff_forall_mem_provable.mpr h Ω
 
 @[simp] lemma iff_mem_negneg : ∼∼φ ∈ Ω ↔ φ ∈ Ω := by simp
 
-@[simp, grind =] lemma iff_mem_imp : φ 🡒 ψ ∈ Ω ↔ (φ ∈ Ω → ψ ∈ Ω) := sorry
+@[simp, grind =] lemma iff_mem_imp : φ 🡒 ψ ∈ Ω ↔ (φ ∈ Ω → ψ ∈ Ω) := by
+  constructor;
+  . intro hφψ hφ;
+    exact membership_iff.mpr <| mdp! (membership_iff.mp hφψ) (membership_iff.mp hφ);
+  . intro h;
+    rcases or_iff_not_imp_left.mpr (fun hn => h (not_not.mp hn)) with hφ | hψ;
+    . exact membership_iff.mpr <| of_C! CNC! <| membership_iff.mp <| iff_mem_neg.mpr hφ;
+    . exact membership_iff.mpr <| of_C! implyK! <| membership_iff.mp hψ;
 
 lemma mdp (hφψ : φ 🡒 ψ ∈ Ω) (hφ : φ ∈ Ω) : ψ ∈ Ω := iff_mem_imp.mp hφψ hφ
 
 lemma mdp_provable (hφψ : φ 🡒 ψ ∈ L) (hφ : φ ∈ Ω) : ψ ∈ Ω := mdp (mem_of_prove hφψ) hφ
 
-@[simp] lemma iff_mem_and : φ ⋏ ψ ∈ Ω ↔ φ ∈ Ω ∧ ψ ∈ Ω := sorry
+@[simp] lemma iff_mem_and : φ ⋏ ψ ∈ Ω ↔ φ ∈ Ω ∧ ψ ∈ Ω := by
+  simp only [membership_iff];
+  constructor;
+  . intro h;
+    exact ⟨of_C! and₁! h, of_C! and₂! h⟩;
+  . rintro ⟨h₁, h₂⟩;
+    exact of_C!_of_C! and₃! h₁ h₂;
 
-@[simp] lemma iff_mem_or : φ ⋎ ψ ∈ Ω ↔ φ ∈ Ω ∨ ψ ∈ Ω := sorry
+@[simp] lemma iff_mem_or : φ ⋎ ψ ∈ Ω ↔ φ ∈ Ω ∨ ψ ∈ Ω := by
+  constructor;
+  . intro h;
+    by_contra hC;
+    push Not at hC;
+    replace h := membership_iff.mp h;
+    have h₁ := membership_iff.mp <| iff_mem_neg.mpr hC.1;
+    have h₂ := membership_iff.mp <| iff_mem_neg.mpr hC.2;
+    exact Ω.consistent <| mdp! (of_C!_of_C! or₃! h₁ h₂) h;
+  . rintro (h | h);
+    . exact membership_iff.mpr <| of_C! or₁! <| membership_iff.mp h;
+    . exact membership_iff.mpr <| of_C! or₂! <| membership_iff.mp h;
 
-lemma iff_congr (h : Ω.1 *⊢[L] φ 🡘 ψ) : φ ∈ Ω ↔ ψ ∈ Ω := sorry
+lemma iff_congr (h : Ω.1 *⊢[L] φ 🡘 ψ) : φ ∈ Ω ↔ ψ ∈ Ω := by
+  simp only [membership_iff];
+  exact ⟨mdp! (of_C! and₁! h), mdp! (of_C! and₂! h)⟩;
 
-lemma intro_equality (h : ∀ φ, φ ∈ Ω₁.1 → φ ∈ Ω₂.1) : Ω₁ = Ω₂ := sorry
+lemma intro_equality (h : ∀ φ, φ ∈ Ω₁.1 → φ ∈ Ω₂.1) : Ω₁ = Ω₂ := by
+  apply equality_def.mpr;
+  apply Set.eq_of_subset_of_subset (fun φ hφ => h φ hφ);
+  intro φ;
+  contrapose;
+  intro hφ;
+  exact iff_mem_neg.mp <| h _ <| iff_mem_neg.mpr hφ;
 
-lemma neg_imp (h : ψ ∈ Ω₂ → φ ∈ Ω₁) : ∼φ ∈ Ω₁ → ∼ψ ∈ Ω₂ := sorry
+lemma neg_imp (h : ψ ∈ Ω₂ → φ ∈ Ω₁) : ∼φ ∈ Ω₁ → ∼ψ ∈ Ω₂ := by
+  contrapose;
+  intro hnψ hnφ;
+  have : φ ∈ Ω₁ := h <| iff_mem_negneg.mp <| iff_mem_neg.mpr hnψ;
+  simpa using mdp hnφ this;
 
 lemma neg_iff (h : φ ∈ Ω₁ ↔ ψ ∈ Ω₂) : ∼φ ∈ Ω₁ ↔ ∼ψ ∈ Ω₂ := ⟨neg_imp h.mpr, neg_imp h.mp⟩
 
