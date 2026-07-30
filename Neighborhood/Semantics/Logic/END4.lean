@@ -3,6 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EN4
 import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame1_3
 import Neighborhood.Semantics.Example.Frame2_172
 
 /-!
@@ -11,7 +12,7 @@ import Neighborhood.Semantics.Example.Frame2_172
 Soundness and consistency of `LogicEND4`, the classical modal logic axiomatised by `N := □⊤`,
 the seriality axiom `D` and the transitivity axiom `Four` over `LogicE`, with respect to the
 serial and transitive neighborhood frames containing their unit. Also proves the strict
-inclusion of `LogicEND` in `LogicEND4`.
+inclusion of `LogicEND` and of `LogicEN4` in `LogicEND4`.
 -/
 
 @[expose] public section
@@ -35,5 +36,13 @@ theorem LogicEND_ssubset_LogicEND4 : @LogicEND ℕ ⊂ LogicEND4 := by
     have hFour : Axioms.Four #0 ∈ @LogicEND ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_2_172.not_valid_axiomFour
       (LogicEND.sound frame_2_172 hFour)
+
+theorem LogicEN4_ssubset_LogicEND4 : @LogicEN4 ℕ ⊂ LogicEND4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms
+      (Set.union_subset_union_left _ Set.subset_union_left)
+  · intro h
+    have hD : Axioms.D #0 ∈ @LogicEN4 ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_1_3.not_valid_axiomD (LogicEN4.sound frame_1_3 hD)
 
 end
