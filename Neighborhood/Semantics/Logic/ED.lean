@@ -1,61 +1,49 @@
 module
 
+public import Neighborhood.Semantics.Hilbert
+public import Neighborhood.Semantics.Completeness
+public import Neighborhood.Semantics.AxiomGeach
+public import Neighborhood.Hilbert.Logics
 public import Neighborhood.Semantics.Logic.E
+
+/-!
+# The neighborhood logic `LogicED`
+
+Soundness and consistency of `LogicED`, the classical modal logic axiomatised by the seriality
+axiom `D`, with respect to the serial neighborhood frames (`Frame.IsSerial`), and the strict
+inclusion of `LogicE` in `LogicED`.
+-/
 
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness and consistency -/
 
-namespace Neighborhood
+/-- `LogicED` is sound with respect to every serial neighborhood frame. -/
+theorem LogicED.sound (h : A ∈ LogicED) {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] : F ⊧ A :=
+  Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomD_of_isSerial) h
 
-instance : Frame.simple_blackhole.IsSerial := by
-  constructor;
-  intro X x;
-  simp only [Frame.box, Set.mem_singleton_iff, Set.mem_setOf_eq, Frame.dia, Set.compl_univ_iff, Set.mem_compl_iff];
-  tauto_set;
+instance : Frame.simple_blackhole.IsSerial where
+  serial X x hx := by
+    simp only [Frame.box, Set.mem_singleton_iff, Set.mem_setOf_eq] at hx
+    subst hx
+    simp [Frame.dia, Frame.box, Set.ext_iff]
 
-@[reducible] protected alias Frame.IsED := Frame.IsSerial
-protected abbrev FrameClass.ED : FrameClass := { F | F.IsED }
+instance : (@LogicED α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole)
+    (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomD_of_isSerial)
 
-instance : Frame.simple_whitehole.IsED where
-  serial := by simp_all [Frame.simple_whitehole, Frame.box];
+/-! ### Strict inclusion of `LogicE` -/
 
-end Neighborhood
+theorem LogicE_ssubset_LogicED : @LogicE ℕ ⊂ LogicED := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
+  · intro h
+    have hD : Axioms.D (.atom 0) ∈ @LogicE ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    have hS : (⟨fun w => match w with | 0 => {{0}} | 1 => Set.univ⟩ : Frame (Fin 2)).IsSerial :=
+      isSerial_of_valid_axiomD (LogicE.sound hD _)
+    have := hS.serial {1} (show (1 : Fin 2) ∈ _ by simp [Frame.box])
+    simp [Frame.dia, Frame.box] at this
 
-
-namespace ED
-
-instance Neighborhood.sound : Sound Modal.ED FrameClass.ED := instSound_of_validates_axioms $ by
-  simp only [Semantics.ModelsSet.singleton_iff];
-  intro F hF;
-  replace hF := Set.mem_setOf_eq.mp hF;
-  simp;
-
-instance consistent : Entailment.Consistent Modal.ED := consistent_of_sound_frameclass FrameClass.ED $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  infer_instance;
-
-end ED
-
-instance : Modal.ED ⪱ Modal.END := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use Axioms.N;
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.ED);
-      apply not_validOnFrameClass_of_exists_frame;
-      use Frame.simple_whitehole;
-      constructor;
-      . apply Set.mem_setOf_eq.mpr; infer_instance;
-      . simp;
-
-end LO.Modal
 end
