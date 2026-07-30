@@ -46,6 +46,7 @@ public import Neighborhood.Semantics.Hilbert
 public import Neighborhood.Semantics.IntersectionClosure
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Logic.E4
+public import Neighborhood.Semantics.Logic.E45
 public import Neighborhood.Semantics.Logic.E5
 public import Neighborhood.Semantics.Logic.EB
 public import Neighborhood.Semantics.Logic.EC
