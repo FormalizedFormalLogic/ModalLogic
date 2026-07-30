@@ -143,61 +143,75 @@ lemma C!_of_CNN! (h : ∼φ 🡒 ∼ψ ∈ L) : ψ 🡒 φ ∈ L := elimContra! 
 
 /-! ### Conjunction -/
 
-@[grind ->] lemma K!_left (h : φ ⋏ ψ ∈ L) : φ ∈ L := sorry
+@[grind ->] lemma K!_left (h : φ ⋏ ψ ∈ L) : φ ∈ L := and₁! ⨀ h
 
-@[grind ->] lemma K!_right (h : φ ⋏ ψ ∈ L) : ψ ∈ L := sorry
+@[grind ->] lemma K!_right (h : φ ⋏ ψ ∈ L) : ψ ∈ L := and₂! ⨀ h
 
-@[grind <-] lemma K!_intro (h₁ : φ ∈ L) (h₂ : ψ ∈ L) : φ ⋏ ψ ∈ L := sorry
+@[grind <-] lemma K!_intro (h₁ : φ ∈ L) (h₂ : ψ ∈ L) : φ ⋏ ψ ∈ L := and₃! ⨀ h₁ ⨀ h₂
 
-@[grind =] lemma K!_intro_iff : φ ⋏ ψ ∈ L ↔ φ ∈ L ∧ ψ ∈ L := sorry
+@[grind =] lemma K!_intro_iff : φ ⋏ ψ ∈ L ↔ φ ∈ L ∧ ψ ∈ L :=
+  ⟨fun h => ⟨K!_left h, K!_right h⟩, fun ⟨h₁, h₂⟩ => K!_intro h₁ h₂⟩
 
-@[simp, grind .] lemma CKK! : φ ⋏ ψ 🡒 ψ ⋏ φ ∈ L := sorry
-
-@[grind <-] lemma K!_symm (h : φ ⋏ ψ ∈ L) : ψ ⋏ φ ∈ L := sorry
-
-@[grind <=] lemma CK!_of_C!_of_C! (hψ : φ 🡒 ψ ∈ L) (hχ : φ 🡒 χ ∈ L) : φ 🡒 ψ ⋏ χ ∈ L := sorry
+@[grind <=] lemma CK!_of_C!_of_C! (hψ : φ 🡒 ψ ∈ L) (hχ : φ 🡒 χ ∈ L) : φ 🡒 ψ ⋏ χ ∈ L :=
+  mdp₁! (C!_trans hψ and₃!) hχ
 
 alias right_K!_intro := CK!_of_C!_of_C!
 
-@[simp, grind .] lemma ECKCC! : (φ ⋏ ψ 🡒 χ) 🡘 (φ 🡒 ψ 🡒 χ) ∈ L := sorry
+@[simp, grind .] lemma CKK! : φ ⋏ ψ 🡒 ψ ⋏ φ ∈ L := CK!_of_C!_of_C! and₂! and₁!
 
-@[grind =] lemma CK!_iff_CC! : φ ⋏ ψ 🡒 χ ∈ L ↔ φ 🡒 ψ 🡒 χ ∈ L := sorry
+@[grind <-] lemma K!_symm (h : φ ⋏ ψ ∈ L) : ψ ⋏ φ ∈ L := CKK! ⨀ h
 
-@[simp] lemma CKNO! : φ ⋏ ∼φ 🡒 ⊥ ∈ L := sorry
+@[simp, grind .]
+lemma ECKCC! : (φ ⋏ ψ 🡒 χ) 🡘 (φ 🡒 ψ 🡒 χ) ∈ L :=
+  K!_intro
+    (C!_of_conseq! CCC! ⨀₁ C!_of_conseq! and₃! ⨀₁ (CCCCC! ⨀ CCC!))
+    (C!_trans (CCC! ⨀ and₁!) (C!_swap implyS! ⨀ and₂!))
 
-lemma O!_intro_of_KN! (h : φ ⋏ ∼φ ∈ L) : (⊥ : Formula) ∈ L := sorry
+@[grind =] lemma CK!_iff_CC! : φ ⋏ ψ 🡒 χ ∈ L ↔ φ 🡒 ψ 🡒 χ ∈ L :=
+  ⟨fun h => C!_trans and₃! (CCC!_of_C!_right h),
+   fun h => mdp₁! (C!_trans and₁! h) and₂!⟩
+
+@[simp] lemma CKNO! : φ ⋏ ∼φ 🡒 ⊥ ∈ L := CK!_iff_CC!.mpr dni!
+
+lemma O!_intro_of_KN! (h : φ ⋏ ∼φ ∈ L) : (⊥ : Formula) ∈ L := CKNO! ⨀ h
 
 /-! ### Disjunction -/
 
-@[grind .] lemma A!_intro_left (h : φ ∈ L) : φ ⋎ ψ ∈ L := sorry
+@[grind .] lemma A!_intro_left (h : φ ∈ L) : φ ⋎ ψ ∈ L := or₁! ⨀ h
 
-@[grind .] lemma A!_intro_right (h : ψ ∈ L) : φ ⋎ ψ ∈ L := sorry
+@[grind .] lemma A!_intro_right (h : ψ ∈ L) : φ ⋎ ψ ∈ L := or₂! ⨀ h
 
-lemma left_A!_intro (h₁ : φ 🡒 χ ∈ L) (h₂ : ψ 🡒 χ ∈ L) : φ ⋎ ψ 🡒 χ ∈ L := sorry
+lemma left_A!_intro (h₁ : φ 🡒 χ ∈ L) (h₂ : ψ 🡒 χ ∈ L) : φ ⋎ ψ 🡒 χ ∈ L := or₃! ⨀ h₁ ⨀ h₂
 
-lemma of_C!_of_C!_of_A! (h₁ : φ 🡒 χ ∈ L) (h₂ : ψ 🡒 χ ∈ L) (h₃ : φ ⋎ ψ ∈ L) : χ ∈ L := sorry
+lemma of_C!_of_C!_of_A! (h₁ : φ 🡒 χ ∈ L) (h₂ : ψ 🡒 χ ∈ L) (h₃ : φ ⋎ ψ ∈ L) : χ ∈ L :=
+  left_A!_intro h₁ h₂ ⨀ h₃
 
-@[simp] lemma lem! : φ ⋎ ∼φ ∈ L := sorry
+@[simp] lemma lem! : φ ⋎ ∼φ ∈ L := C!_id
 
 /-! ### Biimplication -/
 
-@[grind ←] lemma E!_intro (h₁ : φ 🡒 ψ ∈ L) (h₂ : ψ 🡒 φ ∈ L) : φ 🡘 ψ ∈ L := sorry
+@[grind ←] lemma E!_intro (h₁ : φ 🡒 ψ ∈ L) (h₂ : ψ 🡒 φ ∈ L) : φ 🡘 ψ ∈ L := K!_intro h₁ h₂
 
-@[simp] lemma E!_id : φ 🡘 φ ∈ L := sorry
+@[simp] lemma E!_id : φ 🡘 φ ∈ L := E!_intro C!_id C!_id
 
-@[grind →] lemma C_of_E_mp! (h : φ 🡘 ψ ∈ L) : φ 🡒 ψ ∈ L := sorry
+@[grind →] lemma C_of_E_mp! (h : φ 🡘 ψ ∈ L) : φ 🡒 ψ ∈ L := K!_left h
 
-@[grind →] lemma C_of_E_mpr! (h : φ 🡘 ψ ∈ L) : ψ 🡒 φ ∈ L := sorry
+@[grind →] lemma C_of_E_mpr! (h : φ 🡘 ψ ∈ L) : ψ 🡒 φ ∈ L := K!_right h
 
-@[simp] lemma CEE! : (φ 🡘 ψ) 🡒 (ψ 🡘 φ) ∈ L := sorry
+@[simp] lemma CEE! : (φ 🡘 ψ) 🡒 (ψ 🡘 φ) ∈ L := CKK!
 
-@[grind <-] lemma E!_symm (h : φ 🡘 ψ ∈ L) : ψ 🡘 φ ∈ L := sorry
+@[grind <-] lemma E!_symm (h : φ 🡘 ψ ∈ L) : ψ 🡘 φ ∈ L := K!_symm h
 
-@[grind <=] lemma E!_trans (h₁ : φ 🡘 ψ ∈ L) (h₂ : ψ 🡘 χ ∈ L) : φ 🡘 χ ∈ L := sorry
+@[grind <=] lemma E!_trans (h₁ : φ 🡘 ψ ∈ L) (h₂ : ψ 🡘 χ ∈ L) : φ 🡘 χ ∈ L :=
+  E!_intro (C!_trans (C_of_E_mp! h₁) (C_of_E_mp! h₂)) (C!_trans (C_of_E_mpr! h₂) (C_of_E_mpr! h₁))
 
-@[grind →] lemma iff_of_E! (h : φ 🡘 ψ ∈ L) : φ ∈ L ↔ ψ ∈ L := sorry
+@[grind →] lemma iff_of_E! (h : φ 🡘 ψ ∈ L) : φ ∈ L ↔ ψ ∈ L :=
+  ⟨fun hφ => C_of_E_mp! h ⨀ hφ, fun hψ => C_of_E_mpr! h ⨀ hψ⟩
 
-lemma EKK!_of_E!_of_E! (h₁ : φ₁ 🡘 φ₂ ∈ L) (h₂ : ψ₁ 🡘 ψ₂ ∈ L) : φ₁ ⋏ ψ₁ 🡘 φ₂ ⋏ ψ₂ ∈ L := sorry
+lemma EKK!_of_E!_of_E! (h₁ : φ₁ 🡘 φ₂ ∈ L) (h₂ : ψ₁ 🡘 ψ₂ ∈ L) : φ₁ ⋏ ψ₁ 🡘 φ₂ ⋏ ψ₂ ∈ L :=
+  E!_intro
+    (CK!_of_C!_of_C! (C!_trans and₁! (C_of_E_mp! h₁)) (C!_trans and₂! (C_of_E_mp! h₂)))
+    (CK!_of_C!_of_C! (C!_trans and₁! (C_of_E_mpr! h₁)) (C!_trans and₂! (C_of_E_mpr! h₂)))
 
 end
 
