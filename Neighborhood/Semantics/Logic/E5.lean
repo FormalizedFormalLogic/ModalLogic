@@ -2,85 +2,60 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 
+/-!
+# The neighborhood logic `LogicE5`
+
+Soundness, consistency and completeness of `LogicE5`, the classical modal logic axiomatized by
+`Five := ◇A 🡒 □◇A` over `LogicE`, with respect to the euclidean frames (`Frame.IsEuclidean`).
+Also its strict inclusion in `LogicE`.
+-/
+
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
-namespace Neighborhood
+instance : Frame.simple_blackhole.IsEuclidean where
+  eucl X x hx := by simp_all [Frame.box, Frame.dia]
 
+/-- `LogicE5` is sound with respect to every euclidean frame. -/
+theorem LogicE5.sound (h : A ∈ @LogicE5 α) {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
+    F ⊧ A :=
+  Hilbert.sound (fun B hB => by obtain ⟨B, rfl⟩ := hB; exact valid_axiomFive_of_isEuclidean) h
 
-@[reducible] protected alias Frame.IsE5 := Frame.IsEuclidean
-protected class Frame.IsFiniteE5 (F : Frame) extends F.IsE5, F.IsFinite
+instance : (@LogicE5 α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole)
+    (fun B hB => by obtain ⟨B, rfl⟩ := hB; exact valid_axiomFive_of_isEuclidean)
 
-protected abbrev FrameClass.E5 : FrameClass := { F | F.IsE5 }
-protected abbrev FrameClass.finite_E5 : FrameClass := { F | F.IsFiniteE5 }
+variable [DecidableEq α]
 
-instance : Frame.simple_blackhole.IsEuclidean := by
-  constructor;
-  intro X x hx;
-  simp_all [(show X ≠ ∅ by grind), Frame.box];
+/-- `LogicE5` is complete with respect to all euclidean frames. -/
+theorem LogicE5.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsEuclidean → F ⊧ A) :
+    A ∈ @LogicE5 α :=
+  (maximalRelativeMaximalCanonicity LogicE5).mem_of_valid
+    (h (maximalRelativeMaximalCanonicity LogicE5).toModel.toFrame inferInstance
+      (maximalRelativeMaximalCanonicity LogicE5).toModel.Val)
 
-abbrev counterframe_axiomFive : Frame := ⟨Fin 3, λ x => {{x}, Set.univ}⟩
+/-! ### Strict inclusion in `LogicE` -/
 
-instance : counterframe_axiomFive.IsRegular := by
-  constructor;
-  rintro X Y x ⟨(rfl | rfl), (rfl | rfl)⟩ <;>
-  match x with | 0 | 1 | 2 => simp_all;
+theorem LogicE_ssubset_LogicE5 : @LogicE ℕ ⊂ LogicE5 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
+  · intro h
+    have hFive : Axioms.Five (.atom 0) ∈ @LogicE ℕ := h (ProvableHilbert.axm ⟨_, rfl⟩)
+    let F : Frame (Fin 3) := ⟨fun x => {{x}, Set.univ}⟩
+    have hE : F.IsEuclidean := isEuclidean_of_valid_axiomFive (LogicE.sound hFive F)
+    have hdia : F.dia ({0, 1} : Set (Fin 3)) = {0, 1} := by
+      simp only [Set.ext_iff, Frame.dia, Frame.box, F, Set.mem_compl_iff, Set.mem_setOf_eq,
+        Set.mem_insert_iff, Set.mem_singleton_iff]
+      decide
+    have hbox : F.box ({0, 1} : Set (Fin 3)) = ∅ := by
+      simp only [Set.ext_iff, Frame.box, F, Set.mem_setOf_eq, Set.mem_insert_iff,
+        Set.mem_singleton_iff, Set.mem_empty_iff_false]
+      decide
+    have h2 := hE.eucl {0, 1}
+    rw [hdia, hbox] at h2
+    exact (Set.nonempty_of_mem (Set.mem_insert 0 {1})).ne_empty (Set.subset_empty_iff.mp h2)
 
-@[simp]
-lemma counterframe_axiomFive.not_valid_axiomFive : ¬counterframe_axiomFive ⊧ Axioms.Five (Formula.atom 0) := by
-  apply not_imp_not.mpr isEuclidean_of_valid_axiomFive;
-  by_contra! hC;
-  have := hC.eucl {0, 1};
-  have := @this 1 $ by
-    simp only [Set.mem_compl_iff, Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff, Set.compl_univ_iff, not_or];
-    tauto_set;
-  simp only [Frame.box, Frame.dia, Set.mem_insert_iff, Set.mem_singleton_iff, Set.compl_univ_iff, Set.mem_setOf_eq] at this;
-  rcases this with (h | h);
-  . have := Set.ext_iff.mp h 1 |>.2 (by grind);
-    simp at this;
-    tauto_set;
-  . tauto_set;
-
-end Neighborhood
-
-namespace E5
-
-instance Neighborhood.sound : Sound Modal.E5 FrameClass.E5 := instSound_of_validates_axioms $ by
-  simp only [Semantics.ModelsSet.singleton_iff];
-  intro F hF;
-  replace hF := Set.mem_setOf_eq.mp hF;
-  apply valid_axiomFive_of_isEuclidean;
-
-instance consistent : Entailment.Consistent Modal.E5 := consistent_of_sound_frameclass FrameClass.E5 $ by
-  use Frame.simple_blackhole;
-  apply Set.mem_setOf_eq.mpr;
-  infer_instance
-
-instance Neighborhood.complete : Complete Modal.E5 FrameClass.E5 := (maximalRelativeMaximalCanonicity _).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  infer_instance;
-
-end E5
-
-instance : Modal.E ⪱ Modal.E5 := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.Five (.atom 0));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.E);
-      apply not_validOnFrameClass_of_exists_frame;
-      use counterframe_axiomFive;
-      constructor;
-      . simp;
-      . simp;
-
-end LO.Modal
 end
