@@ -639,12 +639,8 @@ def quasiFilteringTransitiveFiltration (M : Model) [M.IsMonotonic] [M.IsTransiti
           apply H;
           apply M.regular_finite_iUnion;
           simpa;
-        rintro ⟨ξ, _, ⟨Ui, hUi, rfl⟩, ⟨v, hv₁, hv₂⟩⟩;
-        replace hv₁ : v ∈ M.box^[2] (M ξ) := M.trans hv₁;
-        grind only [= Set.subset_def, = Finset.mem_union, = Set.setOf_true, of_mem_box,
-          Satisfies.def_box', = Finset.mem_filter, Model.truthset.eq_box, FilterEqvQuotient.iff_eq,
-          toFilterEquivSet.mem_of_mem, usr Set.mem_setOf_eq, = Set.setOf_false, !Frame.trans,
-          !toFilterEquivSet.iff_mem_truthset]
+        rintro ⟨ξ, hξ, _, hw⟩;
+        exact toFilterEquivSet.mem_boxItr₂_truthset hξ hw;
       . exfalso;
         apply hYs₁;
         suffices (Vs = ∅ ∧ Us = ∅) by simp [eYVU, this.1, this.2];
