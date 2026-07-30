@@ -2,7 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.ET
-import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicET4`
@@ -28,7 +28,7 @@ theorem LogicET4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
 
 theorem LogicET4.consistent : (@LogicET4 α).IsConsistent := by
   by_contra! hC
-  simpa using LogicET4.sound Frame.simple_blackhole hC
+  simpa using LogicET4.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicET4 α)) :=
   MaximalConsistentSet.nonempty LogicET4.consistent

@@ -2,7 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.ENT4
 public import Neighborhood.Semantics.Logic.E5
-import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicET5`
@@ -26,7 +26,7 @@ theorem LogicET5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] [F.IsEu
 
 theorem LogicET5.consistent : (@LogicET5 α).IsConsistent := by
   by_contra! hC
-  simpa using LogicET5.sound Frame.simple_blackhole hC
+  simpa using LogicET5.sound frame_1_2 hC
 
 instance : (@LogicET5 α).HasAxiomN :=
   ⟨have hiff : (⊤ : Formula α) 🡘 ◇⊤ ∈ (@LogicET5 α) :=

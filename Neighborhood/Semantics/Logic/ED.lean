@@ -1,7 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
-import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicED`
@@ -22,7 +22,7 @@ theorem LogicED.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] :
 
 theorem LogicED.consistent : (@LogicED α).IsConsistent := by
   by_contra! hC
-  simpa using LogicED.sound Frame.simple_blackhole hC
+  simpa using LogicED.sound frame_1_2 hC
 
 
 theorem LogicE_ssubset_LogicED : @LogicE ℕ ⊂ LogicED := by

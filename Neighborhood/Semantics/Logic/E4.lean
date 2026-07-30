@@ -2,8 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Filtration
-import Neighborhood.Semantics.Example.SimpleBlackhole
-import Neighborhood.Semantics.Example.TrivialNontransitive
+import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame2_8
 
 /-!
 # The neighborhood logic `LogicE4`
@@ -24,7 +24,7 @@ theorem LogicE4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsTransitive] :
 
 theorem LogicE4.consistent : (@LogicE4 α).IsConsistent := by
   by_contra! hC
-  simpa using LogicE4.sound Frame.simple_blackhole hC
+  simpa using LogicE4.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicE4 α)) :=
   MaximalConsistentSet.nonempty LogicE4.consistent
@@ -56,7 +56,7 @@ theorem LogicE_ssubset_LogicE4 : @LogicE ℕ ⊂ LogicE4 := by
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
     have hFour : Axioms.Four (.atom 0) ∈ (@LogicE ℕ) := h (ProvableHilbert.axm ⟨_, rfl⟩)
-    exact Frame.trivial_nontransitive.not_valid_axiomFour
-      (LogicE.sound Frame.trivial_nontransitive hFour)
+    exact frame_2_8.not_valid_axiomFour
+      (LogicE.sound frame_2_8 hFour)
 
 end

@@ -1,7 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
-import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicEC`
@@ -22,7 +22,7 @@ theorem LogicEC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] :
 
 theorem LogicEC.consistent : (@LogicEC α).IsConsistent := by
   by_contra! hC
-  simpa using LogicEC.sound Frame.simple_blackhole hC
+  simpa using LogicEC.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEC α)) :=
   MaximalConsistentSet.nonempty LogicEC.consistent

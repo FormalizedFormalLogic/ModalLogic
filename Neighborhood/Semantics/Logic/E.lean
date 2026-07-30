@@ -6,7 +6,7 @@ public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomGeach
 public import Neighborhood.Semantics.AxiomP
 public import Neighborhood.Hilbert.Logics
-import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicE`
@@ -15,8 +15,8 @@ Soundness, consistency and completeness of `LogicE`, the weakest classical modal
 respect to all neighborhood frames. Its strict inclusions in the stronger logics live in the
 stronger logics' modules.
 
-Also defines two auxiliary countermodels, `Frame.simple_whitehole` and
-`Frame.trivial_nontransitive`, reused by several other neighborhood logics.
+Also defines two auxiliary countermodels, `frame_1_0` and
+`frame_2_8`, reused by several other neighborhood logics.
 -/
 
 @[expose] public section
@@ -30,7 +30,7 @@ theorem LogicE.sound {κ} [Nonempty κ] (F : Frame κ) :
 
 theorem LogicE.consistent : (@LogicE α).IsConsistent := by
   by_contra! hC
-  simpa using LogicE.sound Frame.simple_blackhole hC
+  simpa using LogicE.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicE α)) :=
   MaximalConsistentSet.nonempty LogicE.consistent

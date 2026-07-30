@@ -2,7 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.EMCN
 public import Neighborhood.Semantics.Logic.E4
-import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicEMCN4`
@@ -30,7 +30,7 @@ theorem LogicEMCN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
 
 theorem LogicEMCN4.consistent : (@LogicEMCN4 α).IsConsistent := by
   by_contra! hC
-  simpa using LogicEMCN4.sound Frame.simple_blackhole hC
+  simpa using LogicEMCN4.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEMCN4 α)) :=
   MaximalConsistentSet.nonempty LogicEMCN4.consistent

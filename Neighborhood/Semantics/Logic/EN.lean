@@ -2,8 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.AxiomN
-import Neighborhood.Semantics.Example.SimpleBlackhole
-import Neighborhood.Semantics.Example.SimpleWhitehole
+import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame1_0
 
 /-!
 # The neighborhood logic `LogicEN`
@@ -24,7 +24,7 @@ theorem LogicEN.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] :
 
 theorem LogicEN.consistent : (@LogicEN α).IsConsistent := by
   by_contra! hC
-  simpa using LogicEN.sound Frame.simple_blackhole hC
+  simpa using LogicEN.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEN α)) :=
   MaximalConsistentSet.nonempty LogicEN.consistent
@@ -43,6 +43,6 @@ theorem LogicE_ssubset_LogicEN : @LogicE ℕ ⊂ LogicEN := by
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ @LogicE ℕ := h (ProvableHilbert.axm rfl)
-    exact Frame.simple_whitehole.not_valid_axiomN (LogicE.sound Frame.simple_whitehole hN)
+    exact frame_1_0.not_valid_axiomN (LogicE.sound frame_1_0 hN)
 
 end

@@ -2,9 +2,9 @@ module
 
 public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Logic.ET4
-import Neighborhood.Semantics.Example.SimpleBlackhole
-import Neighborhood.Semantics.Example.SimpleWhitehole
-import Neighborhood.Semantics.Example.TrivialContainsUnitTransitive
+import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame1_0
+import Neighborhood.Semantics.Example.Frame2_170
 
 /-!
 # The neighborhood logic `LogicENT4`
@@ -33,7 +33,7 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsReflexive]
 omit [DecidableEq α] in
 theorem consistent : (@LogicENT4 α).IsConsistent := by
   by_contra! hC;
-  simpa using LogicENT4.sound Frame.simple_blackhole hC;
+  simpa using LogicENT4.sound frame_1_2 hC;
 
 instance : Nonempty (MaximalConsistentSet (@LogicENT4 α)) :=
   MaximalConsistentSet.nonempty consistent
@@ -76,8 +76,8 @@ theorem LogicEN4_ssubset_LogicENT4 : @LogicEN4 ℕ ⊂ LogicENT4 := by
   · intro h
     have hT : Axioms.T (.atom 0) ∈ (@LogicEN4 ℕ) :=
       h (ProvableHilbert.axm (Or.inl (Or.inr ⟨_, rfl⟩)))
-    exact Frame.trivial_containsUnit_transitive.not_valid_axiomT
-      (LogicEN4.sound Frame.trivial_containsUnit_transitive hT)
+    exact frame_2_170.not_valid_axiomT
+      (LogicEN4.sound frame_2_170 hT)
 
 theorem LogicET4_ssubset_LogicENT4 : @LogicET4 ℕ ⊂ LogicENT4 := by
   constructor
@@ -85,6 +85,6 @@ theorem LogicET4_ssubset_LogicENT4 : @LogicET4 ℕ ⊂ LogicENT4 := by
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ (@LogicET4 ℕ) :=
       h (ProvableHilbert.axm (Or.inl (Or.inl rfl)))
-    exact Frame.simple_whitehole.not_valid_axiomN (LogicET4.sound Frame.simple_whitehole hN)
+    exact frame_1_0.not_valid_axiomN (LogicET4.sound frame_1_0 hN)
 
 end

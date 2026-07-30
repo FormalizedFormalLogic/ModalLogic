@@ -4,9 +4,9 @@ public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Filtration
 import Mathlib.Tactic.FinCases
-import Neighborhood.Semantics.Example.SimpleBlackhole
-import Neighborhood.Semantics.Example.SimpleWhitehole
-import Neighborhood.Semantics.Example.TrivialContainsUnit
+import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame1_0
+import Neighborhood.Semantics.Example.Frame2_172
 
 /-!
 # The neighborhood logic `LogicEN4`
@@ -33,7 +33,7 @@ theorem LogicEN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
 
 theorem LogicEN4.consistent : (@LogicEN4 α).IsConsistent := by
   by_contra! hC
-  simpa using LogicEN4.sound Frame.simple_blackhole hC
+  simpa using LogicEN4.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEN4 α)) :=
   MaximalConsistentSet.nonempty LogicEN4.consistent
@@ -72,14 +72,14 @@ theorem LogicEN_ssubset_LogicEN4 : @LogicEN ℕ ⊂ LogicEN4 := by
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
     have hFour : Axioms.Four (.atom 0) ∈ (@LogicEN ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
-    exact Frame.trivial_containsUnit.not_valid_axiomFour
-      (LogicEN.sound Frame.trivial_containsUnit hFour)
+    exact frame_2_172.not_valid_axiomFour
+      (LogicEN.sound frame_2_172 hFour)
 
 theorem LogicE4_ssubset_LogicEN4 : @LogicE4 ℕ ⊂ LogicEN4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ (@LogicE4 ℕ) := h (ProvableHilbert.axm (Or.inl rfl))
-    exact Frame.simple_whitehole.not_valid_axiomN (LogicE4.sound Frame.simple_whitehole hN)
+    exact frame_1_0.not_valid_axiomN (LogicE4.sound frame_1_0 hN)
 
 end

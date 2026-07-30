@@ -3,10 +3,10 @@ module
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.EC
 public import Neighborhood.Semantics.Logic.EK
-import Neighborhood.Semantics.Example.EKCounterframeForMAndC
-import Neighborhood.Semantics.Example.CounterframeAxiomC1
-import Neighborhood.Semantics.Example.CounterframeAxiomM1
-import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.Frame4_11259170869739560
+import Neighborhood.Semantics.Example.Frame2_206
+import Neighborhood.Semantics.Example.Frame3_137520
+import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicEMC`
@@ -32,7 +32,7 @@ theorem LogicEMC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
 
 theorem LogicEMC.consistent : (@LogicEMC α).IsConsistent := by
   by_contra! hC
-  simpa using LogicEMC.sound Frame.simple_blackhole hC
+  simpa using LogicEMC.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEMC α)) :=
   MaximalConsistentSet.nonempty LogicEMC.consistent
@@ -52,7 +52,7 @@ theorem LogicEM_ssubset_LogicEMC : @LogicEM ℕ ⊂ LogicEMC := by
   · intro h
     have hC : Axioms.C (.atom 0) (.atom 1) ∈ @LogicEM ℕ :=
       h (ProvableHilbert.axm (Or.inr ⟨_, _, rfl⟩))
-    exact Frame.counterframe_axiomC₁.not_valid_axiomC (LogicEM.sound Frame.counterframe_axiomC₁ hC)
+    exact frame_2_206.not_valid_axiomC (LogicEM.sound frame_2_206 hC)
 
 theorem LogicEC_ssubset_LogicEMC : @LogicEC ℕ ⊂ LogicEMC := by
   constructor
@@ -60,7 +60,7 @@ theorem LogicEC_ssubset_LogicEMC : @LogicEC ℕ ⊂ LogicEMC := by
   · intro h
     have hM : Axioms.M (.atom 0) (.atom 1) ∈ @LogicEC ℕ :=
       h (ProvableHilbert.axm (Or.inl ⟨_, _, rfl⟩))
-    exact Frame.counterframe_axiomM₁.not_valid_axiomM (LogicEC.sound Frame.counterframe_axiomM₁ hM)
+    exact frame_3_137520.not_valid_axiomM (LogicEC.sound frame_3_137520 hM)
 
 theorem LogicEK_ssubset_LogicEMC : @LogicEK ℕ ⊂ LogicEMC := by
   constructor
@@ -70,7 +70,7 @@ theorem LogicEK_ssubset_LogicEMC : @LogicEK ℕ ⊂ LogicEMC := by
   · intro h
     have hC : Axioms.C (.atom 0) (.atom 1) ∈ @LogicEK ℕ :=
       h (ProvableHilbert.axm (Or.inr ⟨_, _, rfl⟩))
-    exact Frame.EK_counterframe_for_M_and_C.not_valid_axiomC
-      (LogicEK.sound Frame.EK_counterframe_for_M_and_C hC)
+    exact frame_4_11259170869739560.not_valid_axiomC
+      (LogicEK.sound frame_4_11259170869739560 hC)
 
 end

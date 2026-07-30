@@ -2,8 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.E4
-import Neighborhood.Semantics.Example.SimpleBlackhole
-import Neighborhood.Semantics.Example.TrivialNontransitive
+import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame2_8
 
 /-!
 # The neighborhood logic `LogicEMC4`
@@ -30,7 +30,7 @@ theorem LogicEMC4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
 
 theorem LogicEMC4.consistent : (@LogicEMC4 α).IsConsistent := by
   by_contra! hC
-  simpa using LogicEMC4.sound Frame.simple_blackhole hC
+  simpa using LogicEMC4.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEMC4 α)) :=
   MaximalConsistentSet.nonempty LogicEMC4.consistent
@@ -65,7 +65,7 @@ theorem LogicEMC_ssubset_LogicEMC4 : @LogicEMC ℕ ⊂ LogicEMC4 := by
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
     have hFour : Axioms.Four (.atom 0) ∈ (@LogicEMC ℕ) := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
-    exact Frame.trivial_nontransitive.not_valid_axiomFour
-      (LogicEMC.sound Frame.trivial_nontransitive hFour)
+    exact frame_2_8.not_valid_axiomFour
+      (LogicEMC.sound frame_2_8 hFour)
 
 end

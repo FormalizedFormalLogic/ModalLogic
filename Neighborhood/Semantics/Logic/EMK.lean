@@ -2,7 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.EK
 public import Neighborhood.Semantics.Logic.EM
-import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicEMK`
@@ -29,7 +29,7 @@ theorem LogicEMK.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
 
 theorem LogicEMK.consistent : (@LogicEMK α).IsConsistent := by
   by_contra! hC
-  simpa using LogicEMK.sound Frame.simple_blackhole hC
+  simpa using LogicEMK.sound frame_1_2 hC
 
 
 theorem LogicEK_ssubset_LogicEMK : @LogicEK ℕ ⊂ LogicEMK := by

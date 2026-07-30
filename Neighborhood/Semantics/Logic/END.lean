@@ -3,8 +3,8 @@ module
 public import Neighborhood.Semantics.AxiomN
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.EP
-import Neighborhood.Semantics.Example.SimpleBlackhole
-import Neighborhood.Semantics.Example.SimpleWhitehole
+import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame1_0
 
 /-!
 # The neighborhood logic `LogicEND`
@@ -30,7 +30,7 @@ theorem LogicEND.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
 
 theorem LogicEND.consistent : (@LogicEND α).IsConsistent := by
   by_contra! hC
-  simpa using LogicEND.sound Frame.simple_blackhole hC
+  simpa using LogicEND.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicEND α)) :=
   MaximalConsistentSet.nonempty LogicEND.consistent
@@ -49,7 +49,7 @@ theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ @LogicED ℕ := h (ProvableHilbert.axm (Or.inl rfl))
-    exact Frame.simple_whitehole.not_valid_axiomN (LogicED.sound Frame.simple_whitehole hN)
+    exact frame_1_0.not_valid_axiomN (LogicED.sound frame_1_0 hN)
 
 instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.NotContainsEmpty where
   not_contains_empty x hx := by

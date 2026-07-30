@@ -1,7 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
-import Neighborhood.Semantics.Example.SimpleBlackhole
+import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicE5`
@@ -21,7 +21,7 @@ theorem LogicE5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
 
 theorem LogicE5.consistent : (@LogicE5 α).IsConsistent := by
   by_contra! hC
-  simpa using LogicE5.sound Frame.simple_blackhole hC
+  simpa using LogicE5.sound frame_1_2 hC
 
 instance : Nonempty (MaximalConsistentSet (@LogicE5 α)) :=
   MaximalConsistentSet.nonempty LogicE5.consistent

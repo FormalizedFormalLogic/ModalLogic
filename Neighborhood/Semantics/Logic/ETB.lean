@@ -2,8 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.ET
 public import Neighborhood.Semantics.Logic.EB
-import Neighborhood.Semantics.Example.SimpleBlackhole
-import Neighborhood.Semantics.Example.SimpleWhitehole
+import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame1_0
 
 /-!
 # The neighborhood logic `LogicETB`
@@ -29,14 +29,14 @@ theorem LogicETB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
 
 theorem LogicETB.consistent : (@LogicETB α).IsConsistent := by
   by_contra! hC
-  simpa using LogicETB.sound Frame.simple_blackhole hC
+  simpa using LogicETB.sound frame_1_2 hC
 
 theorem LogicET_ssubset_LogicETB : @LogicET ℕ ⊂ LogicETB := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
     have hB : Axioms.B (.atom 0) ∈ @LogicET ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
-    have hS := isSymmetric_of_valid_axiomB (LogicET.sound Frame.simple_whitehole hB)
+    have hS := isSymmetric_of_valid_axiomB (LogicET.sound frame_1_0 hB)
     have := hS.symm (X := Set.univ)
     simp [Frame.box, Frame.dia] at this
 

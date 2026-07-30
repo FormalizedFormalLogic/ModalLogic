@@ -11,30 +11,30 @@ public import Neighborhood.Semantics.AxiomGeach
 
 variable {α : Type u}
 
-abbrev Frame.EK_counterframe_for_M_and_C : Frame (Fin 4) := ⟨fun _ => {{0, 1}, {0, 2}}⟩
+abbrev frame_4_11259170869739560 : Frame (Fin 4) := ⟨fun _ => {{0, 1}, {0, 2}}⟩
 
 @[simp]
-lemma Frame.EK_counterframe_for_M_and_C.not_valid_axiomC :
-    ¬Frame.EK_counterframe_for_M_and_C ⊧ (Axioms.C (.atom 0) (.atom 1) : Formula ℕ) :=
+lemma frame_4_11259170869739560.not_valid_axiomC :
+    ¬frame_4_11259170869739560 ⊧ (Axioms.C (.atom 0) (.atom 1) : Formula ℕ) :=
   Frame.Validate.not_of_exists_valuation_world
     ⟨fun a => match a with | 0 => {0, 1} | 1 => {0, 2} | _ => ∅, 0, by
       unfold NotForces Forces
-      simp [Frame.box, Frame.EK_counterframe_for_M_and_C, Set.ext_iff]⟩
+      simp [Frame.box, frame_4_11259170869739560, Set.ext_iff]⟩
 
 @[simp]
-lemma Frame.EK_counterframe_for_M_and_C.not_valid_axiomM :
-    ¬Frame.EK_counterframe_for_M_and_C ⊧
+lemma frame_4_11259170869739560.not_valid_axiomM :
+    ¬frame_4_11259170869739560 ⊧
       (Axioms.M ((.atom 0) ⋎ (.atom 1)) (.atom 1) : Formula ℕ) :=
   Frame.Validate.not_of_exists_valuation_world
     ⟨fun a => match a with | 0 => {0, 1} | 1 => {0, 2} | _ => ∅, 0, by
       unfold NotForces Forces
-      simp [Frame.box, Frame.EK_counterframe_for_M_and_C, Set.ext_iff]
+      simp [Frame.box, frame_4_11259170869739560, Set.ext_iff]
       decide⟩
 
-instance : Frame.EK_counterframe_for_M_and_C.HasPropertyK where
+instance : frame_4_11259170869739560.HasPropertyK where
   K X Y := by
     rintro w ⟨hw₁, hw₂⟩
-    simp only [Frame.box, Frame.EK_counterframe_for_M_and_C, Set.mem_setOf_eq,
+    simp only [Frame.box, frame_4_11259170869739560, Set.mem_setOf_eq,
       Set.mem_insert_iff, Set.mem_singleton_iff] at hw₁ hw₂
     exfalso
     rcases hw₂ with rfl | rfl <;>

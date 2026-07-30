@@ -11,10 +11,10 @@ public import Neighborhood.Semantics.AxiomGeach
 
 variable {α : Type u}
 
-abbrev Frame.trivial_serial_containsEmpty : Frame (Fin 2) :=
+abbrev frame_2_53 : Frame (Fin 2) :=
   ⟨fun w => match w with | 0 => {∅, {1}} | 1 => {∅, {0}}⟩
 
-instance : Frame.trivial_serial_containsEmpty.IsSerial where
+instance : frame_2_53.IsSerial where
   serial X x := by
     match x with
     | 0 | 1 => rintro (rfl | rfl) <;> simp [Frame.dia, Frame.box]; tauto_set

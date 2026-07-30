@@ -2,8 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EN4
-import Neighborhood.Semantics.Example.SimpleBlackhole
-import Neighborhood.Semantics.Example.TrivialContainsUnit
+import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame2_172
 
 /-!
 # The neighborhood logic `LogicEND4`
@@ -31,14 +31,14 @@ theorem LogicEND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
 
 theorem LogicEND4.consistent : (@LogicEND4 α).IsConsistent := by
   by_contra! hC
-  simpa using LogicEND4.sound Frame.simple_blackhole hC
+  simpa using LogicEND4.sound frame_1_2 hC
 
 theorem LogicEND_ssubset_LogicEND4 : @LogicEND ℕ ⊂ LogicEND4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
     have hFour : Axioms.Four (.atom 0) ∈ @LogicEND ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
-    exact Frame.trivial_containsUnit.not_valid_axiomFour
-      (LogicEND.sound Frame.trivial_containsUnit hFour)
+    exact frame_2_172.not_valid_axiomFour
+      (LogicEND.sound frame_2_172 hFour)
 
 end

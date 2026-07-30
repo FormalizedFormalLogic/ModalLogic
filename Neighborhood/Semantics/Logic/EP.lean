@@ -1,8 +1,8 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
-import Neighborhood.Semantics.Example.SimpleBlackhole
-import Neighborhood.Semantics.Example.TrivialNonserial
+import Neighborhood.Semantics.Example.Frame1_2
+import Neighborhood.Semantics.Example.Frame2_78
 
 /-!
 # The neighborhood logic `LogicEP`
@@ -26,7 +26,7 @@ theorem LogicEP.sound {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
 
 theorem LogicEP.consistent : (@LogicEP α).IsConsistent := by
   by_contra! hC
-  simpa using LogicEP.sound Frame.simple_blackhole hC
+  simpa using LogicEP.sound frame_1_2 hC
 
 
 theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
@@ -39,7 +39,7 @@ theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
     simpa using this.not_contains_empty (x := 0)
 
 theorem LogicEP.not_mem_axiomD {a : ℕ} : Axioms.D (.atom a) ∉ @LogicEP ℕ := fun hD =>
-  Frame.trivial_nonserial.not_isSerial <| isSerial_of_valid_axiomD <|
-    LogicEP.sound Frame.trivial_nonserial hD
+  frame_2_78.not_isSerial <| isSerial_of_valid_axiomD <|
+    LogicEP.sound frame_2_78 hD
 
 end
