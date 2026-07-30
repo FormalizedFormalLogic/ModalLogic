@@ -1,5 +1,15 @@
 module  -- shake: keep-all --deprecated_module: ignore
 
+public import Neighborhood.Axioms
+public import Neighborhood.Formula.Basic
+public import Neighborhood.Formula.Subformulas
+public import Neighborhood.Hilbert.Basic
+public import Neighborhood.Hilbert.Logics
+public import Neighborhood.Logic.Basic
+public import Neighborhood.Logic.Calculus
+public import Neighborhood.Logic.Cl
+public import Neighborhood.Logic.Context
+public import Neighborhood.Logic.MaximalConsistentSet
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomGeach
 public import Neighborhood.Semantics.AxiomK
@@ -41,3 +51,4 @@ public import Neighborhood.Semantics.Logic.ET5
 public import Neighborhood.Semantics.Logic.ETB
 public import Neighborhood.Semantics.Logic.Incomparability.ED_EP
 public import Neighborhood.Semantics.Supplementation
+public import Neighborhood.Vorspiel
