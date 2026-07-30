@@ -13,53 +13,53 @@ abbreviations for the corresponding formulas.
 
 namespace Axioms
 
-variable (φ ψ χ : Formula)
+variable {α : Type u} (A B C : Formula α)
 
-protected abbrev ImplyK := φ 🡒 ψ 🡒 φ
+protected abbrev ImplyK := A 🡒 B 🡒 A
 
-protected abbrev ImplyS := (φ 🡒 ψ 🡒 χ) 🡒 (φ 🡒 ψ) 🡒 φ 🡒 χ
+protected abbrev ImplyS := (A 🡒 B 🡒 C) 🡒 (A 🡒 B) 🡒 A 🡒 C
 
-protected abbrev ElimContra := (∼ψ 🡒 ∼φ) 🡒 (φ 🡒 ψ)
+protected abbrev ElimContra := (∼B 🡒 ∼A) 🡒 (A 🡒 B)
 
-protected abbrev DNE := ∼∼φ 🡒 φ
+protected abbrev DNE := ∼∼A 🡒 A
 
-protected abbrev AndElim₁ := φ ⋏ ψ 🡒 φ
+protected abbrev AndElim₁ := A ⋏ B 🡒 A
 
-protected abbrev AndElim₂ := φ ⋏ ψ 🡒 ψ
+protected abbrev AndElim₂ := A ⋏ B 🡒 B
 
-protected abbrev AndIntro := φ 🡒 ψ 🡒 φ ⋏ ψ
+protected abbrev AndIntro := A 🡒 B 🡒 A ⋏ B
 
-protected abbrev OrIntro₁ := φ 🡒 φ ⋎ ψ
+protected abbrev OrIntro₁ := A 🡒 A ⋎ B
 
-protected abbrev OrIntro₂ := ψ 🡒 φ ⋎ ψ
+protected abbrev OrIntro₂ := B 🡒 A ⋎ B
 
-protected abbrev OrElim := (φ 🡒 χ) 🡒 (ψ 🡒 χ) 🡒 (φ ⋎ ψ 🡒 χ)
+protected abbrev OrElim := (A 🡒 C) 🡒 (B 🡒 C) 🡒 (A ⋎ B 🡒 C)
 
-protected abbrev K := □(φ 🡒 ψ) 🡒 □φ 🡒 □ψ
+protected abbrev K := □(A 🡒 B) 🡒 □A 🡒 □B
 
-protected abbrev M := □(φ ⋏ ψ) 🡒 (□φ ⋏ □ψ)
+protected abbrev M := □(A ⋏ B) 🡒 (□A ⋏ □B)
 
-protected abbrev C := (□φ ⋏ □ψ) 🡒 □(φ ⋏ ψ)
+protected abbrev C := (□A ⋏ □B) 🡒 □(A ⋏ B)
 
-protected abbrev N : Formula := □(⊤ : Formula)
+protected abbrev N : Formula α := □(⊤ : Formula α)
 
 /-- Axiom for reflexivity. -/
-protected abbrev T := □φ 🡒 φ
+protected abbrev T := □A 🡒 A
 
 /-- Axiom for symmetry. -/
-protected abbrev B := φ 🡒 □◇φ
+protected abbrev B := A 🡒 □◇A
 
 /-- Axiom for seriality. -/
-protected abbrev D := □φ 🡒 ◇φ
+protected abbrev D := □A 🡒 ◇A
 
 /-- Alternative axiom `D`. -/
-protected abbrev P : Formula := ∼(□⊥)
+protected abbrev P : Formula α := ∼(□⊥)
 
 /-- Axiom for transitivity. -/
-protected abbrev Four := □φ 🡒 □□φ
+protected abbrev Four := □A 🡒 □□A
 
 /-- Axiom for euclideanness. -/
-protected abbrev Five := ◇φ 🡒 □◇φ
+protected abbrev Five := ◇A 🡒 □◇A
 
 /-- Parameters `i`, `j`, `m`, `n` of the Geach axiom scheme. -/
 protected structure Geach.Taple where
@@ -69,7 +69,7 @@ protected structure Geach.Taple where
   n : ℕ
 
 /-- Axiom for Geach convergence. -/
-protected abbrev Geach (g : Geach.Taple) (φ : Formula) := (◇^[g.i](□^[g.m]φ)) 🡒 (□^[g.j](◇^[g.n]φ))
+protected abbrev Geach (g : Geach.Taple) (A : Formula α) := (◇^[g.i](□^[g.m]A)) 🡒 (□^[g.j](◇^[g.n]A))
 
 end Axioms
 
