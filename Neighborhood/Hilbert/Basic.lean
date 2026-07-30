@@ -5,240 +5,170 @@ public import Neighborhood.Logic.Calculus
 /-!
 # Hilbert-style axiomatisation of classical non-normal modal logics
 
-A set of axiom schemes and the smallest logic containing all of their substitution instances,
-closed under modus ponens and the congruence rule for `□`. Possession of a named axiom scheme by
-the set of schemes is expressed by a class carrying witnessing propositional variables, from which
-the corresponding closure condition of the generated logic follows by substitution.
+A `Hilbert`-style proof system is presented in three layers, following the pattern used
+throughout the provability logic development:
+
+* `ProofHilbert Ax A`, the `Type`-valued derivation tree of `A` from an axiom set `Ax`, closed
+  under modus ponens and the congruence rule for `□`, together with the propositional axiom
+  schemes `ImplyK`, `ImplyS`, `DNE`, `AndElim₁`, `AndElim₂`, `AndIntro`, `OrIntro₁`, `OrIntro₂`
+  and `OrElim`. Since `Ax` is a set of formulas rather than a set of schemes taken up to
+  substitution, `axm` requires no substitution step: it is instantiated by supplying `Ax` with
+  every instance of a scheme directly (e.g. `{Axioms.M A B | (A) (B)}`).
+* `ProvableHilbert Ax A`, the `Prop`-valued truncation `Nonempty (ProofHilbert Ax A)`.
+* `Hilbert Ax`, the `Logic` of formulas provable from `Ax`.
 -/
 
 @[expose] public section
 
-/-- A set of axiom schemes, each taken up to substitution. -/
-abbrev Axiom := Set Formula
+variable {α : Type u}
 
-namespace Axiom
+/-- Derivations of `A` from the axiom set `Ax`, closed under modus ponens and the congruence rule
+for `□`. Since `Ax` already contains every instance of each scheme it is meant to axiomatise,
+`axm` need not perform a substitution. -/
+inductive ProofHilbert (Ax : FormulaSet α) : Formula α → Type u
+  | axm {A} : A ∈ Ax → ProofHilbert Ax A
+  | mdp {A B} : ProofHilbert Ax (A 🡒 B) → ProofHilbert Ax A → ProofHilbert Ax B
+  | re {A B} : ProofHilbert Ax (A 🡘 B) → ProofHilbert Ax (□A 🡘 □B)
+  | implyK {A B} : ProofHilbert Ax (Axioms.ImplyK A B)
+  | implyS {A B C} : ProofHilbert Ax (Axioms.ImplyS A B C)
+  | dne {A} : ProofHilbert Ax (Axioms.DNE A)
+  | andElim₁ {A B} : ProofHilbert Ax (Axioms.AndElim₁ A B)
+  | andElim₂ {A B} : ProofHilbert Ax (Axioms.AndElim₂ A B)
+  | andIntro {A B} : ProofHilbert Ax (Axioms.AndIntro A B)
+  | orIntro₁ {A B} : ProofHilbert Ax (Axioms.OrIntro₁ A B)
+  | orIntro₂ {A B} : ProofHilbert Ax (Axioms.OrIntro₂ A B)
+  | orElim {A B C} : ProofHilbert Ax (Axioms.OrElim A B C)
 
-/-- `Ax` contains the axiom scheme `M`, witnessed by two distinct propositional variables. -/
-class HasM (Ax : Axiom) where
-  p : ℕ
-  q : ℕ
-  ne_pq : p ≠ q := by trivial
-  mem_M : Axioms.M (.atom p) (.atom q) ∈ Ax := by tauto
+@[inherit_doc] notation:45 "⊢ʰ[" Ax "]! " A:46 => ProofHilbert Ax A
 
-/-- `Ax` contains the axiom scheme `C`, witnessed by two distinct propositional variables. -/
-class HasC (Ax : Axiom) where
-  p : ℕ
-  q : ℕ
-  ne_pq : p ≠ q := by trivial
-  mem_C : Axioms.C (.atom p) (.atom q) ∈ Ax := by tauto
+/-- `A` is provable from the axiom set `Ax`. -/
+abbrev ProvableHilbert (Ax : FormulaSet α) (A : Formula α) : Prop := Nonempty (⊢ʰ[Ax]! A)
 
-/-- `Ax` contains the axiom `N`. -/
-class HasN (Ax : Axiom) where
-  mem_N : Axioms.N ∈ Ax := by tauto
+@[inherit_doc] notation:45 "⊢ʰ[" Ax "] " A:46 => ProvableHilbert Ax A
 
-/-- `Ax` contains the axiom scheme `K`, witnessed by two distinct propositional variables. -/
-class HasK (Ax : Axiom) where
-  p : ℕ
-  q : ℕ
-  ne_pq : p ≠ q := by trivial
-  mem_K : Axioms.K (.atom p) (.atom q) ∈ Ax := by tauto
+variable {Ax Ax₁ Ax₂ : FormulaSet α} {A B C : Formula α}
 
-/-- `Ax` contains the axiom scheme `T`, witnessed by a propositional variable. -/
-class HasT (Ax : Axiom) where
-  p : ℕ
-  mem_T : Axioms.T (.atom p) ∈ Ax := by tauto
+namespace ProvableHilbert
 
-/-- `Ax` contains the axiom scheme `B`, witnessed by a propositional variable. -/
-class HasB (Ax : Axiom) where
-  p : ℕ
-  mem_B : Axioms.B (.atom p) ∈ Ax := by tauto
+@[grind ←] lemma axm (h : A ∈ Ax) : ⊢ʰ[Ax] A := ⟨ProofHilbert.axm h⟩
+@[grind =>] lemma mdp : ⊢ʰ[Ax] (A 🡒 B) → ⊢ʰ[Ax] A → ⊢ʰ[Ax] B :=
+  fun ⟨h₁⟩ ⟨h₂⟩ => ⟨ProofHilbert.mdp h₁ h₂⟩
+@[grind <=] lemma re : ⊢ʰ[Ax] (A 🡘 B) → ⊢ʰ[Ax] (□A 🡘 □B) := fun ⟨h⟩ => ⟨ProofHilbert.re h⟩
+@[simp, grind .] lemma implyK (A B) : ⊢ʰ[Ax] Axioms.ImplyK A B := ⟨ProofHilbert.implyK⟩
+@[simp, grind .] lemma implyS (A B C) : ⊢ʰ[Ax] Axioms.ImplyS A B C := ⟨ProofHilbert.implyS⟩
+@[simp, grind .] lemma dne (A) : ⊢ʰ[Ax] Axioms.DNE A := ⟨ProofHilbert.dne⟩
+@[simp, grind .] lemma andElim₁ (A B) : ⊢ʰ[Ax] Axioms.AndElim₁ A B := ⟨ProofHilbert.andElim₁⟩
+@[simp, grind .] lemma andElim₂ (A B) : ⊢ʰ[Ax] Axioms.AndElim₂ A B := ⟨ProofHilbert.andElim₂⟩
+@[simp, grind .] lemma andIntro (A B) : ⊢ʰ[Ax] Axioms.AndIntro A B := ⟨ProofHilbert.andIntro⟩
+@[simp, grind .] lemma orIntro₁ (A B) : ⊢ʰ[Ax] Axioms.OrIntro₁ A B := ⟨ProofHilbert.orIntro₁⟩
+@[simp, grind .] lemma orIntro₂ (A B) : ⊢ʰ[Ax] Axioms.OrIntro₂ A B := ⟨ProofHilbert.orIntro₂⟩
+@[simp, grind .] lemma orElim (A B C) : ⊢ʰ[Ax] Axioms.OrElim A B C := ⟨ProofHilbert.orElim⟩
 
-/-- `Ax` contains the axiom scheme `D`, witnessed by a propositional variable. -/
-class HasD (Ax : Axiom) where
-  p : ℕ
-  mem_D : Axioms.D (.atom p) ∈ Ax := by tauto
+-- None of `axm`, `mdp`, `re`, `implyK`, `implyS`, `dne`, `andElim₁`, `andElim₂`, `andIntro`,
+-- `orIntro₁`, `orIntro₂`, `orElim` is referenced by name inside `rintro A ⟨h⟩; induction h <;>
+-- grind`, so the unused-variable linter would flag every parameter below. The names are not
+-- dead: since `rec` is `@[induction_eliminator]`, they become the case tags used by
+-- `induction ... using rec with | <name> ... => ...` at call sites, so they cannot be renamed
+-- to `_` without breaking those call sites.
+set_option linter.unusedVariables false in
+/-- Induction on a derivation of `⊢ʰ[Ax] A`. -/
+@[induction_eliminator]
+lemma rec {motive : (A : Formula α) → ⊢ʰ[Ax] A → Prop}
+    (axm : ∀ {A} (h : A ∈ Ax), motive A (axm h))
+    (mdp : ∀ {A B} (h₁ : ⊢ʰ[Ax] (A 🡒 B)) (h₂ : ⊢ʰ[Ax] A),
+      motive _ h₁ → motive _ h₂ → motive _ (mdp h₁ h₂))
+    (re : ∀ {A B} (h : ⊢ʰ[Ax] (A 🡘 B)), motive _ h → motive _ (re h))
+    (implyK : ∀ A B, motive _ (implyK A B))
+    (implyS : ∀ A B C, motive _ (implyS A B C))
+    (dne : ∀ A, motive _ (dne A))
+    (andElim₁ : ∀ A B, motive _ (andElim₁ A B))
+    (andElim₂ : ∀ A B, motive _ (andElim₂ A B))
+    (andIntro : ∀ A B, motive _ (andIntro A B))
+    (orIntro₁ : ∀ A B, motive _ (orIntro₁ A B))
+    (orIntro₂ : ∀ A B, motive _ (orIntro₂ A B))
+    (orElim : ∀ A B C, motive _ (orElim A B C)) :
+    ∀ {A} (h : ⊢ʰ[Ax] A), motive A h := by
+  rintro A ⟨h⟩
+  induction h <;> grind
 
-/-- `Ax` contains the axiom `P`. -/
-class HasP (Ax : Axiom) where
-  mem_P : Axioms.P ∈ Ax := by tauto
+end ProvableHilbert
 
-/-- `Ax` contains the axiom scheme `Four`, witnessed by a propositional variable. -/
-class HasFour (Ax : Axiom) where
-  p : ℕ
-  mem_Four : Axioms.Four (.atom p) ∈ Ax := by tauto
-
-/-- `Ax` contains the axiom scheme `Five`, witnessed by a propositional variable. -/
-class HasFive (Ax : Axiom) where
-  p : ℕ
-  mem_Five : Axioms.Five (.atom p) ∈ Ax := by tauto
-
-end Axiom
-
-/-- The smallest logic containing every substitution instance of `Ax`, closed under modus ponens
-and the congruence rule for `□`. -/
-inductive Hilbert (Ax : Axiom) : Logic
-  | axm {φ} (s : Substitution) : φ ∈ Ax → Hilbert Ax (φ⟦s⟧)
-  | mdp {φ ψ} : Hilbert Ax (φ 🡒 ψ) → Hilbert Ax φ → Hilbert Ax ψ
-  | re {φ ψ} : Hilbert Ax (φ 🡘 ψ) → Hilbert Ax (□φ 🡘 □ψ)
-  | implyK φ ψ : Hilbert Ax (Axioms.ImplyK φ ψ)
-  | implyS φ ψ χ : Hilbert Ax (Axioms.ImplyS φ ψ χ)
-  | dne φ : Hilbert Ax (Axioms.DNE φ)
-  | andElim₁ φ ψ : Hilbert Ax (Axioms.AndElim₁ φ ψ)
-  | andElim₂ φ ψ : Hilbert Ax (Axioms.AndElim₂ φ ψ)
-  | andIntro φ ψ : Hilbert Ax (Axioms.AndIntro φ ψ)
-  | orIntro₁ φ ψ : Hilbert Ax (Axioms.OrIntro₁ φ ψ)
-  | orIntro₂ φ ψ : Hilbert Ax (Axioms.OrIntro₂ φ ψ)
-  | orElim φ ψ χ : Hilbert Ax (Axioms.OrElim φ ψ χ)
+/-- The smallest logic containing every axiom of `Ax`, closed under modus ponens and the
+congruence rule for `□`. -/
+abbrev Hilbert (Ax : FormulaSet α) : Logic α := { A | ⊢ʰ[Ax] A }
 
 namespace Hilbert
 
 open Logic
 
-variable {Ax Ax₁ Ax₂ : Axiom} {φ ψ : Formula} {s : Substitution}
-
 instance : (Hilbert Ax).Cl where
-  mdp := Hilbert.mdp
-  implyK := Hilbert.implyK
-  implyS := Hilbert.implyS
-  dne := Hilbert.dne
-  andElim₁ := Hilbert.andElim₁
-  andElim₂ := Hilbert.andElim₂
-  andIntro := Hilbert.andIntro
-  orIntro₁ := Hilbert.orIntro₁
-  orIntro₂ := Hilbert.orIntro₂
-  orElim := Hilbert.orElim
+  mdp := fun h₁ h₂ => ProvableHilbert.mdp h₁ h₂
+  implyK := fun A B => ProvableHilbert.implyK A B
+  implyS := fun A B C => ProvableHilbert.implyS A B C
+  dne := fun A => ProvableHilbert.dne A
+  andElim₁ := fun A B => ProvableHilbert.andElim₁ A B
+  andElim₂ := fun A B => ProvableHilbert.andElim₂ A B
+  andIntro := fun A B => ProvableHilbert.andIntro A B
+  orIntro₁ := fun A B => ProvableHilbert.orIntro₁ A B
+  orIntro₂ := fun A B => ProvableHilbert.orIntro₂ A B
+  orElim := fun A B C => ProvableHilbert.orElim A B C
 
-instance : (Hilbert Ax).HasRE where re := Hilbert.re
+instance : (Hilbert Ax).HasRE where re := fun h => ProvableHilbert.re h
 
-@[simp] lemma iff_mem : Hilbert Ax φ ↔ φ ∈ Hilbert Ax := Iff.rfl
+@[simp] lemma mem_hilbert : A ∈ Hilbert Ax ↔ ⊢ʰ[Ax] A := Iff.rfl
 
-@[grind ←] lemma axm! (s : Substitution) (h : φ ∈ Ax) : φ⟦s⟧ ∈ Hilbert Ax := axm s h
+/-- If every axiom of `Ax₁` is provable in `Hilbert Ax₂`, then `Hilbert Ax₁ ⊆ Hilbert Ax₂`. -/
+lemma subset_of_provable_axioms (h : Ax₁ ⊆ Hilbert Ax₂) : Hilbert Ax₁ ⊆ Hilbert Ax₂ := by
+  intro A hA
+  induction hA using ProvableHilbert.rec with
+  | axm hmem => exact h hmem
+  | mdp _ _ ih₁ ih₂ => exact ih₁ ⨀ ih₂
+  | re _ ih => exact re! ih
+  | _ => simp
 
-@[grind ←] lemma axm'! (h : φ ∈ Ax) : φ ∈ Hilbert Ax := by simpa using axm! .id h
-
-/-- Provability in a Hilbert system is closed under substitution. -/
-lemma subst_mem (h : φ ∈ Hilbert Ax) : φ⟦s⟧ ∈ Hilbert Ax := by
-  induction h with
-  | @axm _ s' hφ => simpa using axm (s := s'.comp s) hφ;
-  | mdp _ _ ih₁ ih₂ => exact mdp ih₁ ih₂;
-  | re _ ih => exact re ih;
-  | _ => simp;
-
-/-- Induction on a proof in a Hilbert system. -/
-protected lemma rec! {motive : (φ : Formula) → φ ∈ Hilbert Ax → Prop}
-    (axm : ∀ {φ} (s : Substitution), (h : φ ∈ Ax) → motive (φ⟦s⟧) (axm! s h))
-    (mdp : ∀ {φ ψ}, {h₁ : φ 🡒 ψ ∈ Hilbert Ax} → {h₂ : φ ∈ Hilbert Ax} →
-      motive (φ 🡒 ψ) h₁ → motive φ h₂ → motive ψ (h₁ ⨀ h₂))
-    (re : ∀ {φ ψ}, {h : φ 🡘 ψ ∈ Hilbert Ax} → motive (φ 🡘 ψ) h → motive (□φ 🡘 □ψ) (re! h))
-    (implyK : ∀ φ ψ, motive (Axioms.ImplyK φ ψ) (by simp))
-    (implyS : ∀ φ ψ χ, motive (Axioms.ImplyS φ ψ χ) (by simp))
-    (dne : ∀ φ, motive (Axioms.DNE φ) (by simp))
-    (andElim₁ : ∀ φ ψ, motive (Axioms.AndElim₁ φ ψ) (by simp))
-    (andElim₂ : ∀ φ ψ, motive (Axioms.AndElim₂ φ ψ) (by simp))
-    (andIntro : ∀ φ ψ, motive (Axioms.AndIntro φ ψ) (by simp))
-    (orIntro₁ : ∀ φ ψ, motive (Axioms.OrIntro₁ φ ψ) (by simp))
-    (orIntro₂ : ∀ φ ψ, motive (Axioms.OrIntro₂ φ ψ) (by simp))
-    (orElim : ∀ φ ψ χ, motive (Axioms.OrElim φ ψ χ) (by simp)) :
-    ∀ {φ}, (h : φ ∈ Hilbert Ax) → motive φ h := by
-  intro φ h;
-  induction h with
-  | axm s hφ => exact axm s hφ;
-  | mdp _ _ ih₁ ih₂ => exact mdp ih₁ ih₂;
-  | re _ ih => exact re ih;
-  | implyK => apply implyK;
-  | implyS => apply implyS;
-  | dne => apply dne;
-  | andElim₁ => apply andElim₁;
-  | andElim₂ => apply andElim₂;
-  | andIntro => apply andIntro;
-  | orIntro₁ => apply orIntro₁;
-  | orIntro₂ => apply orIntro₂;
-  | orElim => apply orElim;
-
-/-- If every scheme of `Ax₁` is provable in `Hilbert Ax₂`, then `Hilbert Ax₁` is contained in
-`Hilbert Ax₂`. -/
-lemma subset_of_provable_axioms (hs : Ax₁ ⊆ Hilbert Ax₂) : Hilbert Ax₁ ⊆ Hilbert Ax₂ := by
-  intro φ h;
-  induction h using Hilbert.rec! with
-  | axm s hφ => exact subst_mem (hs hφ);
-  | mdp ih₁ ih₂ => exact ih₁ ⨀ ih₂;
-  | re ih => exact re! ih;
-  | _ => simp;
-
+/-- Monotonicity of `Hilbert` in its axiom set. -/
 lemma subset_of_subset_axioms (h : Ax₁ ⊆ Ax₂) : Hilbert Ax₁ ⊆ Hilbert Ax₂ :=
-  subset_of_provable_axioms fun _ hφ => axm'! (h hφ)
+  subset_of_provable_axioms fun _ hA => ProvableHilbert.axm (h hA)
 
-open Axiom
+/-- `Hilbert Ax` has the axiom scheme `M` whenever `Ax` contains every instance of `M`. -/
+lemma hasAxiomM_of (h : ∀ A B : Formula α, Axioms.M A B ∈ Ax) : (Hilbert Ax).HasAxiomM :=
+  ⟨fun A B => ProvableHilbert.axm (h A B)⟩
 
-instance instHasAxiomM [Ax.HasM] : (Hilbert Ax).HasAxiomM where
-  M φ ψ := by
-    have h := Hilbert.axm
-      (φ := Axioms.M (.atom (HasM.p Ax)) (.atom (HasM.q Ax)))
-      (s := fun b => if HasM.p Ax = b then φ else if HasM.q Ax = b then ψ else .atom b)
-      HasM.mem_M;
-    simpa [HasM.ne_pq] using h;
+/-- `Hilbert Ax` has the axiom scheme `C` whenever `Ax` contains every instance of `C`. -/
+lemma hasAxiomC_of (h : ∀ A B : Formula α, Axioms.C A B ∈ Ax) : (Hilbert Ax).HasAxiomC :=
+  ⟨fun A B => ProvableHilbert.axm (h A B)⟩
 
-instance instHasAxiomC [Ax.HasC] : (Hilbert Ax).HasAxiomC where
-  C φ ψ := by
-    have h := Hilbert.axm
-      (φ := Axioms.C (.atom (HasC.p Ax)) (.atom (HasC.q Ax)))
-      (s := fun b => if HasC.p Ax = b then φ else if HasC.q Ax = b then ψ else .atom b)
-      HasC.mem_C;
-    simpa [HasC.ne_pq] using h;
+/-- `Hilbert Ax` has the axiom `N` whenever `Ax` contains it. -/
+lemma hasAxiomN_of (h : Axioms.N ∈ Ax) : (Hilbert Ax).HasAxiomN :=
+  ⟨ProvableHilbert.axm h⟩
 
-instance instHasAxiomN [Ax.HasN] : (Hilbert Ax).HasAxiomN where
-  N := by simpa using Hilbert.axm (φ := Axioms.N) (s := .id) HasN.mem_N
+/-- `Hilbert Ax` has the axiom scheme `K` whenever `Ax` contains every instance of `K`. -/
+lemma hasAxiomK_of (h : ∀ A B : Formula α, Axioms.K A B ∈ Ax) : (Hilbert Ax).HasAxiomK :=
+  ⟨fun A B => ProvableHilbert.axm (h A B)⟩
 
-instance instHasAxiomK [Ax.HasK] : (Hilbert Ax).HasAxiomK where
-  K φ ψ := by
-    have h := Hilbert.axm
-      (φ := Axioms.K (.atom (HasK.p Ax)) (.atom (HasK.q Ax)))
-      (s := fun b => if HasK.p Ax = b then φ else if HasK.q Ax = b then ψ else .atom b)
-      HasK.mem_K;
-    simpa [HasK.ne_pq] using h;
+/-- `Hilbert Ax` has the axiom scheme `T` whenever `Ax` contains every instance of `T`. -/
+lemma hasAxiomT_of (h : ∀ A : Formula α, Axioms.T A ∈ Ax) : (Hilbert Ax).HasAxiomT :=
+  ⟨fun A => ProvableHilbert.axm (h A)⟩
 
-instance instHasAxiomT [Ax.HasT] : (Hilbert Ax).HasAxiomT where
-  T φ := by
-    have h := Hilbert.axm
-      (φ := Axioms.T (.atom (HasT.p Ax)))
-      (s := fun b => if HasT.p Ax = b then φ else .atom b)
-      HasT.mem_T;
-    simpa using h;
+/-- `Hilbert Ax` has the axiom scheme `B` whenever `Ax` contains every instance of `B`. -/
+lemma hasAxiomB_of (h : ∀ A : Formula α, Axioms.B A ∈ Ax) : (Hilbert Ax).HasAxiomB :=
+  ⟨fun A => ProvableHilbert.axm (h A)⟩
 
-instance instHasAxiomB [Ax.HasB] : (Hilbert Ax).HasAxiomB where
-  B φ := by
-    have h := Hilbert.axm
-      (φ := Axioms.B (.atom (HasB.p Ax)))
-      (s := fun b => if HasB.p Ax = b then φ else .atom b)
-      HasB.mem_B;
-    simpa using h;
+/-- `Hilbert Ax` has the axiom scheme `D` whenever `Ax` contains every instance of `D`. -/
+lemma hasAxiomD_of (h : ∀ A : Formula α, Axioms.D A ∈ Ax) : (Hilbert Ax).HasAxiomD :=
+  ⟨fun A => ProvableHilbert.axm (h A)⟩
 
-instance instHasAxiomD [Ax.HasD] : (Hilbert Ax).HasAxiomD where
-  D φ := by
-    have h := Hilbert.axm
-      (φ := Axioms.D (.atom (HasD.p Ax)))
-      (s := fun b => if HasD.p Ax = b then φ else .atom b)
-      HasD.mem_D;
-    simpa using h;
+/-- `Hilbert Ax` has the axiom `P` whenever `Ax` contains it. -/
+lemma hasAxiomP_of (h : Axioms.P ∈ Ax) : (Hilbert Ax).HasAxiomP :=
+  ⟨ProvableHilbert.axm h⟩
 
-instance instHasAxiomP [Ax.HasP] : (Hilbert Ax).HasAxiomP where
-  P := by simpa using Hilbert.axm (φ := Axioms.P) (s := .id) HasP.mem_P
+/-- `Hilbert Ax` has the axiom scheme `Four` whenever `Ax` contains every instance of `Four`. -/
+lemma hasAxiomFour_of (h : ∀ A : Formula α, Axioms.Four A ∈ Ax) : (Hilbert Ax).HasAxiomFour :=
+  ⟨fun A => ProvableHilbert.axm (h A)⟩
 
-instance instHasAxiomFour [Ax.HasFour] : (Hilbert Ax).HasAxiomFour where
-  Four φ := by
-    have h := Hilbert.axm
-      (φ := Axioms.Four (.atom (HasFour.p Ax)))
-      (s := fun b => if HasFour.p Ax = b then φ else .atom b)
-      HasFour.mem_Four;
-    simpa using h;
-
-instance instHasAxiomFive [Ax.HasFive] : (Hilbert Ax).HasAxiomFive where
-  Five φ := by
-    have h := Hilbert.axm
-      (φ := Axioms.Five (.atom (HasFive.p Ax)))
-      (s := fun b => if HasFive.p Ax = b then φ else .atom b)
-      HasFive.mem_Five;
-    simpa using h;
+/-- `Hilbert Ax` has the axiom scheme `Five` whenever `Ax` contains every instance of `Five`. -/
+lemma hasAxiomFive_of (h : ∀ A : Formula α, Axioms.Five A ∈ Ax) : (Hilbert Ax).HasAxiomFive :=
+  ⟨fun A => ProvableHilbert.axm (h A)⟩
 
 end Hilbert
 
