@@ -1,61 +1,63 @@
 module
 
+public import Neighborhood.Semantics.Hilbert
+public import Neighborhood.Semantics.Completeness
+public import Neighborhood.Semantics.Supplementation
+public import Neighborhood.Semantics.AxiomM
+public import Neighborhood.Semantics.AxiomGeach
+public import Neighborhood.Hilbert.Logics
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.ET
 
+/-!
+# The neighborhood logic `LogicEMT`
+
+Soundness, consistency and completeness of `LogicEMT`, the classical modal logic axiomatised by
+the monotonicity axiom `M` and the reflexivity axiom `T`, with respect to the neighborhood frames
+that are both monotonic and reflexive, and its strict inclusion of `LogicEM`.
+-/
+
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness, consistency and completeness -/
 
-namespace Neighborhood
+/-- `LogicEMT` is sound with respect to every monotonic and reflexive neighborhood frame. -/
+theorem LogicEMT.sound (h : A ∈ LogicEMT) {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+    [F.IsReflexive] : F ⊧ A :=
+  Hilbert.sound (by
+    rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩)
+    · exact valid_axiomM_of_isMonotonic
+    · exact valid_axiomT_of_isReflexive) h
 
-instance : Frame.simple_blackhole.IsReflexive := by
-  constructor;
-  intro X x;
-  simp_all;
+instance : (@LogicEMT α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole) (by
+    rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩)
+    · exact valid_axiomM_of_isMonotonic
+    · exact valid_axiomT_of_isReflexive)
 
-protected class Frame.IsEMT (F : Frame) extends F.IsMonotonic, F.IsReflexive where
-protected abbrev FrameClass.EMT : FrameClass := { F | F.IsEMT }
+variable [DecidableEq α]
 
-end Neighborhood
+/-- `LogicEMT` is complete with respect to all monotonic and reflexive neighborhood frames. -/
+theorem LogicEMT.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.IsMonotonic → F.IsReflexive → F ⊧ A) :
+    A ∈ @LogicEMT α :=
+  (supplementedBasicCanonicity LogicEMT).mem_of_valid
+    (h (supplementedBasicCanonicity LogicEMT).toModel.toFrame inferInstance inferInstance
+      (supplementedBasicCanonicity LogicEMT).toModel.Val)
 
+/-! ### Strict inclusion of `LogicEM` -/
 
-namespace EMT
+theorem LogicEM_ssubset_LogicEMT : @LogicEM ℕ ⊂ LogicEMT := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
+  · intro h
+    have hT : Axioms.T (.atom 0) ∈ @LogicEM ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    haveI : (⟨fun _ => Set.univ⟩ : Frame (Fin 1)).IsMonotonic := ⟨fun X Y => by simp [Frame.box]⟩
+    have hR := isReflexive_of_valid_axiomT
+      (LogicEM.sound hT (⟨fun _ => Set.univ⟩ : Frame (Fin 1)))
+    have := hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
+    simp at this
 
-instance Neighborhood.sound : Sound Modal.EMT FrameClass.EMT := instSound_of_validates_axioms $ by
-  constructor;
-  rintro _ (rfl | rfl) F (rfl | rfl) <;> simp;
-
-instance consistent : Entailment.Consistent Modal.EMT := consistent_of_sound_frameclass FrameClass.EMT $ by
-  use Frame.simple_blackhole;
-  apply Set.mem_setOf_eq.mpr;
-  constructor;
-
-instance Neighborhood.complete : Complete Modal.EMT FrameClass.EMT := (supplementedBasicCanonicity Modal.EMT).completeness $ by
-  apply Set.mem_setOf_eq.mpr;
-  constructor;
-
-end EMT
-
-
-instance : Modal.EMT ⪱ Modal.EMT4 := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    grind;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.Four (.atom 0));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.EMT);
-      apply not_validOnFrameClass_of_exists_frame;
-      use Frame.trivial_nontransitive;
-      constructor;
-      . constructor;
-      . simp;
-
-end LO.Modal
 end
