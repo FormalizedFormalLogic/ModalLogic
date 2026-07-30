@@ -7,46 +7,46 @@ public import Mathlib.Order.Notation
 /-!
 # Modal formulas
 
-Formulas of propositional modal logic over the natural numbers as propositional variables.
+Formulas of propositional modal logic over a type `α` of propositional variables.
 
 The primitive connectives are `atom`, `⊥`, `🡒` and `□`; negation, verum, conjunction,
 disjunction, biimplication and `◇` are reducible abbreviations of those, so that e.g.
-`◇φ = ∼□∼φ` and `∼φ = φ 🡒 ⊥` hold by `rfl`.
+`◇A = ∼□∼A` and `∼A = A 🡒 ⊥` hold by `rfl`.
 -/
 
 @[expose] public section
 
 /-- Formulas of propositional modal logic. -/
-inductive Formula where
-  | atom   : ℕ → Formula
-  | falsum : Formula
-  | imp    : Formula → Formula → Formula
-  | box    : Formula → Formula
+inductive Formula (α : Type u) where
+  | atom   : α → Formula α
+  | falsum : Formula α
+  | imp    : Formula α → Formula α → Formula α
+  | box    : Formula α → Formula α
   deriving DecidableEq
 
-abbrev FormulaSet := Set Formula
+abbrev FormulaSet (α : Type u) := Set (Formula α)
 
-abbrev FormulaFinset := Finset Formula
+abbrev FormulaFinset (α : Type u) := Finset (Formula α)
 
 namespace Formula
 
-variable {n : ℕ} {φ φ₁ φ₂ ψ ψ₁ ψ₂ : Formula}
+variable {α : Type u} {n : ℕ} {A A₁ A₂ B B₁ B₂ : Formula α}
 
-instance : Bot Formula := ⟨falsum⟩
+instance : Bot (Formula α) := ⟨falsum⟩
 
-@[match_pattern] abbrev neg (φ : Formula) : Formula := imp φ ⊥
+@[match_pattern] abbrev neg (A : Formula α) : Formula α := imp A ⊥
 
-@[match_pattern] abbrev verum : Formula := neg ⊥
+@[match_pattern] abbrev verum : Formula α := neg ⊥
 
-instance : Top Formula := ⟨verum⟩
+instance : Top (Formula α) := ⟨verum⟩
 
-@[match_pattern] abbrev or (φ ψ : Formula) : Formula := imp (neg φ) ψ
+@[match_pattern] abbrev or (A B : Formula α) : Formula α := imp (neg A) B
 
-@[match_pattern] abbrev and (φ ψ : Formula) : Formula := neg (imp φ (neg ψ))
+@[match_pattern] abbrev and (A B : Formula α) : Formula α := neg (imp A (neg B))
 
-@[match_pattern] abbrev dia (φ : Formula) : Formula := neg (box (neg φ))
+@[match_pattern] abbrev dia (A : Formula α) : Formula α := neg (box (neg A))
 
-@[match_pattern] abbrev iff (φ ψ : Formula) : Formula := and (imp φ ψ) (imp ψ φ)
+@[match_pattern] abbrev iff (A B : Formula α) : Formula α := and (imp A B) (imp B A)
 
 end Formula
 
@@ -60,100 +60,100 @@ end Formula
 
 namespace Formula
 
-variable {n : ℕ} {φ φ₁ φ₂ ψ ψ₁ ψ₂ : Formula}
+variable {α : Type u} {n : ℕ} {A A₁ A₂ B B₁ B₂ : Formula α}
 
-@[grind =] lemma eq_verum_neg_falsum : ⊤ = ∼(⊥ : Formula) := rfl
+@[grind =] lemma eq_verum_neg_falsum : ⊤ = ∼(⊥ : Formula α) := rfl
 
-lemma falsum_eq : (⊥ : Formula) = falsum := rfl
-lemma verum_eq : (⊤ : Formula) = verum := rfl
-lemma iff_eq : φ 🡘 ψ = (φ 🡒 ψ) ⋏ (ψ 🡒 φ) := rfl
+lemma falsum_eq : (⊥ : Formula α) = falsum := rfl
+lemma verum_eq : (⊤ : Formula α) = verum := rfl
+lemma iff_eq : A 🡘 B = (A 🡒 B) ⋏ (B 🡒 A) := rfl
 attribute [grind =_] falsum_eq verum_eq iff_eq
 
-@[grind =] lemma inj_and : φ₁ ⋏ φ₂ = ψ₁ ⋏ ψ₂ ↔ φ₁ = ψ₁ ∧ φ₂ = ψ₂ := by simp [and]
-@[grind =] lemma inj_or : φ₁ ⋎ φ₂ = ψ₁ ⋎ ψ₂ ↔ φ₁ = ψ₁ ∧ φ₂ = ψ₂ := by simp [or]
-@[grind =] lemma inj_imp : φ₁ 🡒 φ₂ = ψ₁ 🡒 ψ₂ ↔ φ₁ = ψ₁ ∧ φ₂ = ψ₂ := by simp
-@[grind =] lemma inj_neg : ∼φ = ∼ψ ↔ φ = ψ := by simp [neg]
-@[grind =] lemma inj_box : □φ = □ψ ↔ φ = ψ := by simp
-@[grind =] lemma inj_dia : ◇φ = ◇ψ ↔ φ = ψ := by simp [dia]
+@[grind =] lemma inj_and : A₁ ⋏ A₂ = B₁ ⋏ B₂ ↔ A₁ = B₁ ∧ A₂ = B₂ := by simp [and]
+@[grind =] lemma inj_or : A₁ ⋎ A₂ = B₁ ⋎ B₂ ↔ A₁ = B₁ ∧ A₂ = B₂ := by simp [or]
+@[grind =] lemma inj_imp : A₁ 🡒 A₂ = B₁ 🡒 B₂ ↔ A₁ = B₁ ∧ A₂ = B₂ := by simp
+@[grind =] lemma inj_neg : ∼A = ∼B ↔ A = B := by simp [neg]
+@[grind =] lemma inj_box : □A = □B ↔ A = B := by simp
+@[grind =] lemma inj_dia : ◇A = ◇B ↔ A = B := by simp [dia]
 
 /-- Formula complexity. -/
 @[grind =]
-def complexity : Formula → ℕ
+def complexity : Formula α → ℕ
   | atom _ => 0
   | ⊥      => 0
-  | φ 🡒 ψ  => max φ.complexity ψ.complexity + 1
-  | □φ     => φ.complexity + 1
+  | A 🡒 B  => max A.complexity B.complexity + 1
+  | □A     => A.complexity + 1
 
 @[elab_as_elim]
-def cases' {C : Formula → Sort w}
+def cases' {C : Formula α → Sort w}
     (hfalsum : C ⊥)
     (hatom : ∀ a, C (atom a))
-    (himp : ∀ φ ψ, C (φ 🡒 ψ))
-    (hbox : ∀ φ, C (□φ))
-    : (φ : Formula) → C φ
+    (himp : ∀ A B, C (A 🡒 B))
+    (hbox : ∀ A, C (□A))
+    : (A : Formula α) → C A
   | ⊥      => hfalsum
   | atom a => hatom a
-  | □φ     => hbox φ
-  | φ 🡒 ψ  => himp φ ψ
+  | □A     => hbox A
+  | A 🡒 B  => himp A B
 
 @[induction_eliminator]
-def rec' {C : Formula → Sort w}
+def rec' {C : Formula α → Sort w}
     (hfalsum : C ⊥)
     (hatom : ∀ a, C (atom a))
-    (himp : ∀ φ ψ, C φ → C ψ → C (φ 🡒 ψ))
-    (hbox : ∀ φ, C φ → C (□φ))
-    : (φ : Formula) → C φ
+    (himp : ∀ A B, C A → C B → C (A 🡒 B))
+    (hbox : ∀ A, C A → C (□A))
+    : (A : Formula α) → C A
   | ⊥      => hfalsum
   | atom a => hatom a
-  | φ 🡒 ψ  => himp φ ψ (rec' hfalsum hatom himp hbox φ) (rec' hfalsum hatom himp hbox ψ)
-  | □φ     => hbox φ (rec' hfalsum hatom himp hbox φ)
+  | A 🡒 B  => himp A B (rec' hfalsum hatom himp hbox A) (rec' hfalsum hatom himp hbox B)
+  | □A     => hbox A (rec' hfalsum hatom himp hbox A)
 
 /-- Iterated `□`. -/
-abbrev multibox (n : ℕ) : Formula → Formula := (□·)^[n]
+abbrev multibox (n : ℕ) : Formula α → Formula α := (□·)^[n]
 
-@[inherit_doc] notation:76 "□^[" n "]" φ:80 => Formula.multibox n φ
+@[inherit_doc] notation:76 "□^[" n "]" A:80 => Formula.multibox n A
 
 /-- Iterated `◇`. -/
-abbrev multidia (n : ℕ) : Formula → Formula := (◇·)^[n]
+abbrev multidia (n : ℕ) : Formula α → Formula α := (◇·)^[n]
 
-@[inherit_doc] notation:76 "◇^[" n "]" φ:80 => Formula.multidia n φ
+@[inherit_doc] notation:76 "◇^[" n "]" A:80 => Formula.multidia n A
 
-@[simp, grind =] lemma multibox_zero : (□^[0]φ) = φ := rfl
-@[simp, grind =] lemma multibox_succ : (□^[n + 1]φ) = □(□^[n]φ) := Function.iterate_succ_apply' ..
-@[simp, grind =] lemma multibox_add {m : ℕ} : (□^[n](□^[m]φ)) = □^[n + m]φ :=
-  (Function.iterate_add_apply _ n m φ).symm
+@[simp, grind =] lemma multibox_zero : (□^[0]A) = A := rfl
+@[simp, grind =] lemma multibox_succ : (□^[n + 1]A) = □(□^[n]A) := Function.iterate_succ_apply' ..
+@[simp, grind =] lemma multibox_add {m : ℕ} : (□^[n](□^[m]A)) = □^[n + m]A :=
+  (Function.iterate_add_apply _ n m A).symm
 
-@[simp, grind =] lemma multidia_zero : (◇^[0]φ) = φ := rfl
-@[simp, grind =] lemma multidia_succ : (◇^[n + 1]φ) = ◇(◇^[n]φ) := Function.iterate_succ_apply' ..
-@[simp, grind =] lemma multidia_add {m : ℕ} : (◇^[n](◇^[m]φ)) = ◇^[n + m]φ :=
-  (Function.iterate_add_apply _ n m φ).symm
+@[simp, grind =] lemma multidia_zero : (◇^[0]A) = A := rfl
+@[simp, grind =] lemma multidia_succ : (◇^[n + 1]A) = ◇(◇^[n]A) := Function.iterate_succ_apply' ..
+@[simp, grind =] lemma multidia_add {m : ℕ} : (◇^[n](◇^[m]A)) = ◇^[n + m]A :=
+  (Function.iterate_add_apply _ n m A).symm
 
 end Formula
 
 /-- A substitution of formulas for propositional variables. -/
-abbrev Substitution := ℕ → Formula
+abbrev Substitution (α : Type u) := α → Formula α
 
 /-- Simultaneous substitution of formulas for propositional variables. -/
-def Formula.subst (s : Substitution) : Formula → Formula
+def Formula.subst (s : Substitution α) : Formula α → Formula α
   | atom a => s a
   | ⊥      => ⊥
-  | □φ     => □(φ.subst s)
-  | φ 🡒 ψ  => φ.subst s 🡒 ψ.subst s
+  | □A     => □(A.subst s)
+  | A 🡒 B  => A.subst s 🡒 B.subst s
 
-@[inherit_doc] notation:80 φ "⟦" s "⟧" => Formula.subst s φ
+@[inherit_doc] notation:80 A "⟦" s "⟧" => Formula.subst s A
 
 namespace Formula.subst
 
-variable {n : ℕ} {s : Substitution} {φ ψ : Formula}
+variable {α : Type u} {n : ℕ} {s : Substitution α} {A B : Formula α}
 
 lemma subst_atom {a} : (atom a)⟦s⟧ = s a := rfl
-lemma subst_falsum : (⊥ : Formula)⟦s⟧ = ⊥ := rfl
-lemma subst_verum : (⊤ : Formula)⟦s⟧ = ⊤ := rfl
-lemma subst_imp : (φ 🡒 ψ)⟦s⟧ = φ⟦s⟧ 🡒 ψ⟦s⟧ := rfl
-lemma subst_neg : (∼φ)⟦s⟧ = ∼(φ⟦s⟧) := rfl
-lemma subst_and : (φ ⋏ ψ)⟦s⟧ = φ⟦s⟧ ⋏ ψ⟦s⟧ := rfl
-lemma subst_or : (φ ⋎ ψ)⟦s⟧ = φ⟦s⟧ ⋎ ψ⟦s⟧ := rfl
-lemma subst_iff : (φ 🡘 ψ)⟦s⟧ = (φ⟦s⟧ 🡘 ψ⟦s⟧) := rfl
+lemma subst_falsum : (⊥ : Formula α)⟦s⟧ = ⊥ := rfl
+lemma subst_verum : (⊤ : Formula α)⟦s⟧ = ⊤ := rfl
+lemma subst_imp : (A 🡒 B)⟦s⟧ = A⟦s⟧ 🡒 B⟦s⟧ := rfl
+lemma subst_neg : (∼A)⟦s⟧ = ∼(A⟦s⟧) := rfl
+lemma subst_and : (A ⋏ B)⟦s⟧ = A⟦s⟧ ⋏ B⟦s⟧ := rfl
+lemma subst_or : (A ⋎ B)⟦s⟧ = A⟦s⟧ ⋎ B⟦s⟧ := rfl
+lemma subst_iff : (A 🡘 B)⟦s⟧ = (A⟦s⟧ 🡘 B⟦s⟧) := rfl
 attribute [simp, grind =]
   subst_atom
   subst_falsum
@@ -164,24 +164,25 @@ attribute [simp, grind =]
   subst_imp
   subst_iff
 
-@[simp, grind =] lemma subst_box : (□φ)⟦s⟧ = □(φ⟦s⟧) := rfl
-@[simp, grind =] lemma subst_multibox : (□^[n]φ)⟦s⟧ = □^[n](φ⟦s⟧) := by induction n <;> simp_all;
-@[simp, grind =] lemma subst_dia : (◇φ)⟦s⟧ = ◇(φ⟦s⟧) := rfl
-@[simp, grind =] lemma subst_multidia : (◇^[n]φ)⟦s⟧ = ◇^[n](φ⟦s⟧) := by induction n <;> simp_all;
+@[simp, grind =] lemma subst_box : (□A)⟦s⟧ = □(A⟦s⟧) := rfl
+@[simp, grind =] lemma subst_multibox : (□^[n]A)⟦s⟧ = □^[n](A⟦s⟧) := by induction n <;> simp_all;
+@[simp, grind =] lemma subst_dia : (◇A)⟦s⟧ = ◇(A⟦s⟧) := rfl
+@[simp, grind =] lemma subst_multidia : (◇^[n]A)⟦s⟧ = ◇^[n](A⟦s⟧) := by induction n <;> simp_all;
 
 end Formula.subst
 
 /-- The identity substitution. -/
-abbrev Substitution.id : Substitution := .atom
+abbrev Substitution.id {α : Type u} : Substitution α := .atom
 
-@[simp] lemma Formula.subst.def_id {φ : Formula} : φ⟦.id⟧ = φ := by induction φ <;> simp_all;
+@[simp] lemma Formula.subst.def_id {α : Type u} {A : Formula α} : A⟦.id⟧ = A := by
+  induction A <;> simp_all;
 
 /-- Composition of substitutions. -/
-def Substitution.comp (s₁ s₂ : Substitution) : Substitution := fun a => (s₁ a)⟦s₂⟧
+def Substitution.comp {α : Type u} (s₁ s₂ : Substitution α) : Substitution α := fun a => (s₁ a)⟦s₂⟧
 
 @[simp]
-lemma Formula.subst.def_comp {s₁ s₂ : Substitution} {φ : Formula} :
-    φ⟦s₁.comp s₂⟧ = φ⟦s₁⟧⟦s₂⟧ := by
-  induction φ <;> simp_all [Substitution.comp];
+lemma Formula.subst.def_comp {α : Type u} {s₁ s₂ : Substitution α} {A : Formula α} :
+    A⟦s₁.comp s₂⟧ = A⟦s₁⟧⟦s₂⟧ := by
+  induction A <;> simp_all [Substitution.comp];
 
 end
