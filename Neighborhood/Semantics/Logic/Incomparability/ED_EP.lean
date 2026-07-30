@@ -2,7 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.EP
 public import Neighborhood.Semantics.Logic.ED
-import Neighborhood.Semantics.Example.Frame2_53
+public import Neighborhood.Semantics.Example.Frame2_53
 
 /-!
 # Incomparability of `LogicED` and `LogicEP`

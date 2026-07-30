@@ -4,9 +4,9 @@ public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Filtration
 import Mathlib.Tactic.FinCases
-import Neighborhood.Semantics.Example.Frame1_2
-import Neighborhood.Semantics.Example.Frame1_0
-import Neighborhood.Semantics.Example.Frame2_172
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame2_172
 
 /-!
 # The neighborhood logic `LogicEN4`

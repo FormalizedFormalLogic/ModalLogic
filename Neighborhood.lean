@@ -37,6 +37,7 @@ public import Neighborhood.Semantics.Example.Frame2_8
 public import Neighborhood.Semantics.Example.Frame3_130
 public import Neighborhood.Semantics.Example.Frame3_137264
 public import Neighborhood.Semantics.Example.Frame3_137520
+public import Neighborhood.Semantics.Example.Frame3_8421512
 public import Neighborhood.Semantics.Example.Frame3_9471106
 public import Neighborhood.Semantics.Example.Frame4_11259170869739560
 public import Neighborhood.Semantics.Filtration
@@ -51,6 +52,7 @@ public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.EK
 public import Neighborhood.Semantics.Logic.EM
+public import Neighborhood.Semantics.Logic.EM4
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.EMC4
 public import Neighborhood.Semantics.Logic.EMCN
@@ -64,6 +66,7 @@ public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.END4
+public import Neighborhood.Semantics.Logic.ENT
 public import Neighborhood.Semantics.Logic.ENT4
 public import Neighborhood.Semantics.Logic.EP
 public import Neighborhood.Semantics.Logic.ET

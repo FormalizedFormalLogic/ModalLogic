@@ -4,9 +4,9 @@ public import Neighborhood.Semantics.AxiomN
 public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.EP
-import Neighborhood.Semantics.Example.Frame1_2
-import Neighborhood.Semantics.Example.Frame1_0
-import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame1_3
 
 /-!
 # The neighborhood logic `LogicEND`

@@ -1,9 +1,9 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
-import Neighborhood.Semantics.Example.Frame1_2
-import Neighborhood.Semantics.Example.Frame2_78
-import Neighborhood.Semantics.Example.Frame1_1
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame2_78
+public import Neighborhood.Semantics.Example.Frame1_1
 
 /-!
 # The neighborhood logic `LogicEP`

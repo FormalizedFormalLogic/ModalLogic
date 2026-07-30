@@ -3,8 +3,9 @@ module
 public import Neighborhood.Semantics.Logic.EMT4
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.ENT4
-import Neighborhood.Semantics.Example.Frame1_2
-import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicEMNT4`
@@ -12,8 +13,8 @@ import Neighborhood.Semantics.Example.Frame1_0
 Soundness, consistency and completeness of `LogicEMNT4`, the classical modal logic axiomatised by
 the monotonicity axiom `M`, `N := □⊤`, the reflexivity axiom `T` and the transitivity axiom `Four`,
 with respect to the neighborhood frames that are monotonic, contain their unit, are reflexive and
-are transitive, together with its finite frame property. Also proves the strict inclusion of
-`LogicEMT4` in `LogicEMNT4`.
+are transitive, together with its finite frame property. Also proves the strict inclusions of
+`LogicEMT4` and `LogicENT4` in `LogicEMNT4`.
 -/
 
 @[expose] public section
@@ -62,5 +63,12 @@ theorem LogicEMT4_ssubset_LogicEMNT4 : @LogicEMT4 ℕ ⊂ LogicEMNT4 := by
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ (@LogicEMT4 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_1_0.not_valid_axiomN (LogicEMT4.sound frame_1_0 hN)
+
+theorem LogicENT4_ssubset_LogicEMNT4 : @LogicENT4 ℕ ⊂ LogicEMNT4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hM : (Axioms.M #0 #1 : Formula ℕ) ∈ (@LogicENT4 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_9471106.not_valid_axiomM (LogicENT4.sound frame_3_9471106 hM)
 
 end

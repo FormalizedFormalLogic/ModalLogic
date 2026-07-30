@@ -24,6 +24,21 @@ lemma frame_2_170.not_valid_axiomT :
     ¬frame_2_170 ⊧ (Axioms.T #0 : Formula ℕ) :=
   fun h => frame_2_170.not_isReflexive (isReflexive_of_valid_axiomT h)
 
+lemma frame_2_170.not_isSymmetric : ¬frame_2_170.IsSymmetric := fun hS => by
+  have h := hS.symm ({0} : Set (Fin 2))
+  have hbox1 : frame_2_170.box ({1} : Set (Fin 2)) = Set.univ := by
+    ext x; simp [Frame.box, frame_2_170]
+  have hdia : frame_2_170.dia ({0} : Set (Fin 2)) = ∅ := by
+    simp [Frame.dia, hbox1]
+  have hbox : frame_2_170.box (∅ : Set (Fin 2)) = ∅ := by
+    ext x; simp [Frame.box, frame_2_170, Set.ext_iff]
+  rw [hdia, hbox] at h
+  exact absurd (h (show (0 : Fin 2) ∈ ({0} : Set (Fin 2)) by simp)) (by simp)
+
+lemma frame_2_170.not_valid_axiomB :
+    ¬frame_2_170 ⊧ (Axioms.B #0 : Formula ℕ) :=
+  fun h => frame_2_170.not_isSymmetric (isSymmetric_of_valid_axiomB h)
+
 instance : frame_2_170.ContainsUnit := ⟨by
   ext x; simp [Frame.box, frame_2_170]⟩
 

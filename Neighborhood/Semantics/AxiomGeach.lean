@@ -422,26 +422,6 @@ variable {P : MaximalConsistentSet L → Set (Proofset L)}
     grind
   · exact hΩ₂
 
-/-
-`relativeBasicCanonicity` does not automatically satisfy the symmetry frame condition: unlike
-seriality, reflexivity, transitivity, and euclideanness, closing the dual inclusion
-`◇□X ⊆ X` for a non-proofset `X` under the extra neighborhoods `P` requires relating `X` back to
-the complement of a proofset, which is not derivable from `hP` alone. This case is left open,
-ported from an earlier attempt.
-
-protected instance isSymmetric [L.HasAxiomGeach ⟨1, 0, 1, 0⟩]
-    (hP₁ : ∀ X : Proofset L, X.IsNonproofset → ∀ Ω,
-      ((relativeBasicCanonicity L P).toModel.box X)ᶜ ∉ P Ω → Ω ∈ X) :
-    (relativeBasicCanonicity L P).toModel.IsSymmetric := by
-  apply Canonicity.isSymmetric'
-  intro X hX Ω hΩ
-  apply hP₁ X hX
-  rcases relativeBasicCanonicity.iff_mem_dia.mp hΩ with ⟨hΩ, (⟨A, hA⟩ | hΩ)⟩
-  · rw [hA] at hΩ
-    sorry
-  · exact hΩ
--/
-
 end relativeBasicCanonicity
 
 namespace minimalRelativeMaximalCanonicity
@@ -466,6 +446,26 @@ protected instance isEuclidean [L.HasAxiomFive] :
   relativeBasicCanonicity.isEuclidean (by tauto)
 
 end maximalRelativeMaximalCanonicity
+
+namespace intermediateRelativeMaximalCanonicity
+
+/-- `relativeBasicCanonicity` does not satisfy the symmetry frame condition for an arbitrary
+extra family `P`, unlike seriality, reflexivity, transitivity, and euclideanness: closing
+`◇□X ⊆ X` for a non-proofset `X` under `P` alone cannot relate `X` back to the complement of a
+proofset. It closes for the specific `P Ω X := Ω ∈ X` of `intermediateRelativeMaximalCanonicity`,
+since it makes `box X = dia X = X` on every non-proofset `X`. -/
+protected instance isSymmetric [L.HasAxiomB] :
+    (intermediateRelativeMaximalCanonicity L).toModel.IsSymmetric := by
+  apply Canonicity.isSymmetric
+  intro X hX Ω hΩ
+  rw [dia_eq_of_isNonproofset hX, box_eq_of_isNonproofset hX]
+  exact hΩ
+
+protected instance isReflexive [L.HasAxiomT] :
+    (intermediateRelativeMaximalCanonicity L).toModel.IsReflexive :=
+  relativeBasicCanonicity.isReflexive (by tauto)
+
+end intermediateRelativeMaximalCanonicity
 
 end
 

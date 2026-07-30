@@ -3,10 +3,10 @@ module
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.EMN
-import Neighborhood.Semantics.Example.Frame2_153
-import Neighborhood.Semantics.Example.Frame2_206
-import Neighborhood.Semantics.Example.Frame1_2
-import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame2_153
+public import Neighborhood.Semantics.Example.Frame2_206
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame1_0
 
 /-!
 # The neighborhood logic `LogicEMCN`

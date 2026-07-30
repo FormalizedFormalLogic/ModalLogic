@@ -2,15 +2,17 @@ module
 
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.ET
-import Neighborhood.Semantics.Example.Frame1_2
-import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicEMT`
 
 Soundness, consistency and completeness of `LogicEMT`, the classical modal logic axiomatised by
 the monotonicity axiom `M` and the reflexivity axiom `T`, with respect to the neighborhood frames
-that are both monotonic and reflexive, and its strict inclusion of `LogicEM`.
+that are both monotonic and reflexive, and its strict inclusion of `LogicEM`, together with the
+strict inclusion of `LogicET` in `LogicEMT`.
 -/
 
 @[expose] public section
@@ -46,5 +48,12 @@ theorem LogicEM_ssubset_LogicEMT : @LogicEM ℕ ⊂ LogicEMT := by
   · intro h
     have hT : Axioms.T #0 ∈ @LogicEM ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT (LogicEM.sound frame_1_3 hT))
+
+theorem LogicET_ssubset_LogicEMT : @LogicET ℕ ⊂ LogicEMT := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
+  · intro h
+    have hM : Axioms.M #0 #1 ∈ @LogicET ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_3_9471106.not_valid_axiomM (LogicET.sound frame_3_9471106 hM)
 
 end

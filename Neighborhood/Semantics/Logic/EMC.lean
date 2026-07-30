@@ -3,10 +3,10 @@ module
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.EC
 public import Neighborhood.Semantics.Logic.EK
-import Neighborhood.Semantics.Example.Frame4_11259170869739560
-import Neighborhood.Semantics.Example.Frame2_206
-import Neighborhood.Semantics.Example.Frame3_137520
-import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame4_11259170869739560
+public import Neighborhood.Semantics.Example.Frame2_206
+public import Neighborhood.Semantics.Example.Frame3_137520
+public import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicEMC`

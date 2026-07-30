@@ -6,7 +6,7 @@ public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomGeach
 public import Neighborhood.Semantics.AxiomP
 public import Neighborhood.Hilbert.Logics
-import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame1_2
 
 /-!
 # The neighborhood logic `LogicE`

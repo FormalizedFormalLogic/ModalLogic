@@ -2,9 +2,9 @@ module
 
 public import Neighborhood.Semantics.Logic.ENT4
 public import Neighborhood.Semantics.Logic.E5
-import Neighborhood.Semantics.Example.Frame1_2
-import Neighborhood.Semantics.Example.Frame1_3
-import Neighborhood.Semantics.Example.Frame3_9471106
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicET5`

@@ -115,6 +115,10 @@ lemma rm [L.HasRE] [L.HasAxiomM] (h : A 🡒 B ∈ L) : □A 🡒 □B ∈ L := 
     C_of_E_mp <| re <| E_intro (CK_of_C_of_C C_id h) and₁;
   exact C_trans (C_trans h₁ axiomM) and₂;
 
+/-- The monotonicity rule for `◇`, derived from `RE` and the axiom scheme `M`. -/
+lemma rmDia [L.HasRE] [L.HasAxiomM] (h : A 🡒 B ∈ L) : ◇A 🡒 ◇B ∈ L :=
+  contra <| rm <| contra h
+
 /-! ### Derived axiom schemes -/
 
 section
@@ -135,11 +139,50 @@ instance [L.HasAxiomM] [L.HasAxiomK] : L.HasAxiomC := ⟨by
 lemma axiomK_of_MC [L.HasAxiomM] [L.HasAxiomC] : □(A 🡒 B) 🡒 □A 🡒 □B ∈ L :=
   CK_iff_CC.mp <| C_trans axiomC <| rm <| mdp₁ and₁ and₂
 
+/-- The dual of the axiom scheme `B`. -/
+lemma diaBc [L.HasAxiomB] : ◇□A 🡒 A ∈ L := by
+  have h₁ : ∼∼A 🡘 A ∈ L := E_intro dne dni;
+  have h₂ : ◇(∼A) 🡘 ∼□A ∈ L :=
+    E_intro (contra (C_of_E_mpr (re h₁))) (contra (C_of_E_mp (re h₁)));
+  have h₃ : ∼A 🡒 □(∼□A) ∈ L := C_trans axiomB (C_of_E_mp (re h₂));
+  exact C_trans (contra h₃) dne;
+
+/-- The axiom scheme `C` is derivable from `M` and `B`. -/
+instance [L.HasAxiomM] [L.HasAxiomB] : L.HasAxiomC := ⟨by
+  intro A B;
+  have h₁ : (□A ⋏ □B) 🡒 □◇(□A ⋏ □B) ∈ L := axiomB;
+  have h₂ : ◇(□A ⋏ □B) 🡒 A ∈ L := C_trans (rmDia and₁) diaBc;
+  have h₃ : ◇(□A ⋏ □B) 🡒 B ∈ L := C_trans (rmDia and₂) diaBc;
+  have h₅ : □◇(□A ⋏ □B) 🡒 □(A ⋏ B) ∈ L := rm (CK_of_C_of_C h₂ h₃);
+  exact C_trans h₁ h₅;⟩
+
+/-- The axiom `N` is derivable from `M` and `B`. -/
+instance [L.HasAxiomM] [L.HasAxiomB] : L.HasAxiomN :=
+  ⟨rm (C_of_conseq verum) ⨀ axiomB' verum⟩
+
+/-- The axiom `N` is derivable from `M` and `5`. -/
+instance [L.HasAxiomM] [L.HasAxiomFive] : L.HasAxiomN := ⟨by
+  have h_left : □(∼(⊤ : Formula α)) 🡒 □◇⊤ ∈ L := rm (mdp₁ CNC (C_of_conseq verum));
+  have h_right : ∼(□(∼(⊤ : Formula α))) 🡒 □◇⊤ ∈ L := axiomFive;
+  have h_dia : □◇(⊤ : Formula α) ∈ L := of_C_of_C_of_A h_left h_right lem;
+  exact rm (C_of_conseq verum) ⨀ h_dia;⟩
+
+/-- The axiom `N` is derivable from `B` and `4`. -/
+instance [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomN := ⟨by
+  have h₁ : □◇(⊤ : Formula α) ∈ L := axiomB' verum;
+  have h₂ : □□◇(⊤ : Formula α) ∈ L := axiomFour ⨀ h₁;
+  have h₃ : □◇(⊤ : Formula α) 🡘 ⊤ ∈ L := E_intro (C_of_conseq verum) (C_of_conseq h₁);
+  have h₄ : □□◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₃;
+  exact C_of_E_mp h₄ ⨀ h₂;⟩
+
 variable [L.HasAxiomT]
 
 omit [L.HasRE] in
 /-- The dual of the axiom scheme `T`. -/
 lemma diaTc : A 🡒 ◇A ∈ L := C_trans dni (contra axiomT)
+
+/-- The axiom scheme `B` is derivable from `T` and `5`. -/
+instance [L.HasAxiomFive] : L.HasAxiomB := ⟨fun _ => C_trans diaTc axiomFive⟩
 
 /-- The necessitation rule, derived from `RE` and the axiom schemes `T` and `B`. -/
 lemma nec [L.HasAxiomB] (h : A ∈ L) : □A ∈ L :=
