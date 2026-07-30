@@ -27,7 +27,7 @@ lemma mem_box_of_mem_original_box : x ∈ F.box X → x ∈ F.supplementation.bo
 
 lemma box_aux {X : Set (F.World)} : F.supplementation.box X = ⋃₀ {x | ∃ Y ⊆ X, F.box Y = x} := by
   ext w;
-  simp only [supplementation, Set.mem_setOf_eq, Set.mem_sUnion, exists_exists_and_eq_and]
+  simp only [supplementation]
   constructor;
   . rintro ⟨Y, hY₁, hY₂⟩; exact ⟨F.box Y, ⟨Y, hY₁, rfl⟩, hY₂⟩;
   . rintro ⟨Y, ⟨Y', hY'₁, rfl⟩, hY₂⟩; exact ⟨Y', hY'₁, hY₂⟩;

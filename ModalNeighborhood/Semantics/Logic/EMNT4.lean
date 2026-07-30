@@ -3,6 +3,7 @@ module
 public import ModalNeighborhood.Semantics.Logic.EMT
 public import ModalNeighborhood.Semantics.Logic.EMN
 public import ModalNeighborhood.Semantics.Logic.ENT4
+public import ModalNeighborhood.Semantics.Filtration
 
 @[expose] public section
 
@@ -41,8 +42,6 @@ instance Neighborhood.complete : Complete Modal.EMNT4 FrameClass.EMNT4 := (suppl
   apply Set.mem_setOf_eq.mpr;
   constructor;
 
--- Awaiting the port of `ModalNeighborhood.Semantics.Filtration`, on which the filtration construction depends.
-/-
 /-- FFP of `Modal.EMNT4` -/
 instance Neighborhood.finite_complete : Complete Modal.EMNT4 FrameClass.finite_EMNT4 := ⟨by
   intro φ hφ;
@@ -62,7 +61,6 @@ instance Neighborhood.finite_complete : Complete Modal.EMNT4 FrameClass.finite_E
     contains_unit := by apply supplementedTransitiveFiltration.containsUnit (by simp) |>.contains_unit;
   };
 ⟩
--/
 
 end EMNT4
 

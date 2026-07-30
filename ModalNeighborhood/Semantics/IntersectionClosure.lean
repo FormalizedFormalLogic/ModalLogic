@@ -19,7 +19,7 @@ instance Frame.intersectionClosure.isRegular : F.intersectionClosure.IsRegular :
   constructor;
   intro X Y a;
   rw [Set.mem_inter_iff];
-  simp only [intersectionClosure, Frame.box, Set.mem_setOf_eq, ne_eq, and_imp];
+  simp only [intersectionClosure, Frame.box, ne_eq, and_imp];
   rintro ⟨Xs, hXs₁, rfl, hX₂⟩ ⟨Ys, hYs₁, rfl, hY₂⟩;
   refine ⟨Xs ∪ Ys, ?_, ?_, ?_⟩;
   . simp only [Finset.union_eq_empty];

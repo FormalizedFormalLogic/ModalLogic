@@ -2,6 +2,7 @@ module
 
 public import ModalNeighborhood.Semantics.Logic.E4
 public import ModalNeighborhood.Semantics.Logic.ET
+public import ModalNeighborhood.Semantics.Filtration
 
 @[expose] public section
 
@@ -39,8 +40,6 @@ instance Neighborhood.complete : Complete Modal.ET4 FrameClass.ET4 := (basicCano
   apply Set.mem_setOf_eq.mpr;
   constructor;
 
--- Awaiting the port of `ModalNeighborhood.Semantics.Filtration`, on which the filtration construction depends.
-/-
 /-- FFP of `Modal.ET4` -/
 instance Neighborhood.finite_complete : Complete Modal.ET4 FrameClass.finite_ET4 := ⟨by
   intro φ hφ;
@@ -58,7 +57,6 @@ instance Neighborhood.finite_complete : Complete Modal.ET4 FrameClass.finite_ET4
     refl := by apply transitiveFiltration.isReflexive.refl;
   };
 ⟩
--/
 
 end ET4
 
