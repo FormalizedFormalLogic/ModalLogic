@@ -52,6 +52,7 @@ public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.EK
 public import Neighborhood.Semantics.Logic.EM
+public import Neighborhood.Semantics.Logic.EM4
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.EMC4
 public import Neighborhood.Semantics.Logic.EMCN

@@ -128,6 +128,12 @@ abbrev LogicET4 : Logic α := Hilbert $
 instance : (@LogicET4 α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
 instance : (@LogicET4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by grind;
 
+abbrev LogicEM4 : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.Four A | (A) }
+instance : (@LogicEM4 α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEM4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by grind;
+
 abbrev LogicENT4 : Logic α := Hilbert $
   { Axioms.N } ∪
   { Axioms.T A | (A) } ∪
