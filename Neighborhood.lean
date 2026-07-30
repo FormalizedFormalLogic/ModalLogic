@@ -25,6 +25,7 @@ public import Neighborhood.Logic.Equiv.EMCP_EMCD
 public import Neighborhood.Logic.Equiv.EMC_EMCK
 public import Neighborhood.Logic.Equiv.EMC_EMK
 public import Neighborhood.Logic.Equiv.EMD45_EMND45
+public import Neighborhood.Logic.Equiv.EMD5_EMND5
 public import Neighborhood.Logic.Equiv.EMDB_EMCNDB
 public import Neighborhood.Logic.Equiv.EMK_EMCK
 public import Neighborhood.Logic.Equiv.EMT5_EMCNT5
