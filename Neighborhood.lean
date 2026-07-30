@@ -18,6 +18,17 @@ public import Neighborhood.Semantics.AxiomN
 public import Neighborhood.Semantics.AxiomP
 public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.Completeness
+public import Neighborhood.Semantics.Example.CounterframeAxiomC1
+public import Neighborhood.Semantics.Example.CounterframeAxiomM1
+public import Neighborhood.Semantics.Example.ECNCounterframeForM
+public import Neighborhood.Semantics.Example.EKCounterframeForMAndC
+public import Neighborhood.Semantics.Example.SimpleBlackhole
+public import Neighborhood.Semantics.Example.SimpleWhitehole
+public import Neighborhood.Semantics.Example.TrivialContainsUnit
+public import Neighborhood.Semantics.Example.TrivialContainsUnitTransitive
+public import Neighborhood.Semantics.Example.TrivialNonserial
+public import Neighborhood.Semantics.Example.TrivialNontransitive
+public import Neighborhood.Semantics.Example.TrivialSerialContainsEmpty
 public import Neighborhood.Semantics.Filtration
 public import Neighborhood.Semantics.Hilbert
 public import Neighborhood.Semantics.IntersectionClosure
