@@ -676,12 +676,16 @@ protected instance isTransitive : (quasiFilteringTransitiveFiltration M T T_fini
   Frame.quasiFiltering.isTransitive (F := (transitiveFiltration M T).toModel.toFrame).trans
 ⟩
 
-protected instance containsUnit [M.ContainsUnit] (hT : □⊤ ∈ T) : (quasiFilteringTransitiveFiltration M T T_finite).toModel.ContainsUnit := by
+@[reducible]
+protected def containsUnit [M.ContainsUnit] (hT : □⊤ ∈ T) : (quasiFilteringTransitiveFiltration M T T_finite).toModel.ContainsUnit := by
   constructor;
   ext X;
   suffices X ∈ (quasiFilteringTransitiveFiltration M T T_finite).B Set.univ by simpa;
-  have : (transitiveFiltration M T).toModel.ContainsUnit := transitiveFiltration.containsUnit hT;
-  simp [quasiFilteringTransitiveFiltration, (transitiveFiltration M T).toModel.quasiFiltering.contains_unit];
+  haveI := transitiveFiltration.containsUnit (M := M) (T := T) hT;
+  apply Frame.quasiFiltering.mem_box_of_mem_original_box;
+  show X ∈ (transitiveFiltration M T).toModel.toFrame.box Set.univ;
+  rw [Frame.contains_unit];
+  trivial;
 
 end quasiFilteringTransitiveFiltration
 
