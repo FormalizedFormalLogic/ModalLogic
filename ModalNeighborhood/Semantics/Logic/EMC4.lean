@@ -1,6 +1,7 @@
 module
 
 public import ModalNeighborhood.Semantics.Logic.EMC
+public import ModalNeighborhood.Semantics.Filtration
 
 @[expose] public section
 
@@ -35,8 +36,6 @@ instance Neighborhood.complete : Complete Modal.EMC4 FrameClass.EMC4 := (supplem
   apply Set.mem_setOf_eq.mpr;
   constructor;
 
--- Awaiting the port of `ModalNeighborhood.Semantics.Filtration`, on which the filtration construction depends.
-/-
 /-- FFP of `Modal.EMC4` -/
 instance Neighborhood.finite_complete : Complete Modal.EMC4 FrameClass.finite_EMC4 := ⟨by
   intro φ hφ;
@@ -55,7 +54,6 @@ instance Neighborhood.finite_complete : Complete Modal.EMC4 FrameClass.finite_EM
     regular := by apply quasiFilteringTransitiveFiltration.isRegular.regular;
   };
 ⟩
--/
 
 end EMC4
 

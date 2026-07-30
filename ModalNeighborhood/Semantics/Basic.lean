@@ -183,7 +183,7 @@ lemma iff_eq_truthset_univ : M ⊧ φ ↔ (M φ = Set.univ) := by
 
 instance : Semantics.Bot Model where
   models_falsum M := by
-    simp only [Semantics.NotModels, iff_eq_truthset_univ, Neighborhood.Model.truthset.eq_bot];
+    simp only [iff_eq_truthset_univ, Neighborhood.Model.truthset.eq_bot];
     apply Set.nonempty_iff_ne_empty.mp ?_ |>.symm;
     simp;
 
@@ -271,13 +271,13 @@ variable {C : FrameClass} {φ ψ χ : Formula ℕ}
 
 lemma iff_not_validOnFrameClass_exists_model_world : (¬C ⊧ φ) ↔ (∃ M : Model, ∃ x : M.World, M.toFrame ∈ C ∧ ¬(x ⊧ φ)) := by
   apply not_iff_not.mp;
-  push_neg;
+  push Not;
   tauto;
 alias ⟨exists_model_world_of_not_validOnFrameClass, not_validOnFrameClass_of_exists_model_world⟩ := iff_not_validOnFrameClass_exists_model_world
 
 lemma iff_not_validOnFrameClass_exists_frame : (¬C ⊧ φ) ↔ (∃ F ∈ C, ¬F ⊧ φ) := by
   apply not_iff_not.mp;
-  push_neg;
+  push Not;
   tauto;
 alias ⟨exists_frame_of_not_validOnFrameClass, not_validOnFrameClass_of_exists_frame⟩ := iff_not_validOnFrameClass_exists_frame
 

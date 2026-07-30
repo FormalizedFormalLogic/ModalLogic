@@ -1,6 +1,7 @@
 module
 
 public import ModalNeighborhood.Semantics.Logic.E
+public import ModalNeighborhood.Semantics.Filtration
 
 @[expose] public section
 
@@ -59,8 +60,6 @@ instance Neighborhood.complete : Complete Modal.E4 FrameClass.E4 := (basicCanoni
   apply Set.mem_setOf_eq.mpr;
   infer_instance;
 
--- Awaiting the port of `ModalNeighborhood.Semantics.Filtration`, on which the filtration construction depends.
-/-
 /-- FFP of `Modal.E4` -/
 instance Neighborhood.finite_complete : Complete Modal.E4 FrameClass.finite_E4 := ⟨by
   intro φ hφ;
@@ -77,7 +76,6 @@ instance Neighborhood.finite_complete : Complete Modal.E4 FrameClass.finite_E4 :
     trans := by apply transitiveFiltration.isTransitive.trans;
   };
 ⟩
--/
 
 end E4
 
