@@ -117,6 +117,41 @@ lemma rm! [L.HasRE] [L.HasAxiomM] (h : φ 🡒 ψ ∈ L) : □φ 🡒 □ψ ∈ 
     C_of_E_mp! <| re! <| E!_intro (CK!_of_C!_of_C! C!_id h) and₁!;
   exact C!_trans (C!_trans h₁ axiomM!) and₂!;
 
+/-! ### Derived axiom schemes -/
+
+section
+
+variable [L.HasRE]
+
+/-- The axiom scheme `C` is derivable from `M` and `K`. -/
+instance [L.HasAxiomM] [L.HasAxiomK] : L.HasAxiomC := ⟨by
+  intro φ ψ;
+  have h₁ : □φ 🡒 □(ψ 🡒 φ) ∈ L := rm! implyK!;
+  have h₂ : □(ψ 🡒 φ) 🡒 □(ψ 🡒 φ ⋏ ψ) ∈ L :=
+    C_of_E_mp! <| re! <| E!_intro
+      (CK!_iff_CC!.mp <| CK!_of_C!_of_C! (mdp₁! and₁! and₂!) and₂!)
+      (CCC!_of_C!_right and₁!);
+  exact mdp₁! (C!_trans (C!_trans and₁! (C!_trans h₁ h₂)) axiomK!) and₂!;⟩
+
+/-- The axiom scheme `K` is derivable from `M` and `C`. -/
+lemma axiomK!_of_MC [L.HasAxiomM] [L.HasAxiomC] : □(φ 🡒 ψ) 🡒 □φ 🡒 □ψ ∈ L :=
+  CK!_iff_CC!.mp <| C!_trans axiomC! <| rm! <| mdp₁! and₁! and₂!
+
+variable [L.HasAxiomT]
+
+omit [L.HasRE] in
+/-- The dual of the axiom scheme `T`. -/
+lemma diaTc! : φ 🡒 ◇φ ∈ L := C!_trans dni! (contra! axiomT!)
+
+/-- The necessitation rule, derived from `RE` and the axiom schemes `T` and `B`. -/
+lemma nec! [L.HasAxiomB] (h : φ ∈ L) : □φ ∈ L :=
+  C_of_E_mpr! (re! <| E!_intro diaTc! (C!_of_conseq! h)) ⨀ (axiomB! ⨀ h)
+
+/-- The axiom `N` is derivable from `T` and `B`. -/
+instance [L.HasAxiomB] : L.HasAxiomN := ⟨nec! verum!⟩
+
+end
+
 end
 
 end Logic
