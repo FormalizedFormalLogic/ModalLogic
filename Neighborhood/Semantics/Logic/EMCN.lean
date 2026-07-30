@@ -27,11 +27,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEMCN.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.ContainsUnit] :
     A ∈ LogicEMCN → F ⊧ A :=
-  Hilbert.sound (by
-    rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl)
-    · exact valid_axiomM_of_isMonotonic
-    · exact valid_axiomC_of_isRegular
-    · exact valid_axiomN_of_containsUnit)
+  Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) <;> simp)
 
 theorem LogicEMCN.consistent : (@LogicEMCN α).IsConsistent := by
   by_contra! hC
@@ -52,10 +48,7 @@ theorem LogicEMCN.complete
 
 theorem LogicECN_ssubset_LogicEMCN : @LogicECN ℕ ⊂ LogicEMCN := by
   constructor
-  · apply Hilbert.subset_of_subset_axioms
-    rintro A (hC | hN)
-    · exact Or.inl (Or.inr hC)
-    · exact Or.inr hN
+  · exact Hilbert.subset_of_subset_axioms (by grind)
   · intro h
     have hM : Axioms.M #0 #1 ∈ @LogicECN ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_2_153.not_valid_axiomM
@@ -71,10 +64,7 @@ theorem LogicEMC_ssubset_LogicEMCN : @LogicEMC ℕ ⊂ LogicEMCN := by
 
 theorem LogicEMN_ssubset_LogicEMCN : @LogicEMN ℕ ⊂ LogicEMCN := by
   constructor
-  · apply Hilbert.subset_of_subset_axioms
-    rintro A (hM | hN)
-    · exact Or.inl (Or.inl hM)
-    · exact Or.inr hN
+  · exact Hilbert.subset_of_subset_axioms (by grind)
   · intro h
     have hC : Axioms.C #0 #1 ∈ @LogicEMN ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_2_206.not_valid_axiomC

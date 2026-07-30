@@ -31,14 +31,10 @@ section
 
 variable {α : Type v} {A B : Formula α}
 
+@[simp, grind .]
 theorem valid_axiomM_of_isMonotonic [F.IsMonotonic] : F ⊧ Axioms.M A B := by
   intro V x
-  apply forces_imp.mpr
-  intro hx
-  apply forces_and.mpr
-  have hx' := forces_box.mp hx
-  rw [Model.truthset.eq_and] at hx'
-  exact ⟨forces_box.mpr (F.mono hx').1, forces_box.mpr (F.mono hx').2⟩
+  grind [Frame.mono]
 
 end
 end

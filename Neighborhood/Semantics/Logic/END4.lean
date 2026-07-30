@@ -22,12 +22,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsSerial] [F.IsTransitive] :
     A ∈ LogicEND4 → F ⊧ A :=
-  Hilbert.sound
-    (by
-      rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩)
-      · exact valid_axiomN_of_containsUnit
-      · exact valid_axiomD_of_isSerial
-      · exact valid_axiomFour_of_isTransitive)
+  Hilbert.sound (by rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 theorem LogicEND4.consistent : (@LogicEND4 α).IsConsistent := by
   by_contra! hC

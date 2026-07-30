@@ -18,7 +18,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicE5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
     A ∈ @LogicE5 α → F ⊧ A :=
-  Hilbert.sound (fun B hB => by obtain ⟨B, rfl⟩ := hB; exact valid_axiomFive_of_isEuclidean)
+  Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
 theorem LogicE5.consistent : (@LogicE5 α).IsConsistent := by
   by_contra! hC

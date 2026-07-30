@@ -20,7 +20,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicEN.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] :
     A ∈ @LogicEN α → F ⊧ A :=
-  Hilbert.sound (fun B hB => by simp only [Set.mem_singleton_iff] at hB; grind)
+  Hilbert.sound (by rintro _ rfl; simp)
 
 theorem LogicEN.consistent : (@LogicEN α).IsConsistent := by
   by_contra! hC

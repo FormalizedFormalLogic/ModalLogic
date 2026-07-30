@@ -23,10 +23,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicET4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     [F.IsTransitive] :
     A ∈ LogicET4 → F ⊧ A :=
-  Hilbert.sound (by
-    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
-    · exact valid_axiomT_of_isReflexive
-    · exact valid_axiomFour_of_isTransitive)
+  Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 theorem LogicET4.consistent : (@LogicET4 α).IsConsistent := by
   by_contra! hC

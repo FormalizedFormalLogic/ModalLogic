@@ -22,11 +22,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEMC4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.IsTransitive] :
     A ∈ LogicEMC4 → F ⊧ A :=
-  Hilbert.sound (by
-    rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩)
-    · exact valid_axiomM_of_isMonotonic
-    · exact valid_axiomC_of_isRegular
-    · exact valid_axiomFour_of_isTransitive)
+  Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 theorem LogicEMC4.consistent : (@LogicEMC4 α).IsConsistent := by
   by_contra! hC

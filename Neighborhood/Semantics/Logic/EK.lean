@@ -19,7 +19,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicEK.sound {κ} [Nonempty κ] (F : Frame κ) [F.HasPropertyK] :
     A ∈ LogicEK → F ⊧ A :=
-  Hilbert.sound (fun B hB => by obtain ⟨A, B, rfl⟩ := hB; exact valid_axiomK_of_hasPropertyK)
+  Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; simp)
 
 theorem LogicEK.consistent : (@LogicEK α).IsConsistent := by
   by_contra! hC

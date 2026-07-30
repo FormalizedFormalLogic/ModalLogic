@@ -18,8 +18,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicEC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] :
     A ∈ LogicEC → F ⊧ A :=
-  Hilbert.sound (fun _ hB => by
-    obtain ⟨_, _, rfl⟩ := hB; exact valid_axiomC_of_isRegular)
+  Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; simp)
 
 theorem LogicEC.consistent : (@LogicEC α).IsConsistent := by
   by_contra! hC

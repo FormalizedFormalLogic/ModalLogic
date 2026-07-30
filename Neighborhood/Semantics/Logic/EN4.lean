@@ -25,11 +25,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsTransitive] :
     A ∈ LogicEN4 → F ⊧ A :=
-  Hilbert.sound
-    (fun _ hB => by
-      rcases hB with rfl | ⟨_, rfl⟩
-      · exact valid_axiomN_of_containsUnit
-      · exact valid_axiomFour_of_isTransitive)
+  Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
 
 theorem LogicEN4.consistent : (@LogicEN4 α).IsConsistent := by
   by_contra! hC

@@ -25,10 +25,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEMC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] :
     A ∈ LogicEMC → F ⊧ A :=
-  Hilbert.sound (by
-    rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩)
-    · exact valid_axiomM_of_isMonotonic
-    · exact valid_axiomC_of_isRegular)
+  Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) <;> simp)
 
 theorem LogicEMC.consistent : (@LogicEMC α).IsConsistent := by
   by_contra! hC

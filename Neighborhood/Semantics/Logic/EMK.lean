@@ -25,9 +25,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicEMK.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.HasPropertyK] :
     A ∈ LogicEMK → F ⊧ A :=
-  Hilbert.sound
-    (by rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩)
-        exacts [valid_axiomM_of_isMonotonic, valid_axiomK_of_hasPropertyK])
+  Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) <;> simp)
 
 theorem LogicEMK.consistent : (@LogicEMK α).IsConsistent := by
   by_contra! hC

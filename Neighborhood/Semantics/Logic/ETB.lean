@@ -22,11 +22,7 @@ variable {α : Type u} {A : Formula α}
 theorem LogicETB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     [F.IsSymmetric] :
     A ∈ LogicETB → F ⊧ A :=
-  Hilbert.sound
-    (fun _ hB => by
-      rcases hB with ⟨_, rfl⟩ | ⟨_, rfl⟩
-      · exact valid_axiomT_of_isReflexive
-      · exact valid_axiomB_of_isSymmetric)
+  Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 theorem LogicETB.consistent : (@LogicETB α).IsConsistent := by
   by_contra! hC

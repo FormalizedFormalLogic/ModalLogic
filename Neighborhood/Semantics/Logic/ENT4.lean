@@ -24,11 +24,7 @@ namespace LogicENT4
 
 omit [DecidableEq α] in
 theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsReflexive] [F.IsTransitive]
-  : A ∈ LogicENT4 → F ⊧ A := Hilbert.sound (by
-  rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩);
-  · exact valid_axiomN_of_containsUnit;
-  · exact valid_axiomT_of_isReflexive;
-  · exact valid_axiomFour_of_isTransitive)
+  : A ∈ LogicENT4 → F ⊧ A := Hilbert.sound (by rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
 theorem consistent : (@LogicENT4 α).IsConsistent := by

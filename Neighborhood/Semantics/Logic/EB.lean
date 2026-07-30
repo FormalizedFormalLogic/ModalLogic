@@ -18,7 +18,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicEB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] :
     A ∈ LogicEB → F ⊧ A :=
-  Hilbert.sound (fun _ hB => by obtain ⟨_, rfl⟩ := hB; exact valid_axiomB_of_isSymmetric)
+  Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
 theorem LogicEB.consistent : (@LogicEB α).IsConsistent := by
   by_contra! hC

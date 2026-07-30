@@ -20,10 +20,7 @@ variable {α : Type u} {A : Formula α}
 
 theorem LogicEP.sound {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
     A ∈ LogicEP → F ⊧ A :=
-  Hilbert.sound
-    (fun B hB => by
-      simp only [Set.mem_singleton_iff] at hB; subst hB
-      exact valid_axiomP_of_notContainsEmpty)
+  Hilbert.sound (by rintro _ rfl; simp)
 
 theorem LogicEP.consistent : (@LogicEP α).IsConsistent := by
   by_contra! hC
