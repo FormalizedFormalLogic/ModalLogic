@@ -50,6 +50,7 @@ public import Neighborhood.Semantics.Logic.EB
 public import Neighborhood.Semantics.Logic.EC
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.ED
+public import Neighborhood.Semantics.Logic.EMD
 public import Neighborhood.Semantics.Logic.EK
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.EM4
@@ -57,9 +58,11 @@ public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.EMC4
 public import Neighborhood.Semantics.Logic.EMCN
 public import Neighborhood.Semantics.Logic.EMCN4
+public import Neighborhood.Semantics.Logic.EMCND
 public import Neighborhood.Semantics.Logic.EMK
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.EMN4
+public import Neighborhood.Semantics.Logic.EMND
 public import Neighborhood.Semantics.Logic.EMNT4
 public import Neighborhood.Semantics.Logic.EMT
 public import Neighborhood.Semantics.Logic.EMT4
