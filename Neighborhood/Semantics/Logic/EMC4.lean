@@ -2,8 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.E4
-import Neighborhood.Semantics.Example.Frame1_2
-import Neighborhood.Semantics.Example.Frame2_8
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame2_8
 
 /-!
 # The neighborhood logic `LogicEMC4`

@@ -2,9 +2,9 @@ module
 
 public import Neighborhood.Semantics.Logic.EK
 public import Neighborhood.Semantics.Logic.EM
-import Neighborhood.Semantics.Example.Frame1_2
-import Neighborhood.Semantics.Example.Frame2_238
-import Neighborhood.Semantics.Example.Frame4_11259170869739560
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame2_238
+public import Neighborhood.Semantics.Example.Frame4_11259170869739560
 
 /-!
 # The neighborhood logic `LogicEMK`
