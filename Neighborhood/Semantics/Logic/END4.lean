@@ -2,55 +2,60 @@ module
 
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EN4
+import Mathlib.Tactic.FinCases
+
+/-!
+# The neighborhood logic `LogicEND4`
+
+Soundness and consistency of `LogicEND4`, the classical modal logic axiomatised by `N := □⊤`,
+the seriality axiom `D` and the transitivity axiom `Four` over `LogicE`, with respect to the
+serial and transitive neighborhood frames containing their unit. Also proves the strict
+inclusion of `LogicEND` in `LogicEND4`.
+-/
 
 @[expose] public section
 
-namespace LO.Modal
+variable {α : Type u} {A : Formula α}
 
-open Neighborhood
-open Hilbert.Neighborhood
-open Formula.Neighborhood
+/-! ### Soundness and consistency -/
 
-namespace Neighborhood
+/-- `LogicEND4` is sound with respect to every serial and transitive neighborhood frame
+containing its unit. -/
+theorem LogicEND4.sound (h : A ∈ LogicEND4) {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
+    [F.IsSerial] [F.IsTransitive] : F ⊧ A :=
+  Hilbert.sound
+    (by
+      rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩)
+      · exact valid_axiomN_of_containsUnit
+      · exact valid_axiomD_of_isSerial
+      · exact valid_axiomFour_of_isTransitive) h
 
-protected class Frame.IsEND4 (F : Frame) extends F.IsEND, F.IsTransitive where
-protected abbrev FrameClass.END4 : FrameClass := { F | F.IsEND4 }
+instance : (@LogicEND4 α).Consistent :=
+  Hilbert.consistent_of (F := Frame.simple_blackhole)
+    (by
+      rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩)
+      · exact valid_axiomN_of_containsUnit
+      · exact valid_axiomD_of_isSerial
+      · exact valid_axiomFour_of_isTransitive)
 
-instance : counterframe_2_3_5.IsEND where
-  serial := by
-    rintro X x;
-    suffices X = {x}ᶜ ∨ X = Set.univ → ¬X = {x} ∧ ¬X = ∅ by simpa [Frame.box, Frame.dia];
-    rintro (rfl | rfl) <;> simp [Set.Fin2.ne_singleton_univ.symm];
+/-! ### Strict inclusion of `LogicEND` -/
 
-end Neighborhood
+/-- `Frame.trivial_containsUnit` (from the strict inclusion of `LogicEN` in `LogicEN4`) is
+serial: its only neighborhoods at any world are the complement of the singleton and the whole
+carrier, neither of which is the complement of the other. -/
+instance : Frame.trivial_containsUnit.IsSerial where
+  serial X x hx := by
+    simp only [Frame.trivial_containsUnit, Frame.box, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hx
+    rcases hx with rfl | rfl <;> fin_cases x <;>
+      simp [Frame.box, Frame.dia, Frame.trivial_containsUnit, Set.ext_iff]
 
-namespace END4
+theorem LogicEND_ssubset_LogicEND4 : @LogicEND ℕ ⊂ LogicEND4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
+  · intro h
+    have hFour : Axioms.Four (.atom 0) ∈ @LogicEND ℕ := h (ProvableHilbert.axm (Or.inr ⟨_, rfl⟩))
+    exact Frame.trivial_containsUnit.not_valid_axiomFour
+      (LogicEND.sound hFour Frame.trivial_containsUnit)
 
-instance Neighborhood.sound : Sound Modal.END4 FrameClass.END4 := instSound_of_validates_axioms $ by
-  constructor;
-  rintro _ (rfl | rfl | rfl) F ⟨⟩ <;> simp;
-
-instance consistent : Entailment.Consistent Modal.END4 := consistent_of_sound_frameclass FrameClass.END4 $ by
-  use Frame.simple_blackhole;
-  simp only [Set.mem_setOf_eq];
-  exact {}
-
-end END4
-
-instance : Modal.END ⪱ Modal.END4 := by
-  constructor;
-  . apply Hilbert.WithRE.weakerThan_of_subset_axioms;
-    simp;
-  . apply Entailment.not_weakerThan_iff.mpr;
-    use (Axioms.Four (.atom 0));
-    constructor;
-    . simp;
-    . apply Sound.not_provable_of_countermodel (𝓜 := FrameClass.END);
-      apply not_validOnFrameClass_of_exists_frame;
-      use counterframe_2_3_5;
-      constructor;
-      . apply Set.mem_setOf_eq.mpr; infer_instance;
-      . simp;
-
-end LO.Modal
 end
