@@ -1,0 +1,58 @@
+module
+
+public import Neighborhood.Semantics.Logic.EMCN
+public import Neighborhood.Semantics.Logic.EMN
+public import Neighborhood.Semantics.Logic.EMD
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame2_206
+
+/-!
+# The neighborhood logic `LogicEMCND`
+
+Soundness and consistency of `LogicEMCND`, the classical modal logic axiomatised by
+the monotonicity axiom `M`, the regularity axiom `C`, `N := □⊤`, and the seriality axiom `D`
+over `LogicE`, with respect to the neighborhood frames that are monotonic, regular,
+contain their unit, and are serial.
+-/
+
+@[expose] public section
+
+variable {α : Type u} {A : Formula α}
+
+
+theorem LogicEMCND.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+    [F.IsRegular] [F.ContainsUnit] [F.IsSerial] :
+    A ∈ LogicEMCND → F ⊧ A :=
+  Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) <;> simp)
+
+theorem LogicEMCND.consistent : (@LogicEMCND α).IsConsistent := by
+  by_contra! hC
+  simpa using LogicEMCND.sound frame_1_2 hC
+
+instance : Nonempty (MaximalConsistentSet (@LogicEMCND α)) :=
+  MaximalConsistentSet.nonempty LogicEMCND.consistent
+
+theorem LogicEMCN_ssubset_LogicEMCND : @LogicEMCN ℕ ⊂ LogicEMCND := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hD : Axioms.D #0 ∈ @LogicEMCN ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_1_3.not_valid_axiomD (LogicEMCN.sound frame_1_3 hD)
+
+theorem LogicEMN_ssubset_LogicEMCND : @LogicEMN ℕ ⊂ LogicEMCND := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hC : Axioms.C #0 #1 ∈ @LogicEMN ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_206.not_valid_axiomC (LogicEMN.sound frame_2_206 hC)
+
+theorem LogicEMD_ssubset_LogicEMCND : @LogicEMD ℕ ⊂ LogicEMCND := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEMD ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_1_0.not_valid_axiomN (LogicEMD.sound frame_1_0 hN)
+
+end
