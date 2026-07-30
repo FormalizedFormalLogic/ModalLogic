@@ -51,8 +51,16 @@ theorem LogicEND.complete
 
 /-! ### Strict inclusions of `LogicED` and `LogicEP` -/
 
+/-- `Frame.simple_whitehole` is (vacuously) serial, since it has no neighborhoods at all. -/
+instance : Frame.simple_whitehole.IsSerial where
+  serial X x hx := by simp [Frame.box, Frame.simple_whitehole] at hx
+
 theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by
-  sorry
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
+  · intro h
+    have hN : (Axioms.N : Formula ℕ) ∈ @LogicED ℕ := h (ProvableHilbert.axm (Or.inl rfl))
+    exact Frame.simple_whitehole.not_valid_axiomN (LogicED.sound hN Frame.simple_whitehole)
 
 /-- A serial frame containing its unit has no world with the empty set as a neighborhood. -/
 instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.NotContainsEmpty := by
