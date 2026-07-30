@@ -3,15 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.AxiomN
 
-/-!
-# The neighborhood logic `LogicENP`
-
-Soundness, consistency and completeness of `LogicENP`, the classical modal logic axiomatised by
-both `N := □⊤` and the possibility axiom `P` over `LogicE`, with respect to the neighborhood
-frames that contain their unit and in which no world has the empty set as one of its
-neighborhoods.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

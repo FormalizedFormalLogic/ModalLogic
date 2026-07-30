@@ -4,14 +4,6 @@ public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Logic.ECD
 public import Neighborhood.Semantics.Example.Frame1_1
 
-/-!
-# The neighborhood logic `LogicECP`
-
-Soundness, consistency and completeness of `LogicECP`, the classical modal logic axiomatised by
-both the regularity axiom `C` and the possibility axiom `P` over `LogicE`, with respect to the
-regular neighborhood frames in which no world has the empty set as one of its neighborhoods.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

@@ -2,14 +2,6 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 
-/-!
-# The neighborhood logic `LogicECD`
-
-Soundness, consistency and completeness of `LogicECD`, the classical modal logic axiomatised by
-both the regularity axiom `C` and the seriality axiom `D` over `LogicE`, with respect to the
-regular and serial neighborhood frames.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

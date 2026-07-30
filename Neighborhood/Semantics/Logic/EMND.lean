@@ -5,14 +5,6 @@ public import Neighborhood.Semantics.Supplementation
 public import Neighborhood.Semantics.Logic.EMNP
 public import Neighborhood.Semantics.Example.Frame2_238
 
-/-!
-# The neighborhood logic `LogicEMND`
-
-Soundness, consistency and completeness of `LogicEMND`, the classical modal logic axiomatised by
-the monotonicity axiom `M`, `N := □⊤` and the seriality axiom `D` over `LogicE`, with respect to
-the monotonic and serial neighborhood frames that contain their unit.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

@@ -3,15 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Supplementation
 
-/-!
-# The neighborhood logic `LogicEMNP`
-
-Soundness, consistency and completeness of `LogicEMNP`, the classical modal logic axiomatised by
-the monotonicity axiom `M`, `N := □⊤` and the possibility axiom `P` over `LogicE`, with respect to
-the monotonic neighborhood frames that contain their unit and in which no world has the empty set
-as one of its neighborhoods.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
