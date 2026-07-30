@@ -4,16 +4,19 @@ public import Neighborhood.Semantics.AxiomN
 public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.EP
+public import Neighborhood.Semantics.Logic.ENP
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_238
 
 /-!
 # The neighborhood logic `LogicEND`
 
 Soundness, consistency and completeness of `LogicEND`, the classical modal logic axiomatised by
 both `N := □⊤` and the seriality axiom `D` over `LogicE`, with respect to the serial neighborhood
-frames containing their unit. Also its strict inclusions of `LogicEN`, `LogicED` and `LogicEP`.
+frames containing their unit. Also its strict inclusions of `LogicEN`, `LogicED`, `LogicEP` and
+`LogicENP`.
 -/
 
 @[expose] public section
@@ -69,5 +72,13 @@ theorem LogicEP_ssubset_LogicEND : @LogicEP ℕ ⊂ LogicEND := by
     exact LogicEND.complete (fun _ _ _ => valid_axiomP_of_notContainsEmpty)
   · intro h
     exact LogicEP.not_mem_axiomD (a := 0) (h (ProvableHilbert.axm (by grind)))
+
+theorem LogicENP_ssubset_LogicEND : @LogicENP ℕ ⊂ LogicEND := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A (rfl | rfl) <;> first | exact Logic.axiomN | exact Logic.axiomP_of_ND
+  · intro h
+    have hD : Axioms.D #0 ∈ @LogicENP ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_238.not_valid_axiomD (LogicENP.sound frame_2_238 hD)
 
 end
