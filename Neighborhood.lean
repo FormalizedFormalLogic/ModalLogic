@@ -11,6 +11,7 @@ public import Neighborhood.Logic.Cl
 public import Neighborhood.Logic.Context
 public import Neighborhood.Logic.Equiv.EB4_ENB4
 public import Neighborhood.Logic.Equiv.EMB4_EMCNB4
+public import Neighborhood.Logic.Equiv.EMT5_EMCNT5
 public import Neighborhood.Logic.Equiv.EMTB_EMCNTB
 public import Neighborhood.Logic.MaximalConsistentSet
 public import Neighborhood.Semantics.AxiomC
