@@ -11,6 +11,7 @@ public import Neighborhood.Logic.Cl
 public import Neighborhood.Logic.Context
 public import Neighborhood.Logic.Equiv.EB4_ENB4
 public import Neighborhood.Logic.Equiv.ECB4_ECNB4
+public import Neighborhood.Logic.Equiv.ECNP_ECND
 public import Neighborhood.Logic.Equiv.ECT5_ECNT5
 public import Neighborhood.Logic.Equiv.ECTB_ECNTB
 public import Neighborhood.Logic.Equiv.EM45_EMN45
@@ -19,6 +20,8 @@ public import Neighborhood.Logic.Equiv.EMB4_EMCNB4
 public import Neighborhood.Logic.Equiv.EMC45_EMCN45
 public import Neighborhood.Logic.Equiv.EMCD45_EMCND45
 public import Neighborhood.Logic.Equiv.EMCD5_EMCND5
+public import Neighborhood.Logic.Equiv.EMCNP_EMCND
+public import Neighborhood.Logic.Equiv.EMCP_EMCD
 public import Neighborhood.Logic.Equiv.EMC_EMCK
 public import Neighborhood.Logic.Equiv.EMC_EMK
 public import Neighborhood.Logic.Equiv.EMD45_EMND45
@@ -77,6 +80,7 @@ public import Neighborhood.Semantics.Logic.ECN4
 public import Neighborhood.Semantics.Logic.ECN5
 public import Neighborhood.Semantics.Logic.ECNB
 public import Neighborhood.Semantics.Logic.ECND
+public import Neighborhood.Semantics.Logic.ECP
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.ED4
 public import Neighborhood.Semantics.Logic.ED5
@@ -98,8 +102,10 @@ public import Neighborhood.Semantics.Logic.EMK
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.EMN4
 public import Neighborhood.Semantics.Logic.EMND
+public import Neighborhood.Semantics.Logic.EMNP
 public import Neighborhood.Semantics.Logic.EMNT
 public import Neighborhood.Semantics.Logic.EMNT4
+public import Neighborhood.Semantics.Logic.EMP
 public import Neighborhood.Semantics.Logic.EMT
 public import Neighborhood.Semantics.Logic.EMT4
 public import Neighborhood.Semantics.Logic.EN
@@ -108,6 +114,7 @@ public import Neighborhood.Semantics.Logic.EN5
 public import Neighborhood.Semantics.Logic.ENB
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.END4
+public import Neighborhood.Semantics.Logic.ENP
 public import Neighborhood.Semantics.Logic.ENT
 public import Neighborhood.Semantics.Logic.ENT4
 public import Neighborhood.Semantics.Logic.EP

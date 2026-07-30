@@ -1,5 +1,6 @@
 module
 
+public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Logic.EC
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_3
@@ -33,5 +34,18 @@ theorem LogicEC_ssubset_LogicECD : @LogicEC ℕ ⊂ LogicECD := by
   · intro h
     have hD : Axioms.D #0 ∈ @LogicEC ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_valid_axiomD (LogicEC.sound frame_1_3 hD)
+
+section
+
+variable [DecidableEq α]
+
+theorem LogicECD.complete
+    (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegular] → [F.IsSerial] → F ⊧ A) :
+    A ∈ @LogicECD α :=
+  (basicCanonicity LogicECD).mem_of_valid
+    (h (basicCanonicity LogicECD).toModel.toFrame
+      (basicCanonicity LogicECD).toModel.Val)
+
+end
 
 end

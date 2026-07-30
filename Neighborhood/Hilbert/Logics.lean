@@ -102,6 +102,58 @@ instance : (@LogicEND α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
 abbrev LogicEP : Logic α := Hilbert { Axioms.P }
 instance : (@LogicEP α).HasAxiomP := Hilbert.hasAxiomP_of rfl
 
+abbrev LogicECP : Logic α := Hilbert $
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.P }
+instance : (@LogicECP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicECP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicEMP : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.P }
+instance : (@LogicEMP α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicENP : Logic α := Hilbert $
+  { Axioms.N } ∪
+  { Axioms.P }
+instance : (@LogicENP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicENP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicEMNP : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.N } ∪
+  { Axioms.P }
+instance : (@LogicEMNP α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMNP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicEMNP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicECNP : Logic α := Hilbert $
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.N } ∪
+  { Axioms.P }
+instance : (@LogicECNP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicECNP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicECNP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicEMCP : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.P }
+instance : (@LogicEMCP α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMCP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicEMCP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
+abbrev LogicEMCNP : Logic α := Hilbert $
+  { Axioms.M A B | (A) (B) } ∪
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.N } ∪
+  { Axioms.P }
+instance : (@LogicEMCNP α).HasAxiomM := Hilbert.hasAxiomM_of $ by grind;
+instance : (@LogicEMCNP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
+instance : (@LogicEMCNP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicEMCNP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+
 abbrev LogicEB : Logic α := Hilbert { Axioms.B A | (A) }
 instance : (@LogicEB α).HasAxiomB := Hilbert.hasAxiomB_of $ by grind;
 

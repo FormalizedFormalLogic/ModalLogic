@@ -3,6 +3,7 @@ module
 public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomN
+public import Neighborhood.Semantics.AxiomP
 public import Neighborhood.Semantics.AxiomGeach
 
 /-!
@@ -81,6 +82,12 @@ instance containsUnit [F.ContainsUnit] : F.supplementation.ContainsUnit := by
   apply iff_of_true _ (Set.mem_univ x)
   exact iff_exists_subset.mpr ⟨Set.univ, le_refl _, F.univ_mem x⟩
 
+instance notContainsEmpty [F.NotContainsEmpty] : F.supplementation.NotContainsEmpty := by
+  constructor
+  intro x hx
+  obtain ⟨Y, hY, hxY⟩ := iff_exists_subset.mp hx
+  exact F.not_contains_empty (Set.subset_empty_iff.mp hY ▸ hxY)
+
 instance isTransitive [F.IsTransitive] : F.supplementation.IsTransitive := by
   constructor
   intro X x hx
@@ -133,6 +140,25 @@ instance [L.HasAxiomT] : (supplementedBasicCanonicity L).toModel.IsReflexive :=
 
 instance [L.HasAxiomFour] : (supplementedBasicCanonicity L).toModel.IsTransitive :=
   Frame.supplementation.isTransitive (F := (basicCanonicity L).toModel.toFrame)
+
+instance [L.HasAxiomP] : (supplementedBasicCanonicity L).toModel.NotContainsEmpty :=
+  Frame.supplementation.notContainsEmpty (F := (basicCanonicity L).toModel.toFrame)
+
+instance [L.HasAxiomD] : (supplementedBasicCanonicity L).toModel.IsSerial := by
+  apply Canonicity.isSerial
+  intro X _ Ω hΩ
+  obtain ⟨Y, hYX, hY⟩ :=
+    Frame.supplementation.iff_exists_subset (F := (basicCanonicity L).toModel.toFrame).mp hΩ
+  obtain ⟨B, rfl, hB⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hY
+  show Ω ∉ (basicCanonicity L).toModel.supplementation.box Xᶜ
+  rintro ⟨Z, hZX, hZ⟩
+  obtain ⟨C, rfl, hC⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hZ
+  have h₁ : proofset L C ⊆ proofset L (∼B) := by
+    rw [proofset.eq_neg];
+    exact fun ω hω hωB => hZX hω (hYX hωB)
+  have h₂ : □C 🡒 □(∼B) ∈ L := Logic.rm (proofset.imp_subset.mpr h₁)
+  exact (MaximalConsistentSet.iff_mem_neg.mp (MaximalConsistentSet.mdp_provable Logic.axiomD hB))
+    (MaximalConsistentSet.mdp_provable h₂ hC)
 
 /-- The supplementation of `relativeBasicCanonicity L P`, augmented with the monotonicity axiom
 `M` and a compatibility condition `hP` ensuring that every extra neighborhood `Y` witnessing a
