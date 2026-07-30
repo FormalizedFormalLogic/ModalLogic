@@ -431,3 +431,53 @@ Foundation 脱却の Phase 1（新コア構築，nbhd-core の S1〜S18）だけ
    一言注記するのが望ましい．
 8. **K0 の結果次第で本計画の一部（§2.3・§5）が更新される**．スパイクで判明した事実は
    本ファイルに追記し（上書きせず），採用案の変更があれば K1 着手前にユーザーへ報告する．
+
+---
+
+## 設計改訂1（FrameClass 廃止によりこの文書の結論は破棄）
+
+2026-07-30 追記．**本文書の中心的結論（§2.3「選択肢2（述語版 FrameClass）を採用する」）は，
+ユーザーの明示的な指示により破棄された．後から読む人は §2・§5 の FrameClass 設計を
+実装しないこと．** 既存の記述は履歴として残す（削除・修正しない）．
+
+### 破棄の経緯
+
+ユーザーから次の決定が下された（検討事項ではなく決定事項）．
+
+1. `FrameClass` という型・概念，および FrameClass による validity という概念は廃止する．
+   述語版（`∀ ⦃κ⦄, Frame κ → Prop`）も Σ 型版も作らない．
+2. `Sound`／`Complete` 型クラスも `Semantics` 型クラスも作らない．健全性・完全性は
+   ProvabilityLogic（`../SeqPL`）のように素の `theorem` として，フレーム条件の型クラスを
+   instance 引数に置いた全称量化（`∀ {κ}, [Nonempty κ] → ∀ F : Frame κ, [F.IsX] → F ⊧ φ`）で書く．
+
+本文書 §2.2 が選択肢3（フレームクラス廃止・全称量化）を却下した根拠は
+「`Sound L C`・`Complete L C` という型クラスの第2引数に置く対象がフレームクラスの存在意義であり，
+100個超の instance と40回超の消費がこの機構に乗っている」ことだった．**その `Sound`/`Complete`
+型クラス機構そのものを廃止せよというのが今回の決定なので，却下理由は消滅し，選択肢3
+（を型クラス条件 `Frame.IsX` で整えた形）が新しい結論になる．**
+
+### 本文書のうち生き残る部分
+
+- **κ パラメータ化そのもの（§1・§3・§4・§5 の Frame/Model/World abbrev/mk_ℬ 部分）は有効**．
+  `Frame (κ : Type u)`・`abbrev Frame.World {_ : Frame κ} := κ` の Fin74 方式・defeq 分析（§4）・
+  universe の扱い（§3．完全性の仮定側は κ を `Type 0` で量化，健全性側は多相）はそのまま
+  新設計に引き継がれる．
+- **§1.2 の `world_nonempty` フィールド維持の判断は覆る**: ProvabilityLogic に合わせ
+  `[Nonempty κ]` の **instance 引数**にする．フレームを集合に入れる機構（FrameClass）が
+  消えた以上，非空性を値に同梱する理由が無く，全定理で κ が binder に立つため．
+- **K0 スパイクのうち (a) `Membership (Frame κ) FrameClass` と (c) `C ⊧* Ax` は不要**．
+  (b) 世界レベル `x ⊧ φ` の elaboration 確認だけが引き続き意味を持つ．
+- **§7 の実施順序（filtration → κ → defoundation Phase 2 の3段構え）は再編**され，
+  「filtration マージ → κ 化＋意味論再設計＋Foundation 脱却 Phase 2 を1パスで」になる．
+  Sound/Complete/FrameClass の廃止で各ファイルのステートメント自体が変わるため，κ だけ先に
+  通しても同じ行を二度書き直すことになる（§7.2 の「変更軸は1つずつ」はステートメント不変が
+  前提の議論だった）．
+
+### 新しい設計・統合ステップ
+
+具体設計（3キャリアの `⊧` の素の `infix` 多重定義，28論理の
+`soundness`／`unprovable_of_countermodel`／`completeness`／`finite_completeness`／`Consistent` の
+新しい形，`consistent_of_frame`，40箇所の反例パターンの書き換え，K0〜K9 を吸収した
+統合ステップ T1〜T17）は，**nbhd-core worktree の `plans/nbhd-defoundation.md`
+「設計改訂1（ユーザー指示による簡素化・FrameClass/Semantics/Sound/Complete 全廃）」節**に
+一本化して記載した．そちらを正とする．
