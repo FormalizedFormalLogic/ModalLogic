@@ -44,8 +44,10 @@ variable [DecidableEq α]
 /-- `LogicEND` is complete with respect to all serial frames containing their unit. -/
 theorem LogicEND.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F.ContainsUnit → F.IsSerial → F ⊧ A) :
-    A ∈ @LogicEND α := by
-  sorry
+    A ∈ @LogicEND α :=
+  (basicCanonicity LogicEND).mem_of_valid
+    (h (basicCanonicity LogicEND).toModel.toFrame inferInstance inferInstance
+      (basicCanonicity LogicEND).toModel.Val)
 
 /-! ### Strict inclusions of `LogicED` and `LogicEP` -/
 
