@@ -1,12 +1,12 @@
 # Contributing to ModalLogic
 
-How changes land on `main`, the commit convention, the checks to run before merging, and disclosure of AI involvement. For the coding conventions of the Lean sources see [style.md](./style.md) and [refactoring.md](./refactoring.md); for the bibliography workflow see [references.md](./references.md).
+How to contribute to ModalLogic: the flow to `main`, PR/commit titles, pre-submission checks, and disclosure of AI involvement. For the coding conventions of the Lean sources, see [style.md](./style.md) and [refactoring.md](./refactoring.md); for the bibliography, see [references.md](./references.md).
 
 Items marked 🤖 are especially directed at AI coding agents.
 
-## Project layout
+## Projects
 
-This repository is a collection of independent formalization projects, one Lake library each. The syntax of `Formula` and the semantics are deliberately *not* shared between them: the way formulas are built, and which abbreviations are introduced, measurably changes how hard the inductions are, so each project defines what suits its own proofs. Common infrastructure is factored out only when experience shows it pays off.
+This repository is a collection of independent formalization projects, one Lake library each. Syntax and semantics are deliberately not shared between them: how formulas are built, and which abbreviations are introduced, measurably changes how hard the inductions are, so each project defines what suits its own proofs.
 
 | library | source |
 | --- | --- |
@@ -17,63 +17,57 @@ This repository is a collection of independent formalization projects, one Lake 
 
 ## How changes land on `main`
 
-Every change is developed on a topic branch in a git worktree and lands on `main` as a single squash merge, approved by the repository owner beforehand.
+All changes to `main` go through GitHub pull requests, developed on a topic branch. PRs are always squash-merged, so the PR title becomes the commit message on `main` — hence the title convention below.
 
-**Committing directly on `main` is not allowed.** The exceptions are maintenance edits to the repository's own configuration (`.claude/`, `contribute/`, `.gitignore`, `references.bib`, `Justfile`, CI and editor settings) and the approved squash merge itself.
+## PR titles and commit convention
 
-```shell
-git worktree add .claude/worktrees/<branch> -b <branch>
-cp -al .lake .claude/worktrees/<branch>/.lake   # share the dependency build via hardlinks
-rm -rf .claude/worktrees/<branch>/.lake/build   # keep this project's build products per-worktree
-```
-
-Only `.lake/packages/` — pinned by the manifest and immutable while the worktree is being worked on — may be hardlinked. Sharing `.lake/build` causes stale builds: an olean rewritten in place through a shared inode makes `lake build` report success without having recompiled.
-
-## Commit convention
-
-Commit messages are written in English — subject, body, and trailers alike.
-
-Work belonging to one of the project libraries carries the project name as a subject prefix, without exception:
+PR titles are in English, in the usual conventional-commit form:
 
 ```
-Fin74: Kripke incompleteness of the Fine logic
+<type>(scope): <subject>
 ```
 
-For the subject, name one representative result of the change; no verb phrases like "formalize the …" — write "Strict arithmetical hierarchy theorem", not "formalize the strict arithmetical hierarchy theorem". Changes outside the libraries (build configuration, CI, contributor documentation) need no prefix.
+`<type>` is one of the following (do not use `feat`):
 
-## Before merging
+| type | meaning |
+| --- | --- |
+| `add` | new results, definitions, theorems |
+| `fix` | fixing something misformalized |
+| `refactor` | renaming/organizing; existing facts essentially unchanged |
+| `doc` | documents |
+| `ci` | GitHub Actions |
+| `chore` | other maintenance (e.g. version-up) |
 
-Run, in this order:
+`scope` is the project library the change belongs to (`Fin74`, `ModalLogicArchive`, …), narrowed to a module where that helps (`Fin74/Kripke`), following precedents in `git log --oneline`. Changes outside the libraries — build configuration, CI, contributor documentation — take no scope.
 
-1. `lake build` — the affected modules build with no errors and no warnings, including remaining `sorry`.
-2. `just mk-all` — regenerates each library's all-import root file, so a newly added file cannot be silently left out of the build.
-3. `just shake` — removes unused imports and unnecessary `public`. It requires a completed build, hence the order.
-4. `lake build` again — shake rewrites imports, so confirm the result still builds.
+For `<subject>`, name one representative result of the PR; no verb phrases like "formalize the …" — write "Kripke incompleteness of the Fine logic", not "formalize the Kripke incompleteness of the Fine logic".
 
-`lake shake --fix` mistakes a `meta import` for a duplicate of the corresponding `public import` and deletes it, breaking the build. Write every `meta import` with a keep annotation:
+PRs (title and body) are written in English.
 
-```lean
-meta import <Module> -- shake: keep
-```
+## Before submitting
 
-If a build then fails with
-
-```
-Invalid `meta` definition … is not accessible here; consider adding `public meta import …`
-```
-
-restore the deleted line and annotate it.
-
-When one logical task was split across several worktrees, run the `mk-all`/`shake` steps once on the integration branch after merging, not in each worktree.
-
-If you added entries to `references.bib`, format it with `just format-bib`; see [references.md](./references.md).
-
-🤖 No development-time artifacts survive in the code — plan references, issue numbers, step numbers, stale skeleton-era comments. See [style.md](./style.md#stale-comments-and-planning-artifacts).
+- The affected modules build with `lake build`, with no errors or warnings (including remaining `sorry`).
+- Run import-all to keep each library's root file up to date:
+  ```shell
+  just mk-all
+  ```
+- Remove unused imports and unnecessary `public`. `lake shake` needs a completed build, so run it after `lake build`, and build once more afterwards because it rewrites imports:
+  ```shell
+  just shake
+  ```
+  `lake shake --fix` mistakes a `meta import` for a duplicate of the corresponding `public import` and deletes it; write every such line as `meta import <Module> -- shake: keep`.
+- If you added entries to `references.bib`, format it:
+  ```shell
+  just format-bib
+  ```
+- 🤖 No development-time artifacts survive in the code — plan references, issue numbers, step numbers, stale skeleton-era comments. See [style.md](./style.md#stale-comments-and-planning-artifacts).
 
 ## Disclosing AI involvement
 
-🤖 Whenever an AI agent was involved in producing a change — fully generated or merely assisted — every commit carries a co-author trailer:
+🤖 Whenever an AI agent was involved in producing the changes — fully generated or merely assisted — this must be disclosed in the contribution itself:
 
-```
-Co-Authored-By: Claude <noreply@anthropic.com>
-```
+- every commit created with an AI agent carries a co-author trailer, e.g.
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  ```
+- the PR states in natural language (in the body, or in the title if appropriate) that an AI agent was used.

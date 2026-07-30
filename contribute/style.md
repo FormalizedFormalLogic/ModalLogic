@@ -121,11 +121,11 @@ Citations go at the end of the docstring as a list, one line per BibTeX key, of 
 
 A year or an author name found in a source counts as a citation to look up: search `references.bib` for the matching key. Where no entry exists, leave the historical mention as plain text without brackets.
 
-🤖 A claim about *attribution* — that a technique, proposition or definition does or does not appear in a particular paper — is never written from memory. Read the relevant pages of the PDF in `.claude/docs/references/` first. Formulations that look different often exist in both papers, so check in the body of each which part is really specific to which source.
+🤖 A claim about *attribution* — that a technique, proposition or definition does or does not appear in a particular paper — is never written from memory. Read the relevant pages of the source first. Formulations that look different often exist in both papers, so check in the body of each which part is really specific to which source.
 
 ### Stale comments and planning artifacts
 
-🤖 Code and docstrings must not reference development-time artifacts: plan steps ("see plan Step4 §3"), issue numbers, bare step numbers, section/line labels (`§2`, `L4-1`), or the implementation state of another file ("even while Step 2 is incomplete …"). They are fine as working memos — the plan itself lives in `.claude/docs/directions/` and is invisible to a reviewer — but before submission, remove them or rewrite them into self-contained explanations. `grep -n "see plan\|issue #\|Step [0-9]\|§[0-9]\|L[0-9]-[0-9]"` helps find survivors.
+🤖 Code and docstrings must not reference development-time artifacts: plan steps ("see plan Step4 §3"), issue numbers, bare step numbers, section/line labels (`§2`, `L4-1`), or the implementation state of another file ("even while Step 2 is incomplete …"). They are fine as working memos — the plan they refer to is invisible to a reviewer — but before submission, remove them or rewrite them into self-contained explanations. `grep -n "see plan\|issue #\|Step [0-9]\|§[0-9]\|L[0-9]-[0-9]"` helps find survivors.
 
 🤖 Likewise remove skeleton-era comments (e.g. "most lemmas below are stated with `sorry`") that contradict the finished code.
 
@@ -134,6 +134,10 @@ A year or an author name found in a source counts as a citation to look up: sear
 Attach `@[grind]` to lemmas and definitions that plausibly help `grind` close goals, and try `grind` inside proofs before settling on a longer tactic sequence.
 
 **A bare `@[grind]` without a direction is not allowed.** Always state one — `@[grind .]`, `@[grind =]`, `@[grind =>]`, `@[grind →]`, `@[grind <=]` — including on recursive `def`s. When `grind` suggests an attribute in an error or hint message, that suggestion is a reasonable choice. The post-hoc form `attribute [grind =] name₁ name₂ …` is equally acceptable.
+
+## No `sorry`
+
+`sorry` is never acceptable in a submitted proof: `lake build` reports it as a warning, and the pre-submission checks in [index.md](./index.md) require a warning-free build. If a proof is incomplete, keep it out of the PR rather than submitting it with `sorry` placeholders.
 
 ## `set_option`
 

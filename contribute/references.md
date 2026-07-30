@@ -24,4 +24,4 @@ Keys follow the AMS (MathSciNet/MRef) scheme — `Bek90`, `AB05`, `dJY11`, keepi
 
 ## PDFs
 
-The PDFs of the cited papers are kept out of the repository, in the ignored directory `.claude/docs/references/`, named after their BibTeX key (`<key>.pdf`). Whenever a key is regenerated, rename the corresponding file to match. Unpublished material — personal notes, blog posts, repository memos — goes to `.claude/docs/references/unpublished/` and gets no entry in `references.bib`.
+The PDFs of the cited papers are not kept in the repository. Unpublished material — personal notes, blog posts, repository memos — gets no entry in `references.bib` at all.
