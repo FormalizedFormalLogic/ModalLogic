@@ -20,6 +20,57 @@ abbrev frame_3_10528928 : Frame (Fin 3) :=
     | 1 => {{0, 1}, {0, 2}, Set.univ}
     | 2 => {{0, 2}, Set.univ}⟩
 
+lemma frame_3_10528928.box_mono {X Y : Set (Fin 3)} (h : X ⊆ Y) :
+    frame_3_10528928.box X ⊆ frame_3_10528928.box Y := by
+  intro w hw
+  fin_cases w
+  · simp only [Frame.box, frame_3_10528928, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hw ⊢
+    rcases hw with rfl | rfl
+    · have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+      have h2 : (2 : Fin 3) ∈ Y := h (by simp)
+      by_cases h1 : (1 : Fin 3) ∈ Y
+      · right; ext i; fin_cases i <;> simp_all
+      · left; ext i; fin_cases i <;> simp_all
+    · right; ext i
+      have : i ∈ (Set.univ : Set (Fin 3)) := trivial
+      have := h this
+      fin_cases i <;> simp_all
+  · simp only [Frame.box, frame_3_10528928, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hw ⊢
+    rcases hw with rfl | rfl | rfl
+    · have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+      have h1 : (1 : Fin 3) ∈ Y := h (by simp)
+      by_cases h2 : (2 : Fin 3) ∈ Y
+      · right; right; ext i; fin_cases i <;> simp_all
+      · left; ext i; fin_cases i <;> simp_all
+    · have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+      have h2 : (2 : Fin 3) ∈ Y := h (by simp)
+      by_cases h1 : (1 : Fin 3) ∈ Y
+      · right; right; ext i; fin_cases i <;> simp_all
+      · right; left; ext i; fin_cases i <;> simp_all
+    · right; right; ext i
+      have : i ∈ (Set.univ : Set (Fin 3)) := trivial
+      have := h this
+      fin_cases i <;> simp_all
+  · simp only [Frame.box, frame_3_10528928, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hw ⊢
+    rcases hw with rfl | rfl
+    · have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+      have h2 : (2 : Fin 3) ∈ Y := h (by simp)
+      by_cases h1 : (1 : Fin 3) ∈ Y
+      · right; ext i; fin_cases i <;> simp_all
+      · left; ext i; fin_cases i <;> simp_all
+    · right; ext i
+      have : i ∈ (Set.univ : Set (Fin 3)) := trivial
+      have := h this
+      fin_cases i <;> simp_all
+
+instance : frame_3_10528928.IsMonotonic where
+  mono _ _ := Set.subset_inter
+    (frame_3_10528928.box_mono Set.inter_subset_left)
+    (frame_3_10528928.box_mono Set.inter_subset_right)
+
 lemma frame_3_10528928.box_zero_one :
     frame_3_10528928.box ({0, 1} : Set (Fin 3)) = {1} := by
   ext w; fin_cases w <;> simp [Frame.box, frame_3_10528928, Set.ext_iff] <;> decide
