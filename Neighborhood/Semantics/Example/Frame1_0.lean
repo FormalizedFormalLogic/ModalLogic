@@ -20,6 +20,9 @@ lemma frame_1_0.not_valid_axiomN :
   Frame.Validate.not_of_exists_valuation_world
     ⟨fun _ => ∅, 0, by simp [NotForces, Forces, Frame.box]⟩
 
+instance : frame_1_0.HasPropertyK where
+  K X Y w := by simp [Frame.box, frame_1_0]
+
 instance : frame_1_0.IsRegular := ⟨by simp [Frame.box, frame_1_0]⟩
 
 instance : frame_1_0.IsMonotonic where

@@ -11,7 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
-variable {a : α}
+variable {a b : α}
 
 abbrev frame_2_75 : Frame (Fin 2) :=
   ⟨fun w => match w with
@@ -79,5 +79,9 @@ instance : frame_2_75.IsTransitive where
     · have hboxE : frame_2_75.box (∅ : Set (Fin 2)) = {0} := by
         ext y; fin_cases y <;> simp [Frame.box, frame_2_75, Set.Fin2.eq_univ, Set.ext_iff]
       rw [hboxE, hbox0]
+
+@[simp]
+lemma frame_2_75.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_75 ⊧ (Axioms.K #a #b : Formula α) := fun h => by sorry
 
 end

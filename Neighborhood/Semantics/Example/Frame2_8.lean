@@ -15,6 +15,27 @@ variable {α : Type u}
 abbrev frame_2_8 : Frame (Fin 2) :=
   ⟨fun w => match w with | 0 => ∅ | 1 => {Set.univ}⟩
 
+instance : frame_2_8.HasPropertyK where
+  K X Y w := by
+    intro ⟨h1, h2⟩
+    fin_cases w
+    · simp [Frame.box, frame_2_8] at h2
+    · simp only [Frame.box, frame_2_8, Set.mem_setOf_eq] at h1 h2 ⊢
+      have hX : X = Set.univ := by
+        by_contra hne
+        simp [hne] at h2
+      simp [hX] at h1
+      exact h1
+
+instance : frame_2_8.NotContainsEmpty := ⟨fun x => by
+  fin_cases x
+  · simp [Frame.box, frame_2_8]
+  · simp only [Frame.box, frame_2_8]
+    intro h
+    have : (0 : Fin 2) ∈ (∅ : Set (Fin 2)) ↔ (0 : Fin 2) ∈ (Set.univ : Set (Fin 2)) := by
+      rw [h]
+    simp at this⟩
+
 lemma frame_2_8.not_isTransitive :
     ¬frame_2_8.IsTransitive := by
   intro hC

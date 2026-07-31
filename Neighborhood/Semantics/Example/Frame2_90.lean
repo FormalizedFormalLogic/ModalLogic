@@ -54,4 +54,10 @@ instance : frame_2_90.IsSerial where
       intro y hy <;> fin_cases y <;>
         simp_all [Frame.box, Frame.dia, frame_2_90, Set.Fin2.eq_univ, Set.ext_iff]
 
+instance : frame_2_90.IsTransitive where
+  trans X := by sorry
+
+@[simp]
+lemma frame_2_90.not_valid_axiomP : ¬frame_2_90 ⊧ (Axioms.P : Formula α) := fun h => by sorry
+
 end
