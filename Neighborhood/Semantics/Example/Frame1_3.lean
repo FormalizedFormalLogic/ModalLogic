@@ -46,4 +46,8 @@ lemma frame_1_3.not_isSerial : ¬frame_1_3.IsSerial := by
 lemma frame_1_3.not_valid_axiomD : ¬frame_1_3 ⊧ (Axioms.D #0 : Formula ℕ) :=
   fun h => frame_1_3.not_isSerial (isSerial_of_valid_axiomD h)
 
+@[simp]
+lemma frame_1_3.not_valid_axiomP : ¬frame_1_3 ⊧ (Axioms.P : Formula ℕ) := fun h => by
+  simpa using (notContainsEmpty_of_valid_axiomP h).not_contains_empty (x := 0)
+
 end
