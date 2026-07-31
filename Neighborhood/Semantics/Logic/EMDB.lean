@@ -23,12 +23,9 @@ theorem LogicEMDB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsS
     A ∈ LogicEMDB → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEMDB.consistent : (@LogicEMDB α).IsConsistent := by
+instance : (@LogicEMDB α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMDB.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMDB α)) :=
-  MaximalConsistentSet.nonempty LogicEMDB.consistent
+  simpa using LogicEMDB.sound frame_1_2 hC⟩
 
 theorem LogicEMCND_ssubset_LogicEMDB : @LogicEMCND ℕ ⊂ LogicEMDB := by
   constructor

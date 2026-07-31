@@ -19,20 +19,17 @@ theorem LogicE5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
     A ∈ @LogicE5 α → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
-theorem LogicE5.consistent : (@LogicE5 α).IsConsistent := by
+instance : (@LogicE5 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicE5.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicE5 α)) :=
-  MaximalConsistentSet.nonempty LogicE5.consistent
+  simpa using LogicE5.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicE5.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsEuclidean] → F ⊧ A) :
     A ∈ @LogicE5 α :=
-  (maximalRelativeMaximalCanonicity LogicE5).mem_of_valid
-    (h (maximalRelativeMaximalCanonicity LogicE5).toModel.toFrame
-      (maximalRelativeMaximalCanonicity LogicE5).toModel.Val)
+  (maximalRelativeMaximalCanonicalModel LogicE5).mem_of_valid
+    (h (maximalRelativeMaximalCanonicalModel LogicE5).toFrame
+      (maximalRelativeMaximalCanonicalModel LogicE5).Val)
 
 
 theorem LogicE_ssubset_LogicE5 : @LogicE ℕ ⊂ LogicE5 := by

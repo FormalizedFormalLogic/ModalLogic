@@ -7,38 +7,33 @@ public import Neighborhood.Semantics.AxiomGeach
 public import Neighborhood.Semantics.AxiomP
 public import Neighborhood.Hilbert.Logics
 public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame2_8
 
-/-!
-# The neighborhood logic `LogicE`
-
-Soundness, consistency and completeness of `LogicE`, the weakest classical modal logic, with
-respect to all neighborhood frames.
-
-Also defines two auxiliary countermodels, `frame_1_0` and
-`frame_2_8`, reused by several other neighborhood logics.
--/
 
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
 
 
-theorem LogicE.sound {κ} [Nonempty κ] (F : Frame κ) :
-    A ∈ LogicE → F ⊧ A :=
+namespace LogicE
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) : A ∈ LogicE → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨⟩)
 
-theorem LogicE.consistent : (@LogicE α).IsConsistent := by
+instance : (@LogicE α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicE.sound frame_1_2 hC
+  simpa using LogicE.sound frame_1_2 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicE α)) :=
-  MaximalConsistentSet.nonempty LogicE.consistent
+theorem complete [DecidableEq α] (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F ⊧ A) : A ∈ @LogicE α :=
+  (basicCanonicalModel LogicE).mem_of_valid
+  (h (basicCanonicalModel LogicE).toFrame (basicCanonicalModel LogicE).Val)
 
-variable [DecidableEq α]
 
-theorem LogicE.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), F ⊧ A) :
-    A ∈ @LogicE α :=
-  (basicCanonicity LogicE).mem_of_valid
-    (h (basicCanonicity LogicE).toModel.toFrame (basicCanonicity LogicE).toModel.Val)
+lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicE α) := by
+  by_contra! hC;
+  exact frame_2_8.not_valid_axiomFour (LogicE.sound (frame_2_8) $ hC #a)
+
+end LogicE
+
 
 end

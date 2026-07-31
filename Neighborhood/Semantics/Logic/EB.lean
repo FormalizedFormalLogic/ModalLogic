@@ -20,27 +20,24 @@ theorem LogicEB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] :
     A ∈ LogicEB → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
-theorem LogicEB.consistent : (@LogicEB α).IsConsistent := by
+instance : (@LogicEB α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEB.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEB α)) :=
-  MaximalConsistentSet.nonempty LogicEB.consistent
+  simpa using LogicEB.sound frame_1_2 hC⟩
 
 section
 
 variable [DecidableEq α]
 
 /-- Neither the smallest nor the largest canonical model is symmetric, but the intermediate one
-of `intermediateRelativeMaximalCanonicity` is.
+of `intermediateRelativeMaximalCanonicalModel` is.
 
 - [Che80, Exercise 9.39(b)] -/
 theorem LogicEB.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsSymmetric] → F ⊧ A) :
     A ∈ @LogicEB α :=
-  (intermediateRelativeMaximalCanonicity LogicEB).mem_of_valid
-    (h (intermediateRelativeMaximalCanonicity LogicEB).toModel.toFrame
-      (intermediateRelativeMaximalCanonicity LogicEB).toModel.Val)
+  (intermediateRelativeMaximalCanonicalModel LogicEB).mem_of_valid
+    (h (intermediateRelativeMaximalCanonicalModel LogicEB).toFrame
+      (intermediateRelativeMaximalCanonicalModel LogicEB).Val)
 
 end
 

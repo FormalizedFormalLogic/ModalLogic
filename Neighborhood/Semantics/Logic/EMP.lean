@@ -16,21 +16,18 @@ theorem LogicEMP.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.NotC
     A ∈ LogicEMP → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | rfl) <;> simp)
 
-theorem LogicEMP.consistent : (@LogicEMP α).IsConsistent := by
+instance : (@LogicEMP α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMP.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMP α)) :=
-  MaximalConsistentSet.nonempty LogicEMP.consistent
+  simpa using LogicEMP.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicEMP.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.NotContainsEmpty] → F ⊧ A) :
     A ∈ @LogicEMP α :=
-  (supplementedBasicCanonicity LogicEMP).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMP).toModel.toFrame
-      (supplementedBasicCanonicity LogicEMP).toModel.Val)
+  (supplementedBasicCanonicalModel LogicEMP).mem_of_valid
+    (h (supplementedBasicCanonicalModel LogicEMP).toFrame
+      (supplementedBasicCanonicalModel LogicEMP).Val)
 
 theorem LogicEM_ssubset_LogicEMP : @LogicEM ℕ ⊂ LogicEMP := by
   constructor

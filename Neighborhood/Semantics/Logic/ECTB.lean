@@ -25,12 +25,9 @@ theorem LogicECTB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsRef
     A ∈ LogicECTB → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicECTB.consistent : (@LogicECTB α).IsConsistent := by
+instance : (@LogicECTB α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECTB.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicECTB α)) :=
-  MaximalConsistentSet.nonempty LogicECTB.consistent
+  simpa using LogicECTB.sound frame_1_2 hC⟩
 
 theorem LogicETB_ssubset_LogicECTB : @LogicETB ℕ ⊂ LogicECTB := by
   constructor

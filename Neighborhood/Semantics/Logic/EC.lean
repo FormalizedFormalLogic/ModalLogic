@@ -20,20 +20,17 @@ theorem LogicEC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] :
     A ∈ LogicEC → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; simp)
 
-theorem LogicEC.consistent : (@LogicEC α).IsConsistent := by
+instance : (@LogicEC α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEC.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEC α)) :=
-  MaximalConsistentSet.nonempty LogicEC.consistent
+  simpa using LogicEC.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicEC.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegular] → F ⊧ A) :
     A ∈ @LogicEC α :=
-  (basicCanonicity LogicEC).mem_of_valid
-    (h (basicCanonicity LogicEC).toModel.toFrame
-      (basicCanonicity LogicEC).toModel.Val)
+  (basicCanonicalModel LogicEC).mem_of_valid
+    (h (basicCanonicalModel LogicEC).toFrame
+      (basicCanonicalModel LogicEC).Val)
 
 
 theorem LogicE_ssubset_LogicEC : (@LogicE ℕ) ⊂ LogicEC := by

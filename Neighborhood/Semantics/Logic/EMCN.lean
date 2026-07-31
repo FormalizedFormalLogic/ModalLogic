@@ -26,12 +26,9 @@ theorem LogicEMCN.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     A ∈ LogicEMCN → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) <;> simp)
 
-theorem LogicEMCN.consistent : (@LogicEMCN α).IsConsistent := by
+instance : (@LogicEMCN α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMCN.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMCN α)) :=
-  MaximalConsistentSet.nonempty LogicEMCN.consistent
+  simpa using LogicEMCN.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
@@ -39,9 +36,9 @@ theorem LogicEMCN.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] →
       [F.ContainsUnit] → F ⊧ A) :
     A ∈ @LogicEMCN α :=
-  (supplementedBasicCanonicity LogicEMCN).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMCN).toModel.toFrame
-      (supplementedBasicCanonicity LogicEMCN).toModel.Val)
+  (supplementedBasicCanonicalModel LogicEMCN).mem_of_valid
+    (h (supplementedBasicCanonicalModel LogicEMCN).toFrame
+      (supplementedBasicCanonicalModel LogicEMCN).Val)
 
 theorem LogicECN_ssubset_LogicEMCN : @LogicECN ℕ ⊂ LogicEMCN := by
   constructor

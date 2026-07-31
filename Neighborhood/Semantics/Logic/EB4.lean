@@ -23,12 +23,9 @@ theorem LogicEB4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] [F.IsTr
     A ∈ LogicEB4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEB4.consistent : (@LogicEB4 α).IsConsistent := by
+instance : (@LogicEB4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEB4.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEB4 α)) :=
-  MaximalConsistentSet.nonempty LogicEB4.consistent
+  simpa using LogicEB4.sound frame_1_2 hC⟩
 
 theorem LogicENB_ssubset_LogicEB4 : @LogicENB ℕ ⊂ LogicEB4 := by
   constructor

@@ -24,12 +24,9 @@ theorem LogicEMC45.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.Is
     A ∈ LogicEMC45 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEMC45.consistent : (@LogicEMC45 α).IsConsistent := by
+instance : (@LogicEMC45 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMC45.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMC45 α)) :=
-  MaximalConsistentSet.nonempty LogicEMC45.consistent
+  simpa using LogicEMC45.sound frame_1_2 hC⟩
 
 theorem LogicEMCN4_ssubset_LogicEMC45 : @LogicEMCN4 ℕ ⊂ LogicEMC45 := by
   constructor

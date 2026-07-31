@@ -22,12 +22,9 @@ theorem LogicEM5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsEu
     A ∈ LogicEM5 → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEM5.consistent : (@LogicEM5 α).IsConsistent := by
+instance : (@LogicEM5 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEM5.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEM5 α)) :=
-  MaximalConsistentSet.nonempty LogicEM5.consistent
+  simpa using LogicEM5.sound frame_1_2 hC⟩
 
 theorem LogicEN5_ssubset_LogicEM5 : @LogicEN5 ℕ ⊂ LogicEM5 := by
   constructor

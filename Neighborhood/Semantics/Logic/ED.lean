@@ -21,9 +21,9 @@ theorem LogicED.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] :
     A ∈ LogicED → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
-theorem LogicED.consistent : (@LogicED α).IsConsistent := by
+instance : (@LogicED α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicED.sound frame_1_2 hC
+  simpa using LogicED.sound frame_1_2 hC⟩
 
 
 theorem LogicE_ssubset_LogicED : @LogicE ℕ ⊂ LogicED := by

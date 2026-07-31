@@ -26,21 +26,18 @@ theorem LogicET4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     A ∈ LogicET4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicET4.consistent : (@LogicET4 α).IsConsistent := by
+instance : (@LogicET4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicET4.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicET4 α)) :=
-  MaximalConsistentSet.nonempty LogicET4.consistent
+  simpa using LogicET4.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicET4.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicET4 α :=
-  (basicCanonicity LogicET4).mem_of_valid
-    (h (basicCanonicity LogicET4).toModel.toFrame
-      (basicCanonicity LogicET4).toModel.Val)
+  (basicCanonicalModel LogicET4).mem_of_valid
+    (h (basicCanonicalModel LogicET4).toFrame
+      (basicCanonicalModel LogicET4).Val)
 
 theorem LogicET4.finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsReflexive] → [F.IsTransitive] →

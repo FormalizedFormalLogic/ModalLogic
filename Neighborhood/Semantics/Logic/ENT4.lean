@@ -29,17 +29,14 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsReflexive]
   : A ∈ LogicENT4 → F ⊧ A := Hilbert.sound (by rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicENT4 α).IsConsistent := by
+instance : (@LogicENT4 α).IsConsistent := ⟨by
   by_contra! hC;
-  simpa using LogicENT4.sound frame_1_2 hC;
-
-instance : Nonempty (MaximalConsistentSet (@LogicENT4 α)) :=
-  MaximalConsistentSet.nonempty consistent
+  simpa using LogicENT4.sound frame_1_2 hC⟩
 
 theorem complete
   (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) :
   A ∈ @LogicENT4 α :=
-  (basicCanonicity LogicENT4).mem_of_valid $ h (basicCanonicity LogicENT4).toModel.toFrame (basicCanonicity LogicENT4).toModel.Val
+  (basicCanonicalModel LogicENT4).mem_of_valid $ h (basicCanonicalModel LogicENT4).toFrame (basicCanonicalModel LogicENT4).Val
 
 end LogicENT4
 

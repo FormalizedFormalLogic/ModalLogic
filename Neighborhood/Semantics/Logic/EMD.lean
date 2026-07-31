@@ -29,19 +29,16 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsSerial] :
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicEMD α).IsConsistent := by
+instance : (@LogicEMD α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMD.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMD α)) :=
-  MaximalConsistentSet.nonempty LogicEMD.consistent
+  simpa using LogicEMD.sound frame_1_2 hC⟩
 
 theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsSerial] → F ⊧ A) :
     A ∈ @LogicEMD α :=
-  (supplementedBasicCanonicity LogicEMD).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMD).toModel.toFrame
-      (supplementedBasicCanonicity LogicEMD).toModel.Val)
+  (supplementedBasicCanonicalModel LogicEMD).mem_of_valid
+    (h (supplementedBasicCanonicalModel LogicEMD).toFrame
+      (supplementedBasicCanonicalModel LogicEMD).Val)
 
 end LogicEMD
 

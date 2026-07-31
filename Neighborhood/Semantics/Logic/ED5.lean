@@ -24,12 +24,9 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] [F.IsEuclidean]
   : A ∈ LogicED5 → F ⊧ A := Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicED5 α).IsConsistent := by
+instance : (@LogicED5 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicED5.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicED5 α)) :=
-  MaximalConsistentSet.nonempty consistent
+  simpa using LogicED5.sound frame_1_2 hC⟩
 
 end LogicED5
 

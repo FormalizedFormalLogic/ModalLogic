@@ -29,27 +29,24 @@ theorem LogicETB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     A ∈ LogicETB → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicETB.consistent : (@LogicETB α).IsConsistent := by
+instance : (@LogicETB α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicETB.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicETB α)) :=
-  MaximalConsistentSet.nonempty LogicETB.consistent
+  simpa using LogicETB.sound frame_1_2 hC⟩
 
 section
 
 variable [DecidableEq α]
 
-/-- The intermediate canonical model of `intermediateRelativeMaximalCanonicity` is reflexive as
+/-- The intermediate canonical model of `intermediateRelativeMaximalCanonicalModel` is reflexive as
 well as symmetric.
 
 - [Che80, Exercise 9.39(b)] -/
 theorem LogicETB.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsSymmetric] → F ⊧ A) :
     A ∈ @LogicETB α :=
-  (intermediateRelativeMaximalCanonicity LogicETB).mem_of_valid
-    (h (intermediateRelativeMaximalCanonicity LogicETB).toModel.toFrame
-      (intermediateRelativeMaximalCanonicity LogicETB).toModel.Val)
+  (intermediateRelativeMaximalCanonicalModel LogicETB).mem_of_valid
+    (h (intermediateRelativeMaximalCanonicalModel LogicETB).toFrame
+      (intermediateRelativeMaximalCanonicalModel LogicETB).Val)
 
 end
 

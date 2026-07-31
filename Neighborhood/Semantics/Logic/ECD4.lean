@@ -24,12 +24,9 @@ theorem LogicECD4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSer
     A ∈ LogicECD4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicECD4.consistent : (@LogicECD4 α).IsConsistent := by
+instance : (@LogicECD4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECD4.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicECD4 α)) :=
-  MaximalConsistentSet.nonempty LogicECD4.consistent
+  simpa using LogicECD4.sound frame_1_2 hC⟩
 
 theorem LogicECD_ssubset_LogicECD4 : @LogicECD ℕ ⊂ LogicECD4 := by
   constructor

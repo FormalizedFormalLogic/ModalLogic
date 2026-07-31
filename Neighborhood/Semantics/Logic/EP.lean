@@ -22,9 +22,9 @@ theorem LogicEP.sound {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
     A ∈ LogicEP → F ⊧ A :=
   Hilbert.sound (by rintro _ rfl; simp)
 
-theorem LogicEP.consistent : (@LogicEP α).IsConsistent := by
+instance : (@LogicEP α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEP.sound frame_1_2 hC
+  simpa using LogicEP.sound frame_1_2 hC⟩
 
 
 theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by

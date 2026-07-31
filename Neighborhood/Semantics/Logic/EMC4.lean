@@ -28,21 +28,18 @@ theorem LogicEMC4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     A ∈ LogicEMC4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEMC4.consistent : (@LogicEMC4 α).IsConsistent := by
+instance : (@LogicEMC4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMC4.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMC4 α)) :=
-  MaximalConsistentSet.nonempty LogicEMC4.consistent
+  simpa using LogicEMC4.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicEMC4.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] → [F.IsTransitive] →
       F ⊧ A) : A ∈ @LogicEMC4 α :=
-  (supplementedBasicCanonicity LogicEMC4).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMC4).toModel.toFrame
-      (supplementedBasicCanonicity LogicEMC4).toModel.Val)
+  (supplementedBasicCanonicalModel LogicEMC4).mem_of_valid
+    (h (supplementedBasicCanonicalModel LogicEMC4).toFrame
+      (supplementedBasicCanonicalModel LogicEMC4).Val)
 
 theorem LogicEMC4.finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] → [F.IsRegular] →

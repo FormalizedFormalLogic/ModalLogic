@@ -27,21 +27,18 @@ theorem LogicEND.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     A ∈ LogicEND → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEND.consistent : (@LogicEND α).IsConsistent := by
+instance : (@LogicEND α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEND.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEND α)) :=
-  MaximalConsistentSet.nonempty LogicEND.consistent
+  simpa using LogicEND.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicEND.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsSerial] → F ⊧ A) :
     A ∈ @LogicEND α :=
-  (basicCanonicity LogicEND).mem_of_valid
-    (h (basicCanonicity LogicEND).toModel.toFrame
-      (basicCanonicity LogicEND).toModel.Val)
+  (basicCanonicalModel LogicEND).mem_of_valid
+    (h (basicCanonicalModel LogicEND).toFrame
+      (basicCanonicalModel LogicEND).Val)
 
 theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by
   constructor

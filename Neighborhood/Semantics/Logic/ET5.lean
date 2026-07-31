@@ -25,17 +25,14 @@ theorem LogicET5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] [F.IsEu
     A ∈ LogicET5 → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicET5.consistent : (@LogicET5 α).IsConsistent := by
+instance : (@LogicET5 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicET5.sound frame_1_2 hC
+  simpa using LogicET5.sound frame_1_2 hC⟩
 
 instance : (@LogicET5 α).HasAxiomN :=
   ⟨have hiff : (⊤ : Formula α) 🡘 ◇⊤ ∈ (@LogicET5 α) :=
       Logic.E_intro Logic.diaTc (Logic.C_of_conseq Logic.verum)
    Logic.C_of_E_mpr (Logic.re hiff) ⨀ (Logic.axiomFive ⨀ (Logic.diaTc ⨀ Logic.verum))⟩
-
-instance : Nonempty (MaximalConsistentSet (@LogicET5 α)) :=
-  MaximalConsistentSet.nonempty LogicET5.consistent
 
 section
 
@@ -50,21 +47,21 @@ theorem LogicET5.hasAxiomFour : Axioms.Four A ∈ (@LogicET5 α) :=
   Logic.C_trans (Logic.C_trans h1 Logic.axiomFive)
     (Logic.C_of_E_mp (Logic.re (Logic.E_symm hiff)))
 
-instance : (basicCanonicity (@LogicET5 α)).toModel.IsEuclidean := by
-  apply Canonicity.isEuclidean'
+instance : (basicCanonicalModel (@LogicET5 α)).IsEuclidean := by
+  apply CanonicalModel.isEuclidean'
   intro X hX
-  have hbox : (basicCanonicity (@LogicET5 α)).toModel.box X = ∅ := by
+  have hbox : (basicCanonicalModel (@LogicET5 α)).box X = ∅ := by
     ext Ω
     simp only [Set.mem_empty_iff_false, iff_false]
-    exact fun hΩ => basicCanonicity.not_isNonproofset_of_mem_box hΩ hX
+    exact fun hΩ => basicCanonicalModel.not_isNonproofset_of_mem_box hΩ hX
   rw [hbox]
   simp [Frame.dia, Frame.contains_unit]
 
 theorem LogicET5.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsEuclidean] → F ⊧ A) :
     A ∈ @LogicET5 α :=
-  (basicCanonicity LogicET5).mem_of_valid
-    (h (basicCanonicity LogicET5).toModel.toFrame (basicCanonicity LogicET5).toModel.Val)
+  (basicCanonicalModel LogicET5).mem_of_valid
+    (h (basicCanonicalModel LogicET5).toFrame (basicCanonicalModel LogicET5).Val)
 
 end
 

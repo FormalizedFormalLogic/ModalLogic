@@ -25,12 +25,9 @@ theorem LogicED45.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] [F.IsTran
     A ∈ LogicED45 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicED45.consistent : (@LogicED45 α).IsConsistent := by
+instance : (@LogicED45 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicED45.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicED45 α)) :=
-  MaximalConsistentSet.nonempty LogicED45.consistent
+  simpa using LogicED45.sound frame_1_2 hC⟩
 
 theorem LogicED4_ssubset_LogicED45 : @LogicED4 ℕ ⊂ LogicED45 := by
   constructor

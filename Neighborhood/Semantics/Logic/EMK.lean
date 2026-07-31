@@ -24,9 +24,9 @@ theorem LogicEMK.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     A ∈ LogicEMK → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) <;> simp)
 
-theorem LogicEMK.consistent : (@LogicEMK α).IsConsistent := by
+instance : (@LogicEMK α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMK.sound frame_1_2 hC
+  simpa using LogicEMK.sound frame_1_2 hC⟩
 
 theorem LogicEK_ssubset_LogicEMK : @LogicEK ℕ ⊂ LogicEMK := by
   constructor

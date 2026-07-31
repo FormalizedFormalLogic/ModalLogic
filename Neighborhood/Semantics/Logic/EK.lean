@@ -20,9 +20,9 @@ theorem LogicEK.sound {κ} [Nonempty κ] (F : Frame κ) [F.HasPropertyK] :
     A ∈ LogicEK → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; simp)
 
-theorem LogicEK.consistent : (@LogicEK α).IsConsistent := by
+instance : (@LogicEK α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEK.sound frame_1_2 hC
+  simpa using LogicEK.sound frame_1_2 hC⟩
 
 
 theorem LogicE_ssubset_LogicEK : @LogicE ℕ ⊂ LogicEK := by

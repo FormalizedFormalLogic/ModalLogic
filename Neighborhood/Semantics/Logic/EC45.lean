@@ -29,12 +29,9 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsTransitive] [
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicEC45 α).IsConsistent := by
+instance : (@LogicEC45 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEC45.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEC45 α)) :=
-  MaximalConsistentSet.nonempty LogicEC45.consistent
+  simpa using LogicEC45.sound frame_1_2 hC⟩
 
 end LogicEC45
 

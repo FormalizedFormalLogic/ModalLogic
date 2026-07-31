@@ -8,9 +8,9 @@ public import Neighborhood.Logic.Calculus
 # Canonical neighborhood models
 
 The canonical model construction for the classical non-normal modal logics: the *proofset* of a
-formula is the set of maximal consistent sets containing it, and a *canonicity* datum assigns
+formula is the set of maximal consistent sets containing it, and a *CanonicalModel* datum assigns
 neighborhoods to maximal consistent sets so that `□A` belongs to `Ω` exactly when the proofset of
-`A` is one of `Ω`'s neighborhoods. Every canonicity datum yields a canonical model on which
+`A` is one of `Ω`'s neighborhoods. Every CanonicalModel datum yields a canonical model on which
 membership of a formula in a maximal consistent set agrees with its truth (the truth lemma), from
 which completeness follows by Lindenbaum's lemma.
 -/
@@ -109,82 +109,72 @@ lemma Proofset.IsNonproofset.compl (hX : X.IsNonproofset) : Xᶜ.IsNonproofset :
 
 end
 
-/-- A canonical neighborhood datum for `L`: an assignment of neighborhoods to the maximal
-consistent sets of `L` under which `□A` belongs to `Ω` exactly when the proofset of `A` is one of
-`Ω`'s neighborhoods, together with a valuation reproducing the proofsets of the atoms. -/
-structure Canonicity (L : Logic α) where
-  𝒩 : MaximalConsistentSet L → Set (Set (MaximalConsistentSet L))
-  def_𝒩 : ∀ Ω : MaximalConsistentSet L, ∀ A, □A ∈ Ω ↔ proofset L A ∈ 𝒩 Ω
-  V : α → Set (MaximalConsistentSet L)
-  def_V : ∀ a, V a = proofset L #a
+structure CanonicalModel (L : Logic α) [Nonempty (MaximalConsistentSet L)] extends Model (MaximalConsistentSet L) α where
+  def_𝒩 : ∀ Ω A, □A ∈ Ω ↔ proofset L A ∈ toModel.𝒩 Ω
+  def_V : ∀ a, toModel.Val a = proofset L #a
 
-namespace Canonicity
+namespace CanonicalModel
 
 attribute [simp] def_𝒩 def_V
 
-variable [DecidableEq α] [L.Cl] [Nonempty (MaximalConsistentSet L)] {𝓒 : Canonicity L}
-
-/-- The canonical model of `𝓒`. -/
-def toModel (𝓒 : Canonicity L) : Model (MaximalConsistentSet L) α where
-  𝒩 := 𝓒.𝒩
-  Val := 𝓒.V
+variable [DecidableEq α] [L.Cl] [Nonempty (MaximalConsistentSet L)] {C : CanonicalModel L}
 
 omit [DecidableEq α] [L.Cl] in
 @[simp]
-lemma box_proofset : 𝓒.toModel.box (proofset L A) = proofset L (□A) := by
-  ext Ω; exact (𝓒.def_𝒩 Ω A).symm
+lemma box_proofset : C.box (proofset L A) = proofset L (□A) := by
+  ext Ω; exact (C.def_𝒩 Ω A).symm
 
 omit [DecidableEq α] [L.Cl] in
 @[simp]
-lemma boxItr_proofset {n : ℕ} : 𝓒.toModel.box^[n] (proofset L A) = proofset L (□^[n]A) := by
+lemma boxItr_proofset {n : ℕ} : C.box^[n] (proofset L A) = proofset L (□^[n]A) := by
   induction n generalizing A with
   | zero => simp
   | succ n ih => simp only [Function.iterate_succ, Function.comp_apply, box_proofset, ih]
 
 @[simp]
-lemma dia_proofset : 𝓒.toModel.dia (proofset L A) = proofset L (◇A) := by
-  rw [proofset.eq_neg, ← box_proofset (𝓒 := 𝓒), proofset.eq_neg]
+lemma dia_proofset : C.dia (proofset L A) = proofset L (◇A) := by
+  rw [proofset.eq_neg, ← box_proofset (C := C), proofset.eq_neg]
   rfl
 
 @[simp]
-lemma diaItr_proofset {n : ℕ} : 𝓒.toModel.dia^[n] (proofset L A) = proofset L (◇^[n]A) := by
+lemma diaItr_proofset {n : ℕ} : C.dia^[n] (proofset L A) = proofset L (◇^[n]A) := by
   induction n generalizing A with
   | zero => simp
   | succ n ih => simp only [Function.iterate_succ, Function.comp_apply, dia_proofset, ih]
 
 omit [DecidableEq α] [L.Cl] in
-lemma iff_box {Ω : MaximalConsistentSet L} : □A ∈ Ω ↔ Ω ∈ 𝓒.toModel.box (proofset L A) :=
-  𝓒.def_𝒩 Ω A
+lemma iff_box {Ω : MaximalConsistentSet L} : □A ∈ Ω ↔ Ω ∈ C.box (proofset L A) :=
+  C.def_𝒩 Ω A
 
-lemma iff_dia {Ω : MaximalConsistentSet L} : ◇A ∈ Ω ↔ Ω ∈ 𝓒.toModel.dia (proofset L A) := by
+lemma iff_dia {Ω : MaximalConsistentSet L} : ◇A ∈ Ω ↔ Ω ∈ C.dia (proofset L A) := by
   have h : ◇A ∈ Ω ↔ □(∼A) ∉ Ω := MaximalConsistentSet.iff_mem_neg (A := □(∼A))
-  rw [h, iff_box (𝓒 := 𝓒), proofset.eq_neg]
+  rw [h, iff_box (C := C), proofset.eq_neg]
   rfl
 
-/-- The truth lemma: the proofset of `A` is exactly the truth set of `A` in `𝓒`'s canonical
+/-- The truth lemma: the proofset of `A` is exactly the truth set of `A` in `C`'s canonical
 model. -/
-lemma truthlemma : proofset L A = 𝓒.toModel.truthset A := by
+lemma truthlemma : proofset L A = C.truthset A := by
   induction A with
   | hfalsum => simp
-  | hatom a => exact (𝓒.def_V a).symm
+  | hatom a => exact (C.def_V a).symm
   | himp A B ihA ihB => simp [ihA, ihB]
   | hbox A ihA => rw [Model.truthset.eq_box, ← ihA, box_proofset]
 
-/-- Every formula valid on `𝓒`'s canonical model is a theorem of `L`: the generic completeness
-producer for a canonicity datum. -/
-theorem mem_of_valid (𝓒 : Canonicity L) (h : 𝓒.toModel ⊧ A) : A ∈ L := by
+/-- Every formula valid on `C`'s canonical model is a theorem of `L`: the generic completeness
+producer for a CanonicalModel datum. -/
+theorem mem_of_valid (C : CanonicalModel L) (h : C.toModel ⊧ A) : A ∈ L := by
   by_contra hA
   obtain ⟨Ω, hΩ⟩ :=
     MaximalConsistentSet.lindenbaum (FormulaSet.unprovable_iff_singleton_neg_consistent.mpr hA)
   have hΩA : ∼A ∈ Ω := hΩ rfl
-  have hAΩ : Ω ∈ proofset L A := by rw [𝓒.truthlemma]; exact h Ω
+  have hAΩ : Ω ∈ proofset L A := by rw [C.truthlemma]; exact h Ω
   exact (MaximalConsistentSet.iff_mem_neg.mp hΩA) hAΩ
 
-end Canonicity
+end CanonicalModel
 
-/-- The canonicity datum whose neighborhoods at `Ω` are exactly the proofsets already witnessed
+/-- The CanonicalModel datum whose neighborhoods at `Ω` are exactly the proofsets already witnessed
 by a boxed formula of `Ω`. -/
-def basicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] : Canonicity L where
+def basicCanonicalModel (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)] : CanonicalModel L where
   𝒩 Ω (X : Proofset L) := ∃ A, □A ∈ Ω ∧ X = proofset L A
   def_𝒩 := by
     intro Ω A
@@ -192,37 +182,36 @@ def basicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] : Canonicit
     · intro h; exact ⟨A, h, rfl⟩
     · rintro ⟨B, hB, hAB⟩
       exact (proofset.iff_mem_of_eq (proofset.eq_boxed_of_eq hAB)).mpr hB
-  V a := proofset L #a
+  Val a := proofset L #a
   def_V _ := rfl
 
-namespace basicCanonicity
+namespace basicCanonicalModel
 
 variable [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)] {X : Proofset L}
   {Ω : MaximalConsistentSet L}
 
-lemma iff_mem_box_exists_fml :
-    Ω ∈ (basicCanonicity L).toModel.box X ↔ ∃ A, X = proofset L A ∧ Ω ∈ proofset L (□A) := by
+lemma iff_mem_box_exists_fml : Ω ∈ (basicCanonicalModel L).box X ↔ ∃ A, X = proofset L A ∧ Ω ∈ proofset L (□A) := by
   constructor
   · rintro ⟨A, hA, rfl⟩; exact ⟨A, rfl, hA⟩
   · rintro ⟨A, rfl, hA⟩; exact ⟨A, hA, rfl⟩
 
 @[grind →]
-lemma not_isNonproofset_of_mem_box (h : Ω ∈ (basicCanonicity L).toModel.box X) :
+lemma not_isNonproofset_of_mem_box (h : Ω ∈ (basicCanonicalModel L).box X) :
     ¬X.IsNonproofset := by
   obtain ⟨A, rfl, _⟩ := iff_mem_box_exists_fml.mp h
   simp
 
 lemma iff_mem_dia_forall_fml :
-    Ω ∈ (basicCanonicity L).toModel.dia X ↔ ∀ A, Xᶜ ≠ proofset L A ∨ Ω ∉ proofset L (□A) := by
-  show Ω ∉ (basicCanonicity L).toModel.box Xᶜ ↔ _
+    Ω ∈ (basicCanonicalModel L).dia X ↔ ∀ A, Xᶜ ≠ proofset L A ∨ Ω ∉ proofset L (□A) := by
+  show Ω ∉ (basicCanonicalModel L).box Xᶜ ↔ _
   simp only [iff_mem_box_exists_fml, not_exists, not_and_or]
 
-end basicCanonicity
+end basicCanonicalModel
 
-/-- `basicCanonicity` together with an extra family `P` of neighborhoods for the non-proofsets
+/-- `basicCanonicalModel` together with an extra family `P` of neighborhoods for the non-proofsets
 of each maximal consistent set. -/
-def relativeBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE]
-    (P : MaximalConsistentSet L → Set (Proofset L)) : Canonicity L where
+def relativeBasicCanonicalModel (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
+  (P : MaximalConsistentSet L → Set (Proofset L)) : CanonicalModel L where
   𝒩 Ω (X : Proofset L) := (∃ A, □A ∈ Ω ∧ X = proofset L A) ∨ (X.IsNonproofset ∧ X ∈ P Ω)
   def_𝒩 := by
     intro Ω A
@@ -231,82 +220,79 @@ def relativeBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE]
     · rintro (⟨B, hB, hAB⟩ | h)
       · exact (proofset.iff_mem_of_eq (proofset.eq_boxed_of_eq hAB)).mpr hB
       · exact absurd rfl (h.1 A)
-  V a := proofset L #a
+  Val a := proofset L #a
   def_V _ := rfl
 
-namespace relativeBasicCanonicity
+variable
+  [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
+  {P : MaximalConsistentSet L → Set (Proofset L)}
+  {Ω : MaximalConsistentSet L}
+  {X : Proofset L}
 
-variable [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
-  {P : MaximalConsistentSet L → Set (Proofset L)} {X : Proofset L} {Ω : MaximalConsistentSet L}
+namespace relativeBasicCanonicalModel
 
 protected lemma iff_mem_box :
-    Ω ∈ (relativeBasicCanonicity L P).toModel.box X ↔
-      Ω ∈ (basicCanonicity L).toModel.box X ∨ (X.IsNonproofset ∧ X ∈ P Ω) := Iff.rfl
+  Ω ∈ (relativeBasicCanonicalModel L P).box X ↔
+  Ω ∈ (basicCanonicalModel L).box X ∨ (X.IsNonproofset ∧ X ∈ P Ω) := Iff.rfl
 
 protected lemma iff_mem_dia :
-    Ω ∈ (relativeBasicCanonicity L P).toModel.dia X ↔
-      Ω ∉ (basicCanonicity L).toModel.box Xᶜ ∧ (¬Xᶜ.IsNonproofset ∨ Xᶜ ∉ P Ω) := by
-  show ¬Ω ∈ (relativeBasicCanonicity L P).toModel.box Xᶜ ↔ _
-  rw [relativeBasicCanonicity.iff_mem_box, not_or, not_and_or]
+  Ω ∈ (relativeBasicCanonicalModel L P).dia X ↔
+  Ω ∉ (basicCanonicalModel L).box Xᶜ ∧ (¬Xᶜ.IsNonproofset ∨ Xᶜ ∉ P Ω) := by
+  show ¬Ω ∈ (relativeBasicCanonicalModel L P).box Xᶜ ↔ _
+  rw [relativeBasicCanonicalModel.iff_mem_box, not_or, not_and_or]
 
-/-- On a non-proofset, membership in a neighborhood of `(relativeBasicCanonicity L P).toModel`
+/-- On a non-proofset, membership in a neighborhood of `(relativeBasicCanonicalModel L P)`
 reduces to membership in `P Ω`: the alternative of being a boxed proofset is impossible. -/
 protected lemma iff_mem_box_of_isNonproofset (hX : X.IsNonproofset) :
-    Ω ∈ (relativeBasicCanonicity L P).toModel.box X ↔ X ∈ P Ω := by
-  rw [relativeBasicCanonicity.iff_mem_box]
+  Ω ∈ (relativeBasicCanonicalModel L P).box X ↔ X ∈ P Ω := by
+  rw [relativeBasicCanonicalModel.iff_mem_box]
   constructor
   · rintro (h | ⟨_, h⟩)
-    · exact absurd hX (basicCanonicity.not_isNonproofset_of_mem_box h)
+    · exact absurd hX (basicCanonicalModel.not_isNonproofset_of_mem_box h)
     · exact h
   · exact fun h => Or.inr ⟨hX, h⟩
 
-end relativeBasicCanonicity
+end relativeBasicCanonicalModel
 
-/-- `relativeBasicCanonicity` with no extra neighborhoods on the non-proofsets. -/
-abbrev minimalRelativeMaximalCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] :
-    Canonicity L :=
-  relativeBasicCanonicity L (fun _ _ => False)
+/-- `relativeBasicCanonicalModel` with no extra neighborhoods on the non-proofsets. -/
+abbrev minimalRelativeMaximalCanonicalModel (L : Logic α) [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)] :
+  CanonicalModel L :=
+  relativeBasicCanonicalModel L (fun _ _ => False)
 
-lemma minimalRelativeMaximalCanonicity.iff_minimal [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
-    {X : Proofset L} {Ω : MaximalConsistentSet L} :
-    Ω ∈ (minimalRelativeMaximalCanonicity L).toModel.box X ↔
-      Ω ∈ (basicCanonicity L).toModel.box X := by
-  rw [relativeBasicCanonicity.iff_mem_box]
+lemma minimalRelativeMaximalCanonicalModel.iff_minimal :
+  Ω ∈ (minimalRelativeMaximalCanonicalModel L).box X ↔ Ω ∈ (basicCanonicalModel L).box X := by
+  rw [relativeBasicCanonicalModel.iff_mem_box]
   constructor
   · rintro (h | ⟨_, h⟩)
     · exact h
     · exact h.elim
   · exact Or.inl
 
-/-- `relativeBasicCanonicity` with every non-proofset as an extra neighborhood. -/
-abbrev maximalRelativeMaximalCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] :
-    Canonicity L :=
-  relativeBasicCanonicity L (fun _ _ => True)
+/-- `relativeBasicCanonicalModel` with every non-proofset as an extra neighborhood. -/
+abbrev maximalRelativeMaximalCanonicalModel (L : Logic α) [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)] :
+  CanonicalModel L :=
+  relativeBasicCanonicalModel L (fun _ _ => True)
 
-/-- `relativeBasicCanonicity` with the non-proofsets containing `Ω` as `Ω`'s extra neighborhoods,
-`P Ω X := Ω ∈ X`. Pointwise this sits between `minimalRelativeMaximalCanonicity` (`P := False`)
-and `maximalRelativeMaximalCanonicity` (`P := True`), and it is exactly this intermediate choice
+/-- `relativeBasicCanonicalModel` with the non-proofsets containing `Ω` as `Ω`'s extra neighborhoods,
+`P Ω X := Ω ∈ X`. Pointwise this sits between `minimalRelativeMaximalCanonicalModel` (`P := False`)
+and `maximalRelativeMaximalCanonicalModel` (`P := True`), and it is exactly this intermediate choice
 that makes the canonical model symmetric.
 
 - [Che80, Theorem 9.8] -/
-abbrev intermediateRelativeMaximalCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] :
-    Canonicity L :=
-  relativeBasicCanonicity L (fun Ω X => Ω ∈ X)
+abbrev intermediateRelativeMaximalCanonicalModel (L : Logic α) [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)] :
+  CanonicalModel L :=
+  relativeBasicCanonicalModel L (fun Ω X => Ω ∈ X)
 
-namespace intermediateRelativeMaximalCanonicity
+namespace intermediateRelativeMaximalCanonicalModel
 
-variable [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)] {X : Proofset L}
-
-lemma box_eq_of_isNonproofset (hX : X.IsNonproofset) :
-    (intermediateRelativeMaximalCanonicity L).toModel.box X = X := by
+lemma box_eq_of_isNonproofset (hX : X.IsNonproofset) : (intermediateRelativeMaximalCanonicalModel L).box X = X := by
   ext Ω
-  exact relativeBasicCanonicity.iff_mem_box_of_isNonproofset hX
+  exact relativeBasicCanonicalModel.iff_mem_box_of_isNonproofset hX
 
-lemma dia_eq_of_isNonproofset (hX : X.IsNonproofset) :
-    (intermediateRelativeMaximalCanonicity L).toModel.dia X = X := by
-  show ((intermediateRelativeMaximalCanonicity L).toModel.box Xᶜ)ᶜ = X
+lemma dia_eq_of_isNonproofset (hX : X.IsNonproofset) : (intermediateRelativeMaximalCanonicalModel L).dia X = X := by
+  show ((intermediateRelativeMaximalCanonicalModel L).box Xᶜ)ᶜ = X
   rw [box_eq_of_isNonproofset hX.compl, compl_compl]
 
-end intermediateRelativeMaximalCanonicity
+end intermediateRelativeMaximalCanonicalModel
 
 end

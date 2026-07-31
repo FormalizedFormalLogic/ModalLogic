@@ -22,8 +22,7 @@ lemma frame_2_8.not_isTransitive :
     (show (1 : Fin 2) ∈ frame_2_8.box Set.univ by simp [Frame.box])
   simp [Frame.box, Set.eq_univ_iff_forall] at h
 
-lemma frame_2_8.not_valid_axiomFour :
-    ¬frame_2_8 ⊧ (Axioms.Four #0 : Formula ℕ) :=
+lemma frame_2_8.not_valid_axiomFour {a : α} : ¬frame_2_8 ⊧ (Axioms.Four #a : Formula α) :=
   fun h => frame_2_8.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
 instance : frame_2_8.IsRegular where

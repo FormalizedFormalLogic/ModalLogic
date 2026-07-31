@@ -26,21 +26,18 @@ theorem LogicEMCN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     A ∈ LogicEMCN4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEMCN4.consistent : (@LogicEMCN4 α).IsConsistent := by
+instance : (@LogicEMCN4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMCN4.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMCN4 α)) :=
-  MaximalConsistentSet.nonempty LogicEMCN4.consistent
+  simpa using LogicEMCN4.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicEMCN4.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] →
       [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMCN4 α :=
-  (supplementedBasicCanonicity LogicEMCN4).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMCN4).toModel.toFrame
-      (supplementedBasicCanonicity LogicEMCN4).toModel.Val)
+  (supplementedBasicCanonicalModel LogicEMCN4).mem_of_valid
+    (h (supplementedBasicCanonicalModel LogicEMCN4).toFrame
+      (supplementedBasicCanonicalModel LogicEMCN4).Val)
 
 instance : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where

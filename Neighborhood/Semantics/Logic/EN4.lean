@@ -26,21 +26,18 @@ theorem LogicEN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     A ∈ LogicEN4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEN4.consistent : (@LogicEN4 α).IsConsistent := by
+instance : (@LogicEN4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEN4.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEN4 α)) :=
-  MaximalConsistentSet.nonempty LogicEN4.consistent
+  simpa using LogicEN4.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicEN4.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicEN4 α :=
-  (basicCanonicity LogicEN4).mem_of_valid
-    (h (basicCanonicity LogicEN4).toModel.toFrame
-      (basicCanonicity LogicEN4).toModel.Val)
+  (basicCanonicalModel LogicEN4).mem_of_valid
+    (h (basicCanonicalModel LogicEN4).toFrame
+      (basicCanonicalModel LogicEN4).Val)
 
 instance : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where

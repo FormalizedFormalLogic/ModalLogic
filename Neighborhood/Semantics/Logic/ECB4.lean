@@ -27,12 +27,9 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSymmetric] [F
     A ∈ LogicECB4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem consistent : (@LogicECB4 α).IsConsistent := by
+instance : (@LogicECB4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECB4.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicECB4 α)) :=
-  MaximalConsistentSet.nonempty consistent
+  simpa using LogicECB4.sound frame_1_2 hC⟩
 
 end LogicECB4
 

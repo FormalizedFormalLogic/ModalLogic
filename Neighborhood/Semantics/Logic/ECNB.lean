@@ -27,12 +27,9 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsRegular] [
   : A ∈ LogicECNB → F ⊧ A := Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicECNB α).IsConsistent := by
+instance : (@LogicECNB α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECNB.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicECNB α)) :=
-  MaximalConsistentSet.nonempty consistent
+  simpa using LogicECNB.sound frame_1_2 hC⟩
 
 end LogicECNB
 

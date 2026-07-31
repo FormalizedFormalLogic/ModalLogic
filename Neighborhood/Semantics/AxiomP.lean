@@ -45,7 +45,7 @@ section
 
 variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
 
-instance [L.HasAxiomP] : (basicCanonicity L).toModel.NotContainsEmpty := by
+instance [L.HasAxiomP] : (basicCanonicalModel L).NotContainsEmpty := by
   constructor
   intro Ω hΩ
   obtain ⟨A, hA, hX⟩ := hΩ

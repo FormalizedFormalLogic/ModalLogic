@@ -24,12 +24,9 @@ theorem LogicECND5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
     A ∈ LogicECND5 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicECND5.consistent : (@LogicECND5 α).IsConsistent := by
+instance : (@LogicECND5 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECND5.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicECND5 α)) :=
-  MaximalConsistentSet.nonempty LogicECND5.consistent
+  simpa using LogicECND5.sound frame_1_2 hC⟩
 
 theorem LogicECND_ssubset_LogicECND5 : @LogicECND ℕ ⊂ LogicECND5 := by
   constructor

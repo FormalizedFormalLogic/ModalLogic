@@ -23,21 +23,18 @@ theorem LogicENT.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsR
     A ∈ LogicENT → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicENT.consistent : (@LogicENT α).IsConsistent := by
+instance : (@LogicENT α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicENT.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicENT α)) :=
-  MaximalConsistentSet.nonempty LogicENT.consistent
+  simpa using LogicENT.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicENT.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsReflexive] → F ⊧ A) :
     A ∈ @LogicENT α :=
-  (basicCanonicity LogicENT).mem_of_valid
-    (h (basicCanonicity LogicENT).toModel.toFrame
-      (basicCanonicity LogicENT).toModel.Val)
+  (basicCanonicalModel LogicENT).mem_of_valid
+    (h (basicCanonicalModel LogicENT).toFrame
+      (basicCanonicalModel LogicENT).Val)
 
 theorem LogicET_ssubset_LogicENT : @LogicET ℕ ⊂ LogicENT := by
   constructor

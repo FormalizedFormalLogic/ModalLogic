@@ -22,20 +22,17 @@ theorem LogicEN.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] :
     A ∈ @LogicEN α → F ⊧ A :=
   Hilbert.sound (by rintro _ rfl; simp)
 
-theorem LogicEN.consistent : (@LogicEN α).IsConsistent := by
+instance : (@LogicEN α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEN.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEN α)) :=
-  MaximalConsistentSet.nonempty LogicEN.consistent
+  simpa using LogicEN.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicEN.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → F ⊧ A) :
     A ∈ @LogicEN α :=
-  (basicCanonicity LogicEN).mem_of_valid
-    (h (basicCanonicity LogicEN).toModel.toFrame
-      (basicCanonicity LogicEN).toModel.Val)
+  (basicCanonicalModel LogicEN).mem_of_valid
+    (h (basicCanonicalModel LogicEN).toFrame
+      (basicCanonicalModel LogicEN).Val)
 
 
 theorem LogicE_ssubset_LogicEN : @LogicE ℕ ⊂ LogicEN := by

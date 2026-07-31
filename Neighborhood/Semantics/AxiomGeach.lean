@@ -171,7 +171,7 @@ end
 
 section
 
-variable {a : ℕ}
+variable {a : α}
 
 /-- If `Axioms.Geach g` is valid on `F` for some atom, `F` is Geach convergent for `g`. -/
 theorem isGeachConvergent_of_valid_axiomGeach (h : F ⊧ Axioms.Geach g #a) :
@@ -285,187 +285,187 @@ applied explicitly with `g` provided. -/
 
 end Logic
 
-namespace Canonicity
+namespace CanonicalModel
 
-variable {𝓒 : Canonicity L}
+variable {C : CanonicalModel L}
 
-/-- A sufficient condition for `𝓒.toModel` to be Geach convergent for `g`: the convergence
+/-- A sufficient condition for `C` to be Geach convergent for `g`: the convergence
 inclusion holds on every neighborhood witnessing a non-proofset, the case of a proofset following
 automatically from the Geach axiom scheme. -/
 @[reducible] protected def isGeachean (g : Axioms.Geach.Taple) [L.HasAxiomGeach g]
     (h : ∀ X : Proofset L, X.IsNonproofset →
-      𝓒.toModel.dia^[g.i] (𝓒.toModel.box^[g.m] X) ⊆ 𝓒.toModel.box^[g.j] (𝓒.toModel.dia^[g.n] X)) :
-    𝓒.toModel.IsGeachConvergent g := by
+      C.dia^[g.i] (C.box^[g.m] X) ⊆ C.box^[g.j] (C.dia^[g.n] X)) :
+    C.IsGeachConvergent g := by
   constructor
   intro X Ω hX
   by_cases X_np : Proofset.IsNonproofset X
   · exact h X X_np hX
   · obtain ⟨A, rfl⟩ := iff_not_isNonproofset_exists.mp X_np
     replace hX : Ω ∈ proofset L (◇^[g.i](□^[g.m]A)) := by
-      simpa only [Canonicity.diaItr_proofset, Canonicity.boxItr_proofset] using hX
+      simpa only [CanonicalModel.diaItr_proofset, CanonicalModel.boxItr_proofset] using hX
     suffices Ω ∈ proofset L (□^[g.j](◇^[g.n]A)) by simpa
     exact MaximalConsistentSet.mdp_provable (by simp) hX
 
 @[reducible] def isReflexive [L.HasAxiomT]
-    (h : ∀ X : Proofset L, X.IsNonproofset → 𝓒.toModel.box X ⊆ X) : 𝓒.toModel.IsReflexive := by
-  have := Canonicity.isGeachean ⟨0, 0, 1, 0⟩ h
+    (h : ∀ X : Proofset L, X.IsNonproofset → C.box X ⊆ X) : C.IsReflexive := by
+  have := CanonicalModel.isGeachean ⟨0, 0, 1, 0⟩ h
   infer_instance
 
 @[reducible] def isTransitive [L.HasAxiomFour]
-    (h : ∀ X : Proofset L, X.IsNonproofset → 𝓒.toModel.box X ⊆ 𝓒.toModel.box^[2] X) :
-    𝓒.toModel.IsTransitive := by
-  have := Canonicity.isGeachean ⟨0, 2, 1, 0⟩ h
+    (h : ∀ X : Proofset L, X.IsNonproofset → C.box X ⊆ C.box^[2] X) :
+    C.IsTransitive := by
+  have := CanonicalModel.isGeachean ⟨0, 2, 1, 0⟩ h
   infer_instance
 
 @[reducible] def isSerial [L.HasAxiomD]
-    (h : ∀ X : Proofset L, X.IsNonproofset → 𝓒.toModel.box X ⊆ 𝓒.toModel.dia X) :
-    𝓒.toModel.IsSerial := by
-  have := Canonicity.isGeachean ⟨0, 0, 1, 1⟩ h
+    (h : ∀ X : Proofset L, X.IsNonproofset → C.box X ⊆ C.dia X) :
+    C.IsSerial := by
+  have := CanonicalModel.isGeachean ⟨0, 0, 1, 1⟩ h
   infer_instance
 
 @[reducible] def isEuclidean [L.HasAxiomFive]
     (h : ∀ X : Proofset L, X.IsNonproofset →
-      𝓒.toModel.dia X ⊆ 𝓒.toModel.box (𝓒.toModel.dia X)) : 𝓒.toModel.IsEuclidean := by
-  have := Canonicity.isGeachean ⟨1, 1, 0, 1⟩ h
+      C.dia X ⊆ C.box (C.dia X)) : C.IsEuclidean := by
+  have := CanonicalModel.isGeachean ⟨1, 1, 0, 1⟩ h
   infer_instance
 
 @[reducible] def isEuclidean' [L.HasAxiomFive]
     (h : ∀ X : Proofset L, X.IsNonproofset →
-      𝓒.toModel.dia (𝓒.toModel.box X) ⊆ 𝓒.toModel.box X) : 𝓒.toModel.IsEuclidean := by
+      C.dia (C.box X) ⊆ C.box X) : C.IsEuclidean := by
   haveI := Logic.hasAxiomGeachSwap (L := L) (g := ⟨1, 1, 0, 1⟩)
   apply Frame.IsEuclidean.of_dual
-  apply (Canonicity.isGeachean ⟨1, 1, 1, 0⟩ h).gconv
+  apply (CanonicalModel.isGeachean ⟨1, 1, 1, 0⟩ h).gconv
 
 @[reducible] def isSymmetric [L.HasAxiomB]
-    (h : ∀ X : Proofset L, X.IsNonproofset → X ⊆ 𝓒.toModel.box (𝓒.toModel.dia X)) :
-    𝓒.toModel.IsSymmetric := by
-  have := Canonicity.isGeachean ⟨0, 1, 0, 1⟩ h
+    (h : ∀ X : Proofset L, X.IsNonproofset → X ⊆ C.box (C.dia X)) :
+    C.IsSymmetric := by
+  have := CanonicalModel.isGeachean ⟨0, 1, 0, 1⟩ h
   infer_instance
 
 @[reducible] def isSymmetric' [L.HasAxiomB]
-    (h : ∀ X : Proofset L, X.IsNonproofset → 𝓒.toModel.dia (𝓒.toModel.box X) ⊆ X) :
-    𝓒.toModel.IsSymmetric := by
+    (h : ∀ X : Proofset L, X.IsNonproofset → C.dia (C.box X) ⊆ X) :
+    C.IsSymmetric := by
   haveI := Logic.hasAxiomGeachSwap (L := L) (g := ⟨0, 1, 0, 1⟩)
   apply Frame.IsSymmetric.of_dual
-  apply (Canonicity.isGeachean ⟨1, 0, 1, 0⟩ h).gconv
+  apply (CanonicalModel.isGeachean ⟨1, 0, 1, 0⟩ h).gconv
 
-end Canonicity
+end CanonicalModel
 
-instance [L.HasAxiomT] : (basicCanonicity L).toModel.IsReflexive := by
-  apply Canonicity.isReflexive
+instance [L.HasAxiomT] : (basicCanonicalModel L).IsReflexive := by
+  apply CanonicalModel.isReflexive
   intro X hX Ω hΩ
-  obtain ⟨A, rfl, hA⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hΩ
+  obtain ⟨A, rfl, hA⟩ := basicCanonicalModel.iff_mem_box_exists_fml.mp hΩ
   exact proofset.imp_subset.mp Logic.axiomT hA
 
-instance [L.HasAxiomFour] : (basicCanonicity L).toModel.IsTransitive := by
-  apply Canonicity.isTransitive
+instance [L.HasAxiomFour] : (basicCanonicalModel L).IsTransitive := by
+  apply CanonicalModel.isTransitive
   intro X hX Ω hΩ
-  obtain ⟨A, rfl, hA⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hΩ
-  simp only [Canonicity.boxItr_proofset]
+  obtain ⟨A, rfl, hA⟩ := basicCanonicalModel.iff_mem_box_exists_fml.mp hΩ
+  simp only [CanonicalModel.boxItr_proofset]
   exact proofset.imp_subset.mp Logic.axiomFour hA
 
-instance [L.HasAxiomD] : (basicCanonicity L).toModel.IsSerial := by
-  apply Canonicity.isSerial
+instance [L.HasAxiomD] : (basicCanonicalModel L).IsSerial := by
+  apply CanonicalModel.isSerial
   intro X hX Ω hΩ
-  obtain ⟨A, rfl, hA⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hΩ
-  simp only [Canonicity.dia_proofset]
+  obtain ⟨A, rfl, hA⟩ := basicCanonicalModel.iff_mem_box_exists_fml.mp hΩ
+  simp only [CanonicalModel.dia_proofset]
   exact proofset.imp_subset.mp Logic.axiomD hA
 
-namespace relativeBasicCanonicity
+namespace relativeBasicCanonicalModel
 
 variable {P : MaximalConsistentSet L → Set (Proofset L)}
 
 @[reducible] protected def isSerial [L.HasAxiomD]
     (hP : ∀ X : Proofset L, X.IsNonproofset → ∀ Ω, X ∈ P Ω →
-      Ω ∈ (relativeBasicCanonicity L P).toModel.dia X) :
-    (relativeBasicCanonicity L P).toModel.IsSerial := by
-  apply Canonicity.isSerial
+      Ω ∈ (relativeBasicCanonicalModel L P).dia X) :
+    (relativeBasicCanonicalModel L P).IsSerial := by
+  apply CanonicalModel.isSerial
   intro X hX Ω hΩ
   apply hP X hX
   rcases hΩ with (h | ⟨_, h⟩)
-  · exact absurd hX (basicCanonicity.not_isNonproofset_of_mem_box h)
+  · exact absurd hX (basicCanonicalModel.not_isNonproofset_of_mem_box h)
   · exact h
 
 @[reducible] protected def isReflexive [L.HasAxiomT]
     (hP : ∀ X : Proofset L, X.IsNonproofset → ∀ Ω, X ∈ P Ω → Ω ∈ X) :
-    (relativeBasicCanonicity L P).toModel.IsReflexive := by
-  apply Canonicity.isReflexive
+    (relativeBasicCanonicalModel L P).IsReflexive := by
+  apply CanonicalModel.isReflexive
   intro X hX Ω hΩ
   apply hP X hX
   rcases hΩ with (h | ⟨_, h⟩)
-  · exact absurd hX (basicCanonicity.not_isNonproofset_of_mem_box h)
+  · exact absurd hX (basicCanonicalModel.not_isNonproofset_of_mem_box h)
   · exact h
 
 @[reducible] protected def isTransitive [L.HasAxiomFour]
     (hP : ∀ X : Proofset L, X.IsNonproofset → ∀ Ω, X ∈ P Ω →
-      Ω ∈ (relativeBasicCanonicity L P).toModel.box^[2] X) :
-    (relativeBasicCanonicity L P).toModel.IsTransitive := by
-  apply Canonicity.isTransitive
+      Ω ∈ (relativeBasicCanonicalModel L P).box^[2] X) :
+    (relativeBasicCanonicalModel L P).IsTransitive := by
+  apply CanonicalModel.isTransitive
   intro X hX Ω hΩ
   apply hP X hX
   rcases hΩ with (h | ⟨_, h⟩)
-  · exact absurd hX (basicCanonicity.not_isNonproofset_of_mem_box h)
+  · exact absurd hX (basicCanonicalModel.not_isNonproofset_of_mem_box h)
   · exact h
 
 @[reducible] protected def isEuclidean [L.HasAxiomFive]
     (hP : ∀ X : Proofset L, X.IsNonproofset → ∀ Ω,
-      Xᶜ ∉ P Ω → Ω ∈ (relativeBasicCanonicity L P).toModel.box
-        ((relativeBasicCanonicity L P).toModel.dia X)) :
-    (relativeBasicCanonicity L P).toModel.IsEuclidean := by
-  apply Canonicity.isEuclidean
+      Xᶜ ∉ P Ω → Ω ∈ (relativeBasicCanonicalModel L P).box
+        ((relativeBasicCanonicalModel L P).dia X)) :
+    (relativeBasicCanonicalModel L P).IsEuclidean := by
+  apply CanonicalModel.isEuclidean
   intro X hX Ω hΩ
   apply hP X hX
-  rcases relativeBasicCanonicity.iff_mem_dia.mp hΩ with ⟨hΩ₁, (h | hΩ₂)⟩
+  rcases relativeBasicCanonicalModel.iff_mem_dia.mp hΩ with ⟨hΩ₁, (h | hΩ₂)⟩
   · exfalso
     obtain ⟨A, hA⟩ := iff_not_isNonproofset_exists.mp h
     apply hX (∼A)
     grind
   · exact hΩ₂
 
-end relativeBasicCanonicity
+end relativeBasicCanonicalModel
 
-namespace minimalRelativeMaximalCanonicity
+namespace minimalRelativeMaximalCanonicalModel
 
-protected instance isSerial [L.HasAxiomD] : (minimalRelativeMaximalCanonicity L).toModel.IsSerial :=
-  relativeBasicCanonicity.isSerial (by tauto)
+protected instance isSerial [L.HasAxiomD] : (minimalRelativeMaximalCanonicalModel L).IsSerial :=
+  relativeBasicCanonicalModel.isSerial (by tauto)
 
 protected instance isReflexive [L.HasAxiomT] :
-    (minimalRelativeMaximalCanonicity L).toModel.IsReflexive :=
-  relativeBasicCanonicity.isReflexive (by tauto)
+    (minimalRelativeMaximalCanonicalModel L).IsReflexive :=
+  relativeBasicCanonicalModel.isReflexive (by tauto)
 
 protected instance isTransitive [L.HasAxiomFour] :
-    (minimalRelativeMaximalCanonicity L).toModel.IsTransitive :=
-  relativeBasicCanonicity.isTransitive (by tauto)
+    (minimalRelativeMaximalCanonicalModel L).IsTransitive :=
+  relativeBasicCanonicalModel.isTransitive (by tauto)
 
-end minimalRelativeMaximalCanonicity
+end minimalRelativeMaximalCanonicalModel
 
-namespace maximalRelativeMaximalCanonicity
+namespace maximalRelativeMaximalCanonicalModel
 
 protected instance isEuclidean [L.HasAxiomFive] :
-    (maximalRelativeMaximalCanonicity L).toModel.IsEuclidean :=
-  relativeBasicCanonicity.isEuclidean (by tauto)
+    (maximalRelativeMaximalCanonicalModel L).IsEuclidean :=
+  relativeBasicCanonicalModel.isEuclidean (by tauto)
 
-end maximalRelativeMaximalCanonicity
+end maximalRelativeMaximalCanonicalModel
 
-namespace intermediateRelativeMaximalCanonicity
+namespace intermediateRelativeMaximalCanonicalModel
 
-/-- `relativeBasicCanonicity` does not satisfy the symmetry frame condition for an arbitrary
+/-- `relativeBasicCanonicalModel` does not satisfy the symmetry frame condition for an arbitrary
 extra family `P`, unlike seriality, reflexivity, transitivity, and euclideanness: closing
 `◇□X ⊆ X` for a non-proofset `X` under `P` alone cannot relate `X` back to the complement of a
-proofset. It closes for the specific `P Ω X := Ω ∈ X` of `intermediateRelativeMaximalCanonicity`,
+proofset. It closes for the specific `P Ω X := Ω ∈ X` of `intermediateRelativeMaximalCanonicalModel`,
 since it makes `box X = dia X = X` on every non-proofset `X`. -/
 protected instance isSymmetric [L.HasAxiomB] :
-    (intermediateRelativeMaximalCanonicity L).toModel.IsSymmetric := by
-  apply Canonicity.isSymmetric
+    (intermediateRelativeMaximalCanonicalModel L).IsSymmetric := by
+  apply CanonicalModel.isSymmetric
   intro X hX Ω hΩ
   rw [dia_eq_of_isNonproofset hX, box_eq_of_isNonproofset hX]
   exact hΩ
 
 protected instance isReflexive [L.HasAxiomT] :
-    (intermediateRelativeMaximalCanonicity L).toModel.IsReflexive :=
-  relativeBasicCanonicity.isReflexive (by tauto)
+    (intermediateRelativeMaximalCanonicalModel L).IsReflexive :=
+  relativeBasicCanonicalModel.isReflexive (by tauto)
 
-end intermediateRelativeMaximalCanonicity
+end intermediateRelativeMaximalCanonicalModel
 
 end
 

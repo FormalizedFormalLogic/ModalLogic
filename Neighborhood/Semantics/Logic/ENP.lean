@@ -16,21 +16,18 @@ theorem LogicENP.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.Not
     A ∈ LogicENP → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | rfl) <;> simp)
 
-theorem LogicENP.consistent : (@LogicENP α).IsConsistent := by
+instance : (@LogicENP α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicENP.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicENP α)) :=
-  MaximalConsistentSet.nonempty LogicENP.consistent
+  simpa using LogicENP.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicENP.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.NotContainsEmpty] → F ⊧ A) :
     A ∈ @LogicENP α :=
-  (basicCanonicity LogicENP).mem_of_valid
-    (h (basicCanonicity LogicENP).toModel.toFrame
-      (basicCanonicity LogicENP).toModel.Val)
+  (basicCanonicalModel LogicENP).mem_of_valid
+    (h (basicCanonicalModel LogicENP).toFrame
+      (basicCanonicalModel LogicENP).Val)
 
 theorem LogicEN_ssubset_LogicENP : @LogicEN ℕ ⊂ LogicENP := by
   constructor

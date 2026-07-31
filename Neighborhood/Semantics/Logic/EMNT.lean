@@ -28,12 +28,9 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.ContainsUnit]
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicEMNT α).IsConsistent := by
+instance : (@LogicEMNT α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMNT.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMNT α)) :=
-  MaximalConsistentSet.nonempty LogicEMNT.consistent
+  simpa using LogicEMNT.sound frame_1_2 hC⟩
 
 end LogicEMNT
 

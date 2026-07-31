@@ -27,9 +27,9 @@ theorem LogicEND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     A ∈ LogicEND4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEND4.consistent : (@LogicEND4 α).IsConsistent := by
+instance : (@LogicEND4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEND4.sound frame_1_2 hC
+  simpa using LogicEND4.sound frame_1_2 hC⟩
 
 theorem LogicEND_ssubset_LogicEND4 : @LogicEND ℕ ⊂ LogicEND4 := by
   constructor

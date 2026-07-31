@@ -15,21 +15,18 @@ theorem LogicECP.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.NotCon
     A ∈ LogicECP → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | rfl) <;> simp)
 
-theorem LogicECP.consistent : (@LogicECP α).IsConsistent := by
+instance : (@LogicECP α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECP.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicECP α)) :=
-  MaximalConsistentSet.nonempty LogicECP.consistent
+  simpa using LogicECP.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
 theorem LogicECP.complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegular] → [F.NotContainsEmpty] → F ⊧ A) :
     A ∈ @LogicECP α :=
-  (basicCanonicity LogicECP).mem_of_valid
-    (h (basicCanonicity LogicECP).toModel.toFrame
-      (basicCanonicity LogicECP).toModel.Val)
+  (basicCanonicalModel LogicECP).mem_of_valid
+    (h (basicCanonicalModel LogicECP).toFrame
+      (basicCanonicalModel LogicECP).Val)
 
 theorem LogicECD_ssubset_LogicECP : @LogicECD ℕ ⊂ LogicECP := by
   constructor
