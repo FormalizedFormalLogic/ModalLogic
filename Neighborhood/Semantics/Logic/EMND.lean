@@ -1,6 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
+public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.EMD
 public import Neighborhood.Semantics.Logic.EMNP
@@ -9,6 +10,7 @@ public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_238
+public import Neighborhood.Semantics.Example.Frame3_8421506
 
 /-!
 # The neighborhood logic `LogicEMND`
@@ -34,6 +36,13 @@ theorem LogicEMND.consistent : (@LogicEMND α).IsConsistent := by
 
 instance : Nonempty (MaximalConsistentSet (@LogicEMND α)) :=
   MaximalConsistentSet.nonempty LogicEMND.consistent
+
+theorem LogicEND_ssubset_LogicEMND : @LogicEND ℕ ⊂ LogicEMND := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hM : Axioms.M #0 #1 ∈ (@LogicEND ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_8421506.not_valid_axiomM (LogicEND.sound frame_3_8421506 hM)
 
 theorem LogicEMN_ssubset_LogicEMND : @LogicEMN ℕ ⊂ LogicEMND := by
   constructor
