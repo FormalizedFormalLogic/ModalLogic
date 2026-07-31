@@ -1,8 +1,10 @@
 module
 
 public import Neighborhood.Semantics.Logic.ED
+public import Neighborhood.Semantics.Logic.EP
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_1
+public import Neighborhood.Semantics.Example.Frame2_78
 
 /-!
 # The neighborhood logic `LogicET`
@@ -45,5 +47,14 @@ theorem LogicED_ssubset_LogicET : @LogicED ℕ ⊂ LogicET := by
   · intro h
     have hT : Axioms.T #0 ∈ @LogicED ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_1.not_isReflexive (isReflexive_of_valid_axiomT (LogicED.sound frame_1_1 hT))
+
+theorem LogicEP_ssubset_LogicET : @LogicEP ℕ ⊂ LogicET := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro _ rfl
+    exact Logic.axiomP
+  · intro h
+    have hT : (Axioms.T #0 : Formula ℕ) ∈ @LogicEP ℕ := h (Logic.HasAxiomT.T _)
+    exact frame_2_78.not_valid_axiomT (LogicEP.sound frame_2_78 hT)
 
 end
