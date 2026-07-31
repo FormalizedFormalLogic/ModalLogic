@@ -2,9 +2,12 @@ module
 
 public import Neighborhood.Semantics.Logic.ENT4
 public import Neighborhood.Semantics.Logic.E5
+public import Neighborhood.Semantics.Logic.ETB
+public import Neighborhood.Semantics.Logic.EB4
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame3_9471106
+public import Neighborhood.Semantics.Example.Frame3_8437920
 
 /-!
 # The neighborhood logic `LogicET5`
@@ -84,5 +87,25 @@ theorem LogicE5_ssubset_LogicET5 : @LogicE5 ℕ ⊂ LogicET5 := by
     have hT : Axioms.T #0 ∈ @LogicE5 ℕ := h Logic.axiomT
     exact frame_1_3.not_isReflexive
       (isReflexive_of_valid_axiomT (LogicE5.sound frame_1_3 hT))
+
+theorem LogicETB_ssubset_LogicET5 : @LogicETB ℕ ⊂ LogicET5 := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
+    · exact Logic.axiomT
+    · exact Logic.axiomB
+  · intro h
+    have hFive : Axioms.Five #0 ∈ @LogicETB ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_3_8437920.not_valid_axiomFive (LogicETB.sound frame_3_8437920 hFive)
+
+theorem LogicEB4_ssubset_LogicET5 : @LogicEB4 ℕ ⊂ LogicET5 := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
+    · exact Logic.axiomB
+    · exact Logic.axiomFour
+  · intro h
+    have hT : Axioms.T #0 ∈ @LogicEB4 ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_1_3.not_valid_axiomT (LogicEB4.sound frame_1_3 hT)
 
 end

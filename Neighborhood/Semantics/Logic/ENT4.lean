@@ -3,6 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Logic.ET4
 public import Neighborhood.Semantics.Logic.ENT
+public import Neighborhood.Semantics.Logic.END4
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_170
@@ -89,5 +90,14 @@ theorem LogicENT_ssubset_LogicENT4 : @LogicENT ℕ ⊂ LogicENT4 := by
     have hFour : Axioms.Four #0 ∈ (@LogicENT ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_3_8421512.not_valid_axiomFour
       (LogicENT.sound frame_3_8421512 hFour)
+
+theorem LogicEND4_ssubset_LogicENT4 : @LogicEND4 ℕ ⊂ LogicENT4 := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
+      first | exact Logic.axiomN | exact Logic.axiomD | exact Logic.axiomFour
+  · intro h
+    have hT : Axioms.T #0 ∈ @LogicEND4 ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_170.not_valid_axiomT (LogicEND4.sound frame_2_170 hT)
 
 end

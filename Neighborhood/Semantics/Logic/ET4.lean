@@ -2,9 +2,11 @@ module
 
 public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.ET
+public import Neighborhood.Semantics.Logic.ED4
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_72
+public import Neighborhood.Semantics.Example.Frame2_170
 
 /-!
 # The neighborhood logic `LogicET4`
@@ -70,5 +72,15 @@ theorem LogicET_ssubset_LogicET4 : @LogicET ℕ ⊂ LogicET4 := by
   · intro h
     have hFour : Axioms.Four #0 ∈ @LogicET ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_2_72.not_isTransitive (isTransitive_of_valid_axiomFour (LogicET.sound frame_2_72 hFour))
+
+theorem LogicED4_ssubset_LogicET4 : @LogicED4 ℕ ⊂ LogicET4 := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
+    · exact Logic.axiomD
+    · exact ProvableHilbert.axm (by grind)
+  · intro h
+    have hT : Axioms.T #0 ∈ @LogicED4 ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_170.not_valid_axiomT (LogicED4.sound frame_2_170 hT)
 
 end

@@ -2,9 +2,11 @@ module
 
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EDB
+public import Neighborhood.Semantics.Logic.ENB
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame1_1
+public import Neighborhood.Semantics.Example.Frame1_3
 
 /-!
 # The neighborhood logic `LogicENDB`
@@ -50,5 +52,12 @@ theorem LogicEDB_ssubset_LogicENDB : @LogicEDB ℕ ⊂ LogicENDB := by
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ @LogicEDB ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_1.not_valid_axiomN (LogicEDB.sound frame_1_1 hN)
+
+theorem LogicENB_ssubset_LogicENDB : @LogicENB ℕ ⊂ LogicENDB := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hD : Axioms.D #0 ∈ @LogicENB ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_1_3.not_valid_axiomD (LogicENB.sound frame_1_3 hD)
 
 end

@@ -4,9 +4,11 @@ public import Neighborhood.Semantics.Logic.ET
 public import Neighborhood.Semantics.Logic.EB
 public import Neighborhood.Semantics.Logic.ENT
 public import Neighborhood.Semantics.Logic.ENB
+public import Neighborhood.Semantics.Logic.ENDB
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_140
 public import Neighborhood.Semantics.Example.Frame3_9471106
 public import Neighborhood.Logic.Equiv.ETB_ENTB
 
@@ -86,5 +88,14 @@ theorem LogicENB_ssubset_LogicENTB : @LogicENB ℕ ⊂ LogicENTB := by
 theorem LogicENB_ssubset_LogicETB : @LogicENB ℕ ⊂ LogicETB := by
   rw [LogicETB_eq_LogicENTB]
   exact LogicENB_ssubset_LogicENTB
+
+theorem LogicENDB_ssubset_LogicETB : @LogicENDB ℕ ⊂ LogicETB := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
+      first | exact Logic.axiomN | exact Logic.axiomD | exact Logic.axiomB
+  · intro h
+    have hT : Axioms.T #0 ∈ @LogicENDB ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_140.not_valid_axiomT (LogicENDB.sound frame_2_140 hT)
 
 end
