@@ -1,8 +1,12 @@
 module
 
 public import Neighborhood.Semantics.Logic.EMCN
+public import Neighborhood.Semantics.Logic.EM5
+public import Neighborhood.Semantics.Logic.ECN5
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame2_140
+public import Neighborhood.Semantics.Example.Frame3_9472136
+public import Neighborhood.Semantics.Example.Frame3_10528928
 
 /-!
 # The neighborhood logic `LogicEMC5`
@@ -36,5 +40,23 @@ theorem LogicEMCN_ssubset_LogicEMC5 : @LogicEMCN ℕ ⊂ LogicEMC5 := by
   · intro h
     have hFive : Axioms.Five #0 ∈ (@LogicEMCN ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_140.not_valid_axiomFive (LogicEMCN.sound frame_2_140 hFive)
+
+theorem LogicEM5_ssubset_LogicEMC5 : @LogicEM5 ℕ ⊂ LogicEMC5 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hC : Axioms.C #0 #1 ∈ (@LogicEM5 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_10528928.not_valid_axiomC (LogicEM5.sound frame_3_10528928 hC)
+
+theorem LogicECN5_ssubset_LogicEMC5 : @LogicECN5 ℕ ⊂ LogicEMC5 := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩)
+    · exact Logic.axiomC
+    · exact Logic.axiomN
+    · exact Logic.axiomFive
+  · intro h
+    have hM : Axioms.M #0 #1 ∈ (@LogicECN5 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_9472136.not_valid_axiomM (LogicECN5.sound frame_3_9472136 hM)
 
 end
