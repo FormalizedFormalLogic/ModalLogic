@@ -193,6 +193,22 @@ lemma diaFivec [L.HasAxiomFive] : ◇□A 🡒 □A ∈ L := by
   have h₃ : ∼□A 🡒 □(∼□A) ∈ L := C_trans (C_of_E_mpr h₂) (C_trans axiomFive (C_of_E_mp (re h₂)));
   exact C_trans (contra h₃) dne;
 
+/-- The axiom scheme `D` is derivable from `C` and `P`. -/
+instance [L.HasAxiomC] [L.HasAxiomP] : L.HasAxiomD := ⟨fun A => by
+  have h₁ : (A ⋏ ∼A) 🡘 (⊥ : Formula α) ∈ L := E_intro CKNO efq;
+  have h₂ : □A ⋏ □(∼A) 🡒 (⊥ : Formula α) ∈ L :=
+    C_trans axiomC (C_trans (C_of_E_mp (re h₁)) axiomP);
+  exact CK_iff_CC.mp h₂;⟩
+
+omit [L.HasRE] in
+/-- The axiom `P` is derivable from `N` and `D`. -/
+lemma axiomP_of_ND [L.HasAxiomN] [L.HasAxiomD] : Axioms.P ∈ (L : Logic α) :=
+  contra (axiomD (A := ⊥)) ⨀ dni' axiomN
+
+/-- The axiom `P` is derivable from `M` and `D`. -/
+lemma axiomP_of_MD [L.HasAxiomM] [L.HasAxiomD] : Axioms.P ∈ (L : Logic α) :=
+  mdp₁ (axiomD (A := ⊥)) (rm efq)
+
 variable [L.HasAxiomT]
 
 omit [L.HasRE] in
