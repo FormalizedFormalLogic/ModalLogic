@@ -33,6 +33,8 @@ instance : frame_1_0.IsSerial where
 instance : frame_1_0.IsReflexive :=
   ⟨fun X => by simp [Frame.box, frame_1_0]⟩
 
+instance : frame_1_0.NotContainsEmpty := ⟨by simp⟩
+
 lemma frame_1_0.not_isSymmetric : ¬frame_1_0.IsSymmetric := fun hS => by
   have h := hS.symm ({0} : Set (Fin 1))
   have hdia : frame_1_0.dia ({0} : Set (Fin 1)) = Set.univ := by

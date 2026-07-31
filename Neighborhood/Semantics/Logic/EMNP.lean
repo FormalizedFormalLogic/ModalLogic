@@ -1,7 +1,9 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
+public import Neighborhood.Semantics.Logic.EMP
 public import Neighborhood.Semantics.Supplementation
+public import Neighborhood.Semantics.Example.Frame1_0
 
 @[expose] public section
 
@@ -29,5 +31,12 @@ theorem LogicEMNP.complete
   (supplementedBasicCanonicity LogicEMNP).mem_of_valid
     (h (supplementedBasicCanonicity LogicEMNP).toModel.toFrame
       (supplementedBasicCanonicity LogicEMNP).toModel.Val)
+
+theorem LogicEMP_ssubset_LogicEMNP : @LogicEMP ℕ ⊂ LogicEMNP := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by rintro A (⟨B, C, rfl⟩ | rfl) <;> grind)
+  · intro h
+    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEMP ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_1_0.not_valid_axiomN (LogicEMP.sound frame_1_0 hN)
 
 end
