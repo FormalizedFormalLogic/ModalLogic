@@ -3,10 +3,12 @@ module
 public import Neighborhood.Semantics.Logic.EMCD5
 public import Neighborhood.Semantics.Logic.EMCND4
 public import Neighborhood.Semantics.Logic.EMC45
+public import Neighborhood.Semantics.Logic.EMD45
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame3_10529440
+public import Neighborhood.Semantics.Example.Frame3_11053224
 
 /-!
 # The neighborhood logic `LogicEMCD45`
@@ -57,5 +59,12 @@ theorem LogicEMC45_ssubset_LogicEMCD45 : @LogicEMC45 ℕ ⊂ LogicEMCD45 := by
   · intro h
     have hD : Axioms.D #0 ∈ (@LogicEMC45 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_valid_axiomD (LogicEMC45.sound frame_1_3 hD)
+
+theorem LogicEMD45_ssubset_LogicEMCD45 : @LogicEMD45 ℕ ⊂ LogicEMCD45 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hC : Axioms.C #0 #1 ∈ @LogicEMD45 ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_3_11053224.not_valid_axiomC (LogicEMD45.sound frame_3_11053224 hC)
 
 end
