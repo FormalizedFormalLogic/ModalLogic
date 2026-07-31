@@ -3,6 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Example.Frame3_10528928
 public import Neighborhood.Semantics.Example.Frame2_53
+public import Neighborhood.Semantics.Example.Frame3_130
 
 /-!
 # The neighborhood logic `LogicED`
@@ -63,6 +64,11 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicED α) := by
   intro hcon
   simpa using (notContainsEmpty_of_valid_axiomP (LogicED.sound frame_2_53 hcon)).not_contains_empty
     (x := 0)
+
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicED α) := by
+  by_contra! hcon
+  exact frame_3_130.not_valid_axiomK hab (LogicED.sound frame_3_130 (hcon #a #b))
 
 end LogicED
 

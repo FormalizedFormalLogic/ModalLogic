@@ -2,7 +2,9 @@ module
 
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.EP
+public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_72
+public import Neighborhood.Semantics.Example.Frame3_130
 public import Neighborhood.Semantics.Example.Frame3_168
 
 /-!
@@ -54,6 +56,21 @@ omit [DecidableEq α] in
 lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicET α) := by
   intro hcon
   exact frame_1_0.not_valid_axiomN (LogicET.sound frame_1_0 hcon)
+
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicET α) := by
+  by_contra! hcon
+  exact frame_3_130.not_valid_axiomK hab (LogicET.sound _ (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicET α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomB (LogicET.sound frame_1_0 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicET α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomFive (LogicET.sound frame_1_0 (hcon #a))
 
 end LogicET
 

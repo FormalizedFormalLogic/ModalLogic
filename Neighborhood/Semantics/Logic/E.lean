@@ -11,6 +11,7 @@ public import Neighborhood.Semantics.Example.Frame2_79
 public import Neighborhood.Semantics.Example.Frame3_130
 public import Neighborhood.Semantics.Example.Frame3_137264
 public import Neighborhood.Semantics.Example.Frame3_9471106
+public import Neighborhood.Semantics.Example.Frame1_3
 
 
 @[expose] public section
@@ -71,6 +72,10 @@ lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicE α) := by
 lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicE α) := by
   intro hcon
   exact frame_1_1.not_valid_axiomP (LogicE.sound _ hcon)
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicE α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomT (LogicE.sound frame_1_3 (hcon #a))
 
 end LogicE
 
