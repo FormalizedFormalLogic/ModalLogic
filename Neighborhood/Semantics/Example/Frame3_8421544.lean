@@ -63,6 +63,22 @@ instance : frame_3_8421544.IsReflexive where
         Set.mem_singleton_iff] at hw <;>
       rcases hw with rfl | rfl | rfl <;> simp
 
+instance : frame_3_8421544.IsSerial := ⟨fun X w hw => by
+  simp only [Frame.box, frame_3_8421544, Set.mem_setOf_eq] at hw
+  simp only [Frame.dia, Frame.box, frame_3_8421544, Set.mem_compl_iff, Set.mem_setOf_eq]
+  fin_cases w <;>
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hw ⊢
+  · rcases hw with rfl | rfl | rfl <;>
+      rintro (h | h | h) <;> (have h0 := Set.ext_iff.mp h 0; simp at h0)
+  · subst hw
+    rintro h
+    have h0 := Set.ext_iff.mp h 0
+    simp at h0
+  · subst hw
+    rintro h
+    have h0 := Set.ext_iff.mp h 0
+    simp at h0⟩
+
 lemma frame_3_8421544.box_0_1 :
     frame_3_8421544.box ({0, 1} : Set (Fin 3)) = {0} := by
   ext w

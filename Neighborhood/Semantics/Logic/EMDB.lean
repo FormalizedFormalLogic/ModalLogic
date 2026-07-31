@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.EMCND
 public import Neighborhood.Semantics.Logic.EMB
+public import Neighborhood.Semantics.Example.Frame2_140
 
 /-!
 # The neighborhood logic `LogicEMDB`
@@ -29,6 +30,14 @@ instance : (@LogicEMDB α).IsConsistent := ⟨by
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMDB α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomT (LogicEMDB.sound frame_2_140 (hcon #a))
+
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMDB α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFour (LogicEMDB.sound frame_2_140 (hcon #a))
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMDB α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFive (LogicEMDB.sound frame_2_140 (hcon #a))
 
 end LogicEMDB
 

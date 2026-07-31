@@ -64,6 +64,43 @@ instance : frame_3_43176.IsTransitive := ⟨fun X w hw => by
     · rw [frame_3_43176.box_zero_two]; simp [Frame.box, frame_3_43176]
     · rw [frame_3_43176.box_univ]; simp [Frame.box, frame_3_43176]⟩
 
+private lemma frame_3_43176.superset_zero_one {Y : Set (Fin 3)}
+    (h : ({0, 1} : Set (Fin 3)) ⊆ Y) : Y = {0, 1} ∨ Y = Set.univ := by
+  have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+  have h1 : (1 : Fin 3) ∈ Y := h (by simp)
+  by_cases h2 : (2 : Fin 3) ∈ Y
+  · right; ext x; fin_cases x <;> simp [h0, h1, h2]
+  · left; ext x; fin_cases x <;> simp [h0, h1, h2]
+
+private lemma frame_3_43176.superset_zero_two {Y : Set (Fin 3)}
+    (h : ({0, 2} : Set (Fin 3)) ⊆ Y) : Y = {0, 2} ∨ Y = Set.univ := by
+  have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+  have h2 : (2 : Fin 3) ∈ Y := h (by simp)
+  by_cases h1 : (1 : Fin 3) ∈ Y
+  · right; ext x; fin_cases x <;> simp [h0, h1, h2]
+  · left; ext x; fin_cases x <;> simp [h0, h1, h2]
+
+lemma frame_3_43176.box_mono {X Y : Set (Fin 3)} (h : X ⊆ Y) :
+    frame_3_43176.box X ⊆ frame_3_43176.box Y := by
+  intro w hw
+  fin_cases w <;>
+    simp only [Frame.box, frame_3_43176, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hw ⊢
+  · rcases hw with rfl | rfl | rfl
+    · rcases frame_3_43176.superset_zero_one h with rfl | rfl <;> simp
+    · rcases frame_3_43176.superset_zero_two h with rfl | rfl <;> simp
+    · exact Or.inr (Or.inr (Set.Subset.antisymm (Set.subset_univ Y) h))
+  · rcases hw with rfl | rfl | rfl
+    · rcases frame_3_43176.superset_zero_one h with rfl | rfl <;> simp
+    · rcases frame_3_43176.superset_zero_two h with rfl | rfl <;> simp
+    · exact Or.inr (Or.inr (Set.Subset.antisymm (Set.subset_univ Y) h))
+  · exact hw.elim
+
+instance : frame_3_43176.IsMonotonic where
+  mono _ _ := Set.subset_inter
+    (frame_3_43176.box_mono Set.inter_subset_left)
+    (frame_3_43176.box_mono Set.inter_subset_right)
+
 lemma frame_3_43176.not_isRegular :
     ¬frame_3_43176.IsRegular := by
   intro hR

@@ -4,6 +4,7 @@ public import Neighborhood.Semantics.Logic.EMDB
 public import Neighborhood.Semantics.Logic.EMCNT
 public import Neighborhood.Semantics.Logic.ECTB
 public import Neighborhood.Logic.Equiv.EMTB_EMCNTB
+public import Neighborhood.Semantics.Example.Frame3_8437920
 
 /-!
 # The neighborhood logic `LogicEMTB`
@@ -31,6 +32,10 @@ instance : (@LogicEMTB α).IsConsistent := ⟨by
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMTB α) := by
   by_contra! hcon
   exact frame_3_8437920.not_valid_axiomFive (LogicEMTB.sound frame_3_8437920 (hcon #a))
+
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMTB α) := by
+  by_contra! hcon
+  exact frame_3_8437920.not_valid_axiomFour (LogicEMTB.sound frame_3_8437920 (hcon #a))
 
 end LogicEMTB
 
