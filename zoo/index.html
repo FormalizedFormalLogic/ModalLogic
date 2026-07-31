@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<!--
+  Interactive 3D zoo of the `Neighborhood` logics, rendered from
+  `neighborhood.json` (which is extracted from the Lean environment by
+  `zoo/Extract.lean`; see `just zoo`).
+
+  This page fetches `./neighborhood.json`, so it must be served over HTTP.
+  Locally: `just zoo-serve` (miniserve). On GitHub Pages it is deployed as
+  the site root next to the JSON.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neighborhood Logic Zoo</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page:           #f9f9f7;
+    --surface:        #fcfcfb;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --muted:          #898781;
+    --hairline:       #e1e0d9;
+    --border:         rgba(11, 11, 11, 0.10);
+    --accent:         #eb6834;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page:           #0d0d0d;
+    --surface:        #1a1a19;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --muted:          #898781;
+    --hairline:       #2c2c2a;
+    --border:         rgba(255, 255, 255, 0.10);
+    --accent:         #d95926;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--page);
+    color: var(--text-primary);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  #graph { position: absolute; inset: 0; }
+  .panel {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  }
+  #header {
+    top: 12px; left: 12px;
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    max-width: calc(100vw - 24px);
+  }
+  #header h1 { font-size: 16px; margin: 0; font-weight: 650; }
+  #stats { color: var(--text-secondary); }
+  #header nav a { color: var(--text-secondary); margin-right: 10px; }
+  #controls {
+    top: 12px; right: 12px;
+    display: flex; gap: 8px; align-items: center;
+  }
+  #search {
+    width: 200px;
+    padding: 5px 8px;
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    background: var(--page);
+    color: var(--text-primary);
+    font: inherit;
+  }
+  button {
+    padding: 5px 10px;
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    background: var(--page);
+    color: var(--text-primary);
+    font: inherit;
+    cursor: pointer;
+  }
+  button:hover { border-color: var(--muted); }
+  #legend { bottom: 12px; left: 12px; color: var(--text-secondary); font-size: 13px; }
+  #legend .row { display: flex; align-items: center; gap: 8px; margin: 3px 0; }
+  #legend .swatch { width: 34px; height: 8px; border-radius: 4px; flex: none; }
+  #legend .arrow  { width: 34px; text-align: center; color: var(--muted); flex: none; }
+  #hint { bottom: 12px; right: 12px; color: var(--muted); font-size: 12px; }
+  #error {
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    max-width: 480px; display: none;
+  }
+  #error code { background: var(--page); padding: 1px 5px; border-radius: 4px; }
+  .graph-tooltip { font: 13px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif !important; }
+  .tt {
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  }
+  .tt .names { font-weight: 650; }
+  .tt .meta { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div id="graph"></div>
+
+<div id="header" class="panel">
+  <h1>Neighborhood Logic Zoo</h1>
+  <span id="stats"></span>
+  <nav>
+    <a href="https://github.com/FormalizedFormalLogic/ModalLogic">repository</a>
+    <a href="neighborhood.json">JSON</a>
+    <a href="neighborhood.png">2D&nbsp;PNG</a>
+  </nav>
+</div>
+
+<div id="controls" class="panel">
+  <input id="search" list="logics" placeholder="Find a logic (e.g. EMCN4)" autocomplete="off">
+  <datalist id="logics"></datalist>
+  <button id="reset" title="Fit the whole zoo in view">Reset view</button>
+  <button id="theme" title="Toggle dark / light">◐</button>
+</div>
+
+<div id="legend" class="panel">
+  <div class="row"><span class="swatch" id="ramp-swatch"></span>
+    node color: deductive strength (weakest&nbsp;<b>E</b> → strongest)</div>
+  <div class="row"><span class="arrow">→</span>
+    arrow <b>L</b> → <b>L′</b> means <b>L′</b> ⊊ <b>L</b> (proved in Lean)</div>
+  <div class="row"><span class="arrow">=</span>
+    equal logics are merged into one node (<b>L</b> = <b>L′</b>)</div>
+</div>
+
+<div id="hint" class="panel">drag&nbsp;·&nbsp;rotate &nbsp; scroll&nbsp;·&nbsp;zoom &nbsp; right-drag&nbsp;·&nbsp;pan &nbsp; hover&nbsp;·&nbsp;inspect</div>
+
+<div id="error" class="panel">
+  <b>Could not load <code>neighborhood.json</code>.</b>
+  <p>This page must be served over HTTP next to the JSON file. From the
+  repository root run <code>just zoo-serve</code> (after <code>just zoo</code>
+  if the JSON has not been generated yet) and open the printed URL.</p>
+  <p id="error-detail" class="meta"></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/3d-force-graph@1/dist/3d-force-graph.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three-spritetext@1/dist/three-spritetext.min.js"></script>
+
+<script id="zoo-pipeline">
+"use strict";
+/* Pure data pipeline: JSON edge list -> merged graph with strength depths.
+   Kept free of DOM/three.js so it can be unit-tested outside the browser. */
+const Zoo = (() => {
+  /* Union-find over the `eq` edges: equal logics become one node. */
+  const eqClasses = edges => {
+    const parent = new Map();
+    const add = x => { if (!parent.has(x)) parent.set(x, x); };
+    const find = x => {
+      let root = x;
+      while (parent.get(root) !== root) root = parent.get(root);
+      let cur = x;
+      while (parent.get(cur) !== cur) { const next = parent.get(cur); parent.set(cur, root); cur = next; }
+      return root;
+    };
+    for (const e of edges) { add(e.from); add(e.to); }
+    for (const e of edges) if (e.type === "eq") parent.set(find(e.from), find(e.to));
+    const members = new Map();
+    for (const x of parent.keys()) {
+      const root = find(x);
+      if (!members.has(root)) members.set(root, []);
+      members.get(root).push(x);
+    }
+    return { find, members };
+  };
+
+  const buildGraph = edges => {
+    const { find, members } = eqClasses(edges);
+
+    const nodes = [];
+    for (const [id, names] of members) {
+      names.sort((a, b) => a.length - b.length || (a < b ? -1 : 1));
+      nodes.push({ id, names, label: names.map(n => n.replace(/^Logic/, "")).join(" = ") });
+    }
+
+    /* One link per merged pair, oriented stronger -> weaker (as in the 2D
+       figure); a strict inclusion wins over a plain one. */
+    const linkMap = new Map();
+    for (const e of edges) {
+      if (e.type === "eq") continue;
+      const weaker = find(e.from), stronger = find(e.to);
+      if (weaker === stronger) continue;
+      const key = stronger + " " + weaker;
+      const prev = linkMap.get(key);
+      if (!prev || (prev.type === "sub" && e.type === "ssub"))
+        linkMap.set(key, { source: stronger, target: weaker, type: e.type });
+    }
+    const links = [...linkMap.values()];
+
+    /* Depth of a logic = longest chain of inclusions below it; the weakest
+       logics sit at depth 0. The merged graph is a DAG (a cycle would mean
+       mutually strict inclusions), but guard against one anyway. */
+    const weakerOf = new Map();
+    for (const l of links) {
+      if (!weakerOf.has(l.source)) weakerOf.set(l.source, []);
+      weakerOf.get(l.source).push(l.target);
+    }
+    const depth = new Map(), visiting = new Set();
+    const depthOf = id => {
+      if (depth.has(id)) return depth.get(id);
+      if (visiting.has(id)) return 0;
+      visiting.add(id);
+      const below = weakerOf.get(id) || [];
+      const d = below.length === 0 ? 0 : 1 + Math.max(...below.map(depthOf));
+      visiting.delete(id);
+      depth.set(id, d);
+      return d;
+    };
+    let maxDepth = 0;
+    for (const n of nodes) {
+      n.depth = depthOf(n.id);
+      maxDepth = Math.max(maxDepth, n.depth);
+    }
+    return { nodes, links, maxDepth };
+  };
+
+  return { buildGraph };
+})();
+if (typeof module !== "undefined") module.exports = Zoo;
+</script>
+
+<script>
+"use strict";
+(async () => {
+  /* ---- theme ------------------------------------------------------- */
+  /* Sequential blue ramp (one hue, ordered by strength). Both mode ramps
+     run from the near-surface end (weakest) to the high-contrast end
+     (strongest): light 250->700, dark 600->100. */
+  const THEMES = {
+    light: { surface: "#fcfcfb",
+             ramp: ["#86b6ef", "#6da7ec", "#5598e7", "#3987e5", "#2a78d6", "#256abf",
+                    "#1c5cab", "#184f95", "#104281", "#0d366b"],   // steps 250 -> 700
+             link: "#898781", linkDim: "#c3c2b7", accent: "#eb6834" },
+    dark:  { surface: "#1a1a19",
+             ramp: ["#184f95", "#1c5cab", "#256abf", "#2a78d6", "#3987e5", "#5598e7",
+                    "#6da7ec", "#86b6ef", "#9ec5f4", "#b7d3f6"],   // steps 600 -> 150
+             link: "#898781", linkDim: "#565550", accent: "#d95926" },
+  };
+  const themeName = () => document.documentElement.dataset.theme;
+  const theme = () => THEMES[themeName()];
+  document.documentElement.dataset.theme =
+    matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+  /* ---- data -------------------------------------------------------- */
+  let edges;
+  try {
+    const res = await fetch("./neighborhood.json");
+    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+    edges = await res.json();
+  } catch (err) {
+    document.getElementById("error").style.display = "block";
+    document.getElementById("error-detail").textContent = String(err);
+    return;
+  }
+  const { nodes, links, maxDepth } = Zoo.buildGraph(edges);
+
+  const nodeById = new Map(nodes.map(n => [n.id, n]));
+  const stronger = new Map(nodes.map(n => [n.id, []]));
+  const weaker = new Map(nodes.map(n => [n.id, []]));
+  for (const l of links) {
+    stronger.get(l.target).push(l.source);
+    weaker.get(l.source).push(l.target);
+  }
+  const nEq = nodes.reduce((k, n) => k + n.names.length - 1, 0);
+  document.getElementById("stats").textContent =
+    `${nodes.length} logics (+${nEq} equalities) · ${links.length} strict inclusions`;
+
+  const colorOf = n => {
+    const ramp = theme().ramp;
+    return ramp[Math.round(n.depth / Math.max(maxDepth, 1) * (ramp.length - 1))];
+  };
+
+  /* ---- graph ------------------------------------------------------- */
+  const linkId = l => (l.source.id ?? l.source) + " " + (l.target.id ?? l.target);
+  let hoverNode = null;
+  const highlightLinks = new Set();
+
+  const graph = ForceGraph3D()(document.getElementById("graph"))
+    .graphData({ nodes, links })
+    .backgroundColor(theme().surface)
+    .dagMode("td")
+    .dagLevelDistance(52)
+    .nodeThreeObject(n => {
+      const sprite = new SpriteText(n.label, 5.5, colorOf(n));
+      sprite.fontFace = "system-ui, -apple-system, Segoe UI, Helvetica, Arial";
+      sprite.fontWeight = "600";
+      sprite.material.depthWrite = false;
+      sprite.material.transparent = true;   // so the hover dimming (opacity) applies
+      n.__sprite = sprite;
+      return sprite;
+    })
+    .nodeLabel(n => `<div class="tt">
+        <div class="names">${n.names.join(" = ")}</div>
+        <div class="meta">strength depth ${n.depth} / ${maxDepth}<br>
+          directly above: ${stronger.get(n.id).length} · directly below: ${weaker.get(n.id).length}</div>
+      </div>`)
+    .linkColor(l => highlightLinks.has(linkId(l)) ? theme().accent
+                  : hoverNode ? theme().linkDim : theme().link)
+    .linkOpacity(0.45)
+    .linkWidth(l => highlightLinks.has(linkId(l)) ? 1.6 : 0.35)
+    .linkDirectionalArrowLength(3.2)
+    .linkDirectionalArrowRelPos(0.6)
+    .linkHoverPrecision(4)
+    .onNodeHover(n => setFocus(n))
+    .onNodeClick(n => flyTo(n))
+    .onBackgroundClick(() => setFocus(null));
+
+  graph.d3Force("charge").strength(-160);
+
+  let fitted = false;
+  graph.onEngineStop(() => { if (!fitted) { fitted = true; graph.zoomToFit(800, 60); } });
+
+  addEventListener("resize", () => graph.width(innerWidth).height(innerHeight));
+
+  /* ---- hover highlighting ------------------------------------------ */
+  const setFocus = n => {
+    hoverNode = n || null;
+    highlightLinks.clear();
+    if (n) {
+      for (const l of links)
+        if (l.source === n || l.target === n || l.source.id === n.id || l.target.id === n.id)
+          highlightLinks.add(linkId(l));
+      const neighbors = new Set([n.id, ...stronger.get(n.id), ...weaker.get(n.id)]);
+      for (const m of nodes) m.__sprite.material.opacity = neighbors.has(m.id) ? 1 : 0.18;
+    } else {
+      for (const m of nodes) m.__sprite.material.opacity = 1;
+    }
+    graph.linkColor(graph.linkColor()).linkWidth(graph.linkWidth());  // re-evaluate link accessors
+  };
+
+  /* ---- search & buttons -------------------------------------------- */
+  const datalist = document.getElementById("logics");
+  for (const n of [...nodes].sort((a, b) => (a.label < b.label ? -1 : 1))) {
+    const opt = document.createElement("option");
+    opt.value = n.label;
+    datalist.appendChild(opt);
+  }
+  const flyTo = n => {
+    const dist = 160;
+    const k = 1 + dist / Math.max(Math.hypot(n.x, n.y, n.z), 1);
+    graph.cameraPosition({ x: n.x * k, y: n.y * k, z: n.z * k }, n, 1000);
+    setFocus(n);
+  };
+  document.getElementById("search").addEventListener("change", ev => {
+    const q = ev.target.value.trim().toLowerCase();
+    if (!q) return;
+    const hit = nodes.find(n => n.label.toLowerCase() === q)
+      ?? nodes.find(n => n.names.some(s => s.replace(/^Logic/, "").toLowerCase() === q))
+      ?? nodes.find(n => n.label.toLowerCase().includes(q));
+    if (hit) flyTo(hit);
+  });
+  document.getElementById("reset").addEventListener("click", () => {
+    setFocus(null);
+    graph.zoomToFit(800, 60);
+  });
+
+  /* ---- theme toggle ------------------------------------------------ */
+  const rampSwatch = document.getElementById("ramp-swatch");
+  const applyTheme = () => {
+    const t = theme();
+    graph.backgroundColor(t.surface);
+    for (const n of nodes) if (n.__sprite) n.__sprite.color = colorOf(n);
+    graph.linkColor(graph.linkColor());
+    rampSwatch.style.background = `linear-gradient(90deg, ${t.ramp[0]}, ${t.ramp[t.ramp.length - 1]})`;
+  };
+  applyTheme();
+  document.getElementById("theme").addEventListener("click", () => {
+    document.documentElement.dataset.theme = themeName() === "dark" ? "light" : "dark";
+    applyTheme();
+  });
+})();
+</script>
+</body>
+</html>
