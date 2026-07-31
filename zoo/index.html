@@ -147,8 +147,7 @@
   <p id="error-detail" class="meta"></p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/3d-force-graph@1/dist/3d-force-graph.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three-spritetext@1/dist/three-spritetext.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/3d-force-graph@1.80.0/dist/3d-force-graph.min.js"></script>
 
 <script id="zoo-pipeline">
 "use strict";
@@ -232,8 +231,20 @@ const Zoo = (() => {
 if (typeof module !== "undefined") module.exports = Zoo;
 </script>
 
-<script>
-"use strict";
+<script type="module">
+/* The UMD bundle above exposes the global `ForceGraph3D` (bundling its own
+   three.js, without a global `THREE`); SpriteText must therefore come as an
+   ES module carrying its own three, as in the upstream text-nodes example. */
+import SpriteText from "https://esm.sh/three-spritetext@1.10.0";
+
+/* Surface uncaught errors in the page itself (no dev tools needed). */
+const showError = msg => {
+  document.getElementById("error").style.display = "block";
+  document.getElementById("error-detail").textContent = msg;
+};
+addEventListener("error", ev => showError(String(ev.error ?? ev.message)));
+addEventListener("unhandledrejection", ev => showError(String(ev.reason)));
+
 (async () => {
   /* ---- theme ------------------------------------------------------- */
   /* Sequential blue ramp (one hue, ordered by strength). Both mode ramps
@@ -288,7 +299,7 @@ if (typeof module !== "undefined") module.exports = Zoo;
   let hoverNode = null;
   const highlightLinks = new Set();
 
-  const graph = ForceGraph3D()(document.getElementById("graph"))
+  const graph = new ForceGraph3D(document.getElementById("graph"))
     .graphData({ nodes, links })
     .backgroundColor(theme().surface)
     .dagMode("td")
