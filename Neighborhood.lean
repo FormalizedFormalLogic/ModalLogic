@@ -82,6 +82,7 @@ public import Neighborhood.Semantics.Example.Frame3_8431784
 public import Neighborhood.Semantics.Example.Frame3_8437920
 public import Neighborhood.Semantics.Example.Frame3_8553090
 public import Neighborhood.Semantics.Example.Frame3_9471106
+public import Neighborhood.Semantics.Example.Frame3_9472136
 public import Neighborhood.Semantics.Example.Frame3_9488552
 public import Neighborhood.Semantics.Example.Frame4_11259170869739560
 public import Neighborhood.Semantics.Filtration

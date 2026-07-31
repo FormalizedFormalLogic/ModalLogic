@@ -4,11 +4,14 @@ public import Neighborhood.Semantics.Logic.EMCD45
 public import Neighborhood.Semantics.Logic.EMCNT4
 public import Neighborhood.Semantics.Logic.EMB4
 public import Neighborhood.Semantics.Logic.EMTB
+public import Neighborhood.Semantics.Logic.ECT5
+public import Neighborhood.Logic.Equiv.EMT5_EMCNT5
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame2_170
 public import Neighborhood.Semantics.Example.Frame3_8437920
+public import Neighborhood.Semantics.Example.Frame3_9472136
 
 /-!
 # The neighborhood logic `LogicEMT5`
@@ -71,5 +74,13 @@ theorem LogicEMTB_ssubset_LogicEMT5 : @LogicEMTB ℕ ⊂ LogicEMT5 := by
   · intro h
     have hFive : Axioms.Five #0 ∈ (@LogicEMTB ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_3_8437920.not_valid_axiomFive (LogicEMTB.sound frame_3_8437920 hFive)
+
+theorem LogicECT5_ssubset_LogicEMT5 : @LogicECT5 ℕ ⊂ LogicEMT5 := by
+  constructor
+  · rw [LogicEMT5_eq_LogicEMCT5]
+    exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hM : Axioms.M #0 #1 ∈ @LogicECT5 ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_3_9472136.not_valid_axiomM (LogicECT5.sound frame_3_9472136 hM)
 
 end
