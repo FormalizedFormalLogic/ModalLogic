@@ -121,6 +121,7 @@ public import Neighborhood.Semantics.Logic.EMCN4
 public import Neighborhood.Semantics.Logic.EMCND
 public import Neighborhood.Semantics.Logic.EMCND4
 public import Neighborhood.Semantics.Logic.EMCT
+public import Neighborhood.Semantics.Logic.EMCT4
 public import Neighborhood.Semantics.Logic.EMD
 public import Neighborhood.Semantics.Logic.EMD4
 public import Neighborhood.Semantics.Logic.EMK
