@@ -3,10 +3,13 @@ module
 public import Neighborhood.Semantics.Logic.EMCN
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.EMD
+public import Neighborhood.Semantics.Logic.EMCD
+public import Neighborhood.Semantics.Logic.ECND
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_206
+public import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicEMCND`
@@ -54,5 +57,19 @@ theorem LogicEMD_ssubset_LogicEMCND : @LogicEMD ℕ ⊂ LogicEMCND := by
   · intro h
     have hN : (Axioms.N : Formula ℕ) ∈ @LogicEMD ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_0.not_valid_axiomN (LogicEMD.sound frame_1_0 hN)
+
+theorem LogicEMCD_ssubset_LogicEMCND : @LogicEMCD ℕ ⊂ LogicEMCND := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEMCD ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_1_0.not_valid_axiomN (LogicEMCD.sound frame_1_0 hN)
+
+theorem LogicECND_ssubset_LogicEMCND : @LogicECND ℕ ⊂ LogicEMCND := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hM : Axioms.M #0 #1 ∈ @LogicECND ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_3_9471106.not_valid_axiomM (LogicECND.sound frame_3_9471106 hM)
 
 end
