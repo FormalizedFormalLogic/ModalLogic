@@ -93,6 +93,7 @@ public import Neighborhood.Semantics.Logic.EC4
 public import Neighborhood.Semantics.Logic.EC5
 public import Neighborhood.Semantics.Logic.ECB
 public import Neighborhood.Semantics.Logic.ECD
+public import Neighborhood.Semantics.Logic.ECD4
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.ECN4
 public import Neighborhood.Semantics.Logic.ECN5
