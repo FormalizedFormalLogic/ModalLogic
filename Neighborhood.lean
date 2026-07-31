@@ -190,6 +190,5 @@ public import Neighborhood.Semantics.Logic.ET
 public import Neighborhood.Semantics.Logic.ET4
 public import Neighborhood.Semantics.Logic.ET5
 public import Neighborhood.Semantics.Logic.ETB
-public import Neighborhood.Semantics.Logic.Incomparability.ED_EP
 public import Neighborhood.Semantics.Supplementation
 public import Neighborhood.Vorspiel

@@ -113,7 +113,7 @@ carrier. The module is named after the frame (`Semantics/Example/Frame2_78.lean`
 index — and a Lean definition for a given index — with `Semantics/Example/frame_index.py`,
 which documents the encoding.
 
-**A comparison of two logics lives in the stronger logic's module.** A strict-inclusion lemma such as `LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM` belongs in `Logic/EM.lean`, not in `Logic/E.lean`: the module of a logic collects everything that ends at that logic, so its inclusions from below are part of its own story, and the weaker logic's module stays independent of the logics extending it. Incomparability results, which have no stronger side, get their own module (e.g. `Logic/Incomparability/ED_EP.lean`).
+**A comparison of two logics lives in the stronger logic's module.** A strict-inclusion lemma such as `LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM` belongs in `Logic/EM.lean`, not in `Logic/E.lean`: the module of a logic collects everything that ends at that logic, so its inclusions from below are part of its own story, and the weaker logic's module stays independent of the logics extending it. Incomparability of two logics needs no module of its own: it is the conjunction of the two `not_provable_*` lemmas below, each already stated in the module of the logic it is about.
 
 **But what a single logic fails to prove lives in that logic's own module**, as a statement about that logic alone: `LogicE.not_provable_axiomFour : ∃ A, Axioms.Four A ∉ @LogicE α` belongs in `Logic/E.lean`, next to `LogicE.sound`, since it is a fact about `LogicE` and mentions no other logic. The strict inclusion `LogicE_ssubset_LogicE4` in `Logic/E4.lean` then just invokes it, instead of re-running the countermodel argument itself.
 
