@@ -25,10 +25,15 @@ jobs:
   build:
     name: Build project
     runs-on: ubuntu-latest
+    env:
+      # The zoo is only published from main, so pull request and merge queue
+      # runs skip generating it (and installing typst for it) entirely.
+      ZOO: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v7
       - uses: extractions/setup-just@v4
-      - uses: typst-community/setup-typst@v5
+      - if: env.ZOO == 'true'
+        uses: typst-community/setup-typst@v5
       - name: Setup elan
         run: |
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
@@ -61,14 +66,15 @@ jobs:
       # The zoo only needs the environment already built above, so generate it
       # here rather than in a separate workflow with its own Lean build.
       - name: Generate zoo
+        if: env.ZOO == 'true'
         run: just zoo
       - name: Collect pages artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: env.ZOO == 'true'
         run: |
           mkdir -p _site
           cp zoo/neighborhood.png zoo/neighborhood.json _site/
       - name: Upload pages artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: env.ZOO == 'true'
         uses: actions/upload-pages-artifact@v5
         with:
           path: _site
