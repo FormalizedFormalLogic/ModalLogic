@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.ET
+public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame3_8421512
 public import Neighborhood.Semantics.Example.Frame3_8421544
 
@@ -56,6 +57,16 @@ lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicENT α) := by
   by_contra! hcon
   exact frame_3_9471106.not_valid_axiomM hab (LogicENT.sound frame_3_9471106 (hcon #a #b))
+
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicENT α) := by
+  by_contra! hcon
+  exact frame_3_8421544.not_valid_axiomK hab (LogicENT.sound frame_3_8421544 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENT α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomFive (LogicENT.sound frame_2_138 (hcon #a))
 
 end LogicENT
 

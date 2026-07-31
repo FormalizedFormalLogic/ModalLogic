@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.EMCN
 public import Neighborhood.Semantics.Logic.ECNB
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_140
 
 /-!
 # The neighborhood logic `LogicEMB`
@@ -32,6 +34,18 @@ lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMB α) := by
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMB α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomFour (LogicEMB.sound frame_2_140 (hcon #a))
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMB α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomT (LogicEMB.sound frame_1_3 (hcon #a))
+
+lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEMB α) := by
+  intro hcon
+  exact frame_1_3.not_valid_axiomP (LogicEMB.sound frame_1_3 hcon)
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMB α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFive (LogicEMB.sound frame_2_140 (hcon #a))
 
 end LogicEMB
 

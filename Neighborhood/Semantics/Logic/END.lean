@@ -72,6 +72,11 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEND α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicEND.sound frame_2_170 (hcon #a))
 
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicEND α) := by
+  by_contra! hcon
+  exact frame_3_8421506.not_valid_axiomK hab (LogicEND.sound frame_3_8421506 (hcon #a #b))
+
 end LogicEND
 
 theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by

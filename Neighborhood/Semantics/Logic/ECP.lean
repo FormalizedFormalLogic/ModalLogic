@@ -2,7 +2,10 @@ module
 
 public import Neighborhood.Semantics.Logic.EP
 public import Neighborhood.Semantics.Logic.ECD
+public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_34
+public import Neighborhood.Semantics.Example.Frame2_8
+public import Neighborhood.Semantics.Example.Frame3_9471106
 
 @[expose] public section
 
@@ -36,6 +39,31 @@ omit [DecidableEq α] in
 lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicECP α) := by
   intro hcon
   exact frame_1_0.not_valid_axiomN (LogicECP.sound frame_1_0 hcon)
+
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicECP α) := by
+  by_contra! hcon
+  exact frame_3_9471106.not_valid_axiomK hab (LogicECP.sound frame_3_9471106 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicECP α) := by
+  by_contra! hcon
+  exact frame_2_34.not_valid_axiomT (LogicECP.sound frame_2_34 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicECP α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomB (LogicECP.sound frame_1_0 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicECP α) := by
+  by_contra! hcon
+  exact frame_2_8.not_valid_axiomFour (LogicECP.sound frame_2_8 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicECP α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomFive (LogicECP.sound frame_1_0 (hcon #a))
 
 end LogicECP
 

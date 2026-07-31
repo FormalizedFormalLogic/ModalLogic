@@ -4,6 +4,7 @@ public import Neighborhood.Semantics.Logic.ENT4
 public import Neighborhood.Semantics.Logic.E5
 public import Neighborhood.Semantics.Logic.ETB
 public import Neighborhood.Semantics.Logic.EB4
+public import Neighborhood.Semantics.Example.Frame3_9472136
 
 /-!
 # The neighborhood logic `LogicET5`
@@ -67,6 +68,16 @@ lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicET5 α) := by
   by_contra! hcon
   exact frame_3_11570344.not_valid_axiomC hab (LogicET5.sound frame_3_11570344 (hcon #a #b))
+
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicET5 α) := by
+  by_contra! hcon
+  exact frame_3_9472136.not_valid_axiomK hab (LogicET5.sound frame_3_9472136 (hcon #a #b))
+
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicET5 α) := by
+  by_contra! hcon
+  exact frame_3_9472136.not_valid_axiomM hab (LogicET5.sound frame_3_9472136 (hcon #a #b))
 
 end LogicET5
 
