@@ -175,6 +175,24 @@ instance [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomN := ⟨by
   have h₄ : □□◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₃;
   exact C_of_E_mp h₄ ⨀ h₂;⟩
 
+/-- The dual of the axiom scheme `Four`. -/
+lemma diaFourc [L.HasAxiomFour] : ◇◇A 🡒 ◇A ∈ L := by
+  have e : ∼◇A 🡘 □(∼A) ∈ L := E_intro dne dni;
+  have h : □(∼A) 🡒 □(∼◇A) ∈ L := C_trans axiomFour (C_of_E_mp (re (E_symm e)));
+  exact contra h;
+
+/-- The axiom scheme `Five` is derivable from `M`, `B` and `4`. -/
+instance [L.HasAxiomM] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive :=
+  ⟨fun _ => C_trans axiomB (rm diaFourc)⟩
+
+/-- The dual of the axiom scheme `Five`. -/
+lemma diaFivec [L.HasAxiomFive] : ◇□A 🡒 □A ∈ L := by
+  have h₁ : ∼∼A 🡘 A ∈ L := E_intro dne dni;
+  have h₂ : ◇(∼A) 🡘 ∼□A ∈ L :=
+    E_intro (contra (C_of_E_mpr (re h₁))) (contra (C_of_E_mp (re h₁)));
+  have h₃ : ∼□A 🡒 □(∼□A) ∈ L := C_trans (C_of_E_mpr h₂) (C_trans axiomFive (C_of_E_mp (re h₂)));
+  exact C_trans (contra h₃) dne;
+
 /-- The axiom scheme `D` is derivable from `C` and `P`. -/
 instance [L.HasAxiomC] [L.HasAxiomP] : L.HasAxiomD := ⟨fun A => by
   have h₁ : (A ⋏ ∼A) 🡘 (⊥ : Formula α) ∈ L := E_intro CKNO efq;
@@ -197,8 +215,16 @@ omit [L.HasRE] in
 /-- The dual of the axiom scheme `T`. -/
 lemma diaTc : A 🡒 ◇A ∈ L := C_trans dni (contra axiomT)
 
+omit [L.HasRE] in
+/-- The axiom scheme `D` is derivable from `T`. -/
+instance : L.HasAxiomD := ⟨fun _ => C_trans axiomT diaTc⟩
+
 /-- The axiom scheme `B` is derivable from `T` and `5`. -/
 instance [L.HasAxiomFive] : L.HasAxiomB := ⟨fun _ => C_trans diaTc axiomFive⟩
+
+/-- The axiom scheme `Four` is derivable from `M`, `T` and `5`. -/
+instance [L.HasAxiomM] [L.HasAxiomFive] : L.HasAxiomFour :=
+  ⟨fun _ => C_trans axiomB (rm diaFivec)⟩
 
 /-- The necessitation rule, derived from `RE` and the axiom schemes `T` and `B`. -/
 lemma nec [L.HasAxiomB] (h : A ∈ L) : □A ∈ L :=
