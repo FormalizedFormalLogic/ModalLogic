@@ -95,6 +95,7 @@ public import Neighborhood.Semantics.Logic.EC5
 public import Neighborhood.Semantics.Logic.ECB
 public import Neighborhood.Semantics.Logic.ECD
 public import Neighborhood.Semantics.Logic.ECD4
+public import Neighborhood.Semantics.Logic.ECDB
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.ECN4
 public import Neighborhood.Semantics.Logic.ECN45
@@ -102,6 +103,7 @@ public import Neighborhood.Semantics.Logic.ECN5
 public import Neighborhood.Semantics.Logic.ECNB
 public import Neighborhood.Semantics.Logic.ECND
 public import Neighborhood.Semantics.Logic.ECND5
+public import Neighborhood.Semantics.Logic.ECNDB
 public import Neighborhood.Semantics.Logic.ECNT
 public import Neighborhood.Semantics.Logic.ECP
 public import Neighborhood.Semantics.Logic.ECT
@@ -122,6 +124,7 @@ public import Neighborhood.Semantics.Logic.EMCN4
 public import Neighborhood.Semantics.Logic.EMCND
 public import Neighborhood.Semantics.Logic.EMCND4
 public import Neighborhood.Semantics.Logic.EMCT
+public import Neighborhood.Semantics.Logic.EMCT4
 public import Neighborhood.Semantics.Logic.EMD
 public import Neighborhood.Semantics.Logic.EMD4
 public import Neighborhood.Semantics.Logic.EMK
@@ -143,6 +146,7 @@ public import Neighborhood.Semantics.Logic.ENB
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.END4
 public import Neighborhood.Semantics.Logic.END45
+public import Neighborhood.Semantics.Logic.ENDB
 public import Neighborhood.Semantics.Logic.ENP
 public import Neighborhood.Semantics.Logic.ENT
 public import Neighborhood.Semantics.Logic.ENT4
