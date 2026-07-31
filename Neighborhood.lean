@@ -142,6 +142,7 @@ public import Neighborhood.Semantics.Logic.ENB
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.END4
 public import Neighborhood.Semantics.Logic.END45
+public import Neighborhood.Semantics.Logic.ENDB
 public import Neighborhood.Semantics.Logic.ENP
 public import Neighborhood.Semantics.Logic.ENT
 public import Neighborhood.Semantics.Logic.ENT4
