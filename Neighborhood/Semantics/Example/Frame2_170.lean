@@ -10,6 +10,7 @@ public import Neighborhood.Semantics.AxiomGeach
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_2_170 : Frame (Fin 2) := ⟨fun _ => {{(1 : Fin 2)}, Set.univ}⟩
 
@@ -21,7 +22,7 @@ lemma frame_2_170.not_isReflexive :
   exact absurd (frame_2_170.refl h1) (by simp)
 
 lemma frame_2_170.not_valid_axiomT :
-    ¬frame_2_170 ⊧ (Axioms.T #0 : Formula ℕ) :=
+    ¬frame_2_170 ⊧ (Axioms.T #a : Formula α) :=
   fun h => frame_2_170.not_isReflexive (isReflexive_of_valid_axiomT h)
 
 lemma frame_2_170.not_isSymmetric : ¬frame_2_170.IsSymmetric := fun hS => by
@@ -36,7 +37,7 @@ lemma frame_2_170.not_isSymmetric : ¬frame_2_170.IsSymmetric := fun hS => by
   exact absurd (h (show (0 : Fin 2) ∈ ({0} : Set (Fin 2)) by simp)) (by simp)
 
 lemma frame_2_170.not_valid_axiomB :
-    ¬frame_2_170 ⊧ (Axioms.B #0 : Formula ℕ) :=
+    ¬frame_2_170 ⊧ (Axioms.B #a : Formula α) :=
   fun h => frame_2_170.not_isSymmetric (isSymmetric_of_valid_axiomB h)
 
 instance : frame_2_170.ContainsUnit := ⟨by

@@ -2,8 +2,6 @@ module
 
 public import Neighborhood.Semantics.Logic.EC
 public import Neighborhood.Semantics.Logic.E5
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame3_10528928
 
 /-!
 # The neighborhood logic `LogicEC5`
@@ -27,20 +25,32 @@ instance : (@LogicEC5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEC5.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEC5 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicEC5.sound frame_1_3 (hcon #a))
+
+lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEC5 α) := by
+  by_contra! hcon
+  exact frame_2_79.not_valid_axiomFour (LogicEC5.sound frame_2_79 (hcon #a))
+
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicEC5 α) := by
+  intro hcon
+  exact frame_2_75.not_valid_axiomN (LogicEC5.sound frame_2_75 hcon)
+
 end LogicEC5
 
 theorem LogicEC_ssubset_LogicEC5 : (@LogicEC ℕ) ⊂ LogicEC5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hFive : Axioms.Five #0 ∈ (@LogicEC ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomFive (LogicEC.sound frame_1_0 hFive)
+  · obtain ⟨A, hA⟩ := LogicEC.not_provable_axiomFive (a := (0 : ℕ))
+    exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicE5_ssubset_LogicEC5 : (@LogicE5 ℕ) ⊂ LogicEC5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ (@LogicE5 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_3_10528928.not_valid_axiomC (LogicE5.sound frame_3_10528928 hC)
+  · obtain ⟨A, B, hA⟩ := LogicE5.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

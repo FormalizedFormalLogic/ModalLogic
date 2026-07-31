@@ -3,10 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Logic.ED4
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame2_172
 
 /-!
 # The neighborhood logic `LogicEND4`
@@ -32,29 +28,46 @@ instance : (@LogicEND4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEND4.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomC [DecidableEq α] {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicEND4 α) := by
+  by_contra! hcon
+  exact frame_3_8431784.not_valid_axiomC hab (LogicEND4.sound frame_3_8431784 (hcon #a #b))
+
+lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicEND4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomFive
+    (LogicEND4.sound frame_2_138 (hcon #a))
+
+lemma not_provable_axiomM [DecidableEq α] {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicEND4 α) := by
+  by_contra! hcon
+  exact frame_3_8421506.not_valid_axiomM hab (LogicEND4.sound frame_3_8421506 (hcon #a #b))
+
+lemma not_provable_axiomT {a : α} : ∃ A, Axioms.T A ∉ (@LogicEND4 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomT (LogicEND4.sound frame_2_170 (hcon #a))
+
 end LogicEND4
 
 theorem LogicEND_ssubset_LogicEND4 : @LogicEND ℕ ⊂ LogicEND4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hFour : Axioms.Four #0 ∈ @LogicEND ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_172.not_valid_axiomFour
-      (LogicEND.sound frame_2_172 hFour)
+  · obtain ⟨A, hA⟩ := LogicEND.not_provable_axiomFour (a := (0 : ℕ))
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEN4_ssubset_LogicEND4 : @LogicEN4 ℕ ⊂ LogicEND4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms
       (Set.union_subset_union_left _ Set.subset_union_left)
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicEN4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicEN4.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicEN4.not_provable_axiomD (a := (0 : ℕ))
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicED4_ssubset_LogicEND4 : @LogicED4 ℕ ⊂ LogicEND4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicED4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicED4.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicED4.not_provable_axiomN⟩
 
 end

@@ -3,8 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.END4
 public import Neighborhood.Semantics.Logic.EN45
 public import Neighborhood.Semantics.Logic.ED45
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame2_138
+public import Neighborhood.Semantics.Example.Frame3_8553090
 
 /-!
 # The neighborhood logic `LogicEND45`
@@ -31,14 +30,18 @@ instance : (@LogicEND45 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEND45.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicEND45 α) := by
+  by_contra! hcon
+  exact frame_3_8553090.not_valid_axiomM hab (LogicEND45.sound frame_3_8553090 (hcon #a #b))
+
 end LogicEND45
 
 theorem LogicEND4_ssubset_LogicEND45 : @LogicEND4 ℕ ⊂ LogicEND45 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFive : Axioms.Five #0 ∈ (@LogicEND4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_138.not_valid_axiomFive
-      (LogicEND4.sound frame_2_138 hFive)
+  · obtain ⟨A, hA⟩ := LogicEND4.not_provable_axiomFive (a := (0 : ℕ))
+    exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

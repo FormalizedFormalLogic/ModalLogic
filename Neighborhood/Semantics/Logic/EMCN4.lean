@@ -1,11 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Logic.EMCN
-public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.EMC4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame2_172
 
 /-!
 # The neighborhood logic `LogicEMCN4`
@@ -65,20 +61,29 @@ theorem finite_complete
     exact h (quasiFilteringTransitiveFiltration M T hfin).toModel.toFrame
       (quasiFilteringTransitiveFiltration M T hfin).toModel.Val ⟦x⟧
 
+omit [DecidableEq α] in
+lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEMCN4 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicEMCN4.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicEMCN4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomFive (LogicEMCN4.sound frame_2_138 (hcon #a))
+
 end LogicEMCN4
 
 theorem LogicEMC4_ssubset_LogicEMCN4 : @LogicEMC4 ℕ ⊂ LogicEMCN4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicEMC4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicEMC4.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMC4.not_provable_axiomN⟩
 
 theorem LogicEMCN_ssubset_LogicEMCN4 : @LogicEMCN ℕ ⊂ LogicEMCN4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFour : Axioms.Four #0 ∈ @LogicEMCN ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_172.not_valid_axiomFour (LogicEMCN.sound frame_2_172 hFour)
+  · obtain ⟨A, hA⟩ := LogicEMCN.not_provable_axiomFour (a := (0 : ℕ))
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

@@ -3,10 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.ECTB
 public import Neighborhood.Semantics.Logic.ECB4
 public import Neighborhood.Semantics.Logic.ET5
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame3_8437920
-public import Neighborhood.Semantics.Example.Frame3_11570344
 
 /-!
 # The neighborhood logic `LogicECT5`
@@ -31,33 +27,38 @@ instance : (@LogicECT5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECT5.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomM [DecidableEq α] {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicECT5 α) := by
+  by_contra! hcon
+  exact frame_3_9472136.not_valid_axiomM hab (LogicECT5.sound frame_3_9472136 (hcon #a #b))
+
 end LogicECT5
 
 theorem LogicECTB_ssubset_LogicECT5 : @LogicECTB ℕ ⊂ LogicECT5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
       first | exact Logic.axiomC | exact Logic.axiomT | exact Logic.axiomB
-  · intro h
-    have hFive : Axioms.Five #0 ∈ @LogicECTB ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_8437920.not_valid_axiomFive (LogicECTB.sound frame_3_8437920 hFive)
+  · obtain ⟨A, hA⟩ := LogicECTB.not_provable_axiomFive (a := (0 : ℕ))
+    exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECB4_ssubset_LogicECT5 : @LogicECB4 ℕ ⊂ LogicECT5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
     · exact Logic.axiomC
     · exact Logic.axiomB
     · exact Logic.axiomFour
-  · intro h
-    have hT : Axioms.T #0 ∈ @LogicECB4 ℕ := h Logic.axiomT
-    exact frame_1_3.not_valid_axiomT (LogicECB4.sound frame_1_3 hT)
+  · obtain ⟨A, hA⟩ := LogicECB4.not_provable_axiomT (a := (0 : ℕ))
+    exact ⟨Axioms.T A, Logic.axiomT, hA⟩
 
 theorem LogicET5_ssubset_LogicECT5 : @LogicET5 ℕ ⊂ LogicECT5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicET5 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_11570344.not_valid_axiomC (LogicET5.sound frame_3_11570344 hC)
+  · obtain ⟨A, B, hA⟩ := LogicET5.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

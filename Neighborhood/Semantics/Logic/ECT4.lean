@@ -3,10 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.ET4
 public import Neighborhood.Semantics.Logic.ECT
 public import Neighborhood.Semantics.Logic.ECD4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame2_8
-public import Neighborhood.Semantics.Example.Frame2_170
-public import Neighborhood.Semantics.Example.Frame3_10520744
 
 /-!
 # The neighborhood logic `LogicECT4`
@@ -34,28 +30,28 @@ instance : (@LogicECT4 α).IsConsistent := ⟨by
 end LogicECT4
 
 theorem LogicET4_ssubset_LogicECT4 : @LogicET4 ℕ ⊂ LogicECT4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicET4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_10520744.not_valid_axiomC (LogicET4.sound frame_3_10520744 hC)
+  · obtain ⟨A, B, hA⟩ := LogicET4.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECT_ssubset_LogicECT4 : @LogicECT ℕ ⊂ LogicECT4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFour : Axioms.Four #0 ∈ @LogicECT ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_8.not_valid_axiomFour (LogicECT.sound frame_2_8 hFour)
+  · obtain ⟨A, hA⟩ := LogicECT.not_provable_axiomFour (a := (0 : ℕ))
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECD4_ssubset_LogicECT4 : @LogicECD4 ℕ ⊂ LogicECT4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
     · exact ProvableHilbert.axm (by grind)
     · exact Logic.axiomD
     · exact ProvableHilbert.axm (by grind)
-  · intro h
-    have hT : Axioms.T #0 ∈ @LogicECD4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_170.not_valid_axiomT (LogicECD4.sound frame_2_170 hT)
+  · obtain ⟨A, hA⟩ := LogicECD4.not_provable_axiomT (a := (0 : ℕ))
+    exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

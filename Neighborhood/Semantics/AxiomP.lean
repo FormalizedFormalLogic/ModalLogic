@@ -1,7 +1,5 @@
 module
 
-public import Neighborhood.Axioms
-public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.Completeness
 
 /-!

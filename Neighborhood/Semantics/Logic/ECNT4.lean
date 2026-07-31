@@ -1,8 +1,6 @@
 module
 
 public import Neighborhood.Semantics.Logic.ENT4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame3_10520744
 
 /-!
 # The neighborhood logic `LogicECNT4`
@@ -30,10 +28,10 @@ instance : (@LogicECNT4 α).IsConsistent := ⟨by
 end LogicECNT4
 
 theorem LogicENT4_ssubset_LogicECNT4 : @LogicENT4 ℕ ⊂ LogicECNT4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicENT4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_10520744.not_valid_axiomC (LogicENT4.sound frame_3_10520744 hC)
+  · obtain ⟨A, B, hA⟩ := LogicENT4.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

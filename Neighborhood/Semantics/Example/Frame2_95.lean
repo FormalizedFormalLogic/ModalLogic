@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_2_95 : Frame (Fin 2) :=
   ⟨fun w => match w with | 0 => {∅, {0}} | 1 => {∅, {0}, {1}, Set.univ}⟩
@@ -46,7 +47,7 @@ lemma frame_2_95.not_containsUnit : ¬frame_2_95.ContainsUnit := by
   simp [Set.Fin2.eq_univ, Set.ext_iff] at this
 
 lemma frame_2_95.not_valid_axiomN :
-    ¬frame_2_95 ⊧ (Axioms.N : Formula ℕ) :=
+    ¬frame_2_95 ⊧ (Axioms.N : Formula α) :=
   fun h => frame_2_95.not_containsUnit (containsUnit_of_valid_axiomN h)
 
 end

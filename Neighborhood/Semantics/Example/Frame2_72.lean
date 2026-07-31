@@ -1,14 +1,11 @@
 module
 
-public import Neighborhood.Axioms
-public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomN
 public import Neighborhood.Semantics.AxiomP
 public import Neighborhood.Semantics.AxiomK
 public import Neighborhood.Semantics.AxiomGeach
-import Mathlib.Tactic.FinCases
 
 @[expose] public section
 

@@ -1,7 +1,5 @@
 module
 
-public import Neighborhood.Axioms
-public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomN
@@ -13,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_3_10520744 : Frame (Fin 3) :=
   ⟨fun w => match w with
@@ -128,12 +127,12 @@ lemma frame_3_10520744.not_isRegular :
   · exact absurd ((Set.ext_iff.mp h0 1).mpr (by simp)) (by simp)
 
 @[simp]
-lemma frame_3_10520744.not_valid_axiomC :
-    ¬frame_3_10520744 ⊧ (Axioms.C #0 #1 : Formula ℕ) :=
+lemma frame_3_10520744.not_valid_axiomC [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_10520744 ⊧ (Axioms.C #a #b : Formula α) :=
   Frame.Validate.not_of_exists_valuation_world
-    ⟨fun a => match a with | 0 => {0, 1} | 1 => {0, 2} | _ => Set.univ, 0, by
+    ⟨fun c => if c = a then {0, 1} else if c = b then {0, 2} else Set.univ, 0, by
       unfold NotForces Forces
-      simp [Frame.box, frame_3_10520744, Set.ext_iff]
+      simp [Frame.box, frame_3_10520744, Set.ext_iff, Ne.symm hab]
       decide⟩
 
 end

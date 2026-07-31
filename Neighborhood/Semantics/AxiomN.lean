@@ -30,7 +30,7 @@ theorem valid_axiomN_of_containsUnit [F.ContainsUnit] : F ⊧ (Axioms.N : Formul
   intro V x
   simp [Forces, F.contains_unit]
 
-theorem containsUnit_of_valid_axiomN (h : F ⊧ (Axioms.N : Formula ℕ)) : F.ContainsUnit := by
+theorem containsUnit_of_valid_axiomN (h : F ⊧ (Axioms.N : Formula α)) : F.ContainsUnit := by
   constructor
   ext x
   simpa [Forces] using h (fun _ => Set.univ) x

@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_3_8421506 : Frame (Fin 3) :=
   ⟨fun w => match w with
@@ -54,12 +55,12 @@ instance : frame_3_8421506.IsTransitive where
     · subst hw; simp [frame_3_8421506.contains_unit]
 
 @[simp]
-lemma frame_3_8421506.not_valid_axiomM :
-    ¬frame_3_8421506 ⊧ (Axioms.M #0 #1 : Formula ℕ) :=
+lemma frame_3_8421506.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_8421506 ⊧ (Axioms.M #a #b : Formula α) :=
   Frame.Validate.not_of_exists_valuation_world
-    ⟨fun a => match a with | 0 => {0} | 1 => {0, 1} | _ => Set.univ, 0, by
+    ⟨fun c => if c = a then {0} else if c = b then {0, 1} else Set.univ, 0, by
       unfold NotForces Forces
-      simp [Frame.box, frame_3_8421506, Set.ext_iff]
+      simp [Frame.box, frame_3_8421506, Set.ext_iff, Ne.symm hab]
       decide⟩
 
 end

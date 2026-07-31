@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_2_172 : Frame (Fin 2) := ⟨fun x => {{x}ᶜ, Set.univ}⟩
 
@@ -31,7 +32,7 @@ lemma frame_2_172.not_isTransitive :
   simp at h2
 
 lemma frame_2_172.not_valid_axiomFour :
-    ¬frame_2_172 ⊧ (Axioms.Four #0 : Formula ℕ) :=
+    ¬frame_2_172 ⊧ (Axioms.Four #a : Formula α) :=
   fun h => frame_2_172.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
 instance : frame_2_172.ContainsUnit := ⟨by

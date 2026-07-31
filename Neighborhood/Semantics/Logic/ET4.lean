@@ -1,12 +1,7 @@
 module
 
-public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.ET
 public import Neighborhood.Semantics.Logic.ED4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame2_72
-public import Neighborhood.Semantics.Example.Frame2_170
 
 /-!
 # The neighborhood logic `LogicET4`
@@ -56,23 +51,38 @@ theorem finite_complete
     exact h (transitiveFiltration M A.subformulas).toModel.toFrame
       (transitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
+lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicET4 α) := by
+  by_contra! hcon
+  exact frame_3_10520744.not_valid_axiomC hab (LogicET4.sound frame_3_10520744 (hcon #a #b))
+
+lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicET4 α) := by
+  by_contra! hcon
+  exact frame_3_9471106.not_valid_axiomM hab (LogicET4.sound frame_3_9471106 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicET4 α) := by
+  intro hcon
+  exact frame_1_0.not_valid_axiomN (LogicET4.sound frame_1_0 hcon)
+
 end LogicET4
 
 theorem LogicET_ssubset_LogicET4 : @LogicET ℕ ⊂ LogicET4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hFour : Axioms.Four #0 ∈ @LogicET ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_72.not_isTransitive (isTransitive_of_valid_axiomFour (LogicET.sound frame_2_72 hFour))
+  · obtain ⟨A, hA⟩ := LogicET.not_provable_axiomFour (a := (0 : ℕ))
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicED4_ssubset_LogicET4 : @LogicED4 ℕ ⊂ LogicET4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
     · exact Logic.axiomD
     · exact ProvableHilbert.axm (by grind)
-  · intro h
-    have hT : Axioms.T #0 ∈ @LogicED4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_170.not_valid_axiomT (LogicED4.sound frame_2_170 hT)
+  · obtain ⟨A, hA⟩ := LogicED4.not_provable_axiomT (a := (0 : ℕ))
+    exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

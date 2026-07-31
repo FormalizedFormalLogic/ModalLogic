@@ -3,10 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.ED5
 public import Neighborhood.Semantics.Logic.EN5
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame2_140
-public import Neighborhood.Semantics.Example.Frame2_90
+public import Neighborhood.Semantics.Example.Frame3_8553090
 
 /-!
 # The neighborhood logic `LogicEND5`
@@ -33,28 +30,31 @@ instance : (@LogicEND5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEND5.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicEND5 α) := by
+  by_contra! hcon
+  exact frame_3_8553090.not_valid_axiomM hab (LogicEND5.sound frame_3_8553090 (hcon #a #b))
+
 end LogicEND5
 
 theorem LogicEND_ssubset_LogicEND5 : @LogicEND ℕ ⊂ LogicEND5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hFive : Axioms.Five #0 ∈ (@LogicEND ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_140.not_valid_axiomFive
-      (LogicEND.sound frame_2_140 hFive)
+  · obtain ⟨A, hA⟩ := LogicEND.not_provable_axiomFive (a := (0 : ℕ))
+    exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicED5_ssubset_LogicEND5 : @LogicED5 ℕ ⊂ LogicEND5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ @LogicED5 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_90.not_valid_axiomN (LogicED5.sound frame_2_90 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicED5.not_provable_axiomN⟩
 
 theorem LogicEN5_ssubset_LogicEND5 : @LogicEN5 ℕ ⊂ LogicEND5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicEN5 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicEN5.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicEN5.not_provable_axiomD (a := (0 : ℕ))
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

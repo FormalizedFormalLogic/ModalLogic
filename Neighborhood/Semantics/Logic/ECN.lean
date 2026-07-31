@@ -2,9 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.EC
 public import Neighborhood.Semantics.Logic.EN
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame2_206
+public import Neighborhood.Semantics.Example.Frame2_153
 
 /-!
 # The neighborhood logic `LogicECN`
@@ -38,27 +36,48 @@ theorem complete
     (h (basicCanonicalModel LogicECN).toFrame
       (basicCanonicalModel LogicECN).Val)
 
+omit [DecidableEq α] in
+lemma not_provable_axiomB {a : α} : ∃ A, Axioms.B A ∉ (@LogicECN α) := by
+  by_contra! hcon
+  exact frame_2_137.not_valid_axiomB
+    (LogicECN.sound frame_2_137 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicECN α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicECN.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicECN α) := by
+  by_contra! hcon
+  exact frame_2_137.not_valid_axiomFive
+    (LogicECN.sound frame_2_137 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicECN α) := by
+  by_contra! hcon
+  exact frame_2_137.not_valid_axiomFour
+    (LogicECN.sound frame_2_137 (hcon #a))
+
+lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicECN α) := by
+  by_contra! hcon
+  exact frame_2_153.not_valid_axiomM hab
+    (LogicECN.sound frame_2_153 (hcon #a #b))
+
 end LogicECN
 
 theorem LogicEC_ssubset_LogicECN : @LogicEC ℕ ⊂ LogicECN := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEC ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicEC.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEC.not_provable_axiomN⟩
 
 theorem LogicEN_ssubset_LogicECN : @LogicEN ℕ ⊂ LogicECN := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicEN ℕ := h (ProvableHilbert.axm (by grind))
-    let M : Model (Fin 2) ℕ :=
-      ⟨frame_2_206,
-       fun a => match a with
-        | 0 => {0}
-        | 1 => {1}
-        | _ => Set.univ⟩
-    have h0 := LogicEN.sound M.toFrame hC M.Val 0
-    simp [M, Forces, Frame.box, frame_2_206, Set.ext_iff] at h0
+  · obtain ⟨A, B, hA⟩ := LogicEN.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

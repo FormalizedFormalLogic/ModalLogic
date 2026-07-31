@@ -3,10 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.EMD
 public import Neighborhood.Semantics.Logic.ECP
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame2_34
-public import Neighborhood.Semantics.Example.Frame3_10528928
 
 /-!
 # The neighborhood logic `LogicEMCD`
@@ -31,28 +27,36 @@ instance : (@LogicEMCD α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCD.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicEMCD α) := by
+  intro hcon
+  exact frame_1_0.not_valid_axiomN (LogicEMCD.sound frame_1_0 hcon)
+
+lemma not_provable_axiomT {a : α} : ∃ A, Axioms.T A ∉ (@LogicEMCD α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomT (LogicEMCD.sound frame_2_170 (hcon #a))
+
 end LogicEMCD
 
 theorem LogicEMC_ssubset_LogicEMCD : @LogicEMC ℕ ⊂ LogicEMCD := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicEMC ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicEMC.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicEMC.not_provable_axiomD (a := (0 : ℕ))
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMD_ssubset_LogicEMCD : @LogicEMD ℕ ⊂ LogicEMCD := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.union_subset_union_left _ Set.subset_union_left)
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicEMD ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_10528928.not_valid_axiomC (LogicEMD.sound frame_3_10528928 hC)
+  · obtain ⟨A, B, hA⟩ := LogicEMD.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECP_ssubset_LogicEMCD : @LogicECP ℕ ⊂ LogicEMCD := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro A (⟨B, C, rfl⟩ | rfl) <;> first | exact Logic.axiomC | exact Logic.axiomP_of_MD
-  · intro h
-    have hM : Axioms.M #0 #1 ∈ @LogicECP ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_34.not_valid_axiomM (LogicECP.sound frame_2_34 hM)
+  · obtain ⟨A, B, hA⟩ := LogicECP.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

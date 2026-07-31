@@ -2,8 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Filtration
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame2_8
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame3_10520744
 
 
 @[expose] public section
@@ -36,6 +36,30 @@ theorem finite_complete [DecidableEq α]
     haveI : (transitiveFiltration M A.subformulas).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (transitiveFiltration M A.subformulas).toModel.toFrame
       (transitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
+
+lemma not_provable_axiomC [DecidableEq α] {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicE4 α) := by
+  by_contra! hcon
+  exact frame_3_10520744.not_valid_axiomC hab (LogicE4.sound frame_3_10520744 (hcon #a #b))
+
+lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicE4 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD
+    (LogicE4.sound frame_1_3 (hcon #a))
+
+lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicE4 α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomFive
+    (LogicE4.sound frame_1_0 (hcon #a))
+
+lemma not_provable_axiomM [DecidableEq α] {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicE4 α) := by
+  by_contra! hcon
+  exact frame_3_9471106.not_valid_axiomM hab (LogicE4.sound frame_3_9471106 (hcon #a #b))
+
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicE4 α) := by
+  intro hcon
+  exact frame_1_0.not_valid_axiomN (LogicE4.sound frame_1_0 hcon)
 
 end LogicE4
 

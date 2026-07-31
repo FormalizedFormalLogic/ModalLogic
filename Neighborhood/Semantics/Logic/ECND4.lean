@@ -3,10 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.ECND
 public import Neighborhood.Semantics.Logic.ECN4
 public import Neighborhood.Semantics.Logic.END4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame2_140
-public import Neighborhood.Semantics.Example.Frame3_8431784
 
 /-!
 # The neighborhood logic `LogicECND4`
@@ -35,24 +31,24 @@ instance : (@LogicECND4 α).IsConsistent := ⟨by
 end LogicECND4
 
 theorem LogicECND_ssubset_LogicECND4 : @LogicECND ℕ ⊂ LogicECND4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFour : Axioms.Four #0 ∈ @LogicECND ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_140.not_valid_axiomFour (LogicECND.sound frame_2_140 hFour)
+  · obtain ⟨A, hA⟩ := LogicECND.not_provable_axiomFour (a := (0 : ℕ))
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECN4_ssubset_LogicECND4 : @LogicECN4 ℕ ⊂ LogicECND4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicECN4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicECN4.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicECN4.not_provable_axiomD (a := (0 : ℕ))
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEND4_ssubset_LogicECND4 : @LogicEND4 ℕ ⊂ LogicECND4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicEND4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_8431784.not_valid_axiomC (LogicEND4.sound frame_3_8431784 hC)
+  · obtain ⟨A, B, hA⟩ := LogicEND4.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_3_11570344 : Frame (Fin 3) :=
   ⟨fun w => match w with
@@ -195,14 +196,15 @@ lemma frame_3_11570344.not_isRegular :
   rw [heq, frame_3_11570344.box_singleton_zero] at hmem
   simp at hmem
 
-lemma frame_3_11570344.not_valid_axiomC :
-    ¬frame_3_11570344 ⊧ ((Axioms.C (α := ℕ) #0 #1) : Formula ℕ) := by
+lemma frame_3_11570344.not_valid_axiomC [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_11570344 ⊧ (Axioms.C #a #b : Formula α) := by
   intro hv
   apply frame_3_11570344.not_isRegular
   constructor
   rintro X Y x ⟨hX, hY⟩
-  have h₂ := hv (fun a => match a with | 0 => X | 1 => Y | _ => ∅) x
+  have h₂ := hv (fun c => if c = a then X else if c = b then Y else ∅) x
   rw [forces_imp, forces_and, forces_box, forces_box, forces_box, Model.truthset.eq_and] at h₂
+  simp only [Model.truthset.eq_atom, if_neg (Ne.symm hab)] at h₂
   exact h₂ ⟨hX, hY⟩
 
 end

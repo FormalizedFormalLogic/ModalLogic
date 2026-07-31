@@ -3,10 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.EMND
 public import Neighborhood.Semantics.Logic.EMD4
 public import Neighborhood.Semantics.Logic.END4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame2_140
-public import Neighborhood.Semantics.Example.Frame3_8421506
 
 /-!
 # The neighborhood logic `LogicEMND4`
@@ -32,27 +28,30 @@ instance : (@LogicEMND4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMND4.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicEMND4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomFive (LogicEMND4.sound frame_2_138 (hcon #a))
+
 end LogicEMND4
 
 theorem LogicEMND_ssubset_LogicEMND4 : @LogicEMND ℕ ⊂ LogicEMND4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFour : Axioms.Four #0 ∈ @LogicEMND ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_140.not_valid_axiomFour (LogicEMND.sound frame_2_140 hFour)
+  · obtain ⟨A, hA⟩ := LogicEMND.not_provable_axiomFour (a := (0 : ℕ))
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMD4_ssubset_LogicEMND4 : @LogicEMD4 ℕ ⊂ LogicEMND4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEMD4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicEMD4.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMD4.not_provable_axiomN⟩
 
 theorem LogicEND4_ssubset_LogicEMND4 : @LogicEND4 ℕ ⊂ LogicEMND4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hM : Axioms.M #0 #1 ∈ @LogicEND4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_8421506.not_valid_axiomM (LogicEND4.sound frame_3_8421506 hM)
+  · obtain ⟨A, B, hA⟩ := LogicEND4.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

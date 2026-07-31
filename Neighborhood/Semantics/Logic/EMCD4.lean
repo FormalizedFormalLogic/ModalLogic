@@ -1,8 +1,6 @@
 module
 
 public import Neighborhood.Semantics.Logic.EMC4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
 
 /-!
 # The neighborhood logic `LogicEMCD4`
@@ -31,10 +29,10 @@ instance : (@LogicEMCD4 α).IsConsistent := ⟨by
 end LogicEMCD4
 
 theorem LogicEMC4_ssubset_LogicEMCD4 : @LogicEMC4 ℕ ⊂ LogicEMCD4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hD : Axioms.D #0 ∈ (@LogicEMC4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicEMC4.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicEMC4.not_provable_axiomD (a := (0 : ℕ))
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

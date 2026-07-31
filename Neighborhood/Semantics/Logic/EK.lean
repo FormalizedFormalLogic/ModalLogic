@@ -1,9 +1,7 @@
 module
 
-public import Neighborhood.Semantics.AxiomK
 public import Neighborhood.Semantics.Logic.E
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame3_130
+public import Neighborhood.Semantics.Example.Frame4_11259170869739560
 
 /-!
 # The neighborhood logic `LogicEK`
@@ -26,13 +24,18 @@ instance : (@LogicEK α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEK.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomM [DecidableEq α] {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicEK α) := by
+  by_contra! hcon
+  exact frame_4_11259170869739560.not_valid_axiomM hab (LogicEK.sound _ (hcon (#a ⋎ #b) #b))
+
 end LogicEK
 
 theorem LogicE_ssubset_LogicEK : @LogicE ℕ ⊂ LogicEK := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
-  · intro h
-    have hK : Axioms.K #0 #1 ∈ @LogicE ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_130.not_valid_axiomK (LogicE.sound _ hK)
+  · obtain ⟨A, B, hA⟩ := LogicE.not_provable_axiomK (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.K A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

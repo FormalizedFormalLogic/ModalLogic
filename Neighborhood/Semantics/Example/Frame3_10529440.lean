@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_3_10529440 : Frame (Fin 3) :=
   ⟨fun w => match w with
@@ -181,7 +182,7 @@ lemma frame_3_10529440.not_isTransitive :
   exact absurd (h (show (1 : Fin 3) ∈ ({1} : Set (Fin 3)) by rfl)) (by simp)
 
 lemma frame_3_10529440.not_valid_axiomFour :
-    ¬frame_3_10529440 ⊧ (Axioms.Four #0 : Formula ℕ) :=
+    ¬frame_3_10529440 ⊧ (Axioms.Four #a : Formula α) :=
   fun h => frame_3_10529440.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
 end

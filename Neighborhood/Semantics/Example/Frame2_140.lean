@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_2_140 : Frame (Fin 2) :=
   ⟨fun w => match w with
@@ -53,7 +54,7 @@ lemma frame_2_140.not_isReflexive : ¬frame_2_140.IsReflexive := by
   exact absurd (frame_2_140.refl h1) (by simp)
 
 lemma frame_2_140.not_valid_axiomT :
-    ¬frame_2_140 ⊧ (Axioms.T #0 : Formula ℕ) :=
+    ¬frame_2_140 ⊧ (Axioms.T #a : Formula α) :=
   fun h => frame_2_140.not_isReflexive (isReflexive_of_valid_axiomT h)
 
 lemma frame_2_140.not_isEuclidean : ¬frame_2_140.IsEuclidean := by
@@ -69,7 +70,7 @@ lemma frame_2_140.not_isEuclidean : ¬frame_2_140.IsEuclidean := by
   simp at h2
 
 lemma frame_2_140.not_valid_axiomFive :
-    ¬frame_2_140 ⊧ (Axioms.Five #0 : Formula ℕ) :=
+    ¬frame_2_140 ⊧ (Axioms.Five #a : Formula α) :=
   fun h => frame_2_140.not_isEuclidean (isEuclidean_of_valid_axiomFive h)
 
 lemma frame_2_140.not_isTransitive : ¬frame_2_140.IsTransitive := by
@@ -88,7 +89,7 @@ lemma frame_2_140.not_isTransitive : ¬frame_2_140.IsTransitive := by
   simp at h2
 
 lemma frame_2_140.not_valid_axiomFour :
-    ¬frame_2_140 ⊧ (Axioms.Four #0 : Formula ℕ) :=
+    ¬frame_2_140 ⊧ (Axioms.Four #a : Formula α) :=
   fun h => frame_2_140.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
 end

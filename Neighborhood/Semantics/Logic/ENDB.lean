@@ -3,10 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EDB
 public import Neighborhood.Semantics.Logic.ENB
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame2_138
-public import Neighborhood.Semantics.Example.Frame1_1
-public import Neighborhood.Semantics.Example.Frame1_3
 
 /-!
 # The neighborhood logic `LogicENDB`
@@ -33,28 +29,31 @@ instance : (@LogicENDB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicENDB.sound frame_1_2 hC⟩
 
+omit [DecidableEq α] in
+lemma not_provable_axiomT {a : α} : ∃ A, Axioms.T A ∉ (@LogicENDB α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomT (LogicENDB.sound frame_2_140 (hcon #a))
+
 end LogicENDB
 
 theorem LogicEND_ssubset_LogicENDB : @LogicEND ℕ ⊂ LogicENDB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hB : Axioms.B #0 ∈ (@LogicEND ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_138.not_valid_axiomB
-      (LogicEND.sound frame_2_138 hB)
+  · obtain ⟨A, hA⟩ := LogicEND.not_provable_axiomB (a := (0 : ℕ))
+    exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEDB_ssubset_LogicENDB : @LogicEDB ℕ ⊂ LogicENDB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEDB ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_1.not_valid_axiomN (LogicEDB.sound frame_1_1 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEDB.not_provable_axiomN⟩
 
 theorem LogicENB_ssubset_LogicENDB : @LogicENB ℕ ⊂ LogicENDB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicENB ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicENB.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicENB.not_provable_axiomD (a := (0 : ℕ))
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

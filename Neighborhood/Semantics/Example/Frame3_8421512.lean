@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_3_8421512 : Frame (Fin 3) :=
   ⟨fun w => match w with
@@ -87,7 +88,7 @@ lemma frame_3_8421512.not_isTransitive :
   exact h
 
 lemma frame_3_8421512.not_valid_axiomFour :
-    ¬frame_3_8421512 ⊧ (Axioms.Four #0 : Formula ℕ) :=
+    ¬frame_3_8421512 ⊧ (Axioms.Four #a : Formula α) :=
   fun h => frame_3_8421512.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
 end

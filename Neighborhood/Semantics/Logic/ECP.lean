@@ -1,10 +1,8 @@
 module
 
-public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Logic.EP
 public import Neighborhood.Semantics.Logic.ECD
-public import Neighborhood.Semantics.Example.Frame1_1
-public import Neighborhood.Semantics.Example.Frame2_78
+public import Neighborhood.Semantics.Example.Frame2_34
 
 @[expose] public section
 
@@ -29,21 +27,30 @@ theorem complete
     (h (basicCanonicalModel LogicECP).toFrame
       (basicCanonicalModel LogicECP).Val)
 
+lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicECP α) := by
+  by_contra! hcon
+  exact frame_2_34.not_valid_axiomM hab (LogicECP.sound frame_2_34 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicECP α) := by
+  intro hcon
+  exact frame_1_0.not_valid_axiomN (LogicECP.sound frame_1_0 hcon)
+
 end LogicECP
 
 theorem LogicECD_ssubset_LogicECP : @LogicECD ℕ ⊂ LogicECP := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro A (⟨B, C, rfl⟩ | ⟨B, rfl⟩) <;> first | exact Logic.axiomC | exact Logic.axiomD
-  · intro h
-    have hP : (Axioms.P : Formula ℕ) ∈ @LogicECD ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_1.not_valid_axiomP (LogicECD.sound frame_1_1 hP)
+  · exact ⟨Axioms.P, (ProvableHilbert.axm (by grind)), LogicECD.not_provable_axiomP⟩
 
 theorem LogicEP_ssubset_LogicECP : @LogicEP ℕ ⊂ LogicECP := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hC : (Axioms.C #0 #1 : Formula ℕ) ∈ @LogicEP ℕ := h (Logic.HasAxiomC.C _ _)
-    exact frame_2_78.not_valid_axiomC (LogicEP.sound frame_2_78 hC)
+  · obtain ⟨A, B, hA⟩ := LogicEP.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.C A B, (Logic.HasAxiomC.C _ _), hA⟩
 
 end

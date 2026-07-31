@@ -1,18 +1,16 @@
 module
 
-public import Neighborhood.Axioms
-public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomN
 public import Neighborhood.Semantics.AxiomP
 public import Neighborhood.Semantics.AxiomK
 public import Neighborhood.Semantics.AxiomGeach
-import Mathlib.Tactic.FinCases
 
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_1_3 : Frame (Fin 1) := ⟨fun _ => Set.univ⟩
 
@@ -28,7 +26,7 @@ lemma frame_1_3.not_isReflexive : ¬frame_1_3.IsReflexive := fun hR => by
   simpa using hR.refl (∅ : Set (Fin 1)) (show (0 : Fin 1) ∈ _ by simp [Frame.box])
 
 @[simp]
-lemma frame_1_3.not_valid_axiomT : ¬frame_1_3 ⊧ (Axioms.T #0 : Formula ℕ) :=
+lemma frame_1_3.not_valid_axiomT : ¬frame_1_3 ⊧ (Axioms.T #a : Formula α) :=
   fun h => frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT h)
 
 instance : frame_1_3.ContainsUnit := ⟨by simp [Frame.box]⟩
@@ -43,11 +41,11 @@ lemma frame_1_3.not_isSerial : ¬frame_1_3.IsSerial := by
   exact h2 (hS.serial ∅ h1)
 
 @[simp]
-lemma frame_1_3.not_valid_axiomD : ¬frame_1_3 ⊧ (Axioms.D #0 : Formula ℕ) :=
+lemma frame_1_3.not_valid_axiomD : ¬frame_1_3 ⊧ (Axioms.D #a : Formula α) :=
   fun h => frame_1_3.not_isSerial (isSerial_of_valid_axiomD h)
 
 @[simp]
-lemma frame_1_3.not_valid_axiomP : ¬frame_1_3 ⊧ (Axioms.P : Formula ℕ) := fun h => by
+lemma frame_1_3.not_valid_axiomP : ¬frame_1_3 ⊧ (Axioms.P : Formula α) := fun h => by
   simpa using (notContainsEmpty_of_valid_axiomP h).not_contains_empty (x := 0)
 
 end

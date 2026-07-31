@@ -2,9 +2,6 @@ module
 
 public import Neighborhood.Semantics.Logic.ECND
 public import Neighborhood.Semantics.Logic.ECN5
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame2_140
 
 /-!
 # The neighborhood logic `LogicECND5`
@@ -33,17 +30,17 @@ instance : (@LogicECND5 α).IsConsistent := ⟨by
 end LogicECND5
 
 theorem LogicECND_ssubset_LogicECND5 : @LogicECND ℕ ⊂ LogicECND5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFive : Axioms.Five #0 ∈ @LogicECND ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_140.not_valid_axiomFive (LogicECND.sound frame_2_140 hFive)
+  · obtain ⟨A, hA⟩ := LogicECND.not_provable_axiomFive (a := (0 : ℕ))
+    exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECN5_ssubset_LogicECND5 : @LogicECN5 ℕ ⊂ LogicECND5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicECN5 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicECN5.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicECN5.not_provable_axiomD (a := (0 : ℕ))
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

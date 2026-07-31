@@ -1,7 +1,5 @@
 module
 
-public import Neighborhood.Axioms
-public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomN
@@ -13,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_2_137 : Frame (Fin 2) :=
   ⟨fun w => match w with
@@ -52,7 +51,7 @@ lemma frame_2_137.not_isTransitive : ¬frame_2_137.IsTransitive := by
   simp at h2
 
 lemma frame_2_137.not_valid_axiomFour :
-    ¬frame_2_137 ⊧ (Axioms.Four #0 : Formula ℕ) :=
+    ¬frame_2_137 ⊧ (Axioms.Four #a : Formula α) :=
   fun h => frame_2_137.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
 lemma frame_2_137.not_isEuclidean : ¬frame_2_137.IsEuclidean := by
@@ -68,7 +67,7 @@ lemma frame_2_137.not_isEuclidean : ¬frame_2_137.IsEuclidean := by
   simp at h2
 
 lemma frame_2_137.not_valid_axiomFive :
-    ¬frame_2_137 ⊧ (Axioms.Five #0 : Formula ℕ) :=
+    ¬frame_2_137 ⊧ (Axioms.Five #a : Formula α) :=
   fun h => frame_2_137.not_isEuclidean (isEuclidean_of_valid_axiomFive h)
 
 lemma frame_2_137.not_isSymmetric : ¬frame_2_137.IsSymmetric := by
@@ -83,13 +82,13 @@ lemma frame_2_137.not_isSymmetric : ¬frame_2_137.IsSymmetric := by
   simp at h2
 
 lemma frame_2_137.not_valid_axiomB :
-    ¬frame_2_137 ⊧ (Axioms.B #0 : Formula ℕ) :=
+    ¬frame_2_137 ⊧ (Axioms.B #a : Formula α) :=
   fun h => frame_2_137.not_isSymmetric (isSymmetric_of_valid_axiomB h)
 
 @[simp]
-lemma frame_2_137.not_valid_axiomM :
-    ¬frame_2_137 ⊧ (Axioms.M #0 #1 : Formula ℕ) := fun h => by
-  have h0 := h (fun a => match a with | 0 => {0} | 1 => {1} | _ => Set.univ) 0
-  simp [Forces, Frame.box, Set.ext_iff] at h0
+lemma frame_2_137.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_137 ⊧ (Axioms.M #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then {0} else if c = b then {1} else Set.univ) 0
+  simp [Forces, Frame.box, Set.ext_iff, Ne.symm hab] at h0
 
 end

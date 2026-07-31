@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_3_8437920 : Frame (Fin 3) :=
   ⟨fun w => match w with
@@ -131,7 +132,7 @@ lemma frame_3_8437920.not_isEuclidean :
   exact absurd (h2 (show (2 : Fin 3) ∈ ({0, 2} : Set (Fin 3)) by simp)) (by simp)
 
 lemma frame_3_8437920.not_valid_axiomFive :
-    ¬frame_3_8437920 ⊧ (Axioms.Five #0 : Formula ℕ) :=
+    ¬frame_3_8437920 ⊧ (Axioms.Five #a : Formula α) :=
   fun h => frame_3_8437920.not_isEuclidean (isEuclidean_of_valid_axiomFive h)
 
 instance : frame_3_8437920.IsRegular where

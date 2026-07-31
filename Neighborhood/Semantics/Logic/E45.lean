@@ -2,8 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.E5
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame2_79
+public import Neighborhood.Semantics.Example.Frame2_206
 
 /-!
 # The neighborhood logic `LogicE45`
@@ -29,22 +28,35 @@ instance : (@LogicE45 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicE45.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicE45 α) := by
+  by_contra! hcon
+  exact frame_2_206.not_valid_axiomC hab (LogicE45.sound frame_2_206 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicE45 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicE45.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicE45 α) := by
+  intro hcon
+  exact frame_2_75.not_valid_axiomN (LogicE45.sound frame_2_75 hcon)
+
 end LogicE45
 
 theorem LogicE4_ssubset_LogicE45 : @LogicE4 ℕ ⊂ LogicE45 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hFive : Axioms.Five #0 ∈ (@LogicE4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomFive
-      (LogicE4.sound frame_1_0 hFive)
+  · obtain ⟨A, hA⟩ := LogicE4.not_provable_axiomFive (a := (0 : ℕ))
+    exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicE5_ssubset_LogicE45 : @LogicE5 ℕ ⊂ LogicE45 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hFour : Axioms.Four #0 ∈ (@LogicE5 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_79.not_valid_axiomFour
-      (LogicE5.sound frame_2_79 hFour)
+  · obtain ⟨A, hA⟩ := LogicE5.not_provable_axiomFour (a := (0 : ℕ))
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

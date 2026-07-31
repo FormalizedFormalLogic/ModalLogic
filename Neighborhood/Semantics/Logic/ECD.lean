@@ -1,11 +1,7 @@
 module
 
-public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Logic.EC
 public import Neighborhood.Semantics.Logic.ED
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame3_10528928
 
 /-!
 # The neighborhood logic `LogicECD`
@@ -29,21 +25,37 @@ instance : (@LogicECD α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECD.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomB {a : α} : ∃ A, Axioms.B A ∉ (@LogicECD α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomB (LogicECD.sound frame_1_0 (hcon #a))
+
+lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicECD α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomFive (LogicECD.sound frame_1_0 (hcon #a))
+
+lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicECD α) := by
+  by_contra! hcon
+  exact frame_1_1.not_valid_axiomFour (LogicECD.sound frame_1_1 (hcon #a))
+
+lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicECD α) := by
+  intro hcon
+  exact frame_1_1.not_valid_axiomP (LogicECD.sound frame_1_1 hcon)
+
 end LogicECD
 
 theorem LogicEC_ssubset_LogicECD : @LogicEC ℕ ⊂ LogicECD := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicEC ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicEC.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicEC.not_provable_axiomD (a := (0 : ℕ))
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicED_ssubset_LogicECD : @LogicED ℕ ⊂ LogicECD := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicED ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_10528928.not_valid_axiomC (LogicED.sound frame_3_10528928 hC)
+  · obtain ⟨A, B, hA⟩ := LogicED.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 section
 
