@@ -219,6 +219,10 @@ omit [L.HasRE] in
 /-- The axiom scheme `D` is derivable from `T`. -/
 instance : L.HasAxiomD := ⟨fun _ => C_trans axiomT diaTc⟩
 
+omit [L.HasRE] in
+/-- The axiom `P` is derivable from `T`. -/
+instance : L.HasAxiomP := ⟨contra (axiomT (A := ⊥)) ⨀ verum⟩
+
 /-- The axiom scheme `B` is derivable from `T` and `5`. -/
 instance [L.HasAxiomFive] : L.HasAxiomB := ⟨fun _ => C_trans diaTc axiomFive⟩
 
