@@ -6,7 +6,9 @@
   This page fetches `./status.json` (written by `zoo/Status.lean`; see
   `just zoo`), so it must be served over HTTP — locally `just zoo-serve`.
   Each cell of the JSON is either `null` (nothing is known either way) or
-  `{"status": true|false, "ref": "<Lean declaration>"}`.
+  `{"status": true|false, "derived": true|false, "ref": "<Lean declaration>"}`,
+  where `derived` distinguishes an axiom the logic is defined by from one it
+  merely proves.
 -->
 <html lang="en">
 <head>
@@ -135,10 +137,17 @@
 
 <footer>
   <div class="key">
-    <span>✅ <b>provable</b> — the logic has the axiom</span>
+    <span>✅ <b>an axiom of the logic</b></span>
+    <span>☑️ <b>derived</b> — provable, but not one the logic is defined by</span>
     <span>❌ <b>refuted</b> — a countermodel is formalized</span>
     <span>❔ <b>open</b> — neither is formalized yet</span>
   </div>
+  <p>
+    ☑️ is where the interest lies: <span class="tex">\mathbf{ETB}</span> is defined by
+    <span class="tex">\mathsf{T}</span> and <span class="tex">\mathsf{B}</span>, and that
+    it also proves <span class="tex">\mathsf{N}</span>, <span class="tex">\mathsf{P}</span>
+    and <span class="tex">\mathsf{D}</span> is not something its name shows.
+  </p>
   <p>
     ❔ is a statement about this repository, not about the logic: it marks an axiom
     whose status for that logic nobody has formalized yet. Hover a cell for the
@@ -154,7 +163,8 @@
 
 </div>
 
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"
+        onload="typesetAll()"></script>
 <script>
   const root = document.documentElement;
   const saved = localStorage.getItem('zoo-theme');
@@ -180,13 +190,23 @@
     '4': '\\Box A \\to \\Box\\Box A',
     '5': '\\Diamond A \\to \\Box \\Diamond A',
   };
-  const MARK = { true: '✅', false: '❌', null: '❔' };
+  const mark = c =>
+    !c ? '❔' : c.status === false ? '❌' : c.derived ? '☑️' : '✅';
 
-  /* Render TeX in place, leaving the source as the text content when the KaTeX
-     CDN is unreachable. */
-  const tex = (el, src) => {
+  /* Every `.tex` element keeps its TeX source in `data-tex` and is rendered in
+     place, so it survives a re-render and still reads as the plain source when
+     the KaTeX CDN is unreachable. The script may load before or after the JSON
+     arrives, so both paths call `typesetAll`. */
+  const typeset = el => {
+    const src = el.dataset.tex ?? (el.dataset.tex = el.textContent.trim());
     el.textContent = src;
     if (window.katex) katex.render(src, el, { throwOnError: false });
+  };
+  const typesetAll = () => document.querySelectorAll('.tex').forEach(typeset);
+  const tex = (el, src) => {
+    el.classList.add('tex');
+    el.dataset.tex = src;
+    typeset(el);
     return el;
   };
   const add = (parent, tag) => parent.appendChild(document.createElement(tag));
@@ -209,21 +229,25 @@
     for (const ax of axioms) tex(add(head, 'th'), '\\mathsf{' + ax + '}');
 
     const body = document.querySelector('#grid tbody');
-    const count = { true: 0, false: 0, null: 0 };
+    const count = {};
     for (const row of logics) {
       const tr = body.insertRow();
       tex(add(tr, 'th'), '\\mathbf{' + row.logic + '}');
       for (const ax of axioms) {
         const c = row.axioms[ax];
-        const status = c ? c.status : null;
-        count[status] += 1;
+        const m = mark(c);
+        count[m] = (count[m] || 0) + 1;
         const td = add(tr, 'td');
-        td.textContent = MARK[status];
-        td.title = c ? `${row.logic} ⊢ ${ax}?  ${c.ref}` : `${row.logic} ⊢ ${ax}?  not formalized`;
+        td.textContent = m;
+        td.title = c
+          ? `${row.logic} ⊢ ${ax}: ${c.ref}`
+          : `${row.logic} ⊢ ${ax}: not formalized`;
       }
     }
     document.getElementById('stats').textContent =
-      `— ${logics.length} logics: ${count.true} ✅ / ${count.false} ❌ / ${count.null} ❔`;
+      `— ${logics.length} logics: ` +
+      ['✅', '☑️', '❌', '❔'].map(m => `${count[m] || 0} ${m}`).join(' / ');
+    typesetAll();
   }
 </script>
 </body>

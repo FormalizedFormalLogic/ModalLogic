@@ -96,12 +96,23 @@ def collectRefutations : MetaM (Std.HashMap (String × Name) Name) := do
     catch _ => continue
   return out
 
-/-- The instance witnessing `Logic.HasAxiom<Z> (@Logic<X> ℕ)`, if it synthesizes. -/
-def provableBy (logic : Name) (ax : String) : MetaM (Option Name) := do
+/-- The instance witnessing `Logic.HasAxiom<Z> (@Logic<X> ℕ)`, if it synthesizes,
+together with whether the axiom is *derived* rather than one of the axioms the
+logic is defined by.
+
+The two are told apart by where the instance is declared: the defining ones sit
+next to the logic in `Neighborhood.Hilbert.*`, everything else is a consequence
+proved in `Neighborhood.Logic.Calculus` (`LogicETB` proving `N` and `P`, say). -/
+def provableBy (logic : Name) (ax : String) : MetaM (Option (Name × Bool)) := do
   let L ← mkAppOptM logic #[mkConst ``Nat]
   let ty ← mkAppOptM ((`Logic).str ("HasAxiom" ++ ax)) #[mkConst ``Nat, L]
   let some e ← (try synthInstance? ty catch _ => pure none) | return none
-  return (← instantiateMVars e).getAppFn.constName?
+  let some inst := (← instantiateMVars e).getAppFn.constName? | return none
+  let env ← getEnv
+  let defining := match env.getModuleIdxFor? inst with
+    | some idx => (`Neighborhood.Hilbert).isPrefixOf (env.header.moduleNames.getD idx.toNat .anonymous)
+    | none => false
+  return some (inst, !defining)
 
 def main : MetaM Unit := do
   let logics ← collectLogics
@@ -111,8 +122,8 @@ def main : MetaM Unit := do
     let mut cells : Array (String × Json) := #[]
     for (suffix, label) in axioms do
       let cell ←
-        if let some inst ← provableBy lg suffix then
-          pure <| Json.mkObj [("status", true), ("ref", toString inst)]
+        if let some (inst, derived) ← provableBy lg suffix then
+          pure <| Json.mkObj [("status", true), ("derived", derived), ("ref", toString inst)]
         else if let some thm := refuted[(suffix, lg)]? then
           pure <| Json.mkObj [("status", false), ("ref", toString thm)]
         else
