@@ -21,6 +21,13 @@ instance : frame_3_9471106.ContainsUnit := ⟨by
   simp only [Frame.box, Set.mem_setOf_eq, Set.mem_univ, iff_true]
   right; rfl⟩
 
+instance : frame_3_9471106.NotContainsEmpty :=
+  ⟨fun x => by
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff]
+    rintro (h | h)
+    · exact (Set.singleton_ne_empty x) h.symm
+    · exact (Set.univ_nonempty (α := Fin 3)).ne_empty h.symm⟩
+
 lemma frame_3_9471106.box_singleton (a : Fin 3) :
     frame_3_9471106.box ({a} : Set (Fin 3)) = {a} := by
   have hne : ({a} : Set (Fin 3)) ≠ Set.univ := by
