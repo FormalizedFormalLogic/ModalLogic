@@ -4,7 +4,7 @@ Zoo extractor for the `Neighborhood` library.
 Scans the environment for theorems whose statement has the form `L₁ ⊂ L₂`,
 `L₁ ⊆ L₂` or `L₁ = L₂` where `L₁ L₂ : Logic _` (i.e. `Set (Formula _)`),
 reduces the collected inclusion graph by transitivity, and writes the
-remaining edges to `zoo/neighborhood.json`.
+remaining edges to `zoo/zoo.json`.
 
 Run from the repository root:
 
@@ -178,7 +178,7 @@ def main : MetaM Unit := do
   let sorted := edges.qsort fun x y => x.a < y.a || (x.a == y.a && x.b < y.b)
   let reduced := reduce (cleanDup sorted)
   IO.println s!"collected: {edges.size} edges, after transitive reduction: {reduced.size}"
-  IO.FS.writeFile "zoo/neighborhood.json" ((toJson reduced).pretty ++ "\n")
+  IO.FS.writeFile "zoo/zoo.json" ((toJson reduced).pretty ++ "\n")
 
 end Zoo
 

@@ -1,14 +1,14 @@
-// Zoo of the `Neighborhood` logics, generated from `neighborhood.json`
+// Zoo of the `Neighborhood` logics, generated from `zoo.json`
 // (which is in turn extracted from the Lean environment by `zoo/Extract.lean`).
 //
 // Compile from the repository root:
 //
-//     typst compile --root . zoo/neighborhood.typ zoo/neighborhood.png
+//     typst compile --root . zoo/neighborhood.typ zoo/zoo.png
 #import "template.typ": *
 
 #set page(width: auto, height: auto, margin: 24pt)
 
-#let edges = json("./neighborhood.json")
+#let edges = json("./zoo.json")
 
 // An edge {from: L1, to: L2, type: t} means L1 ⊊ L2 (t = "ssub", solid),
 // L1 ⊆ L2 (t = "sub", dashed) or L1 = L2 (t = "eq", arrowless double line);
