@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EN4
+public import Neighborhood.Semantics.Logic.ED4
+public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_172
@@ -44,5 +46,12 @@ theorem LogicEN4_ssubset_LogicEND4 : @LogicEN4 ℕ ⊂ LogicEND4 := by
   · intro h
     have hD : Axioms.D #0 ∈ @LogicEN4 ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_valid_axiomD (LogicEN4.sound frame_1_3 hD)
+
+theorem LogicED4_ssubset_LogicEND4 : @LogicED4 ℕ ⊂ LogicEND4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicED4 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_1_0.not_valid_axiomN (LogicED4.sound frame_1_0 hN)
 
 end
