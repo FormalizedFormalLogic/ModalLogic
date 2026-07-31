@@ -184,6 +184,14 @@ instance : frame_3_9472136.IsTransitive where
       subst hX; simp [Function.iterate_succ, frame_3_9472136.box_empty]
 
 @[simp]
+lemma frame_3_9472136.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_9472136 ⊧ (Axioms.K #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then {2} else if c = b then {0, 2} else Set.univ) 2
+  simp [Forces, Frame.box, Set.ext_iff, Ne.symm hab] at h0
+  revert h0
+  decide
+
+@[simp]
 lemma frame_3_9472136.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
     ¬frame_3_9472136 ⊧ (Axioms.M #a #b : Formula α) :=
   Frame.Validate.not_of_exists_valuation_world

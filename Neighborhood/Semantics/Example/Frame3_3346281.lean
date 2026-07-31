@@ -137,6 +137,14 @@ lemma frame_3_3346281.not_isRegular :
   rw [heq, frame_3_3346281.box_zero] at hmem
   simp at hmem
 
+@[simp]
+lemma frame_3_3346281.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_3346281 ⊧ (Axioms.K #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then {0, 1} else if c = b then {0} else Set.univ) 0
+  simp [Forces, Frame.box, Set.ext_iff, Ne.symm hab] at h0
+  revert h0
+  decide
+
 lemma frame_3_3346281.not_valid_axiomC [DecidableEq α] (hab : a ≠ b) :
     ¬frame_3_3346281 ⊧ (Axioms.C #a #b : Formula α) := by
   intro hv

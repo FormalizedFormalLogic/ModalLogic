@@ -14,6 +14,9 @@ variable {a : α}
 
 abbrev frame_1_3 : Frame (Fin 1) := ⟨fun _ => Set.univ⟩
 
+instance : frame_1_3.HasPropertyK where
+  K X Y w := by simp [Frame.box, frame_1_3]
+
 instance : frame_1_3.IsMonotonic := ⟨fun X Y => by simp [Frame.box]⟩
 
 instance : frame_1_3.IsTransitive := ⟨fun X => by simp [Frame.box]⟩

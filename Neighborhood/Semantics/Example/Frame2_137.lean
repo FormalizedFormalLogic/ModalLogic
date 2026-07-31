@@ -86,6 +86,12 @@ lemma frame_2_137.not_valid_axiomB :
   fun h => frame_2_137.not_isSymmetric (isSymmetric_of_valid_axiomB h)
 
 @[simp]
+lemma frame_2_137.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_137 ⊧ (Axioms.K #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then ∅ else if c = b then {0} else Set.univ) 0
+  simp [Forces, Frame.box, Set.ext_iff, Ne.symm hab] at h0
+
+@[simp]
 lemma frame_2_137.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
     ¬frame_2_137 ⊧ (Axioms.M #a #b : Formula α) := fun h => by
   have h0 := h (fun c => if c = a then {0} else if c = b then {1} else Set.univ) 0

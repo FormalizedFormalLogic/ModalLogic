@@ -147,4 +147,23 @@ instance : frame_3_8437920.IsRegular where
     · obtain ⟨hX, hY⟩ := hw
       subst hX; subst hY; simp
 
+lemma frame_3_8437920.not_isTransitive : ¬frame_3_8437920.IsTransitive := by
+  intro hT
+  have hbox0_2 : frame_3_8437920.box ({0, 2} : Set (Fin 3)) = {0} := frame_3_8437920.box_0_2
+  have hbox0_empty : frame_3_8437920.box ({0} : Set (Fin 3)) = ∅ := by
+    ext w
+    fin_cases w <;> simp [Frame.box, frame_3_8437920, Set.ext_iff] <;> decide
+  have hiter : frame_3_8437920.box^[2] ({0, 2} : Set (Fin 3)) = ∅ := by
+    show frame_3_8437920.box (frame_3_8437920.box {0, 2}) = ∅
+    rw [hbox0_2, hbox0_empty]
+  have h1 : (0 : Fin 3) ∈ frame_3_8437920.box ({0, 2} : Set (Fin 3)) := by
+    rw [hbox0_2]; rfl
+  have h2 := hT.trans ({0, 2} : Set (Fin 3)) h1
+  rw [hiter] at h2
+  simp at h2
+
+lemma frame_3_8437920.not_valid_axiomFour :
+    ¬frame_3_8437920 ⊧ (Axioms.Four #a : Formula α) :=
+  fun h => frame_3_8437920.not_isTransitive (isTransitive_of_valid_axiomFour h)
+
 end

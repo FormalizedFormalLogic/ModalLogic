@@ -19,6 +19,14 @@ abbrev frame_3_43176 : Frame (Fin 3) :=
     | 1 => {{0, 1}, {0, 2}, Set.univ}
     | 2 => ∅⟩
 
+@[simp]
+lemma frame_3_43176.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_43176 ⊧ (Axioms.K #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then {0, 1} else if c = b then {0} else Set.univ) 0
+  simp [Forces, Frame.box, Set.ext_iff, Ne.symm hab] at h0
+  revert h0
+  decide
+
 lemma frame_3_43176.box_zero_one :
     frame_3_43176.box ({0, 1} : Set (Fin 3)) = {0, 1} := by
   ext w; fin_cases w <;> simp [Frame.box, frame_3_43176, Set.ext_iff]

@@ -14,6 +14,13 @@ variable {a b : α}
 
 abbrev frame_1_1 : Frame (Fin 1) := ⟨fun _ => {∅}⟩
 
+instance : frame_1_1.HasPropertyK where
+  K X Y w := by
+    simp only [Frame.box, frame_1_1, Set.mem_setOf_eq]
+    rcases Set.Fin1.all_cases X with rfl | rfl
+    · simp [Set.Fin1.eq_univ]
+    · simp
+
 instance : frame_1_1.IsSerial := ⟨fun X x hx => by simp_all [Frame.dia, Frame.box]⟩
 
 instance : frame_1_1.IsSymmetric := ⟨fun X => by

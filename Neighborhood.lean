@@ -58,6 +58,7 @@ public import Neighborhood.Semantics.Example.Frame2_153
 public import Neighborhood.Semantics.Example.Frame2_170
 public import Neighborhood.Semantics.Example.Frame2_172
 public import Neighborhood.Semantics.Example.Frame2_186
+public import Neighborhood.Semantics.Example.Frame2_191
 public import Neighborhood.Semantics.Example.Frame2_206
 public import Neighborhood.Semantics.Example.Frame2_22
 public import Neighborhood.Semantics.Example.Frame2_238

@@ -80,6 +80,14 @@ lemma frame_3_9471106.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
       simp [Frame.box, frame_3_9471106, Set.ext_iff, Ne.symm hab]
       exact ⟨fun x hx => absurd hx (by fin_cases x <;> simp), fun h => absurd (h 2) (by simp)⟩⟩
 
+@[simp]
+lemma frame_3_9471106.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_9471106 ⊧ (Axioms.K #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then {0} else if c = b then {0, 1} else Set.univ) 0
+  simp [Forces, Frame.box, Set.ext_iff, Ne.symm hab] at h0
+  revert h0
+  decide
+
 lemma frame_3_9471106.not_isSymmetric : ¬frame_3_9471106.IsSymmetric := fun hS => by
   have hbox2 : frame_3_9471106.box ({2} : Set (Fin 3)) = {2} := frame_3_9471106.box_singleton 2
   have hdia : frame_3_9471106.dia ({0, 1} : Set (Fin 3)) = {0, 1} := by
