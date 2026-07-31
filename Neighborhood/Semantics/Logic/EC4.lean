@@ -1,7 +1,9 @@
 module
 
 public import Neighborhood.Semantics.Logic.EC
+public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Example.Frame1_1
+public import Neighborhood.Semantics.Example.Frame3_10520744
 
 /-!
 # The neighborhood logic `LogicEC4`
@@ -32,5 +34,12 @@ theorem LogicEC_ssubset_LogicEC4 : (@LogicEC ℕ) ⊂ LogicEC4 := by
   · intro h
     have hFour : Axioms.Four #0 ∈ (@LogicEC ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_1_1.not_valid_axiomFour (LogicEC.sound frame_1_1 hFour)
+
+theorem LogicE4_ssubset_LogicEC4 : @LogicE4 ℕ ⊂ LogicEC4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
+  · intro h
+    have hC : Axioms.C #0 #1 ∈ (@LogicE4 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_10520744.not_valid_axiomC (LogicE4.sound frame_3_10520744 hC)
 
 end

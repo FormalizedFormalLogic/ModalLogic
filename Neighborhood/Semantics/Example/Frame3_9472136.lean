@@ -155,6 +155,33 @@ instance : frame_3_9472136.IsSymmetric := ⟨fun X => by
   · have hX : X = (∅ : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
     subst hX; simp [frame_3_9472136.dia_empty, frame_3_9472136.box_empty]⟩
 
+instance : frame_3_9472136.ContainsUnit := ⟨frame_3_9472136.box_univ⟩
+
+instance : frame_3_9472136.IsTransitive where
+  trans X := by
+    by_cases h0 : (0 : Fin 3) ∈ X <;> by_cases h1 : (1 : Fin 3) ∈ X <;> by_cases h2 : (2 : Fin 3) ∈ X
+    · have hX : X = Set.univ := by ext i; fin_cases i <;> simp_all
+      subst hX; simp [Function.iterate_succ, frame_3_9472136.box_univ]
+    · have hX : X = ({0, 1} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+      subst hX; simp [Function.iterate_succ, frame_3_9472136.box_zero_one]
+    · have hX : X = ({0, 2} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+      subst hX; simp [Function.iterate_succ, frame_3_9472136.box_zero_two,
+        frame_3_9472136.box_empty]
+    · have hX : X = ({0} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+      subst hX; simp [Function.iterate_succ,
+        frame_3_9472136.box_singleton_zero, frame_3_9472136.box_empty]
+    · have hX : X = ({1, 2} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+      subst hX; simp [Function.iterate_succ, frame_3_9472136.box_one_two,
+        frame_3_9472136.box_empty]
+    · have hX : X = ({1} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+      subst hX; simp [Function.iterate_succ,
+        frame_3_9472136.box_singleton_one, frame_3_9472136.box_empty]
+    · have hX : X = ({2} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+      subst hX; simp [Function.iterate_succ,
+        frame_3_9472136.box_singleton_two]
+    · have hX : X = (∅ : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+      subst hX; simp [Function.iterate_succ, frame_3_9472136.box_empty]
+
 @[simp]
 lemma frame_3_9472136.not_valid_axiomM :
     ¬frame_3_9472136 ⊧ (Axioms.M #0 #1 : Formula ℕ) :=

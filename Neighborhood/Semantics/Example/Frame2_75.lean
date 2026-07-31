@@ -50,6 +50,18 @@ instance : frame_2_75.IsEuclidean where
       rw [hdia, hbox1]
 
 
+instance : frame_2_75.IsRegular where
+  regular X Y := by
+    have hbox0 : frame_2_75.box ({0} : Set (Fin 2)) = {0} := by
+      ext y; fin_cases y <;> simp [Frame.box, frame_2_75, Set.Fin2.eq_univ, Set.ext_iff]
+    have hbox1 : frame_2_75.box ({1} : Set (Fin 2)) = {1} := by
+      ext y; fin_cases y <;> simp [Frame.box, frame_2_75, Set.Fin2.eq_univ, Set.ext_iff]
+    have hboxE : frame_2_75.box (∅ : Set (Fin 2)) = {0} := by
+      ext y; fin_cases y <;> simp [Frame.box, frame_2_75, Set.Fin2.eq_univ, Set.ext_iff]
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
+        simp [hbox0, hbox1, hboxE]
+
 instance : frame_2_75.IsTransitive where
   trans X := by
     simp only [Function.iterate_succ, Function.iterate_zero, Function.comp_apply, id_eq]

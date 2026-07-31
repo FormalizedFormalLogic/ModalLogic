@@ -1,8 +1,12 @@
 module
 
 public import Neighborhood.Semantics.Logic.EM4
+public import Neighborhood.Semantics.Logic.ED4
+public import Neighborhood.Semantics.Logic.EMD
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_172
+public import Neighborhood.Semantics.Example.Frame3_8421506
 
 /-!
 # The neighborhood logic `LogicEMD4`
@@ -35,5 +39,19 @@ theorem LogicEM4_ssubset_LogicEMD4 : @LogicEM4 ℕ ⊂ LogicEMD4 := by
   · intro h
     have hD : Axioms.D #0 ∈ (@LogicEM4 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_valid_axiomD (LogicEM4.sound frame_1_3 hD)
+
+theorem LogicED4_ssubset_LogicEMD4 : @LogicED4 ℕ ⊂ LogicEMD4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hM : Axioms.M #0 #1 ∈ (@LogicED4 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_8421506.not_valid_axiomM (LogicED4.sound frame_3_8421506 hM)
+
+theorem LogicEMD_ssubset_LogicEMD4 : @LogicEMD ℕ ⊂ LogicEMD4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
+  · intro h
+    have hFour : Axioms.Four #0 ∈ (@LogicEMD ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_2_172.not_valid_axiomFour (LogicEMD.sound frame_2_172 hFour)
 
 end

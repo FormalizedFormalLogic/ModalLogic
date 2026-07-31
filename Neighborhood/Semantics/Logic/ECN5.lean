@@ -1,8 +1,12 @@
 module
 
 public import Neighborhood.Semantics.Logic.ECN
+public import Neighborhood.Semantics.Logic.EC5
+public import Neighborhood.Semantics.Logic.EN5
 public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame2_75
 public import Neighborhood.Semantics.Example.Frame2_137
+public import Neighborhood.Semantics.Example.Frame2_206
 
 /-!
 # The neighborhood logic `LogicECN5`
@@ -39,5 +43,19 @@ theorem LogicECN_ssubset_LogicECN5 : @LogicECN ℕ ⊂ LogicECN5 := by
     have hFive : Axioms.Five #0 ∈ (@LogicECN ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_137.not_valid_axiomFive
       (LogicECN.sound frame_2_137 hFive)
+
+theorem LogicEC5_ssubset_LogicECN5 : @LogicEC5 ℕ ⊂ LogicECN5 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicEC5 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_2_75.not_valid_axiomN (LogicEC5.sound frame_2_75 hN)
+
+theorem LogicEN5_ssubset_LogicECN5 : @LogicEN5 ℕ ⊂ LogicECN5 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hC : Axioms.C #0 #1 ∈ (@LogicEN5 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_2_206.not_valid_axiomC (LogicEN5.sound frame_2_206 hC)
 
 end

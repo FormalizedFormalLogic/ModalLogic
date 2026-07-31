@@ -1,7 +1,9 @@
 module
 
 public import Neighborhood.Semantics.Logic.EC
+public import Neighborhood.Semantics.Logic.E5
 public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame3_10528928
 
 /-!
 # The neighborhood logic `LogicEC5`
@@ -32,5 +34,12 @@ theorem LogicEC_ssubset_LogicEC5 : (@LogicEC ℕ) ⊂ LogicEC5 := by
   · intro h
     have hFive : Axioms.Five #0 ∈ (@LogicEC ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_1_0.not_valid_axiomFive (LogicEC.sound frame_1_0 hFive)
+
+theorem LogicE5_ssubset_LogicEC5 : (@LogicE5 ℕ) ⊂ LogicEC5 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
+  · intro h
+    have hC : Axioms.C #0 #1 ∈ (@LogicE5 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_10528928.not_valid_axiomC (LogicE5.sound frame_3_10528928 hC)
 
 end

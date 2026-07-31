@@ -2,9 +2,11 @@ module
 
 public import Neighborhood.Semantics.Logic.EMB
 public import Neighborhood.Semantics.Logic.EMC45
+public import Neighborhood.Semantics.Logic.ECB4
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame2_140
 public import Neighborhood.Semantics.Example.Frame2_170
+public import Neighborhood.Semantics.Example.Frame3_9472136
 
 /-!
 # The neighborhood logic `LogicEMB4`
@@ -46,5 +48,16 @@ theorem LogicEMC45_ssubset_LogicEMB4 : @LogicEMC45 ℕ ⊂ LogicEMB4 := by
   · intro h
     have hB : Axioms.B #0 ∈ (@LogicEMC45 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_170.not_valid_axiomB (LogicEMC45.sound frame_2_170 hB)
+
+theorem LogicECB4_ssubset_LogicEMB4 : @LogicECB4 ℕ ⊂ LogicEMB4 := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
+    · exact Logic.axiomC
+    · exact Logic.axiomB
+    · exact Logic.axiomFour
+  · intro h
+    have hM : Axioms.M #0 #1 ∈ (@LogicECB4 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_9472136.not_valid_axiomM (LogicECB4.sound frame_3_9472136 hM)
 
 end

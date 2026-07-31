@@ -2,10 +2,12 @@ module
 
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.E4
+public import Neighborhood.Semantics.Logic.EC4
 public import Neighborhood.Semantics.Logic.EM4
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame2_8
 public import Neighborhood.Semantics.Example.Frame2_206
+public import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicEMC4`
@@ -73,5 +75,12 @@ theorem LogicEM4_ssubset_LogicEMC4 : @LogicEM4 ℕ ⊂ LogicEMC4 := by
     have hC : Axioms.C #0 #1 ∈ (@LogicEM4 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_206.not_valid_axiomC
       (LogicEM4.sound frame_2_206 hC)
+
+theorem LogicEC4_ssubset_LogicEMC4 : @LogicEC4 ℕ ⊂ LogicEMC4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hM : Axioms.M #0 #1 ∈ (@LogicEC4 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_9471106.not_valid_axiomM (LogicEC4.sound frame_3_9471106 hM)
 
 end
