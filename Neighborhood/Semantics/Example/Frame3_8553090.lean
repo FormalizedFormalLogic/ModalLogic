@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_3_8553090 : Frame (Fin 3) := ⟨fun _ => {{0}, Set.univ}⟩
 
@@ -61,12 +62,12 @@ instance : frame_3_8553090.IsEuclidean :=
     rw [h]; simp)
 
 @[simp]
-lemma frame_3_8553090.not_valid_axiomM :
-    ¬frame_3_8553090 ⊧ (Axioms.M #0 #1 : Formula ℕ) :=
+lemma frame_3_8553090.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_8553090 ⊧ (Axioms.M #a #b : Formula α) :=
   Frame.Validate.not_of_exists_valuation_world
-    ⟨fun a => match a with | 0 => {0, 1} | 1 => {0, 2} | _ => Set.univ, 0, by
+    ⟨fun c => if c = a then {0, 1} else if c = b then {0, 2} else Set.univ, 0, by
       unfold NotForces Forces
-      simp [Frame.box, frame_3_8553090, Set.ext_iff]
+      simp [Frame.box, frame_3_8553090, Set.ext_iff, Ne.symm hab]
       decide⟩
 
 end

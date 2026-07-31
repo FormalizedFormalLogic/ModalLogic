@@ -3,15 +3,11 @@ module
 public import Neighborhood.Semantics.Logic.EM4
 public import Neighborhood.Semantics.Logic.ED4
 public import Neighborhood.Semantics.Logic.EMD
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame2_172
-public import Neighborhood.Semantics.Example.Frame3_8421506
 
 /-!
 # The neighborhood logic `LogicEMD4`
 
-Soundness, consistency and the Nonempty instance for maximal consistent sets of `LogicEMD4`,
+Soundness and consistency of `LogicEMD4`,
 the classical modal logic axiomatised by the monotonicity axiom `M`, the seriality axiom `D` and
 the transitivity axiom `Four`, with respect to the neighborhood frames that are monotonic,
 transitive and serial.
@@ -21,37 +17,46 @@ transitive and serial.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMD4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+namespace LogicEMD4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsTransitive] [F.IsSerial] :
     A ∈ LogicEMD4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEMD4.consistent : (@LogicEMD4 α).IsConsistent := by
+instance : (@LogicEMD4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMD4.sound frame_1_2 hC
+  simpa using LogicEMD4.sound frame_1_2 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicEMD4 α)) :=
-  MaximalConsistentSet.nonempty LogicEMD4.consistent
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicEMD4 α) := by
+  intro hcon
+  exact frame_1_0.not_valid_axiomN (LogicEMD4.sound frame_1_0 hcon)
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMD4 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomT (LogicEMD4.sound frame_2_170 (hcon #a))
+
+end LogicEMD4
 
 theorem LogicEM4_ssubset_LogicEMD4 : @LogicEM4 ℕ ⊂ LogicEMD4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hD : Axioms.D #0 ∈ (@LogicEM4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicEM4.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicEM4.not_provable_axiomD (0 : ℕ)
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicED4_ssubset_LogicEMD4 : @LogicED4 ℕ ⊂ LogicEMD4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hM : Axioms.M #0 #1 ∈ (@LogicED4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_3_8421506.not_valid_axiomM (LogicED4.sound frame_3_8421506 hM)
+  · obtain ⟨A, B, hA⟩ := LogicED4.not_provable_axiomM (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMD_ssubset_LogicEMD4 : @LogicEMD ℕ ⊂ LogicEMD4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hFour : Axioms.Four #0 ∈ (@LogicEMD ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_172.not_valid_axiomFour (LogicEMD.sound frame_2_172 hFour)
+  · obtain ⟨A, hA⟩ := LogicEMD.not_provable_axiomFour (0 : ℕ)
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

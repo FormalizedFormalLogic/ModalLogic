@@ -15,7 +15,12 @@ variable {α : Type u}
 
 abbrev Logic (α : Type u) := Set (Formula α)
 
-abbrev Logic.IsConsistent (L : Logic α) : Prop := ⊥ ∉ L
+/-- `L` does not prove `⊥`. A class, so that the consistency of a concrete logic is registered
+once and picked up by instance search wherever it is needed (notably to produce a maximal
+consistent set of `L`). -/
+class Logic.IsConsistent (L : Logic α) : Prop where
+  not_provable_falsum : ⊥ ∉ L
+
 abbrev Logic.IsTrivial (L : Logic α) : Prop := L = Set.univ
 
 end

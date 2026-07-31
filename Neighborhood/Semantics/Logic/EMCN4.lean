@@ -1,11 +1,7 @@
 module
 
 public import Neighborhood.Semantics.Logic.EMCN
-public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.EMC4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame2_172
 
 /-!
 # The neighborhood logic `LogicEMCN4`
@@ -20,27 +16,25 @@ unit, together with its finite frame property.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEMCN4
 
-theorem LogicEMCN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.ContainsUnit] [F.IsTransitive] :
     A ∈ LogicEMCN4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEMCN4.consistent : (@LogicEMCN4 α).IsConsistent := by
+instance : (@LogicEMCN4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMCN4.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMCN4 α)) :=
-  MaximalConsistentSet.nonempty LogicEMCN4.consistent
+  simpa using LogicEMCN4.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
-theorem LogicEMCN4.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] →
       [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMCN4 α :=
-  (supplementedBasicCanonicity LogicEMCN4).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMCN4).toModel.toFrame
-      (supplementedBasicCanonicity LogicEMCN4).toModel.Val)
+  (supplementedBasicCanonicalModel LogicEMCN4).mem_of_valid
+    (h (supplementedBasicCanonicalModel LogicEMCN4).toFrame
+      (supplementedBasicCanonicalModel LogicEMCN4).Val)
 
 instance : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
@@ -49,7 +43,7 @@ instance : FormulaSet.IsSubformulaClosed
     · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
-theorem LogicEMCN4.finite_complete
+theorem finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] → [F.IsRegular] →
       [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMCN4 α :=
   LogicEMCN4.complete <| by
@@ -67,18 +61,29 @@ theorem LogicEMCN4.finite_complete
     exact h (quasiFilteringTransitiveFiltration M T hfin).toModel.toFrame
       (quasiFilteringTransitiveFiltration M T hfin).toModel.Val ⟦x⟧
 
+omit [DecidableEq α] in
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMCN4 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicEMCN4.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCN4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomFive (LogicEMCN4.sound frame_2_138 (hcon #a))
+
+end LogicEMCN4
+
 theorem LogicEMC4_ssubset_LogicEMCN4 : @LogicEMC4 ℕ ⊂ LogicEMCN4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicEMC4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicEMC4.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMC4.not_provable_axiomN⟩
 
 theorem LogicEMCN_ssubset_LogicEMCN4 : @LogicEMCN ℕ ⊂ LogicEMCN4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFour : Axioms.Four #0 ∈ @LogicEMCN ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_172.not_valid_axiomFour (LogicEMCN.sound frame_2_172 hFour)
+  · obtain ⟨A, hA⟩ := LogicEMCN.not_provable_axiomFour (0 : ℕ)
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

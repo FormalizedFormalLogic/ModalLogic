@@ -3,9 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.ECD
 public import Neighborhood.Semantics.Logic.ECB
 public import Neighborhood.Semantics.Logic.EDB
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame3_3346281
 
 /-!
 # The neighborhood logic `LogicECDB`
@@ -19,37 +16,38 @@ serial, and symmetric neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECDB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSerial]
+namespace LogicECDB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSerial]
     [F.IsSymmetric] :
     A ∈ LogicECDB → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicECDB.consistent : (@LogicECDB α).IsConsistent := by
+instance : (@LogicECDB α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECDB.sound frame_1_2 hC
+  simpa using LogicECDB.sound frame_1_2 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicECDB α)) :=
-  MaximalConsistentSet.nonempty LogicECDB.consistent
+end LogicECDB
 
 theorem LogicECD_ssubset_LogicECDB : @LogicECD ℕ ⊂ LogicECDB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hB : Axioms.B #0 ∈ @LogicECD ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomB (LogicECD.sound frame_1_0 hB)
+  · obtain ⟨A, hA⟩ := LogicECD.not_provable_axiomB (0 : ℕ)
+    exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECB_ssubset_LogicECDB : @LogicECB ℕ ⊂ LogicECDB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicECB ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicECB.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicECB.not_provable_axiomD (0 : ℕ)
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEDB_ssubset_LogicECDB : @LogicEDB ℕ ⊂ LogicECDB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicEDB ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_3346281.not_valid_axiomC (LogicEDB.sound frame_3_3346281 hC)
+  · obtain ⟨A, B, hA⟩ := LogicEDB.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

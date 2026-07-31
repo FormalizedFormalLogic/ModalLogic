@@ -3,10 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.ECP
 public import Neighborhood.Semantics.Logic.END
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame3_8431784
 
 /-!
 # The neighborhood logic `LogicECND`
@@ -20,40 +16,61 @@ and serial neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECND.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.ContainsUnit]
+namespace LogicECND
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.ContainsUnit]
     [F.IsSerial] :
     A ∈ LogicECND → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicECND.consistent : (@LogicECND α).IsConsistent := by
+instance : (@LogicECND α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECND.sound frame_1_2 hC
+  simpa using LogicECND.sound frame_1_2 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicECND α)) :=
-  MaximalConsistentSet.nonempty LogicECND.consistent
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicECND α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicECND.sound frame_2_138 (hcon #a))
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicECND α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFive (LogicECND.sound frame_2_140 (hcon #a))
+
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicECND α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFour (LogicECND.sound frame_2_140 (hcon #a))
+
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicECND α) := by
+  by_contra! hcon
+  exact frame_3_9471106.not_valid_axiomM hab (LogicECND.sound frame_3_9471106 (hcon #a #b))
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicECND α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomT (LogicECND.sound frame_2_170 (hcon #a))
+
+end LogicECND
 
 theorem LogicECN_ssubset_LogicECND : @LogicECN ℕ ⊂ LogicECND := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicECN ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicECN.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicECN.not_provable_axiomD (0 : ℕ)
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECP_ssubset_LogicECND : @LogicECP ℕ ⊂ LogicECND := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro A (⟨B, C, rfl⟩ | rfl)
     · exact Logic.axiomC
     · exact Logic.axiomP_of_ND
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ @LogicECP ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicECP.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicECP.not_provable_axiomN⟩
 
 theorem LogicEND_ssubset_LogicECND : @LogicEND ℕ ⊂ LogicECND := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicEND ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_8431784.not_valid_axiomC (LogicEND.sound frame_3_8431784 hC)
+  · obtain ⟨A, B, hA⟩ := LogicEND.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

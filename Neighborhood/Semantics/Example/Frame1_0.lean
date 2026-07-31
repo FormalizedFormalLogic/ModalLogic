@@ -10,6 +10,7 @@ public import Neighborhood.Semantics.AxiomGeach
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_1_0 : Frame (Fin 1) := ⟨fun _ => ∅⟩
 
@@ -45,7 +46,7 @@ lemma frame_1_0.not_isSymmetric : ¬frame_1_0.IsSymmetric := fun hS => by
   exact absurd (h (show (0 : Fin 1) ∈ ({0} : Set (Fin 1)) by simp)) (by simp)
 
 lemma frame_1_0.not_valid_axiomB :
-    ¬frame_1_0 ⊧ (Axioms.B #0 : Formula ℕ) :=
+    ¬frame_1_0 ⊧ (Axioms.B #a : Formula α) :=
   fun h => frame_1_0.not_isSymmetric (isSymmetric_of_valid_axiomB h)
 
 lemma frame_1_0.not_isEuclidean : ¬frame_1_0.IsEuclidean := fun hE => by
@@ -58,7 +59,7 @@ lemma frame_1_0.not_isEuclidean : ¬frame_1_0.IsEuclidean := fun hE => by
   exact absurd (show Set.univ ⊆ (∅ : Set (Fin 1)) from h) (by simp)
 
 lemma frame_1_0.not_valid_axiomFive :
-    ¬frame_1_0 ⊧ (Axioms.Five #0 : Formula ℕ) :=
+    ¬frame_1_0 ⊧ (Axioms.Five #a : Formula α) :=
   fun h => frame_1_0.not_isEuclidean (isEuclidean_of_valid_axiomFive h)
 
 end

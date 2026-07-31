@@ -2,9 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.EN
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame2_137
+public import Neighborhood.Semantics.Example.Frame2_140
 
 /-!
 # The neighborhood logic `LogicEMN`
@@ -18,40 +16,60 @@ containing their unit.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEMN
 
-theorem LogicEMN.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.ContainsUnit] :
     A ∈ LogicEMN → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | rfl) <;> simp)
 
-theorem LogicEMN.consistent : (@LogicEMN α).IsConsistent := by
+instance : (@LogicEMN α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMN.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMN α)) :=
-  MaximalConsistentSet.nonempty LogicEMN.consistent
+  simpa using LogicEMN.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
-theorem LogicEMN.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.ContainsUnit] → F ⊧ A) :
     A ∈ @LogicEMN α :=
-  (supplementedBasicCanonicity LogicEMN).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMN).toModel.toFrame
-      (supplementedBasicCanonicity LogicEMN).toModel.Val)
+  (supplementedBasicCanonicalModel LogicEMN).mem_of_valid
+    (h (supplementedBasicCanonicalModel LogicEMN).toFrame
+      (supplementedBasicCanonicalModel LogicEMN).Val)
+
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicEMN α) := by
+  by_contra! hcon
+  exact frame_2_206.not_valid_axiomC hab
+    (LogicEMN.sound frame_2_206 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMN α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFive (LogicEMN.sound frame_2_140 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMN α) := by
+  by_contra! hcon
+  exact frame_2_172.not_valid_axiomFour (LogicEMN.sound frame_2_172 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEMN α) := by
+  intro hcon
+  exact frame_1_3.not_valid_axiomP (LogicEMN.sound frame_1_3 hcon)
+
+end LogicEMN
 
 theorem LogicEM_ssubset_LogicEMN : @LogicEM ℕ ⊂ LogicEMN := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEM ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicEM.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEM.not_provable_axiomN⟩
 
 theorem LogicEN_ssubset_LogicEMN : @LogicEN ℕ ⊂ LogicEMN := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hM : Axioms.M #0 #1 ∈ (@LogicEN ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_137.not_valid_axiomM (LogicEN.sound _ hM)
+  · obtain ⟨A, B, hA⟩ := LogicEN.not_provable_axiomM (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

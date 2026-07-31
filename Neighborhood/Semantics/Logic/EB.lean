@@ -1,8 +1,8 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame3_9488552
 
 /-!
 # The neighborhood logic `LogicEB`
@@ -16,41 +16,54 @@ inclusion of `LogicE` in `LogicEB`.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] :
+namespace LogicEB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] :
     A ∈ LogicEB → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
-theorem LogicEB.consistent : (@LogicEB α).IsConsistent := by
+instance : (@LogicEB α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEB.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEB α)) :=
-  MaximalConsistentSet.nonempty LogicEB.consistent
+  simpa using LogicEB.sound frame_1_2 hC⟩
 
 section
 
 variable [DecidableEq α]
 
 /-- Neither the smallest nor the largest canonical model is symmetric, but the intermediate one
-of `intermediateRelativeMaximalCanonicity` is.
+of `intermediateRelativeMaximalCanonicalModel` is.
 
 - [Che80, Exercise 9.39(b)] -/
-theorem LogicEB.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsSymmetric] → F ⊧ A) :
     A ∈ @LogicEB α :=
-  (intermediateRelativeMaximalCanonicity LogicEB).mem_of_valid
-    (h (intermediateRelativeMaximalCanonicity LogicEB).toModel.toFrame
-      (intermediateRelativeMaximalCanonicity LogicEB).toModel.Val)
+  (intermediateRelativeMaximalCanonicalModel LogicEB).mem_of_valid
+    (h (intermediateRelativeMaximalCanonicalModel LogicEB).toFrame
+      (intermediateRelativeMaximalCanonicalModel LogicEB).Val)
 
 end
 
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicEB α) := by
+  by_contra! hcon
+  exact frame_3_9488552.not_valid_axiomC hab (LogicEB.sound frame_3_9488552 (hcon #a #b))
+
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEB α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD
+    (LogicEB.sound frame_1_3 (hcon #a))
+
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicEB α) := by
+  intro hcon
+  exact frame_1_1.not_valid_axiomN (LogicEB.sound frame_1_1 hcon)
+
+end LogicEB
+
 theorem LogicE_ssubset_LogicEB : (@LogicE ℕ) ⊂ LogicEB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
-  · intro h
-    have hB : Axioms.B #0 ∈ (@LogicE ℕ) := h (ProvableHilbert.axm (by grind))
-    have hS : frame_1_0.IsSymmetric := isSymmetric_of_valid_axiomB (LogicE.sound _ hB)
-    have := hS.symm {0} (show (0 : Fin 1) ∈ _ by simp)
-    simp [Frame.box] at this
+  · obtain ⟨A, hA⟩ := LogicE.not_provable_axiomB (0 : ℕ)
+    exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

@@ -2,9 +2,6 @@ module
 
 public import Neighborhood.Semantics.Logic.EMCN4
 public import Neighborhood.Semantics.Logic.EMC5
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame2_138
-public import Neighborhood.Semantics.Example.Frame3_10529440
 
 /-!
 # The neighborhood logic `LogicEMC45`
@@ -19,32 +16,41 @@ transitive and euclidean.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMC45.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
+namespace LogicEMC45
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.IsTransitive] [F.IsEuclidean] :
     A ∈ LogicEMC45 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEMC45.consistent : (@LogicEMC45 α).IsConsistent := by
+instance : (@LogicEMC45 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMC45.sound frame_1_2 hC
+  simpa using LogicEMC45.sound frame_1_2 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicEMC45 α)) :=
-  MaximalConsistentSet.nonempty LogicEMC45.consistent
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMC45 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomB (LogicEMC45.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMC45 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicEMC45.sound frame_1_3 (hcon #a))
+
+end LogicEMC45
 
 theorem LogicEMCN4_ssubset_LogicEMC45 : @LogicEMCN4 ℕ ⊂ LogicEMC45 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomFour
-  · intro h
-    have hFive : Axioms.Five #0 ∈ (@LogicEMCN4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_138.not_valid_axiomFive (LogicEMCN4.sound frame_2_138 hFive)
+  · obtain ⟨A, hA⟩ := LogicEMCN4.not_provable_axiomFive (0 : ℕ)
+    exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMC5_ssubset_LogicEMC45 : @LogicEMC5 ℕ ⊂ LogicEMC45 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFour : Axioms.Four #0 ∈ (@LogicEMC5 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_3_10529440.not_valid_axiomFour (LogicEMC5.sound frame_3_10529440 hFour)
+  · obtain ⟨A, hA⟩ := LogicEMC5.not_provable_axiomFour (0 : ℕ)
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

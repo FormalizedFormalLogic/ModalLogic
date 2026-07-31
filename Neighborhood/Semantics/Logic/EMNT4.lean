@@ -3,9 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.EMT4
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.ENT4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicEMNT4`
@@ -20,29 +17,27 @@ are transitive, together with its finite frame property.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEMNT4
 
-theorem LogicEMNT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.ContainsUnit] [F.IsReflexive] [F.IsTransitive] :
     A ∈ LogicEMNT4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEMNT4.consistent : (@LogicEMNT4 α).IsConsistent := by
+instance : (@LogicEMNT4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMNT4.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEMNT4 α)) :=
-  MaximalConsistentSet.nonempty LogicEMNT4.consistent
+  simpa using LogicEMNT4.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
-theorem LogicEMNT4.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.ContainsUnit] →
       [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMNT4 α :=
-  (supplementedBasicCanonicity LogicEMNT4).mem_of_valid
-    (h (supplementedBasicCanonicity LogicEMNT4).toModel.toFrame
-      (supplementedBasicCanonicity LogicEMNT4).toModel.Val)
+  (supplementedBasicCanonicalModel LogicEMNT4).mem_of_valid
+    (h (supplementedBasicCanonicalModel LogicEMNT4).toFrame
+      (supplementedBasicCanonicalModel LogicEMNT4).Val)
 
-theorem LogicEMNT4.finite_complete
+theorem finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] →
       [F.ContainsUnit] → [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMNT4 α :=
   LogicEMNT4.complete <| by
@@ -56,18 +51,19 @@ theorem LogicEMNT4.finite_complete
     exact h (supplementedTransitiveFiltration M T).toModel.toFrame
       (supplementedTransitiveFiltration M T).toModel.Val ⟦x⟧
 
+end LogicEMNT4
+
 theorem LogicEMT4_ssubset_LogicEMNT4 : @LogicEMT4 ℕ ⊂ LogicEMNT4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicEMT4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicEMT4.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMT4.not_provable_axiomN⟩
 
 theorem LogicENT4_ssubset_LogicEMNT4 : @LogicENT4 ℕ ⊂ LogicEMNT4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hM : (Axioms.M #0 #1 : Formula ℕ) ∈ (@LogicENT4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_3_9471106.not_valid_axiomM (LogicENT4.sound frame_3_9471106 hM)
+  · obtain ⟨A, B, hA⟩ := LogicENT4.not_provable_axiomM (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

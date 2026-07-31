@@ -2,8 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.EB
 public import Neighborhood.Semantics.Logic.EC
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame3_9488552
+public import Neighborhood.Semantics.Example.Frame2_95
 
 /-!
 # The neighborhood logic `LogicECB`
@@ -17,29 +16,38 @@ modal logic axiomatised by the regularity axiom `C` and the symmetry axiom `B` o
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSymmetric] :
+namespace LogicECB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSymmetric] :
     A ∈ LogicECB → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicECB.consistent : (@LogicECB α).IsConsistent := by
+instance : (@LogicECB α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECB.sound frame_1_2 hC
+  simpa using LogicECB.sound frame_1_2 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicECB α)) :=
-  MaximalConsistentSet.nonempty LogicECB.consistent
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicECB α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicECB.sound frame_1_3 (hcon #a))
+
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicECB α) := by
+  intro hcon
+  exact frame_2_95.not_valid_axiomN (LogicECB.sound frame_2_95 hcon)
+
+end LogicECB
 
 theorem LogicEC_ssubset_LogicECB : (@LogicEC ℕ) ⊂ LogicECB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hB : Axioms.B #0 ∈ (@LogicEC ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomB (LogicEC.sound frame_1_0 hB)
+  · obtain ⟨A, hA⟩ := LogicEC.not_provable_axiomB (0 : ℕ)
+    exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEB_ssubset_LogicECB : @LogicEB ℕ ⊂ LogicECB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicEB ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_9488552.not_valid_axiomC (LogicEB.sound frame_3_9488552 hC)
+  · obtain ⟨A, B, hA⟩ := LogicEB.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

@@ -2,9 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.EB
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame1_1
-public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame3_3346281
 
 /-!
 # The neighborhood logic `LogicEDB`
@@ -25,30 +23,35 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] [F.IsSymmetric]
   : A ∈ LogicEDB → F ⊧ A := Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicEDB α).IsConsistent := by
+instance : (@LogicEDB α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEDB.sound frame_1_1 hC
+  simpa using LogicEDB.sound frame_1_1 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicEDB α)) :=
-  MaximalConsistentSet.nonempty consistent
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicEDB α) := by
+  by_contra! hcon
+  exact frame_3_3346281.not_valid_axiomC hab (LogicEDB.sound frame_3_3346281 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicEDB α) := by
+  intro hcon
+  exact frame_1_1.not_valid_axiomN (LogicEDB.sound frame_1_1 hcon)
 
 end LogicEDB
 
 
 theorem LogicED_ssubset_LogicEDB : @LogicED ℕ ⊂ LogicEDB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hB : Axioms.B #0 ∈ (@LogicED ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomB
-      (LogicED.sound frame_1_0 hB)
+  · obtain ⟨A, hA⟩ := LogicED.not_provable_axiomB (0 : ℕ)
+    exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEB_ssubset_LogicEDB : @LogicEB ℕ ⊂ LogicEDB := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hD : Axioms.D #0 ∈ (@LogicEB ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD
-      (LogicEB.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicEB.not_provable_axiomD (0 : ℕ)
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

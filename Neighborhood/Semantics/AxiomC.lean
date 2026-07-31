@@ -60,12 +60,12 @@ section
 
 variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
 
-instance [L.HasAxiomC] : (basicCanonicity L).toModel.IsRegular := by
+instance [L.HasAxiomC] : (basicCanonicalModel L).IsRegular := by
   constructor
   rintro X Y Ω ⟨hX, hY⟩
-  obtain ⟨A, rfl, hA⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hX
-  obtain ⟨B, rfl, hB⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hY
-  rw [← proofset.eq_and, Canonicity.box_proofset]
+  obtain ⟨A, rfl, hA⟩ := basicCanonicalModel.iff_mem_box_exists_fml.mp hX
+  obtain ⟨B, rfl, hB⟩ := basicCanonicalModel.iff_mem_box_exists_fml.mp hY
+  rw [← proofset.eq_and, CanonicalModel.box_proofset]
   exact MaximalConsistentSet.mdp_provable Logic.axiomC (MaximalConsistentSet.iff_mem_and.mpr ⟨hA, hB⟩)
 
 end

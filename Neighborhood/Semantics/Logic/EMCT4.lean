@@ -2,8 +2,6 @@ module
 
 public import Neighborhood.Semantics.Logic.EMT4
 public import Neighborhood.Semantics.Logic.EMC4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame3_10520744
 
 /-!
 # The neighborhood logic `LogicEMCT4`
@@ -18,23 +16,24 @@ regular, reflexive, and transitive.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMCT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
+namespace LogicEMCT4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.IsReflexive] [F.IsTransitive] :
     A ∈ LogicEMCT4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEMCT4.consistent : (@LogicEMCT4 α).IsConsistent := by
+instance : (@LogicEMCT4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEMCT4.sound frame_1_2 hC
+  simpa using LogicEMCT4.sound frame_1_2 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicEMCT4 α)) :=
-  MaximalConsistentSet.nonempty LogicEMCT4.consistent
+end LogicEMCT4
 
 theorem LogicEMT4_ssubset_LogicEMCT4 : @LogicEMT4 ℕ ⊂ LogicEMCT4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicEMT4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_3_10520744.not_valid_axiomC (LogicEMT4.sound frame_3_10520744 hC)
+  · obtain ⟨A, B, hA⟩ := LogicEMT4.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

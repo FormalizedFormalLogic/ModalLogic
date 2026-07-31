@@ -1,7 +1,5 @@
 module
 
-public import Neighborhood.Axioms
-public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomN
@@ -13,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_2_79 : Frame (Fin 2) :=
   ⟨fun w => match w with
@@ -69,7 +68,7 @@ lemma frame_2_79.not_isTransitive : ¬frame_2_79.IsTransitive := by
   simp at h2
 
 lemma frame_2_79.not_valid_axiomFour :
-    ¬frame_2_79 ⊧ (Axioms.Four #0 : Formula ℕ) :=
+    ¬frame_2_79 ⊧ (Axioms.Four #a : Formula α) :=
   fun h => frame_2_79.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
 end

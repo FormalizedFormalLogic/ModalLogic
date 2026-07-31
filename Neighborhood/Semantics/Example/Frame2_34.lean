@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_2_34 : Frame (Fin 2) := ⟨fun _ => {{(1 : Fin 2)}}⟩
 
@@ -41,12 +42,12 @@ lemma frame_2_34.not_isReflexive : ¬frame_2_34.IsReflexive := by
   exact absurd (frame_2_34.refl h1) (by simp)
 
 lemma frame_2_34.not_valid_axiomT :
-    ¬frame_2_34 ⊧ (Axioms.T #0 : Formula ℕ) :=
+    ¬frame_2_34 ⊧ (Axioms.T #a : Formula α) :=
   fun h => frame_2_34.not_isReflexive (isReflexive_of_valid_axiomT h)
 
-lemma frame_2_34.not_valid_axiomM :
-    ¬frame_2_34 ⊧ (Axioms.M #0 #1 : Formula ℕ) := fun h => by
-  have h0 := h (fun a => match a with | 0 => Set.univ | 1 => {1} | _ => ∅) 0
-  simp [Forces, Frame.box, Set.ext_iff, frame_2_34] at h0
+lemma frame_2_34.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_34 ⊧ (Axioms.M #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then Set.univ else if c = b then {1} else ∅) 0
+  simp [Forces, Frame.box, Set.ext_iff, frame_2_34, Ne.symm hab] at h0
 
 end

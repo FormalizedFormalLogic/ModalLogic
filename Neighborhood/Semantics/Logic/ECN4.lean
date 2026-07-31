@@ -3,10 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.EC4
 public import Neighborhood.Semantics.Logic.EN4
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame2_137
-public import Neighborhood.Semantics.Example.Frame3_10520744
 
 /-!
 # The neighborhood logic `LogicECN4`
@@ -27,35 +23,46 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsRegular] [
   : A ∈ LogicECN4 → F ⊧ A := Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicECN4 α).IsConsistent := by
+instance : (@LogicECN4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECN4.sound frame_1_2 hC
+  simpa using LogicECN4.sound frame_1_2 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicECN4 α)) :=
-  MaximalConsistentSet.nonempty consistent
+omit [DecidableEq α] in
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicECN4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicECN4.sound frame_2_138 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicECN4 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicECN4.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicECN4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomFive
+    (LogicECN4.sound frame_2_138 (hcon #a))
 
 end LogicECN4
 
 theorem LogicECN_ssubset_LogicECN4 : @LogicECN ℕ ⊂ LogicECN4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hFour : Axioms.Four #0 ∈ (@LogicECN ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_137.not_valid_axiomFour
-      (LogicECN.sound frame_2_137 hFour)
+  · obtain ⟨A, hA⟩ := LogicECN.not_provable_axiomFour (0 : ℕ)
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEC4_ssubset_LogicECN4 : @LogicEC4 ℕ ⊂ LogicECN4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicEC4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicEC4.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEC4.not_provable_axiomN⟩
 
 theorem LogicEN4_ssubset_LogicECN4 : @LogicEN4 ℕ ⊂ LogicECN4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ (@LogicEN4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_3_10520744.not_valid_axiomC (LogicEN4.sound frame_3_10520744 hC)
+  · obtain ⟨A, B, hA⟩ := LogicEN4.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

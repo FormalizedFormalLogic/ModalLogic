@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a : α}
 
 abbrev frame_2_138 : Frame (Fin 2) :=
   ⟨fun w => match w with
@@ -75,7 +76,7 @@ lemma frame_2_138.not_isSymmetric : ¬frame_2_138.IsSymmetric := by
   simp at h2
 
 lemma frame_2_138.not_valid_axiomB :
-    ¬frame_2_138 ⊧ (Axioms.B #0 : Formula ℕ) :=
+    ¬frame_2_138 ⊧ (Axioms.B #a : Formula α) :=
   fun h => frame_2_138.not_isSymmetric (isSymmetric_of_valid_axiomB h)
 
 lemma frame_2_138.not_isEuclidean : ¬frame_2_138.IsEuclidean := by
@@ -91,7 +92,7 @@ lemma frame_2_138.not_isEuclidean : ¬frame_2_138.IsEuclidean := by
   simp at h2
 
 lemma frame_2_138.not_valid_axiomFive :
-    ¬frame_2_138 ⊧ (Axioms.Five #0 : Formula ℕ) :=
+    ¬frame_2_138 ⊧ (Axioms.Five #a : Formula α) :=
   fun h => frame_2_138.not_isEuclidean (isEuclidean_of_valid_axiomFive h)
 
 end

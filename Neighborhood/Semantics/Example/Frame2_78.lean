@@ -10,6 +10,7 @@ public import Neighborhood.Semantics.AxiomGeach
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_2_78 : Frame (Fin 2) :=
   ⟨fun w => match w with | 0 => {{0}} | 1 => {{0}, {1}, {0, 1}}⟩
@@ -23,15 +24,15 @@ lemma frame_2_78.not_isSerial : ¬frame_2_78.IsSerial := by
 instance : frame_2_78.NotContainsEmpty :=
   ⟨fun x => by match x with | 0 => simp | 1 => simp; tauto_set⟩
 
-lemma frame_2_78.not_valid_axiomC :
-    ¬frame_2_78 ⊧ (Axioms.C #0 #1 : Formula ℕ) := fun h => by
-  have h1 := h (fun a => match a with | 0 => {0} | 1 => {1} | _ => Set.univ) 1
-  simp [Forces, Frame.box, Set.ext_iff, frame_2_78] at h1
+lemma frame_2_78.not_valid_axiomC [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_78 ⊧ (Axioms.C #a #b : Formula α) := fun h => by
+  have h1 := h (fun c => if c = a then {0} else if c = b then {1} else Set.univ) 1
+  simp [Forces, Frame.box, Set.ext_iff, frame_2_78, Ne.symm hab] at h1
 
-lemma frame_2_78.not_valid_axiomM :
-    ¬frame_2_78 ⊧ (Axioms.M #0 #1 : Formula ℕ) := fun h => by
-  have h0 := h (fun a => match a with | 0 => {0, 1} | 1 => {0} | _ => Set.univ) 0
-  simp [Forces, Frame.box, Set.ext_iff, frame_2_78] at h0
+lemma frame_2_78.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_78 ⊧ (Axioms.M #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then {0, 1} else if c = b then {0} else Set.univ) 0
+  simp [Forces, Frame.box, Set.ext_iff, frame_2_78, Ne.symm hab] at h0
 
 lemma frame_2_78.not_isReflexive : ¬frame_2_78.IsReflexive := by
   intro hR
@@ -39,7 +40,7 @@ lemma frame_2_78.not_isReflexive : ¬frame_2_78.IsReflexive := by
   exact absurd (frame_2_78.refl h1) (by simp)
 
 lemma frame_2_78.not_valid_axiomT :
-    ¬frame_2_78 ⊧ (Axioms.T #0 : Formula ℕ) :=
+    ¬frame_2_78 ⊧ (Axioms.T #a : Formula α) :=
   fun h => frame_2_78.not_isReflexive (isReflexive_of_valid_axiomT h)
 
 end

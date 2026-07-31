@@ -2,11 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.EN
-public import Neighborhood.Semantics.Filtration
-import Mathlib.Tactic.FinCases
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame2_172
+public import Neighborhood.Semantics.Example.Frame2_138
 
 /-!
 # The neighborhood logic `LogicEN4`
@@ -20,27 +16,25 @@ neighborhood frames containing their unit, together with its finite frame proper
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEN4
 
-theorem LogicEN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsTransitive] :
     A ∈ LogicEN4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicEN4.consistent : (@LogicEN4 α).IsConsistent := by
+instance : (@LogicEN4 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicEN4.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicEN4 α)) :=
-  MaximalConsistentSet.nonempty LogicEN4.consistent
+  simpa using LogicEN4.sound frame_1_2 hC⟩
 
 variable [DecidableEq α]
 
-theorem LogicEN4.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicEN4 α :=
-  (basicCanonicity LogicEN4).mem_of_valid
-    (h (basicCanonicity LogicEN4).toModel.toFrame
-      (basicCanonicity LogicEN4).toModel.Val)
+  (basicCanonicalModel LogicEN4).mem_of_valid
+    (h (basicCanonicalModel LogicEN4).toFrame
+      (basicCanonicalModel LogicEN4).Val)
 
 instance : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
@@ -49,7 +43,7 @@ instance : FormulaSet.IsSubformulaClosed
     · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
-theorem LogicEN4.finite_complete
+theorem finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.ContainsUnit] → [F.IsTransitive] →
       F ⊧ A) : A ∈ @LogicEN4 α :=
   LogicEN4.complete <| by
@@ -62,19 +56,45 @@ theorem LogicEN4.finite_complete
     haveI : (transitiveFiltration M T).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (transitiveFiltration M T).toModel.toFrame (transitiveFiltration M T).toModel.Val ⟦x⟧
 
+omit [DecidableEq α] in
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEN4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicEN4.sound frame_2_138 (hcon #a))
+
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicEN4 α) := by
+  by_contra! hcon
+  exact frame_3_10520744.not_valid_axiomC hab (LogicEN4.sound frame_3_10520744 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEN4 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicEN4.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEN4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomFive
+    (LogicEN4.sound frame_2_138 (hcon #a))
+
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicEN4 α) := by
+  by_contra! hcon
+  exact frame_3_9471106.not_valid_axiomM hab (LogicEN4.sound frame_3_9471106 (hcon #a #b))
+
+end LogicEN4
+
 theorem LogicEN_ssubset_LogicEN4 : @LogicEN ℕ ⊂ LogicEN4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hFour : Axioms.Four #0 ∈ (@LogicEN ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_172.not_valid_axiomFour
-      (LogicEN.sound frame_2_172 hFour)
+  · obtain ⟨A, hA⟩ := LogicEN.not_provable_axiomFour (0 : ℕ)
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicE4_ssubset_LogicEN4 : @LogicE4 ℕ ⊂ LogicEN4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicE4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicE4.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicE4.not_provable_axiomN⟩
 
 end

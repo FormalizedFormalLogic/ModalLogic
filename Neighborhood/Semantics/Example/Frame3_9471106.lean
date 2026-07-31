@@ -1,7 +1,5 @@
 module
 
-public import Neighborhood.Axioms
-public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomN
@@ -13,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_3_9471106 : Frame (Fin 3) := ⟨fun x => {{x}, Set.univ}⟩
 
@@ -73,11 +72,13 @@ instance : frame_3_9471106.IsSerial where
     rcases hx with rfl | rfl <;> simp [Set.ext_iff]
 
 @[simp]
-lemma frame_3_9471106.not_valid_axiomM :
-    ¬frame_3_9471106 ⊧ (Axioms.M #0 #1 : Formula ℕ) :=
+lemma frame_3_9471106.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_9471106 ⊧ (Axioms.M #a #b : Formula α) :=
   Frame.Validate.not_of_exists_valuation_world
-    ⟨fun a => match a with | 0 => {0, 1} | 1 => {0, 2} | _ => Set.univ, 0, by
-      unfold NotForces Forces; simp [Frame.box, frame_3_9471106, Set.ext_iff]; decide⟩
+    ⟨fun c => if c = a then {0, 1} else if c = b then {0, 2} else Set.univ, 0, by
+      unfold NotForces Forces
+      simp [Frame.box, frame_3_9471106, Set.ext_iff, Ne.symm hab]
+      exact ⟨fun x hx => absurd hx (by fin_cases x <;> simp), fun h => absurd (h 2) (by simp)⟩⟩
 
 lemma frame_3_9471106.not_isSymmetric : ¬frame_3_9471106.IsSymmetric := fun hS => by
   have hbox2 : frame_3_9471106.box ({2} : Set (Fin 3)) = {2} := frame_3_9471106.box_singleton 2
@@ -95,7 +96,7 @@ lemma frame_3_9471106.not_isSymmetric : ¬frame_3_9471106.IsSymmetric := fun hS 
   exact absurd (h (show (0 : Fin 3) ∈ ({0, 1} : Set (Fin 3)) by simp)) (by simp)
 
 lemma frame_3_9471106.not_valid_axiomB :
-    ¬frame_3_9471106 ⊧ (Axioms.B #0 : Formula ℕ) :=
+    ¬frame_3_9471106 ⊧ (Axioms.B #a : Formula α) :=
   fun h => frame_3_9471106.not_isSymmetric (isSymmetric_of_valid_axiomB h)
 
 lemma frame_3_9471106.not_isEuclidean : ¬frame_3_9471106.IsEuclidean := fun hE => by

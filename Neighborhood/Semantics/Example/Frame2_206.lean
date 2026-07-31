@@ -11,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_2_206 : Frame (Fin 2) :=
   ⟨fun w => match w with
@@ -27,11 +28,11 @@ lemma frame_2_206.box_mono {X Y : Set (Fin 2)} (h : X ⊆ Y) :
     simp_all; grind
 
 @[simp]
-lemma frame_2_206.not_valid_axiomC :
-    ¬frame_2_206 ⊧ (Axioms.C #0 #1 : Formula ℕ) :=
+lemma frame_2_206.not_valid_axiomC [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_206 ⊧ (Axioms.C #a #b : Formula α) :=
   Frame.Validate.not_of_exists_valuation_world
-    ⟨fun a => match a with | 0 => {0} | 1 => {1} | _ => Set.univ, 0, by
-      unfold NotForces Forces; simp [Frame.box, frame_2_206, Set.ext_iff]⟩
+    ⟨fun c => if c = a then {0} else if c = b then {1} else Set.univ, 0, by
+      unfold NotForces Forces; simp [Frame.box, frame_2_206, Set.ext_iff, Ne.symm hab]⟩
 
 instance : frame_2_206.IsMonotonic where
   mono _ _ := Set.subset_inter

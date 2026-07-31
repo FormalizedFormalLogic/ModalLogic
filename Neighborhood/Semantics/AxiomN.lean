@@ -30,7 +30,7 @@ theorem valid_axiomN_of_containsUnit [F.ContainsUnit] : F ⊧ (Axioms.N : Formul
   intro V x
   simp [Forces, F.contains_unit]
 
-theorem containsUnit_of_valid_axiomN (h : F ⊧ (Axioms.N : Formula ℕ)) : F.ContainsUnit := by
+theorem containsUnit_of_valid_axiomN (h : F ⊧ (Axioms.N : Formula α)) : F.ContainsUnit := by
   constructor
   ext x
   simpa [Forces] using h (fun _ => Set.univ) x
@@ -39,14 +39,14 @@ section
 
 variable {α : Type u} {L : Logic α} [DecidableEq α] [L.Cl] [L.HasRE] [Nonempty (MaximalConsistentSet L)]
 
-instance [L.HasAxiomN] : (basicCanonicity L).toModel.ContainsUnit := by
+instance [L.HasAxiomN] : (basicCanonicalModel L).ContainsUnit := by
   constructor
   ext Ω
   apply iff_of_true _ (Set.mem_univ Ω)
   exact ⟨⊤, MaximalConsistentSet.mem_of_prove (by simp), by simp⟩
 
 instance {P : MaximalConsistentSet L → Set (Proofset L)} [L.HasAxiomN] :
-    (relativeBasicCanonicity L P).toModel.ContainsUnit := by
+    (relativeBasicCanonicalModel L P).ContainsUnit := by
   constructor
   ext Ω
   apply iff_of_true _ (Set.mem_univ Ω)

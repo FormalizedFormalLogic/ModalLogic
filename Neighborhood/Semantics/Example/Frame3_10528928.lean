@@ -1,7 +1,5 @@
 module
 
-public import Neighborhood.Axioms
-public import Neighborhood.Semantics.Basic
 public import Neighborhood.Semantics.AxiomM
 public import Neighborhood.Semantics.AxiomC
 public import Neighborhood.Semantics.AxiomN
@@ -13,6 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_3_10528928 : Frame (Fin 3) :=
   ⟨fun w => match w with
@@ -169,12 +168,12 @@ lemma frame_3_10528928.not_isRegular :
   · exact absurd ((Set.ext_iff.mp h1 1).mpr (by simp)) (by simp)
 
 @[simp]
-lemma frame_3_10528928.not_valid_axiomC :
-    ¬frame_3_10528928 ⊧ (Axioms.C #0 #1 : Formula ℕ) :=
+lemma frame_3_10528928.not_valid_axiomC [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_10528928 ⊧ (Axioms.C #a #b : Formula α) :=
   Frame.Validate.not_of_exists_valuation_world
-    ⟨fun a => match a with | 0 => {0, 1} | 1 => {0, 2} | _ => Set.univ, 1, by
+    ⟨fun c => if c = a then {0, 1} else if c = b then {0, 2} else Set.univ, 1, by
       unfold NotForces Forces
-      simp [Frame.box, frame_3_10528928, Set.ext_iff]
+      simp [Frame.box, frame_3_10528928, Set.ext_iff, Ne.symm hab]
       decide⟩
 
 lemma frame_3_10528928.not_isTransitive : ¬frame_3_10528928.IsTransitive := fun hT => by
@@ -184,7 +183,7 @@ lemma frame_3_10528928.not_isTransitive : ¬frame_3_10528928.IsTransitive := fun
   exact absurd (h (show (1 : Fin 3) ∈ ({1} : Set (Fin 3)) by simp)) (by simp)
 
 lemma frame_3_10528928.not_valid_axiomFour :
-    ¬frame_3_10528928 ⊧ (Axioms.Four #0 : Formula ℕ) :=
+    ¬frame_3_10528928 ⊧ (Axioms.Four #a : Formula α) :=
   fun h => frame_3_10528928.not_isTransitive (isTransitive_of_valid_axiomFour h)
 
 end

@@ -108,12 +108,12 @@ section
 
 variable {α : Type u} {L : Logic α}
 
-/-- The supplementation of `basicCanonicity L`, augmented with the monotonicity axiom `M` so
+/-- The supplementation of `basicCanonicalModel L`, augmented with the monotonicity axiom `M` so
 that boxed formulas of `L` correspond exactly to the neighborhoods of the supplemented canonical
 model. -/
-abbrev supplementedBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] [L.HasAxiomM]
-    [Nonempty (MaximalConsistentSet L)] : Canonicity L where
-  𝒩 := (basicCanonicity L).toModel.supplementation.𝒩
+abbrev supplementedBasicCanonicalModel (L : Logic α) [DecidableEq α] [L.Cl] [L.HasRE] [L.HasAxiomM]
+    [Nonempty (MaximalConsistentSet L)] : CanonicalModel L where
+  𝒩 := (basicCanonicalModel L).supplementation.𝒩
   def_𝒩 := by
     intro Ω A
     constructor
@@ -121,38 +121,38 @@ abbrev supplementedBasicCanonicity (L : Logic α) [DecidableEq α] [L.Cl] [L.Has
       exact ⟨proofset L A, Set.Subset.rfl, A, h, rfl⟩
     · rintro ⟨Y, hY₁, B, hB, rfl⟩
       exact proofset.box_subset_of_subset hY₁ hB
-  V a := proofset L #a
+  Val a := proofset L #a
   def_V _ := rfl
 
 variable [DecidableEq α] [L.Cl] [L.HasRE] [L.HasAxiomM] [Nonempty (MaximalConsistentSet L)]
 
-instance : (supplementedBasicCanonicity L).toModel.IsMonotonic :=
-  Frame.supplementation.isMonotonic (F := (basicCanonicity L).toModel.toFrame)
+instance : (supplementedBasicCanonicalModel L).IsMonotonic :=
+  Frame.supplementation.isMonotonic (F := (basicCanonicalModel L).toFrame)
 
-instance [L.HasAxiomC] : (supplementedBasicCanonicity L).toModel.IsRegular :=
-  Frame.supplementation.isRegular (F := (basicCanonicity L).toModel.toFrame)
+instance [L.HasAxiomC] : (supplementedBasicCanonicalModel L).IsRegular :=
+  Frame.supplementation.isRegular (F := (basicCanonicalModel L).toFrame)
 
-instance [L.HasAxiomN] : (supplementedBasicCanonicity L).toModel.ContainsUnit :=
-  Frame.supplementation.containsUnit (F := (basicCanonicity L).toModel.toFrame)
+instance [L.HasAxiomN] : (supplementedBasicCanonicalModel L).ContainsUnit :=
+  Frame.supplementation.containsUnit (F := (basicCanonicalModel L).toFrame)
 
-instance [L.HasAxiomT] : (supplementedBasicCanonicity L).toModel.IsReflexive :=
-  Frame.supplementation.isReflexive (F := (basicCanonicity L).toModel.toFrame)
+instance [L.HasAxiomT] : (supplementedBasicCanonicalModel L).IsReflexive :=
+  Frame.supplementation.isReflexive (F := (basicCanonicalModel L).toFrame)
 
-instance [L.HasAxiomFour] : (supplementedBasicCanonicity L).toModel.IsTransitive :=
-  Frame.supplementation.isTransitive (F := (basicCanonicity L).toModel.toFrame)
+instance [L.HasAxiomFour] : (supplementedBasicCanonicalModel L).IsTransitive :=
+  Frame.supplementation.isTransitive (F := (basicCanonicalModel L).toFrame)
 
-instance [L.HasAxiomP] : (supplementedBasicCanonicity L).toModel.NotContainsEmpty :=
-  Frame.supplementation.notContainsEmpty (F := (basicCanonicity L).toModel.toFrame)
+instance [L.HasAxiomP] : (supplementedBasicCanonicalModel L).NotContainsEmpty :=
+  Frame.supplementation.notContainsEmpty (F := (basicCanonicalModel L).toFrame)
 
-instance [L.HasAxiomD] : (supplementedBasicCanonicity L).toModel.IsSerial := by
-  apply Canonicity.isSerial
+instance [L.HasAxiomD] : (supplementedBasicCanonicalModel L).IsSerial := by
+  apply CanonicalModel.isSerial
   intro X _ Ω hΩ
   obtain ⟨Y, hYX, hY⟩ :=
-    Frame.supplementation.iff_exists_subset (F := (basicCanonicity L).toModel.toFrame).mp hΩ
-  obtain ⟨B, rfl, hB⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hY
-  show Ω ∉ (basicCanonicity L).toModel.supplementation.box Xᶜ
+    Frame.supplementation.iff_exists_subset (F := (basicCanonicalModel L).toFrame).mp hΩ
+  obtain ⟨B, rfl, hB⟩ := basicCanonicalModel.iff_mem_box_exists_fml.mp hY
+  show Ω ∉ (basicCanonicalModel L).supplementation.box Xᶜ
   rintro ⟨Z, hZX, hZ⟩
-  obtain ⟨C, rfl, hC⟩ := basicCanonicity.iff_mem_box_exists_fml.mp hZ
+  obtain ⟨C, rfl, hC⟩ := basicCanonicalModel.iff_mem_box_exists_fml.mp hZ
   have h₁ : proofset L C ⊆ proofset L (∼B) := by
     rw [proofset.eq_neg];
     exact fun ω hω hωB => hZX hω (hYX hωB)
@@ -160,15 +160,15 @@ instance [L.HasAxiomD] : (supplementedBasicCanonicity L).toModel.IsSerial := by
   exact (MaximalConsistentSet.iff_mem_neg.mp (MaximalConsistentSet.mdp_provable Logic.axiomD hB))
     (MaximalConsistentSet.mdp_provable h₂ hC)
 
-/-- The supplementation of `relativeBasicCanonicity L P`, augmented with the monotonicity axiom
+/-- The supplementation of `relativeBasicCanonicalModel L P`, augmented with the monotonicity axiom
 `M` and a compatibility condition `hP` ensuring that every extra neighborhood `Y` witnessing a
 non-proofset `X` at `Ω` (with `Y ⊆ X`) forces `□A ∈ Ω` whenever `Y ⊆ proofset L A`. -/
-def supplementedRelativeCanonicity (L : Logic α)
+def supplementedRelativeCanonicalModel (L : Logic α)
     [L.Cl] [L.HasRE] [L.HasAxiomM] [Nonempty (MaximalConsistentSet L)]
     (P : MaximalConsistentSet L → Set (Proofset L))
     (hP : ∀ Y : Proofset L, Y.IsNonproofset → ∀ Ω, Y ∈ P Ω → ∀ A, Y ⊆ proofset L A → □A ∈ Ω) :
-    Canonicity L where
-  𝒩 := (relativeBasicCanonicity L P).toModel.supplementation.𝒩
+    CanonicalModel L where
+  𝒩 := (relativeBasicCanonicalModel L P).supplementation.𝒩
   def_𝒩 := by
     intro Ω A
     constructor
@@ -177,7 +177,7 @@ def supplementedRelativeCanonicity (L : Logic α)
     · rintro ⟨Y, hY₁, (⟨B, hB, rfl⟩ | ⟨hYnp, hY₂⟩)⟩
       · exact proofset.box_subset_of_subset hY₁ hB
       · exact hP Y hYnp Ω hY₂ A hY₁
-  V a := proofset L #a
+  Val a := proofset L #a
   def_V _ := rfl
 
 end

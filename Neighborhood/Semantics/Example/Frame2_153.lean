@@ -10,16 +10,17 @@ public import Neighborhood.Semantics.AxiomGeach
 @[expose] public section
 
 variable {α : Type u}
+variable {a b : α}
 
 abbrev frame_2_153 : Frame (Fin 2) := ⟨fun _ => {∅, Set.univ}⟩
 
 @[simp]
-lemma frame_2_153.not_valid_axiomM :
-    ¬frame_2_153 ⊧ (Axioms.M #0 #1 : Formula ℕ) :=
+lemma frame_2_153.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_153 ⊧ (Axioms.M #a #b : Formula α) :=
   Frame.Validate.not_of_exists_valuation_world
-    ⟨fun a => match a with | 0 => {0} | 1 => {1} | _ => Set.univ, 0, by
+    ⟨fun c => if c = a then {0} else if c = b then {1} else Set.univ, 0, by
       unfold NotForces Forces
-      simp [Frame.box, frame_2_153, Set.ext_iff]⟩
+      simp [Frame.box, frame_2_153, Set.ext_iff, Ne.symm hab]⟩
 
 instance : frame_2_153.IsRegular where
   regular X Y w hw := by

@@ -2,8 +2,7 @@ module
 
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.E5
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_90
 
 /-!
 # The neighborhood logic `LogicED5`
@@ -24,30 +23,40 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] [F.IsEuclidean]
   : A ∈ LogicED5 → F ⊧ A := Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicED5 α).IsConsistent := by
+instance : (@LogicED5 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicED5.sound frame_1_2 hC
+  simpa using LogicED5.sound frame_1_2 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicED5 α)) :=
-  MaximalConsistentSet.nonempty consistent
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicED5 α) := by
+  by_contra! hcon
+  exact frame_3_10528928.not_valid_axiomC hab (LogicED5.sound frame_3_10528928 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicED5 α) := by
+  by_contra! hcon
+  exact frame_3_10528928.not_valid_axiomFour (LogicED5.sound frame_3_10528928 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicED5 α) := by
+  intro hcon
+  exact frame_2_90.not_valid_axiomN (LogicED5.sound frame_2_90 hcon)
 
 end LogicED5
 
 
 theorem LogicED_ssubset_LogicED5 : @LogicED ℕ ⊂ LogicED5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hFive : Axioms.Five #0 ∈ (@LogicED ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomFive
-      (LogicED.sound frame_1_0 hFive)
+  · obtain ⟨A, hA⟩ := LogicED.not_provable_axiomFive (0 : ℕ)
+    exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicE5_ssubset_LogicED5 : @LogicE5 ℕ ⊂ LogicED5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hD : Axioms.D #0 ∈ (@LogicE5 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD
-      (LogicE5.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicE5.not_provable_axiomD (0 : ℕ)
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

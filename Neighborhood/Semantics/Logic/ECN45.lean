@@ -4,9 +4,6 @@ public import Neighborhood.Semantics.Logic.ECN4
 public import Neighborhood.Semantics.Logic.ECN5
 public import Neighborhood.Semantics.Logic.EC45
 public import Neighborhood.Semantics.Logic.EN45
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame2_138
-public import Neighborhood.Semantics.Example.Frame2_186
 
 /-!
 # The neighborhood logic `LogicECN45`
@@ -29,29 +26,24 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.ContainsUnit]
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicECN45 α).IsConsistent := by
+instance : (@LogicECN45 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECN45.sound frame_1_2 hC
-
-instance : Nonempty (MaximalConsistentSet (@LogicECN45 α)) :=
-  MaximalConsistentSet.nonempty LogicECN45.consistent
+  simpa using LogicECN45.sound frame_1_2 hC⟩
 
 end LogicECN45
 
 theorem LogicECN4_ssubset_LogicECN45 : @LogicECN4 ℕ ⊂ LogicECN45 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFive : Axioms.Five #0 ∈ (@LogicECN4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_138.not_valid_axiomFive
-      (LogicECN4.sound frame_2_138 hFive)
+  · obtain ⟨A, hA⟩ := LogicECN4.not_provable_axiomFive (0 : ℕ)
+    exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECN5_ssubset_LogicECN45 : @LogicECN5 ℕ ⊂ LogicECN45 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFour : Axioms.Four #0 ∈ (@LogicECN5 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_186.not_valid_axiomFour
-      (LogicECN5.sound frame_2_186 hFour)
+  · obtain ⟨A, hA⟩ := LogicECN5.not_provable_axiomFour (0 : ℕ)
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

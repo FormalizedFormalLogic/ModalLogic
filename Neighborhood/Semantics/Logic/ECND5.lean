@@ -2,9 +2,6 @@ module
 
 public import Neighborhood.Semantics.Logic.ECND
 public import Neighborhood.Semantics.Logic.ECN5
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame2_140
 
 /-!
 # The neighborhood logic `LogicECND5`
@@ -19,30 +16,31 @@ Also proves the strict inclusions of `LogicECND` and `LogicECN5` in `LogicECND5`
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECND5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
+namespace LogicECND5
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
     [F.ContainsUnit] [F.IsSerial] [F.IsEuclidean] :
     A ∈ LogicECND5 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-theorem LogicECND5.consistent : (@LogicECND5 α).IsConsistent := by
+instance : (@LogicECND5 α).IsConsistent := ⟨by
   by_contra! hC
-  simpa using LogicECND5.sound frame_1_2 hC
+  simpa using LogicECND5.sound frame_1_2 hC⟩
 
-instance : Nonempty (MaximalConsistentSet (@LogicECND5 α)) :=
-  MaximalConsistentSet.nonempty LogicECND5.consistent
+end LogicECND5
 
 theorem LogicECND_ssubset_LogicECND5 : @LogicECND ℕ ⊂ LogicECND5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hFive : Axioms.Five #0 ∈ @LogicECND ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_140.not_valid_axiomFive (LogicECND.sound frame_2_140 hFive)
+  · obtain ⟨A, hA⟩ := LogicECND.not_provable_axiomFive (0 : ℕ)
+    exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECN5_ssubset_LogicECND5 : @LogicECN5 ℕ ⊂ LogicECND5 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicECN5 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicECN5.sound frame_1_3 hD)
+  · obtain ⟨A, hA⟩ := LogicECN5.not_provable_axiomD (0 : ℕ)
+    exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

@@ -1,13 +1,8 @@
 module
 
-public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Logic.ET4
 public import Neighborhood.Semantics.Logic.ENT
 public import Neighborhood.Semantics.Logic.END4
-public import Neighborhood.Semantics.Example.Frame1_2
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame2_170
-public import Neighborhood.Semantics.Example.Frame3_8421512
 
 /-!
 # The neighborhood logic `LogicENT4`
@@ -29,17 +24,30 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsReflexive]
   : A ∈ LogicENT4 → F ⊧ A := Hilbert.sound (by rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 omit [DecidableEq α] in
-theorem consistent : (@LogicENT4 α).IsConsistent := by
+instance : (@LogicENT4 α).IsConsistent := ⟨by
   by_contra! hC;
-  simpa using LogicENT4.sound frame_1_2 hC;
-
-instance : Nonempty (MaximalConsistentSet (@LogicENT4 α)) :=
-  MaximalConsistentSet.nonempty consistent
+  simpa using LogicENT4.sound frame_1_2 hC⟩
 
 theorem complete
   (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) :
   A ∈ @LogicENT4 α :=
-  (basicCanonicity LogicENT4).mem_of_valid $ h (basicCanonicity LogicENT4).toModel.toFrame (basicCanonicity LogicENT4).toModel.Val
+  (basicCanonicalModel LogicENT4).mem_of_valid $ h (basicCanonicalModel LogicENT4).toFrame (basicCanonicalModel LogicENT4).Val
+
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicENT4 α) := by
+  by_contra! hcon
+  exact frame_3_10520744.not_valid_axiomC hab (LogicENT4.sound frame_3_10520744 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENT4 α) := by
+  by_contra! hcon
+  exact frame_3_9471106.not_isEuclidean
+    (isEuclidean_of_valid_axiomFive (LogicENT4.sound frame_3_9471106 (hcon #a)))
+
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicENT4 α) := by
+  by_contra! hcon
+  exact frame_3_9471106.not_valid_axiomM hab (LogicENT4.sound frame_3_9471106 (hcon #a #b))
 
 end LogicENT4
 
@@ -67,27 +75,25 @@ theorem LogicENT4.finite_complete
     exact h (transitiveFiltration M T).toModel.toFrame (transitiveFiltration M T).toModel.Val ⟦x⟧
 
 theorem LogicET4_ssubset_LogicENT4 : @LogicET4 ℕ ⊂ LogicENT4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.union_subset_union_left _ Set.subset_union_right)
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicET4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicET4.sound frame_1_0 hN)
+  · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicET4.not_provable_axiomN⟩
 
 theorem LogicENT_ssubset_LogicENT4 : @LogicENT ℕ ⊂ LogicENT4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hFour : Axioms.Four #0 ∈ (@LogicENT ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_3_8421512.not_valid_axiomFour
-      (LogicENT.sound frame_3_8421512 hFour)
+  · obtain ⟨A, hA⟩ := LogicENT.not_provable_axiomFour (0 : ℕ)
+    exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEND4_ssubset_LogicENT4 : @LogicEND4 ℕ ⊂ LogicENT4 := by
+  apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
       first | exact Logic.axiomN | exact Logic.axiomD | exact Logic.axiomFour
-  · intro h
-    have hT : Axioms.T #0 ∈ @LogicEND4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_170.not_valid_axiomT (LogicEND4.sound frame_2_170 hT)
+  · obtain ⟨A, hA⟩ := LogicEND4.not_provable_axiomT (0 : ℕ)
+    exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end
