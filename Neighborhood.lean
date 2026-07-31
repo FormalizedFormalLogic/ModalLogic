@@ -160,6 +160,7 @@ public import Neighborhood.Semantics.Logic.EMNT4
 public import Neighborhood.Semantics.Logic.EMP
 public import Neighborhood.Semantics.Logic.EMT
 public import Neighborhood.Semantics.Logic.EMT4
+public import Neighborhood.Semantics.Logic.EMTB
 public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Logic.EN45
