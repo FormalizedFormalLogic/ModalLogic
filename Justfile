@@ -25,6 +25,10 @@ zoo:
     lake env lean zoo/Extract.lean
     typst compile --root . zoo/neighborhood.typ zoo/neighborhood.png
 
+# Serve the interactive 3D zoo at http://localhost:8080 (requires miniserve; run `just zoo` first)
+zoo-serve:
+    miniserve zoo --index index.html
+
 # Count lines of Lean source per project library (requires cloc)
 cloc:
     cloc --include-lang=Lean Fin74/ Neighborhood/ ModalLogicArchive/

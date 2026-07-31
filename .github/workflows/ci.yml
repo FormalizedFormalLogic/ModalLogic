@@ -72,7 +72,7 @@ jobs:
         if: env.ZOO == 'true'
         run: |
           mkdir -p _site
-          cp zoo/neighborhood.png zoo/neighborhood.json _site/
+          cp zoo/index.html zoo/neighborhood.png zoo/neighborhood.json _site/
       - name: Upload pages artifact
         if: env.ZOO == 'true'
         uses: actions/upload-pages-artifact@v5
