@@ -23,7 +23,6 @@ finite frame property.
 
 variable {α : Type u} {A : Formula α}
 
-
 theorem LogicEMT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsReflexive] [F.IsTransitive] :
     A ∈ LogicEMT4 → F ⊧ A :=
@@ -58,7 +57,6 @@ theorem LogicEMT4.finite_complete
     exact h (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame
       (supplementedTransitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
-
 theorem LogicEMT_ssubset_LogicEMT4 : @LogicEMT ℕ ⊂ LogicEMT4 := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
@@ -73,13 +71,6 @@ theorem LogicET4_ssubset_LogicEMT4 : @LogicET4 ℕ ⊂ LogicEMT4 := by
   · intro h
     have hM : Axioms.M #0 #1 ∈ (@LogicET4 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_3_9471106.not_valid_axiomM (LogicET4.sound frame_3_9471106 hM)
-
-theorem LogicEM4_ssubset_LogicEMT4 : @LogicEM4 ℕ ⊂ LogicEMT4 := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hT : Axioms.T #0 ∈ (@LogicEM4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_170.not_valid_axiomT (LogicEM4.sound frame_2_170 hT)
 
 theorem LogicEMD4_ssubset_LogicEMT4 : @LogicEMD4 ℕ ⊂ LogicEMT4 := by
   constructor

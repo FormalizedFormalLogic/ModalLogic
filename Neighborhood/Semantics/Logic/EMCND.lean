@@ -24,7 +24,6 @@ contain their unit, and are serial.
 
 variable {α : Type u} {A : Formula α}
 
-
 theorem LogicEMCND.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.ContainsUnit] [F.IsSerial] :
     A ∈ LogicEMCND → F ⊧ A :=
@@ -43,20 +42,6 @@ theorem LogicEMCN_ssubset_LogicEMCND : @LogicEMCN ℕ ⊂ LogicEMCND := by
   · intro h
     have hD : Axioms.D #0 ∈ @LogicEMCN ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_valid_axiomD (LogicEMCN.sound frame_1_3 hD)
-
-theorem LogicEMN_ssubset_LogicEMCND : @LogicEMN ℕ ⊂ LogicEMCND := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hC : Axioms.C #0 #1 ∈ @LogicEMN ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_206.not_valid_axiomC (LogicEMN.sound frame_2_206 hC)
-
-theorem LogicEMD_ssubset_LogicEMCND : @LogicEMD ℕ ⊂ LogicEMCND := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hN : (Axioms.N : Formula ℕ) ∈ @LogicEMD ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_0.not_valid_axiomN (LogicEMD.sound frame_1_0 hN)
 
 theorem LogicEMCD_ssubset_LogicEMCND : @LogicEMCD ℕ ⊂ LogicEMCND := by
   constructor

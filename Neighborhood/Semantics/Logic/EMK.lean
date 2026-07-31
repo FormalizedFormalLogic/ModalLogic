@@ -19,7 +19,6 @@ monotonic neighborhood frames satisfying the `K`-property.
 
 variable {α : Type u} {A : Formula α}
 
-
 theorem LogicEMK.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.HasPropertyK] :
     A ∈ LogicEMK → F ⊧ A :=
@@ -28,7 +27,6 @@ theorem LogicEMK.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
 theorem LogicEMK.consistent : (@LogicEMK α).IsConsistent := by
   by_contra! hC
   simpa using LogicEMK.sound frame_1_2 hC
-
 
 theorem LogicEK_ssubset_LogicEMK : @LogicEK ℕ ⊂ LogicEMK := by
   constructor
@@ -43,10 +41,5 @@ theorem LogicEM_ssubset_LogicEMK : @LogicEM ℕ ⊂ LogicEMK := by
   · intro h
     have hK : Axioms.K #0 #1 ∈ @LogicEM ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_2_238.not_valid_axiomK (LogicEM.sound _ hK)
-
-
-theorem LogicEM_ssubset_LogicEMCK : @LogicEM ℕ ⊂ LogicEMCK := by
-  rw [← LogicEMK_eq_LogicEMCK]
-  exact LogicEM_ssubset_LogicEMK
 
 end
