@@ -95,6 +95,14 @@
     max-width: 480px; display: none;
   }
   #error code { background: var(--page); padding: 1px 5px; border-radius: 4px; }
+  .node-label {
+    /* KaTeX-typeset logic names carried by CSS3DSprites; the CSS3D container
+       is pointer-events: none, so the labels opt back in for hover/click. */
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    pointer-events: auto;
+  }
   .graph-tooltip { font: 13px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif !important; }
   .tt {
     background: var(--surface);
@@ -147,13 +155,8 @@
   <p id="error-detail" class="meta"></p>
 </div>
 
-<script>
-/* MathJax must be configured before its script loads. `fontCache: "local"`
-   keeps every produced SVG self-contained (a shared glyph cache would break
-   the standalone rasterization below). */
-window.MathJax = { svg: { fontCache: "local" }, startup: { typeset: false } };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/3d-force-graph@1.80.0/dist/3d-force-graph.min.js"></script>
 
 <script id="zoo-pipeline">
@@ -240,11 +243,11 @@ if (typeof module !== "undefined") module.exports = Zoo;
 
 <script type="module">
 /* The UMD bundle above exposes the global `ForceGraph3D` but bundles its own
-   three.js (r183) without a global `THREE`, so the few three classes needed
-   for the label sprites are imported separately (same pattern as the upstream
-   text-nodes example, which pairs the UMD bundle with an ESM three-spritetext). */
-import { Sprite, SpriteMaterial, CanvasTexture, SRGBColorSpace }
-  from "https://esm.sh/three@0.183.0";
+   three.js (r183) without a global `THREE`; the CSS3D renderer classes for the
+   KaTeX labels are imported separately (same pattern as the upstream
+   html-nodes example, which pairs the UMD bundle with an ESM CSS2DRenderer). */
+import { CSS3DRenderer, CSS3DSprite }
+  from "https://esm.sh/three@0.183.0/examples/jsm/renderers/CSS3DRenderer.js";
 
 /* Surface uncaught errors in the page itself (no dev tools needed). */
 const showError = msg => {
@@ -303,68 +306,49 @@ addEventListener("unhandledrejection", ev => showError(String(ev.reason)));
     return ramp[Math.round(n.depth / Math.max(maxDepth, 1) * (ramp.length - 1))];
   };
 
-  /* ---- TeX label sprites ------------------------------------------- */
-  /* Each label is typeset by MathJax as bold upright math (matching the
-     `Logic` macro of `zoo/template.typ`), rasterized once to a black master
-     canvas, and tinted per theme/depth via source-in compositing. */
-  const EX_PX = 8;        // CSS px per MathJax ex unit
-  const OVERSAMPLE = 6;   // rasterization factor, for crisp textures
-  const LABEL_EX = 5;     // sprite graph-units per ex unit
-  await MathJax.startup.promise;
-  const renderMaster = async n => {
-    const texSrc = n.names.map(s => `\\mathbf{${s.replace(/^Logic/, "")}}`).join(" = ");
-    const svg = MathJax.tex2svg(texSrc).querySelector("svg");
-    const wEx = parseFloat(svg.getAttribute("width")), hEx = parseFloat(svg.getAttribute("height"));
-    const w = Math.ceil(wEx * EX_PX * OVERSAMPLE), h = Math.ceil(hEx * EX_PX * OVERSAMPLE);
-    svg.setAttribute("width", w);
-    svg.setAttribute("height", h);
-    const img = new Image();
-    img.src = "data:image/svg+xml;charset=utf-8,"
-      + encodeURIComponent(new XMLSerializer().serializeToString(svg));
-    await img.decode();
-    const master = document.createElement("canvas");
-    master.width = w;
-    master.height = h;
-    master.getContext("2d").drawImage(img, 0, 0, w, h);
-    n.__master = master;
-    n.__exSize = [wEx, hEx];
-  };
-  await Promise.all(nodes.map(renderMaster));
-  const tintNode = n => {
-    const c = n.__tint ?? (n.__tint = document.createElement("canvas"));
-    c.width = n.__master.width;   // also clears the canvas
-    c.height = n.__master.height;
-    const ctx = c.getContext("2d");
-    ctx.drawImage(n.__master, 0, 0);
-    ctx.globalCompositeOperation = "source-in";
-    ctx.fillStyle = colorOf(n);
-    ctx.fillRect(0, 0, c.width, c.height);
-    if (n.__texture) n.__texture.needsUpdate = true;
-    return c;
+  /* ---- KaTeX label elements ----------------------------------------- */
+  /* Each label is typeset by KaTeX as bold upright math (matching the
+     `Logic` macro of `zoo/template.typ`) into a DOM element carried by a
+     camera-facing CSS3DSprite; a small WebGL sphere per node keeps the
+     built-in raycast hover/tooltip working (`nodeThreeObjectExtend`). */
+  const LABEL_FONT_PX = 60;   // KaTeX layout size (crispness headroom)
+  const LABEL_SCALE = 0.14;   // scene units per CSS px
+  const makeLabel = n => {
+    const div = document.createElement("div");
+    div.className = "node-label";
+    div.style.fontSize = LABEL_FONT_PX + "px";
+    katex.render(n.names.map(s => `\\mathbf{${s.replace(/^Logic/, "")}}`).join(" = "),
+                 div, { throwOnError: false });
+    div.style.color = colorOf(n);
+    div.addEventListener("mouseenter", () => setFocus(n));
+    div.addEventListener("mouseleave", () => setFocus(null));
+    div.addEventListener("click", () => flyTo(n));
+    n.__el = div;
+    return div;
   };
 
   /* ---- graph ------------------------------------------------------- */
   const linkId = l => (l.source.id ?? l.source) + " " + (l.target.id ?? l.target);
   let hoverNode = null;
+  let focusIds = null;   // ids of the hovered node and its direct neighbours
   const highlightLinks = new Set();
 
-  const graph = new ForceGraph3D(document.getElementById("graph"))
+  const graph = new ForceGraph3D(document.getElementById("graph"), {
+      extraRenderers: [new CSS3DRenderer()],
+    })
     .graphData({ nodes, links })
     .backgroundColor(theme().surface)
     .dagMode("td")
     .dagLevelDistance(75)
     .nodeThreeObject(n => {
-      n.__texture = new CanvasTexture(tintNode(n));
-      n.__texture.colorSpace = SRGBColorSpace;
-      const sprite = new Sprite(new SpriteMaterial({
-        map: n.__texture,
-        transparent: true,   // so the hover dimming (opacity) applies
-        depthWrite: false,
-      }));
-      sprite.scale.set(n.__exSize[0] * LABEL_EX, n.__exSize[1] * LABEL_EX, 1);
-      n.__sprite = sprite;
-      return sprite;
+      const obj = new CSS3DSprite(makeLabel(n));
+      obj.scale.set(LABEL_SCALE, LABEL_SCALE, LABEL_SCALE);
+      obj.position.set(0, 5, 0);   // float the label just above the sphere
+      return obj;
     })
+    .nodeThreeObjectExtend(true)
+    .nodeRelSize(2.5)
+    .nodeColor(n => !focusIds || focusIds.has(n.id) ? colorOf(n) : theme().linkDim)
     .nodeLabel(n => `<div class="tt">
         <div class="names">${n.names.join(" = ")}</div>
         <div class="meta">strength depth ${n.depth} / ${maxDepth}<br>
@@ -396,12 +380,14 @@ addEventListener("unhandledrejection", ev => showError(String(ev.reason)));
       for (const l of links)
         if (l.source === n || l.target === n || l.source.id === n.id || l.target.id === n.id)
           highlightLinks.add(linkId(l));
-      const neighbors = new Set([n.id, ...stronger.get(n.id), ...weaker.get(n.id)]);
-      for (const m of nodes) m.__sprite.material.opacity = neighbors.has(m.id) ? 1 : 0.18;
+      focusIds = new Set([n.id, ...stronger.get(n.id), ...weaker.get(n.id)]);
+      for (const m of nodes) if (m.__el) m.__el.style.opacity = focusIds.has(m.id) ? 1 : 0.15;
     } else {
-      for (const m of nodes) m.__sprite.material.opacity = 1;
+      focusIds = null;
+      for (const m of nodes) if (m.__el) m.__el.style.opacity = 1;
     }
-    graph.linkColor(graph.linkColor()).linkWidth(graph.linkWidth());  // re-evaluate link accessors
+    // re-evaluate node/link accessors
+    graph.nodeColor(graph.nodeColor()).linkColor(graph.linkColor()).linkWidth(graph.linkWidth());
   };
 
   /* ---- search & buttons -------------------------------------------- */
@@ -435,8 +421,8 @@ addEventListener("unhandledrejection", ev => showError(String(ev.reason)));
   const applyTheme = () => {
     const t = theme();
     graph.backgroundColor(t.surface);
-    for (const n of nodes) if (n.__texture) tintNode(n);
-    graph.linkColor(graph.linkColor());
+    for (const n of nodes) if (n.__el) n.__el.style.color = colorOf(n);
+    graph.nodeColor(graph.nodeColor()).linkColor(graph.linkColor());
     rampSwatch.style.background = `linear-gradient(90deg, ${t.ramp[0]}, ${t.ramp[t.ramp.length - 1]})`;
   };
   applyTheme();
