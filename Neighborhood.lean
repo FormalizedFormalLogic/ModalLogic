@@ -4,6 +4,10 @@ public import Neighborhood.Axioms
 public import Neighborhood.Formula.Basic
 public import Neighborhood.Formula.Subformulas
 public import Neighborhood.Hilbert.Basic
+public import Neighborhood.Hilbert.Logic.«0»
+public import Neighborhood.Hilbert.Logic.«1»
+public import Neighborhood.Hilbert.Logic.«2»
+public import Neighborhood.Hilbert.Logic.«3»
 public import Neighborhood.Hilbert.Logics
 public import Neighborhood.Logic.Basic
 public import Neighborhood.Logic.Calculus
