@@ -4,6 +4,7 @@ public import Neighborhood.Semantics.Logic.EMT
 public import Neighborhood.Semantics.Logic.EM4
 public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.ET4
+public import Neighborhood.Semantics.Logic.EMD4
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame2_8
 public import Neighborhood.Semantics.Example.Frame2_170
@@ -79,5 +80,16 @@ theorem LogicEM4_ssubset_LogicEMT4 : @LogicEM4 ℕ ⊂ LogicEMT4 := by
   · intro h
     have hT : Axioms.T #0 ∈ (@LogicEM4 ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_170.not_valid_axiomT (LogicEM4.sound frame_2_170 hT)
+
+theorem LogicEMD4_ssubset_LogicEMT4 : @LogicEMD4 ℕ ⊂ LogicEMT4 := by
+  constructor
+  · apply Hilbert.subset_of_provable_axioms
+    rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
+    · exact ProvableHilbert.axm (by grind)
+    · exact Logic.axiomD
+    · exact ProvableHilbert.axm (by grind)
+  · intro h
+    have hT : Axioms.T #0 ∈ @LogicEMD4 ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_170.not_valid_axiomT (LogicEMD4.sound frame_2_170 hT)
 
 end
