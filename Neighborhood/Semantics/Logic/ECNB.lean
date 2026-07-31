@@ -1,8 +1,12 @@
 module
 
 public import Neighborhood.Semantics.Logic.ECN
+public import Neighborhood.Semantics.Logic.ENB
+public import Neighborhood.Semantics.Logic.ECB
 public import Neighborhood.Semantics.Example.Frame1_2
+public import Neighborhood.Semantics.Example.Frame2_95
 public import Neighborhood.Semantics.Example.Frame2_137
+public import Neighborhood.Semantics.Example.Frame3_9488552
 
 /-!
 # The neighborhood logic `LogicECNB`
@@ -39,5 +43,19 @@ theorem LogicECN_ssubset_LogicECNB : @LogicECN ℕ ⊂ LogicECNB := by
     have hB : Axioms.B #0 ∈ (@LogicECN ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_137.not_valid_axiomB
       (LogicECN.sound frame_2_137 hB)
+
+theorem LogicENB_ssubset_LogicECNB : @LogicENB ℕ ⊂ LogicECNB := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hC : Axioms.C #0 #1 ∈ (@LogicENB ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_9488552.not_valid_axiomC (LogicENB.sound frame_3_9488552 hC)
+
+theorem LogicECB_ssubset_LogicECNB : @LogicECB ℕ ⊂ LogicECNB := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hN : (Axioms.N : Formula ℕ) ∈ (@LogicECB ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_2_95.not_valid_axiomN (LogicECB.sound frame_2_95 hN)
 
 end
