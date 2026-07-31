@@ -139,6 +139,8 @@ instance [L.HasAxiomM] [L.HasAxiomK] : L.HasAxiomC := ⟨by
 lemma axiomK_of_MC [L.HasAxiomM] [L.HasAxiomC] : □(A 🡒 B) 🡒 □A 🡒 □B ∈ L :=
   CK_iff_CC.mp <| C_trans axiomC <| rm <| mdp₁ and₁ and₂
 
+instance [L.HasAxiomM] [L.HasAxiomC] : L.HasAxiomK := ⟨fun _ _ => axiomK_of_MC⟩
+
 /-- The dual of the axiom scheme `B`. -/
 lemma diaBc [L.HasAxiomB] : ◇□A 🡒 A ∈ L := by
   have h₁ : ∼∼A 🡘 A ∈ L := E_intro dne dni;
@@ -205,9 +207,14 @@ omit [L.HasRE] in
 lemma axiomP_of_ND [L.HasAxiomN] [L.HasAxiomD] : Axioms.P ∈ (L : Logic α) :=
   contra (axiomD (A := ⊥)) ⨀ dni' axiomN
 
+omit [L.HasRE] in
+instance [L.HasAxiomN] [L.HasAxiomD] : L.HasAxiomP := ⟨axiomP_of_ND⟩
+
 /-- The axiom `P` is derivable from `M` and `D`. -/
 lemma axiomP_of_MD [L.HasAxiomM] [L.HasAxiomD] : Axioms.P ∈ (L : Logic α) :=
   mdp₁ (axiomD (A := ⊥)) (rm efq)
+
+instance [L.HasAxiomM] [L.HasAxiomD] : L.HasAxiomP := ⟨axiomP_of_MD⟩
 
 variable [L.HasAxiomT]
 
