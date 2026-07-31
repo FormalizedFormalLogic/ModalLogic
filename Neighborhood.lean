@@ -120,6 +120,7 @@ public import Neighborhood.Semantics.Logic.EMK
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.EMN4
 public import Neighborhood.Semantics.Logic.EMND
+public import Neighborhood.Semantics.Logic.EMND4
 public import Neighborhood.Semantics.Logic.EMNP
 public import Neighborhood.Semantics.Logic.EMNT
 public import Neighborhood.Semantics.Logic.EMNT4
