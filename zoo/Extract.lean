@@ -49,6 +49,12 @@ def isConcreteSide (xs : Array Expr) (e : Expr) : MetaM Bool := do
         ok := false
   return ok
 
+/-- Head constant of the conclusion of a (possibly universally quantified)
+statement, read off syntactically without entering `MetaM`. -/
+def conclusionHead : Expr → Name
+  | .forallE _ _ b _ => conclusionHead b
+  | e => e.getAppFn.constName
+
 /-- Match a statement of the form `L₁ ⊂ L₂`, `L₁ ⊆ L₂` or `L₁ = L₂` with `L₁ L₂ : Logic _`
 (possibly under universally quantified binders), returning the pretty-printed
 pair `(L₁, L₂)` tagged with the kind of inclusion.
@@ -78,10 +84,25 @@ def matchInclusion (ci : ConstantInfo) : MetaM (Option Edge) := do
     if sa == sb then return none
     return some ⟨sa, sb, t⟩
 
+/-- Inclusions between logics of the `Neighborhood` library can only be stated
+in its own modules, so the scan is restricted to constants coming from
+`Neighborhood.*`: the rest of the environment (mathlib and the other
+dependencies) is orders of magnitude larger, and feeding it through
+`matchInclusion` dominates the running time of the whole extraction.
+Constants surviving the module filter are further screened by the syntactic
+`conclusionHead` check, so that `matchInclusion` only runs on candidates. -/
 def collect : MetaM (Std.HashSet Edge) := do
+  let env ← getEnv
+  let modNames := env.header.moduleNames
+  let heads : Std.HashSet Name :=
+    .ofArray #[``HasSSubset.SSubset, ``HasSubset.Subset, ``Eq]
   let mut edges : Std.HashSet Edge := {}
-  for (name, ci) in (← getEnv).constants do
+  for (name, ci) in env.constants do
     if name.isInternal then continue
+    let some modIdx := env.getModuleIdxFor? name | continue
+    let modName := modNames.getD modIdx.toNat Name.anonymous
+    unless (`Neighborhood).isPrefixOf modName do continue
+    unless heads.contains (conclusionHead ci.type) do continue
     try
       if let some e ← matchInclusion ci then
         edges := edges.insert e
@@ -97,24 +118,39 @@ def cleanDup (edges : Array Edge) : Array Edge :=
     | .ssub => true
     | .sub => !edges.contains ⟨e.a, e.b, .ssub⟩ && !edges.contains ⟨e.a, e.b, .eq⟩
 
-/-- Transitive closure under `EdgeType.comp` (kept as the strongest known
-inclusion for each pair). -/
-partial def closure (edges : Array Edge) : Array Edge :=
-  let step (es : Array Edge) : Array Edge := Id.run do
-    let mut out := es
-    for ⟨a₁, b₁, t₁⟩ in es do
-      for ⟨a₂, b₂, t₂⟩ in es do
-        if b₁ == a₂ then
-          let e : Edge := ⟨a₁, b₂, t₁.comp t₂⟩
-          if !out.contains e then
-            out := out.push e
-    out
-  let next := step edges
-  if next.size == edges.size then edges else closure next
+/-- The inclusion strengths derivable from `a` to `b` by composing edges along
+paths of length ≥ 1 (equalities are symmetric, so they may be walked in both
+directions). A depth-first search over `(node, accumulated strength)` states
+replaces computing a full transitive closure: only the strength of a path
+matters, and `EdgeType.comp` collapses it into one of three values, so the
+state space is `3 × |nodes|`. -/
+def reachableTypes (edges : Array Edge) (a b : String) : Std.HashSet EdgeType := Id.run do
+  let mut adj : Std.HashMap String (Array (String × EdgeType)) := {}
+  for e in edges do
+    adj := adj.insert e.a ((adj.getD e.a #[]).push (e.b, e.t))
+    if e.t == .eq then
+      adj := adj.insert e.b ((adj.getD e.b #[]).push (e.a, .eq))
+  let mut seen : Std.HashSet (String × EdgeType) := {}
+  let mut stack : Array (String × EdgeType) := #[]
+  for s in adj.getD a #[] do
+    unless seen.contains s do
+      seen := seen.insert s
+      stack := stack.push s
+  let mut out : Std.HashSet EdgeType := {}
+  while _h : 0 < stack.size do
+    let (n, t) := stack[stack.size - 1]
+    stack := stack.pop
+    if n == b then
+      out := out.insert t
+    for (n', t') in adj.getD n #[] do
+      let s := (n', t.comp t')
+      unless seen.contains s do
+        seen := seen.insert s
+        stack := stack.push s
+  return out
 
 /-- An edge is redundant when the surviving edges already derive an inclusion
 at least as strong; drop such edges one at a time (transitive reduction).
-Equalities are symmetric, so both orientations enter the closure.
 
 The removal must be sequential, not a parallel filter: two edges can each be
 derivable from the other via an equality (e.g. `EM ⊂ EMK` and `EM ⊂ EMCK`
@@ -123,14 +159,12 @@ def reduce (edges : Array Edge) : Array Edge := Id.run do
   let mut keep := edges
   for e in edges do
     let rest := keep.filter (· != e)
-    let tc := closure <| rest ++ rest.filterMap fun e' =>
-      if e'.t == .eq then some ⟨e'.b, e'.a, .eq⟩ else none
+    let ts := reachableTypes rest e.a e.b
     let derivable :=
       match e.t with
-      | .eq => tc.contains ⟨e.a, e.b, .eq⟩
-      | .ssub => tc.contains ⟨e.a, e.b, .ssub⟩
-      | .sub => tc.contains ⟨e.a, e.b, .ssub⟩ || tc.contains ⟨e.a, e.b, .sub⟩
-        || tc.contains ⟨e.a, e.b, .eq⟩
+      | .eq => ts.contains .eq
+      | .ssub => ts.contains .ssub
+      | .sub => !ts.isEmpty
     if derivable then
       keep := rest
   return keep
