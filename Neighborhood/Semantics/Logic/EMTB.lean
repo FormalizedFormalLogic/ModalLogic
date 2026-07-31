@@ -2,9 +2,12 @@ module
 
 public import Neighborhood.Semantics.Logic.EMDB
 public import Neighborhood.Semantics.Logic.EMCNT
+public import Neighborhood.Semantics.Logic.ECTB
+public import Neighborhood.Logic.Equiv.EMTB_EMCNTB
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame2_140
+public import Neighborhood.Semantics.Example.Frame3_9472136
 
 /-!
 # The neighborhood logic `LogicEMTB`
@@ -47,5 +50,13 @@ theorem LogicEMCNT_ssubset_LogicEMTB : @LogicEMCNT ℕ ⊂ LogicEMTB := by
   · intro h
     have hB : Axioms.B #0 ∈ (@LogicEMCNT ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_138.not_valid_axiomB (LogicEMCNT.sound frame_2_138 hB)
+
+theorem LogicECTB_ssubset_LogicEMTB : @LogicECTB ℕ ⊂ LogicEMTB := by
+  constructor
+  · rw [LogicEMTB_eq_LogicEMCTB]
+    exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hM : Axioms.M #0 #1 ∈ @LogicECTB ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_3_9472136.not_valid_axiomM (LogicECTB.sound frame_3_9472136 hM)
 
 end
