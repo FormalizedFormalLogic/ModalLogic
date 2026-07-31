@@ -22,7 +22,7 @@ instance : frame_2_140.ContainsUnit := ⟨by
   ext y; fin_cases y <;> simp [Frame.box, frame_2_140, Set.Fin2.eq_univ, Set.ext_iff]⟩
 
 instance : frame_2_140.NotContainsEmpty := ⟨fun x => by
-  fin_cases x <;> simp [frame_2_140, Set.empty_ne_univ]⟩
+  fin_cases x <;> simp [Set.empty_ne_univ]⟩
 
 instance : frame_2_140.IsMonotonic where
   mono X Y := by

@@ -29,8 +29,8 @@ instance : frame_2_8.HasPropertyK where
 
 instance : frame_2_8.NotContainsEmpty := ⟨fun x => by
   fin_cases x
-  · simp [Frame.box, frame_2_8]
-  · simp only [Frame.box, frame_2_8]
+  · simp
+  · simp only
     intro h
     have : (0 : Fin 2) ∈ (∅ : Set (Fin 2)) ↔ (0 : Fin 2) ∈ (Set.univ : Set (Fin 2)) := by
       rw [h]

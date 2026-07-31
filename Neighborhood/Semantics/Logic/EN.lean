@@ -68,6 +68,21 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEN α) := by
   intro hcon
   exact frame_1_3.not_valid_axiomP (LogicEN.sound frame_1_3 hcon)
 
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicEN α) := by
+  by_contra! hcon
+  exact frame_2_137.not_valid_axiomK hab (LogicEN.sound _ (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEN α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomT (LogicEN.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEN α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicEN.sound frame_1_3 (hcon #a))
+
 end LogicEN
 
 theorem LogicE_ssubset_LogicEN : @LogicE ℕ ⊂ LogicEN := by

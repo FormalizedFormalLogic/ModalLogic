@@ -1,7 +1,10 @@
 module
 
 public import Neighborhood.Semantics.Logic.E
+public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame2_8
 public import Neighborhood.Semantics.Example.Frame2_78
+public import Neighborhood.Semantics.Example.Frame2_206
 
 /-!
 # The neighborhood logic `LogicEP`
@@ -47,6 +50,23 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEP α) := by
 lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEP α) := by
   by_contra! hcon
   exact frame_2_78.not_isSerial (isSerial_of_valid_axiomD (LogicEP.sound frame_2_78 (hcon #a)))
+
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicEP α) := by
+  by_contra! hcon
+  exact frame_2_206.not_valid_axiomK hab (LogicEP.sound _ (hcon #a #b))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEP α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomB (LogicEP.sound frame_1_0 (hcon #a))
+
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEP α) := by
+  by_contra! hcon
+  exact frame_2_8.not_valid_axiomFour (LogicEP.sound frame_2_8 (hcon #a))
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEP α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomFive (LogicEP.sound frame_1_0 (hcon #a))
 
 end LogicEP
 
