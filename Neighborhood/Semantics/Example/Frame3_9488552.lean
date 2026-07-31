@@ -141,6 +141,8 @@ lemma frame_3_9488552.not_isRegular :
   rw [heq, frame_3_9488552.box_singleton_zero] at hmem
   simp at hmem
 
+instance : frame_3_9488552.ContainsUnit := ⟨frame_3_9488552.box_univ⟩
+
 lemma frame_3_9488552.not_valid_axiomC :
     ¬frame_3_9488552 ⊧ ((Axioms.C (α := ℕ) #0 #1) : Formula ℕ) := by
   intro hv
