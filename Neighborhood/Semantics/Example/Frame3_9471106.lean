@@ -52,6 +52,19 @@ instance : frame_3_9471106.IsTransitive := ⟨by
   · simp [frame_3_9471106.box_singleton]
   · simp [frame_3_9471106.contains_unit]⟩
 
+instance : frame_3_9471106.IsRegular where
+  regular X Y := by
+    intro x ⟨hX, hY⟩
+    simp only [Frame.box, frame_3_9471106, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff]
+    rcases hX with rfl | rfl <;> rcases hY with rfl | rfl <;> simp
+
+instance : frame_3_9471106.IsSerial where
+  serial X x hx := by
+    simp only [Frame.dia, Frame.box, frame_3_9471106, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff, Set.mem_compl_iff] at hx ⊢
+    rcases hx with rfl | rfl <;> simp [Set.ext_iff]
+
 @[simp]
 lemma frame_3_9471106.not_valid_axiomM :
     ¬frame_3_9471106 ⊧ (Axioms.M #0 #1 : Formula ℕ) :=
