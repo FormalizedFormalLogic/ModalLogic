@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <!--
   Interactive 3D zoo of the `Neighborhood` logics, rendered from
-  `neighborhood.json` (which is extracted from the Lean environment by
+  `zoo.json` (which is extracted from the Lean environment by
   `zoo/Extract.lean`; see `just zoo`).
 
-  This page fetches `./neighborhood.json`, so it must be served over HTTP.
+  This page fetches `./zoo.json`, so it must be served over HTTP.
   Locally: `just zoo-serve` (miniserve). On GitHub Pages it is deployed as
   the site root next to the JSON.
 -->
@@ -116,8 +116,8 @@
   <span id="stats"></span>
   <nav>
     <a href="https://github.com/FormalizedFormalLogic/ModalLogic">repository</a>
-    <a href="neighborhood.json">JSON</a>
-    <a href="neighborhood.png">2D&nbsp;PNG</a>
+    <a href="zoo.json">JSON</a>
+    <a href="zoo.png">2D&nbsp;PNG</a>
   </nav>
 </div>
 
@@ -140,7 +140,7 @@
 <div id="hint" class="panel">drag&nbsp;·&nbsp;rotate &nbsp; scroll&nbsp;·&nbsp;zoom &nbsp; right-drag&nbsp;·&nbsp;pan &nbsp; hover&nbsp;·&nbsp;inspect</div>
 
 <div id="error" class="panel">
-  <b>Could not load <code>neighborhood.json</code>.</b>
+  <b>Could not load <code>zoo.json</code>.</b>
   <p>This page must be served over HTTP next to the JSON file. From the
   repository root run <code>just zoo-serve</code> (after <code>just zoo</code>
   if the JSON has not been generated yet) and open the printed URL.</p>
@@ -277,7 +277,7 @@ addEventListener("unhandledrejection", ev => showError(String(ev.reason)));
   /* ---- data -------------------------------------------------------- */
   let edges;
   try {
-    const res = await fetch("./neighborhood.json");
+    const res = await fetch("./zoo.json");
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
     edges = await res.json();
   } catch (err) {
