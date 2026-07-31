@@ -32,4 +32,42 @@ instance : frame_2_153.ContainsUnit := ⟨by
   ext w
   simp [Frame.box, frame_2_153]⟩
 
+lemma frame_2_153.box_empty_eq_univ :
+    frame_2_153.box (∅ : Set (Fin 2)) = Set.univ := by
+  ext w; simp [Frame.box, frame_2_153]
+
+lemma frame_2_153.box_univ_eq_univ :
+    frame_2_153.box (Set.univ : Set (Fin 2)) = Set.univ := by
+  ext w; simp [Frame.box, frame_2_153]
+
+/-- Every box of `frame_2_153` is either empty or the whole frame: the neighborhoods of a world
+are exactly `∅` and `univ`, so a set is a neighborhood of every world exactly when it is one of
+these two boundary values. -/
+lemma frame_2_153.box_eq_univ_or_empty (X : Set (Fin 2)) :
+    frame_2_153.box X = ∅ ∨ frame_2_153.box X = Set.univ := by
+  by_cases h : X = ∅ ∨ X = Set.univ
+  · right
+    rcases h with rfl | rfl
+    · exact frame_2_153.box_empty_eq_univ
+    · exact frame_2_153.box_univ_eq_univ
+  · left; ext w; simp only [Frame.box, frame_2_153, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff, Set.mem_empty_iff_false, iff_false]; tauto
+
+lemma frame_2_153.dia_eq_univ_or_empty (X : Set (Fin 2)) :
+    frame_2_153.dia X = ∅ ∨ frame_2_153.dia X = Set.univ := by
+  rcases frame_2_153.box_eq_univ_or_empty Xᶜ with h | h
+  · right; simp [Frame.dia, h]
+  · left; simp [Frame.dia, h]
+
+instance : frame_2_153.IsTransitive where
+  trans X := by
+    simp only [Function.iterate_succ, Function.iterate_zero, Function.comp_apply, id_eq]
+    rcases frame_2_153.box_eq_univ_or_empty X with h | h <;>
+      rw [h] <;> simp [frame_2_153.box_empty_eq_univ, frame_2_153.box_univ_eq_univ]
+
+instance : frame_2_153.IsEuclidean where
+  eucl X := by
+    rcases frame_2_153.dia_eq_univ_or_empty X with h | h <;>
+      rw [h] <;> simp [frame_2_153.box_empty_eq_univ, frame_2_153.box_univ_eq_univ]
+
 end

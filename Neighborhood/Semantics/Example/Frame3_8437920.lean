@@ -134,4 +134,16 @@ lemma frame_3_8437920.not_valid_axiomFive :
     ¬frame_3_8437920 ⊧ (Axioms.Five #0 : Formula ℕ) :=
   fun h => frame_3_8437920.not_isEuclidean (isEuclidean_of_valid_axiomFive h)
 
+instance : frame_3_8437920.IsRegular where
+  regular X Y w hw := by
+    fin_cases w <;>
+      simp only [Frame.box, frame_3_8437920, Set.mem_inter_iff, Set.mem_setOf_eq,
+        Set.mem_insert_iff, Set.mem_singleton_iff] at hw ⊢
+    · obtain ⟨hX, hY⟩ := hw
+      rcases hX with rfl | rfl <;> rcases hY with rfl | rfl <;> simp
+    · obtain ⟨hX, hY⟩ := hw
+      rcases hX with rfl | rfl <;> rcases hY with rfl | rfl <;> simp
+    · obtain ⟨hX, hY⟩ := hw
+      subst hX; subst hY; simp
+
 end

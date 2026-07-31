@@ -67,6 +67,7 @@ public import Neighborhood.Semantics.Example.Frame2_90
 public import Neighborhood.Semantics.Example.Frame3_10520744
 public import Neighborhood.Semantics.Example.Frame3_10528928
 public import Neighborhood.Semantics.Example.Frame3_10529440
+public import Neighborhood.Semantics.Example.Frame3_11570344
 public import Neighborhood.Semantics.Example.Frame3_130
 public import Neighborhood.Semantics.Example.Frame3_137264
 public import Neighborhood.Semantics.Example.Frame3_137520
@@ -78,7 +79,9 @@ public import Neighborhood.Semantics.Example.Frame3_8421512
 public import Neighborhood.Semantics.Example.Frame3_8421544
 public import Neighborhood.Semantics.Example.Frame3_8431784
 public import Neighborhood.Semantics.Example.Frame3_8437920
+public import Neighborhood.Semantics.Example.Frame3_8553090
 public import Neighborhood.Semantics.Example.Frame3_9471106
+public import Neighborhood.Semantics.Example.Frame3_9488552
 public import Neighborhood.Semantics.Example.Frame4_11259170869739560
 public import Neighborhood.Semantics.Filtration
 public import Neighborhood.Semantics.Hilbert
