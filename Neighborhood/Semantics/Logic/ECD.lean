@@ -2,8 +2,10 @@ module
 
 public import Neighborhood.Semantics.Logic.E
 public import Neighborhood.Semantics.Logic.EC
+public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame3_10528928
 
 /-!
 # The neighborhood logic `LogicECD`
@@ -34,6 +36,13 @@ theorem LogicEC_ssubset_LogicECD : @LogicEC ℕ ⊂ LogicECD := by
   · intro h
     have hD : Axioms.D #0 ∈ @LogicEC ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_1_3.not_valid_axiomD (LogicEC.sound frame_1_3 hD)
+
+theorem LogicED_ssubset_LogicECD : @LogicED ℕ ⊂ LogicECD := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
+  · intro h
+    have hC : Axioms.C #0 #1 ∈ @LogicED ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_3_10528928.not_valid_axiomC (LogicED.sound frame_3_10528928 hC)
 
 section
 
