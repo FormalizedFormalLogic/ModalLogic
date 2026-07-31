@@ -52,13 +52,6 @@ theorem LogicED_ssubset_LogicEMD : @LogicED ℕ ⊂ LogicEMD := by
     have hM : Axioms.M #0 #1 ∈ (@LogicED ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_1_1.not_valid_axiomM (LogicED.sound frame_1_1 hM)
 
-theorem LogicEM_ssubset_LogicEMD : @LogicEM ℕ ⊂ LogicEMD := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hD : Axioms.D #0 ∈ (@LogicEM ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_isSerial (isSerial_of_valid_axiomD (LogicEM.sound frame_1_3 hD))
-
 theorem LogicEMP_ssubset_LogicEMD : @LogicEMP ℕ ⊂ LogicEMD := by
   constructor
   · apply Hilbert.subset_of_provable_axioms

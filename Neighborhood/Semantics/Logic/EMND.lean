@@ -24,7 +24,6 @@ with respect to the monotonic frames containing their unit and being serial.
 
 variable {α : Type u} {A : Formula α}
 
-
 theorem LogicEMND.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.ContainsUnit] [F.IsSerial] :
     A ∈ LogicEMND → F ⊧ A :=
@@ -43,13 +42,6 @@ theorem LogicEND_ssubset_LogicEMND : @LogicEND ℕ ⊂ LogicEMND := by
   · intro h
     have hM : Axioms.M #0 #1 ∈ (@LogicEND ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_3_8421506.not_valid_axiomM (LogicEND.sound frame_3_8421506 hM)
-
-theorem LogicEMN_ssubset_LogicEMND : @LogicEMN ℕ ⊂ LogicEMND := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicEMN ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicEMN.sound frame_1_3 hD)
 
 theorem LogicEMD_ssubset_LogicEMND : @LogicEMD ℕ ⊂ LogicEMND := by
   constructor

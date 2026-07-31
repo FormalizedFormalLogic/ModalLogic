@@ -24,7 +24,6 @@ frames that are both reflexive and symmetric.
 
 variable {α : Type u} {A : Formula α}
 
-
 theorem LogicETB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     [F.IsSymmetric] :
     A ∈ LogicETB → F ⊧ A :=
@@ -54,40 +53,12 @@ theorem LogicETB.complete
 
 end
 
-theorem LogicET_ssubset_LogicETB : @LogicET ℕ ⊂ LogicETB := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hB : Axioms.B #0 ∈ @LogicET ℕ := h (ProvableHilbert.axm (by grind))
-    have hS := isSymmetric_of_valid_axiomB (LogicET.sound frame_1_0 hB)
-    have := hS.symm (X := Set.univ)
-    simp [Frame.box, Frame.dia] at this
-
-theorem LogicEB_ssubset_LogicETB : @LogicEB ℕ ⊂ LogicETB := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hT : Axioms.T #0 ∈ @LogicEB ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT (LogicEB.sound frame_1_3 hT))
-
 theorem LogicENT_ssubset_LogicENTB : @LogicENT ℕ ⊂ LogicENTB := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · intro h
     have hB : Axioms.B #0 ∈ @LogicENT ℕ := h (ProvableHilbert.axm (by grind))
     exact frame_3_9471106.not_valid_axiomB (LogicENT.sound frame_3_9471106 hB)
-
-theorem LogicENB_ssubset_LogicENTB : @LogicENB ℕ ⊂ LogicENTB := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
-  · intro h
-    have hT : Axioms.T #0 ∈ @LogicENB ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_isReflexive
-      (isReflexive_of_valid_axiomT (LogicENB.sound frame_1_3 hT))
-
-theorem LogicENB_ssubset_LogicETB : @LogicENB ℕ ⊂ LogicETB := by
-  rw [LogicETB_eq_LogicENTB]
-  exact LogicENB_ssubset_LogicENTB
 
 theorem LogicENDB_ssubset_LogicETB : @LogicENDB ℕ ⊂ LogicETB := by
   constructor

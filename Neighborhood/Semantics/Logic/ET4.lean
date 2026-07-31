@@ -21,7 +21,6 @@ property.
 
 variable {α : Type u} {A : Formula α}
 
-
 theorem LogicET4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     [F.IsTransitive] :
     A ∈ LogicET4 → F ⊧ A :=
@@ -57,14 +56,6 @@ theorem LogicET4.finite_complete
     haveI : (transitiveFiltration M A.subformulas).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (transitiveFiltration M A.subformulas).toModel.toFrame
       (transitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
-
-
-theorem LogicE4_ssubset_LogicET4 : @LogicE4 ℕ ⊂ LogicET4 := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · intro h
-    have hT : Axioms.T #0 ∈ @LogicE4 ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_isReflexive (isReflexive_of_valid_axiomT (LogicE4.sound frame_1_3 hT))
 
 theorem LogicET_ssubset_LogicET4 : @LogicET ℕ ⊂ LogicET4 := by
   constructor

@@ -22,7 +22,6 @@ frames containing their unit.
 
 variable {α : Type u} {A : Formula α}
 
-
 theorem LogicEND.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsSerial] :
     A ∈ LogicEND → F ⊧ A :=
@@ -44,13 +43,6 @@ theorem LogicEND.complete
     (h (basicCanonicity LogicEND).toModel.toFrame
       (basicCanonicity LogicEND).toModel.Val)
 
-theorem LogicEN_ssubset_LogicEND : @LogicEN ℕ ⊂ LogicEND := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hD : Axioms.D #0 ∈ @LogicEN ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_1_3.not_valid_axiomD (LogicEN.sound frame_1_3 hD)
-
 theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
@@ -63,14 +55,6 @@ instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.Not
     have hbox : x ∈ F.box (∅ : Set κ) := hx
     have hd := F.serial (X := (∅ : Set κ)) hbox
     simp [Frame.dia, F.contains_unit] at hd
-
-theorem LogicEP_ssubset_LogicEND : @LogicEP ℕ ⊂ LogicEND := by
-  constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ rfl
-    exact LogicEND.complete (fun _ _ _ => valid_axiomP_of_notContainsEmpty)
-  · intro h
-    exact LogicEP.not_mem_axiomD (a := 0) (h (ProvableHilbert.axm (by grind)))
 
 theorem LogicENP_ssubset_LogicEND : @LogicENP ℕ ⊂ LogicEND := by
   constructor

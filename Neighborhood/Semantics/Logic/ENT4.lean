@@ -43,7 +43,6 @@ theorem complete
 
 end LogicENT4
 
-
 instance : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
   closed B hB C hC := by
@@ -66,15 +65,6 @@ theorem LogicENT4.finite_complete
     apply (transitiveFiltration M T).filtration_satisfies _ (by simp [T]) |>.mp
     haveI : (transitiveFiltration M T).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (transitiveFiltration M T).toModel.toFrame (transitiveFiltration M T).toModel.Val ⟦x⟧
-
-
-theorem LogicEN4_ssubset_LogicENT4 : @LogicEN4 ℕ ⊂ LogicENT4 := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms (Set.union_subset_union_left _ Set.subset_union_left)
-  · intro h
-    have hT : Axioms.T #0 ∈ (@LogicEN4 ℕ) := h (ProvableHilbert.axm (by grind))
-    exact frame_2_170.not_valid_axiomT
-      (LogicEN4.sound frame_2_170 hT)
 
 theorem LogicET4_ssubset_LogicENT4 : @LogicET4 ℕ ⊂ LogicENT4 := by
   constructor

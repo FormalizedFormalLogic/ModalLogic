@@ -19,7 +19,6 @@ that contain their unit and are reflexive.
 
 variable {α : Type u} {A : Formula α}
 
-
 theorem LogicENT.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsReflexive] :
     A ∈ LogicENT → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
@@ -39,14 +38,6 @@ theorem LogicENT.complete
   (basicCanonicity LogicENT).mem_of_valid
     (h (basicCanonicity LogicENT).toModel.toFrame
       (basicCanonicity LogicENT).toModel.Val)
-
-
-theorem LogicEN_ssubset_LogicENT : @LogicEN ℕ ⊂ LogicENT := by
-  constructor
-  · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · intro h
-    have hT : Axioms.T #0 ∈ @LogicEN ℕ := h (ProvableHilbert.axm (by grind))
-    exact frame_2_170.not_valid_axiomT (LogicEN.sound frame_2_170 hT)
 
 theorem LogicET_ssubset_LogicENT : @LogicET ℕ ⊂ LogicENT := by
   constructor
