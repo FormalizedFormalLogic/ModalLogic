@@ -102,6 +102,7 @@ public import Neighborhood.Semantics.Logic.ECN45
 public import Neighborhood.Semantics.Logic.ECN5
 public import Neighborhood.Semantics.Logic.ECNB
 public import Neighborhood.Semantics.Logic.ECND
+public import Neighborhood.Semantics.Logic.ECNDB
 public import Neighborhood.Semantics.Logic.ECNT
 public import Neighborhood.Semantics.Logic.ECP
 public import Neighborhood.Semantics.Logic.ECT
