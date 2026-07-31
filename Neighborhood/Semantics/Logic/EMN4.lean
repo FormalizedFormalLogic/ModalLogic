@@ -7,6 +7,7 @@ public import Neighborhood.Semantics.Filtration
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_172
+public import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicEMN4`
@@ -71,5 +72,12 @@ theorem LogicEMN_ssubset_LogicEMN4 : @LogicEMN ℕ ⊂ LogicEMN4 := by
   · intro h
     have hFour : Axioms.Four #0 ∈ (@LogicEMN ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_172.not_valid_axiomFour (LogicEMN.sound frame_2_172 hFour)
+
+theorem LogicEN4_ssubset_LogicEMN4 : @LogicEN4 ℕ ⊂ LogicEMN4 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · intro h
+    have hM : Axioms.M #0 #1 ∈ (@LogicEN4 ℕ) := h (ProvableHilbert.axm (by grind))
+    exact frame_3_9471106.not_valid_axiomM (LogicEN4.sound frame_3_9471106 hM)
 
 end
