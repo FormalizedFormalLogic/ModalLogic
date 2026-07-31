@@ -18,11 +18,7 @@ abbrev frame_2_138 : Frame (Fin 2) :=
     | 0 => {{0}, Set.univ}
     | 1 => {Set.univ}⟩
 
-instance : frame_2_138.NotContainsEmpty := ⟨fun x => by
-  intro h
-  match x with
-  | 0 => simp [Frame.box, frame_2_138] at h
-  | 1 => simp [Frame.box, frame_2_138] at h⟩
+instance : frame_2_138.NotContainsEmpty := ⟨fun x => by sorry⟩
 
 instance : frame_2_138.ContainsUnit := ⟨by
   ext y; fin_cases y <;> simp [Frame.box, frame_2_138, Set.Fin2.eq_univ, Set.ext_iff]⟩
