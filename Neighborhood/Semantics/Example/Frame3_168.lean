@@ -19,6 +19,14 @@ abbrev frame_3_168 : Frame (Fin 3) :=
     | 1 => ∅
     | 2 => ∅⟩
 
+@[simp]
+lemma frame_3_168.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_168 ⊧ (Axioms.K #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then {0, 1} else if c = b then {0} else Set.univ) 0
+  simp [Forces, Frame.box, Set.ext_iff, Ne.symm hab] at h0
+  revert h0
+  decide
+
 /-- A set of worlds containing `0` and `1` is either `{0, 1}` or the whole frame. -/
 lemma frame_3_168.eq_of_mem01 {X : Set (Fin 3)} (h0 : (0 : Fin 3) ∈ X) (h1 : (1 : Fin 3) ∈ X) :
     X = {0, 1} ∨ X = Set.univ := by

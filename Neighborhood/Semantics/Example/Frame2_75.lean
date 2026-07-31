@@ -82,6 +82,8 @@ instance : frame_2_75.IsTransitive where
 
 @[simp]
 lemma frame_2_75.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
-    ¬frame_2_75 ⊧ (Axioms.K #a #b : Formula α) := fun h => by sorry
+    ¬frame_2_75 ⊧ (Axioms.K #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then ∅ else if c = b then {1} else Set.univ) 0
+  simp [Forces, Frame.box, Set.ext_iff, Ne.symm hab] at h0
 
 end

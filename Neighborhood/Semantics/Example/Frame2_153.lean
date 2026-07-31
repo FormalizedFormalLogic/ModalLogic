@@ -15,6 +15,12 @@ variable {a b : α}
 abbrev frame_2_153 : Frame (Fin 2) := ⟨fun _ => {∅, Set.univ}⟩
 
 @[simp]
+lemma frame_2_153.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_153 ⊧ (Axioms.K #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then ∅ else if c = b then {0} else Set.univ) 0
+  simp [Forces, Frame.box, Set.ext_iff, Ne.symm hab] at h0
+
+@[simp]
 lemma frame_2_153.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
     ¬frame_2_153 ⊧ (Axioms.M #a #b : Formula α) :=
   Frame.Validate.not_of_exists_valuation_world

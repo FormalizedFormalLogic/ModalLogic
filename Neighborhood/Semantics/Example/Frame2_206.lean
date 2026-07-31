@@ -18,6 +18,14 @@ abbrev frame_2_206 : Frame (Fin 2) :=
     | 0 => {{0}, {1}, {0, 1}}
     | 1 => {{1}, {0, 1}}⟩
 
+instance : frame_2_206.NotContainsEmpty := ⟨fun x => by
+  fin_cases x <;>
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or] <;>
+    and_intros <;>
+    first
+      | exact (Set.singleton_ne_empty _).symm
+      | exact (Set.insert_nonempty _ _).ne_empty.symm⟩
+
 lemma frame_2_206.box_mono {X Y : Set (Fin 2)} (h : X ⊆ Y) :
     frame_2_206.box X ⊆ frame_2_206.box Y := by
   intro w hw
@@ -26,6 +34,12 @@ lemma frame_2_206.box_mono {X Y : Set (Fin 2)} (h : X ⊆ Y) :
       Set.mem_singleton_iff] at hw ⊢ <;>
     rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
     simp_all; grind
+
+@[simp]
+lemma frame_2_206.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_206 ⊧ (Axioms.K #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then {0} else if c = b then ∅ else Set.univ) 0
+  simp [Forces, Frame.box, Set.ext_iff, Ne.symm hab] at h0
 
 @[simp]
 lemma frame_2_206.not_valid_axiomC [DecidableEq α] (hab : a ≠ b) :
