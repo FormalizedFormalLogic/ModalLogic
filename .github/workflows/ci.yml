@@ -72,8 +72,14 @@ jobs:
         if: env.ZOO == 'true'
         run: |
           mkdir -p _site/Neighborhood
+          # `zoo.html` is the published URL the README links to; the same page
+          # is also copied as `index.html`, which is the name the local server
+          # and the links between the two pages use, so that a link works
+          # identically in both places.
           cp zoo/index.html _site/Neighborhood/zoo.html
-          cp zoo/zoo.png zoo/zoo.json _site/Neighborhood/
+          cp zoo/index.html _site/Neighborhood/index.html
+          cp zoo/status.html _site/Neighborhood/status.html
+          cp zoo/zoo.png zoo/zoo.json zoo/status.json _site/Neighborhood/
       - name: Upload pages artifact
         if: env.ZOO == 'true'
         uses: actions/upload-pages-artifact@v5
