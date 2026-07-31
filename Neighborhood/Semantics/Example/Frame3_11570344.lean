@@ -104,7 +104,47 @@ lemma frame_3_11570344.dia_univ :
     frame_3_11570344.dia (Set.univ : Set (Fin 3)) = Set.univ := by
   simp [Frame.dia, frame_3_11570344.box_empty]
 
+instance : frame_3_11570344.IsReflexive where
+  refl X w hw := by
+    by_cases h0 : (0 : Fin 3) ∈ X <;> by_cases h1 : (1 : Fin 3) ∈ X <;> by_cases h2 : (2 : Fin 3) ∈ X <;>
+    first
+      | (have hX : X = Set.univ := by ext i; fin_cases i <;> simp_all
+         subst hX; simp_all [frame_3_11570344.box_univ])
+      | (have hX : X = ({0, 1} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+         subst hX; simp_all [frame_3_11570344.box_zero_one])
+      | (have hX : X = ({0, 2} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+         subst hX; simp_all [frame_3_11570344.box_zero_two])
+      | (have hX : X = ({0} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+         subst hX; simp_all [frame_3_11570344.box_singleton_zero])
+      | (have hX : X = ({1, 2} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+         subst hX; simp_all [frame_3_11570344.box_one_two])
+      | (have hX : X = ({1} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+         subst hX; simp_all [frame_3_11570344.box_singleton_one])
+      | (have hX : X = ({2} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+         subst hX; simp_all [frame_3_11570344.box_singleton_two])
+      | (have hX : X = (∅ : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+         subst hX; simp_all [frame_3_11570344.box_empty])
+
 instance : frame_3_11570344.IsSymmetric := ⟨fun X => by
+  by_cases h0 : (0 : Fin 3) ∈ X <;> by_cases h1 : (1 : Fin 3) ∈ X <;> by_cases h2 : (2 : Fin 3) ∈ X
+  · have hX : X = Set.univ := by ext i; fin_cases i <;> simp_all
+    subst hX; simp [frame_3_11570344.dia_univ, frame_3_11570344.box_univ]
+  · have hX : X = ({0, 1} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+    subst hX; simp [frame_3_11570344.dia_zero_one, frame_3_11570344.box_zero_one]
+  · have hX : X = ({0, 2} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+    subst hX; simp [frame_3_11570344.dia_zero_two, frame_3_11570344.box_zero_two]
+  · have hX : X = ({0} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+    subst hX; simp [frame_3_11570344.dia_zero, frame_3_11570344.box_univ]
+  · have hX : X = ({1, 2} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+    subst hX; simp [frame_3_11570344.dia_one_two, frame_3_11570344.box_univ]
+  · have hX : X = ({1} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+    subst hX; simp [frame_3_11570344.dia_one, frame_3_11570344.box_singleton_one]
+  · have hX : X = ({2} : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+    subst hX; simp [frame_3_11570344.dia_two, frame_3_11570344.box_singleton_two]
+  · have hX : X = (∅ : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
+    subst hX; simp [frame_3_11570344.dia_empty, frame_3_11570344.box_empty]⟩
+
+instance : frame_3_11570344.IsEuclidean := ⟨fun X => by
   by_cases h0 : (0 : Fin 3) ∈ X <;> by_cases h1 : (1 : Fin 3) ∈ X <;> by_cases h2 : (2 : Fin 3) ∈ X
   · have hX : X = Set.univ := by ext i; fin_cases i <;> simp_all
     subst hX; simp [frame_3_11570344.dia_univ, frame_3_11570344.box_univ]
