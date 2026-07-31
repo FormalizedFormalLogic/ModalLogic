@@ -19,7 +19,9 @@ serial, and euclidean neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECD5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSerial]
+namespace LogicECD5
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSerial]
     [F.IsEuclidean] :
     A ∈ LogicECD5 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -27,6 +29,8 @@ theorem LogicECD5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSer
 instance : (@LogicECD5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECD5.sound frame_1_2 hC⟩
+
+end LogicECD5
 
 theorem LogicECD_ssubset_LogicECD5 : @LogicECD ℕ ⊂ LogicECD5 := by
   constructor

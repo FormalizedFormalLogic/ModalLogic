@@ -17,13 +17,17 @@ modal logic axiomatised by the regularity axiom `C` and the transitivity axiom `
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEC4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsTransitive] :
+namespace LogicEC4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsTransitive] :
     A ∈ LogicEC4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 instance : (@LogicEC4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEC4.sound frame_1_2 hC⟩
+
+end LogicEC4
 
 theorem LogicEC_ssubset_LogicEC4 : (@LogicEC ℕ) ⊂ LogicEC4 := by
   constructor

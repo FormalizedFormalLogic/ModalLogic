@@ -19,7 +19,9 @@ contain their unit and are symmetric.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicENB.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsSymmetric] :
+namespace LogicENB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsSymmetric] :
     A ∈ LogicENB → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
 
@@ -35,7 +37,7 @@ variable [DecidableEq α]
 unit as well as being symmetric.
 
 - [Che80, Exercise 9.39(b)] -/
-theorem LogicENB.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsSymmetric] → F ⊧ A) :
     A ∈ @LogicENB α :=
   (intermediateRelativeMaximalCanonicalModel LogicENB).mem_of_valid
@@ -44,6 +46,7 @@ theorem LogicENB.complete
 
 end
 
+end LogicENB
 
 theorem LogicEN_ssubset_LogicENB : @LogicEN ℕ ⊂ LogicENB := by
   constructor

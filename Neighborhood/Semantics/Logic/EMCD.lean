@@ -20,7 +20,9 @@ regular, and serial neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMCD.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
+namespace LogicEMCD
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.IsSerial] :
     A ∈ LogicEMCD → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -28,6 +30,8 @@ theorem LogicEMCD.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsR
 instance : (@LogicEMCD α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCD.sound frame_1_2 hC⟩
+
+end LogicEMCD
 
 theorem LogicEMC_ssubset_LogicEMCD : @LogicEMC ℕ ⊂ LogicEMCD := by
   constructor

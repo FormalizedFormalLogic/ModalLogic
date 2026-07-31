@@ -16,7 +16,9 @@ with respect to the regular, unit-containing, reflexive, and transitive neighbor
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECNT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.ContainsUnit]
+namespace LogicECNT4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.ContainsUnit]
     [F.IsReflexive] [F.IsTransitive] :
     A ∈ LogicECNT4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -24,6 +26,8 @@ theorem LogicECNT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.Cont
 instance : (@LogicECNT4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECNT4.sound frame_1_2 hC⟩
+
+end LogicECNT4
 
 theorem LogicENT4_ssubset_LogicECNT4 : @LogicENT4 ℕ ⊂ LogicECNT4 := by
   constructor

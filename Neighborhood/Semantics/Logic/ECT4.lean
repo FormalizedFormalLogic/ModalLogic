@@ -20,7 +20,9 @@ regular, reflexive, and transitive neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsReflexive]
+namespace LogicECT4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsReflexive]
     [F.IsTransitive] :
     A ∈ LogicECT4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -28,6 +30,8 @@ theorem LogicECT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsRef
 instance : (@LogicECT4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECT4.sound frame_1_2 hC⟩
+
+end LogicECT4
 
 theorem LogicET4_ssubset_LogicECT4 : @LogicET4 ℕ ⊂ LogicECT4 := by
   constructor

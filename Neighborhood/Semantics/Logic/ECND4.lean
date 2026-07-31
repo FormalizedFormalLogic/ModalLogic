@@ -21,7 +21,9 @@ Also proves the strict inclusions of `LogicECND`, `LogicECN4` and `LogicEND4` in
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
+namespace LogicECND4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
     [F.ContainsUnit] [F.IsSerial] [F.IsTransitive] :
     A ∈ LogicECND4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -29,6 +31,8 @@ theorem LogicECND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
 instance : (@LogicECND4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECND4.sound frame_1_2 hC⟩
+
+end LogicECND4
 
 theorem LogicECND_ssubset_LogicECND4 : @LogicECND ℕ ⊂ LogicECND4 := by
   constructor

@@ -16,8 +16,9 @@ inclusion of `LogicE` in `LogicED`.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicED
 
-theorem LogicED.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] :
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] :
     A ∈ LogicED → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
@@ -25,6 +26,7 @@ instance : (@LogicED α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicED.sound frame_1_2 hC⟩
 
+end LogicED
 
 theorem LogicE_ssubset_LogicED : @LogicE ℕ ⊂ LogicED := by
   constructor

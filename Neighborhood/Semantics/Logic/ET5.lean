@@ -21,7 +21,9 @@ neighborhood frames that are both reflexive and euclidean.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicET5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] [F.IsEuclidean] :
+namespace LogicET5
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] [F.IsEuclidean] :
     A ∈ LogicET5 → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
@@ -39,7 +41,7 @@ section
 variable [DecidableEq α]
 
 omit [DecidableEq α] in
-theorem LogicET5.hasAxiomFour : Axioms.Four A ∈ (@LogicET5 α) :=
+theorem hasAxiomFour : Axioms.Four A ∈ (@LogicET5 α) :=
   have h1 : (□A : Formula α) 🡒 ◇□A ∈ (@LogicET5 α) := Logic.diaTc
   have h2 : ◇□A 🡒 (□A : Formula α) ∈ (@LogicET5 α) :=
     (Logic.hasAxiomGeachSwap (L := @LogicET5 α) (g := ⟨1, 1, 0, 1⟩)).Geach A
@@ -57,13 +59,15 @@ instance : (basicCanonicalModel (@LogicET5 α)).IsEuclidean := by
   rw [hbox]
   simp [Frame.dia, Frame.contains_unit]
 
-theorem LogicET5.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsEuclidean] → F ⊧ A) :
     A ∈ @LogicET5 α :=
   (basicCanonicalModel LogicET5).mem_of_valid
     (h (basicCanonicalModel LogicET5).toFrame (basicCanonicalModel LogicET5).Val)
 
 end
+
+end LogicET5
 
 theorem LogicENT4_ssubset_LogicET5 : @LogicENT4 ℕ ⊂ LogicET5 := by
   constructor

@@ -15,7 +15,9 @@ Soundness, consistency and completeness of `LogicE5`, the classical modal logic 
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicE5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
+namespace LogicE5
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsEuclidean] :
     A ∈ @LogicE5 α → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
@@ -25,12 +27,13 @@ instance : (@LogicE5 α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicE5.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsEuclidean] → F ⊧ A) :
+theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsEuclidean] → F ⊧ A) :
     A ∈ @LogicE5 α :=
   (maximalRelativeMaximalCanonicalModel LogicE5).mem_of_valid
     (h (maximalRelativeMaximalCanonicalModel LogicE5).toFrame
       (maximalRelativeMaximalCanonicalModel LogicE5).Val)
 
+end LogicE5
 
 theorem LogicE_ssubset_LogicE5 : @LogicE ℕ ⊂ LogicE5 := by
   constructor

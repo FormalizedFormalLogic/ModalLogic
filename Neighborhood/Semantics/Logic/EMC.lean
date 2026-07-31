@@ -20,7 +20,9 @@ that are both monotonic and regular.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+namespace LogicEMC
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] :
     A ∈ LogicEMC → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) <;> simp)
@@ -31,12 +33,14 @@ instance : (@LogicEMC α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEMC.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] → F ⊧ A) :
     A ∈ @LogicEMC α :=
   (supplementedBasicCanonicalModel LogicEMC).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMC).toFrame
       (supplementedBasicCanonicalModel LogicEMC).Val)
+
+end LogicEMC
 
 theorem LogicEC_ssubset_LogicEMC : @LogicEC ℕ ⊂ LogicEMC := by
   constructor

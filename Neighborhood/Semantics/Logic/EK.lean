@@ -16,7 +16,9 @@ axiom scheme `K`, with respect to all neighborhood frames satisfying the `K`-pro
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEK.sound {κ} [Nonempty κ] (F : Frame κ) [F.HasPropertyK] :
+namespace LogicEK
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.HasPropertyK] :
     A ∈ LogicEK → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; simp)
 
@@ -24,6 +26,7 @@ instance : (@LogicEK α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEK.sound frame_1_2 hC⟩
 
+end LogicEK
 
 theorem LogicE_ssubset_LogicEK : @LogicE ℕ ⊂ LogicEK := by
   constructor

@@ -19,7 +19,9 @@ monotonic neighborhood frames satisfying the `K`-property.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMK.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+namespace LogicEMK
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.HasPropertyK] :
     A ∈ LogicEMK → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) <;> simp)
@@ -27,6 +29,8 @@ theorem LogicEMK.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
 instance : (@LogicEMK α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMK.sound frame_1_2 hC⟩
+
+end LogicEMK
 
 theorem LogicEK_ssubset_LogicEMK : @LogicEK ℕ ⊂ LogicEMK := by
   constructor

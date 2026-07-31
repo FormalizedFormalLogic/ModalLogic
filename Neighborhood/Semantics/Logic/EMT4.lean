@@ -23,7 +23,9 @@ finite frame property.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+namespace LogicEMT4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsReflexive] [F.IsTransitive] :
     A ∈ LogicEMT4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -34,14 +36,14 @@ instance : (@LogicEMT4 α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEMT4.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsReflexive] →
       [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMT4 α :=
   (supplementedBasicCanonicalModel LogicEMT4).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMT4).toFrame
       (supplementedBasicCanonicalModel LogicEMT4).Val)
 
-theorem LogicEMT4.finite_complete
+theorem finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] → [F.IsReflexive] →
       [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMT4 α :=
   LogicEMT4.complete <| by
@@ -53,6 +55,8 @@ theorem LogicEMT4.finite_complete
     haveI : (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame
       (supplementedTransitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
+
+end LogicEMT4
 
 theorem LogicEMT_ssubset_LogicEMT4 : @LogicEMT ℕ ⊂ LogicEMT4 := by
   constructor

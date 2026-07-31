@@ -24,7 +24,9 @@ with respect to the monotonic frames containing their unit and being serial.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMND.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+namespace LogicEMND
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.ContainsUnit] [F.IsSerial] :
     A ∈ LogicEMND → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;> simp)
@@ -32,6 +34,8 @@ theorem LogicEMND.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
 instance : (@LogicEMND α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMND.sound frame_1_2 hC⟩
+
+end LogicEMND
 
 theorem LogicEND_ssubset_LogicEMND : @LogicEND ℕ ⊂ LogicEMND := by
   constructor

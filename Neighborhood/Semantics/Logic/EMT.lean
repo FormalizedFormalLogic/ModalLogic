@@ -20,7 +20,9 @@ that are both monotonic and reflexive.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMT.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+namespace LogicEMT
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsReflexive] :
     A ∈ LogicEMT → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩) <;> simp)
@@ -31,12 +33,14 @@ instance : (@LogicEMT α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEMT.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsReflexive] → F ⊧ A) :
     A ∈ @LogicEMT α :=
   (supplementedBasicCanonicalModel LogicEMT).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMT).toFrame
       (supplementedBasicCanonicalModel LogicEMT).Val)
+
+end LogicEMT
 
 theorem LogicET_ssubset_LogicEMT : @LogicET ℕ ⊂ LogicEMT := by
   constructor

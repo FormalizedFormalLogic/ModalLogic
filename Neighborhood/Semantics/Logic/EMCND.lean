@@ -24,7 +24,9 @@ contain their unit, and are serial.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMCND.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+namespace LogicEMCND
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.ContainsUnit] [F.IsSerial] :
     A ∈ LogicEMCND → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) <;> simp)
@@ -32,6 +34,8 @@ theorem LogicEMCND.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
 instance : (@LogicEMCND α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCND.sound frame_1_2 hC⟩
+
+end LogicEMCND
 
 theorem LogicEMCN_ssubset_LogicEMCND : @LogicEMCN ℕ ⊂ LogicEMCND := by
   constructor

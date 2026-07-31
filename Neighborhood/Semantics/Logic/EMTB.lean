@@ -21,7 +21,9 @@ neighborhood frames that are monotonic, reflexive and symmetric.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMTB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsReflexive]
+namespace LogicEMTB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsReflexive]
     [F.IsSymmetric] :
     A ∈ LogicEMTB → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -29,6 +31,8 @@ theorem LogicEMTB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsR
 instance : (@LogicEMTB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMTB.sound frame_1_2 hC⟩
+
+end LogicEMTB
 
 theorem LogicEMDB_ssubset_LogicEMTB : @LogicEMDB ℕ ⊂ LogicEMTB := by
   constructor

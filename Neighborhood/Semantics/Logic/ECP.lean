@@ -10,8 +10,9 @@ public import Neighborhood.Semantics.Example.Frame2_78
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicECP
 
-theorem LogicECP.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.NotContainsEmpty] :
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.NotContainsEmpty] :
     A ∈ LogicECP → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | rfl) <;> simp)
 
@@ -21,12 +22,14 @@ instance : (@LogicECP α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicECP.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegular] → [F.NotContainsEmpty] → F ⊧ A) :
     A ∈ @LogicECP α :=
   (basicCanonicalModel LogicECP).mem_of_valid
     (h (basicCanonicalModel LogicECP).toFrame
       (basicCanonicalModel LogicECP).Val)
+
+end LogicECP
 
 theorem LogicECD_ssubset_LogicECP : @LogicECD ℕ ⊂ LogicECP := by
   constructor

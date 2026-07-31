@@ -20,8 +20,9 @@ neighborhood frames that are monotonic, regular, and contain their unit.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEMCN
 
-theorem LogicEMCN.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.ContainsUnit] :
     A ∈ LogicEMCN → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) <;> simp)
@@ -32,13 +33,15 @@ instance : (@LogicEMCN α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEMCN.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] →
       [F.ContainsUnit] → F ⊧ A) :
     A ∈ @LogicEMCN α :=
   (supplementedBasicCanonicalModel LogicEMCN).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMCN).toFrame
       (supplementedBasicCanonicalModel LogicEMCN).Val)
+
+end LogicEMCN
 
 theorem LogicECN_ssubset_LogicEMCN : @LogicECN ℕ ⊂ LogicEMCN := by
   constructor

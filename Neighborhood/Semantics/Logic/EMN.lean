@@ -18,8 +18,9 @@ containing their unit.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEMN
 
-theorem LogicEMN.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.ContainsUnit] :
     A ∈ LogicEMN → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | rfl) <;> simp)
@@ -30,12 +31,14 @@ instance : (@LogicEMN α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEMN.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.ContainsUnit] → F ⊧ A) :
     A ∈ @LogicEMN α :=
   (supplementedBasicCanonicalModel LogicEMN).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMN).toFrame
       (supplementedBasicCanonicalModel LogicEMN).Val)
+
+end LogicEMN
 
 theorem LogicEM_ssubset_LogicEMN : @LogicEM ℕ ⊂ LogicEMN := by
   constructor

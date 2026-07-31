@@ -18,7 +18,9 @@ theorems.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEP.sound {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
+namespace LogicEP
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.NotContainsEmpty] :
     A ∈ LogicEP → F ⊧ A :=
   Hilbert.sound (by rintro _ rfl; simp)
 
@@ -26,6 +28,7 @@ instance : (@LogicEP α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEP.sound frame_1_2 hC⟩
 
+end LogicEP
 
 theorem LogicE_ssubset_LogicEP : @LogicE ℕ ⊂ LogicEP := by
   constructor

@@ -18,13 +18,17 @@ frames that are monotonic and euclidean.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEM5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsEuclidean] :
+namespace LogicEM5
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsEuclidean] :
     A ∈ LogicEM5 → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 instance : (@LogicEM5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEM5.sound frame_1_2 hC⟩
+
+end LogicEM5
 
 theorem LogicEN5_ssubset_LogicEM5 : @LogicEN5 ℕ ⊂ LogicEM5 := by
   constructor

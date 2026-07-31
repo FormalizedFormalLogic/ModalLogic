@@ -18,8 +18,9 @@ the reflexivity axiom `T`, with respect to the reflexive neighborhood frames
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicET
 
-theorem LogicET.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] :
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive] :
     A ∈ LogicET → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
@@ -29,12 +30,13 @@ instance : (@LogicET α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicET.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → F ⊧ A) :
+theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → F ⊧ A) :
     A ∈ @LogicET α :=
   (basicCanonicalModel LogicET).mem_of_valid
     (h (basicCanonicalModel LogicET).toFrame
       (basicCanonicalModel LogicET).Val)
 
+end LogicET
 
 theorem LogicED_ssubset_LogicET : @LogicED ℕ ⊂ LogicET := by
   constructor

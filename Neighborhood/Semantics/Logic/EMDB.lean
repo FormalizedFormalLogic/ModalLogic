@@ -18,7 +18,9 @@ neighborhood frames that are monotonic, serial, and symmetric.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMDB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsSerial]
+namespace LogicEMDB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsSerial]
     [F.IsSymmetric] :
     A ∈ LogicEMDB → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -26,6 +28,8 @@ theorem LogicEMDB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsS
 instance : (@LogicEMDB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMDB.sound frame_1_2 hC⟩
+
+end LogicEMDB
 
 theorem LogicEMCND_ssubset_LogicEMDB : @LogicEMCND ℕ ⊂ LogicEMDB := by
   constructor

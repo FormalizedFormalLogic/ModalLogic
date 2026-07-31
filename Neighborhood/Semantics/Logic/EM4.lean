@@ -19,8 +19,9 @@ frames that are monotonic and transitive, together with its finite frame propert
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEM4
 
-theorem LogicEM4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsTransitive] :
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsTransitive] :
     A ∈ LogicEM4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
@@ -30,14 +31,14 @@ instance : (@LogicEM4 α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEM4.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicEM4 α :=
   (supplementedBasicCanonicalModel LogicEM4).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEM4).toFrame
       (supplementedBasicCanonicalModel LogicEM4).Val)
 
-theorem LogicEM4.finite_complete
+theorem finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] →
       [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEM4 α :=
   LogicEM4.complete <| by
@@ -50,6 +51,7 @@ theorem LogicEM4.finite_complete
     exact h (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame
       (supplementedTransitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
+end LogicEM4
 
 theorem LogicE4_ssubset_LogicEM4 : @LogicE4 ℕ ⊂ LogicEM4 := by
   constructor

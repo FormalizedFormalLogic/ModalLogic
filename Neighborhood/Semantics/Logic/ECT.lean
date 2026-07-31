@@ -15,13 +15,17 @@ axiom `C` and the reflexivity axiom `T`, with respect to the regular and reflexi
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECT.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsReflexive] :
+namespace LogicECT
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsReflexive] :
     A ∈ LogicECT → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 instance : (@LogicECT α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECT.sound frame_1_2 hC⟩
+
+end LogicECT
 
 theorem LogicET_ssubset_LogicECT : @LogicET ℕ ⊂ LogicECT := by
   constructor

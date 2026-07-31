@@ -22,7 +22,9 @@ frames containing their unit.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEND.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
+namespace LogicEND
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsSerial] :
     A ∈ LogicEND → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
@@ -33,12 +35,14 @@ instance : (@LogicEND α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEND.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsSerial] → F ⊧ A) :
     A ∈ @LogicEND α :=
   (basicCanonicalModel LogicEND).mem_of_valid
     (h (basicCanonicalModel LogicEND).toFrame
       (basicCanonicalModel LogicEND).Val)
+
+end LogicEND
 
 theorem LogicED_ssubset_LogicEND : @LogicED ℕ ⊂ LogicEND := by
   constructor

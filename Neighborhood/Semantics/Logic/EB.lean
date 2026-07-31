@@ -16,7 +16,9 @@ inclusion of `LogicE` in `LogicEB`.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] :
+namespace LogicEB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] :
     A ∈ LogicEB → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, rfl⟩; simp)
 
@@ -32,7 +34,7 @@ variable [DecidableEq α]
 of `intermediateRelativeMaximalCanonicalModel` is.
 
 - [Che80, Exercise 9.39(b)] -/
-theorem LogicEB.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsSymmetric] → F ⊧ A) :
     A ∈ @LogicEB α :=
   (intermediateRelativeMaximalCanonicalModel LogicEB).mem_of_valid
@@ -40,6 +42,8 @@ theorem LogicEB.complete
       (intermediateRelativeMaximalCanonicalModel LogicEB).Val)
 
 end
+
+end LogicEB
 
 theorem LogicE_ssubset_LogicEB : (@LogicE ℕ) ⊂ LogicEB := by
   constructor

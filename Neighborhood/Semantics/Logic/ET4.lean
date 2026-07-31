@@ -21,7 +21,9 @@ property.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicET4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
+namespace LogicET4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     [F.IsTransitive] :
     A ∈ LogicET4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
@@ -32,14 +34,14 @@ instance : (@LogicET4 α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicET4.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicET4 α :=
   (basicCanonicalModel LogicET4).mem_of_valid
     (h (basicCanonicalModel LogicET4).toFrame
       (basicCanonicalModel LogicET4).Val)
 
-theorem LogicET4.finite_complete
+theorem finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsReflexive] → [F.IsTransitive] →
       F ⊧ A) :
     A ∈ @LogicET4 α :=
@@ -53,6 +55,8 @@ theorem LogicET4.finite_complete
     haveI : (transitiveFiltration M A.subformulas).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (transitiveFiltration M A.subformulas).toModel.toFrame
       (transitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
+
+end LogicET4
 
 theorem LogicET_ssubset_LogicET4 : @LogicET ℕ ⊂ LogicET4 := by
   constructor

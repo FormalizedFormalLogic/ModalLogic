@@ -18,8 +18,9 @@ neighborhood frames containing their unit.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicECN
 
-theorem LogicECN.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
     [F.ContainsUnit] :
     A ∈ LogicECN → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | rfl) <;> simp)
@@ -30,12 +31,14 @@ instance : (@LogicECN α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicECN.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegular] → [F.ContainsUnit] → F ⊧ A) :
     A ∈ @LogicECN α :=
   (basicCanonicalModel LogicECN).mem_of_valid
     (h (basicCanonicalModel LogicECN).toFrame
       (basicCanonicalModel LogicECN).Val)
+
+end LogicECN
 
 theorem LogicEC_ssubset_LogicECN : @LogicEC ℕ ⊂ LogicECN := by
   constructor

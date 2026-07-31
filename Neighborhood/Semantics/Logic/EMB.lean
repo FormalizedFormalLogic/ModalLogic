@@ -18,13 +18,17 @@ are both monotonic and symmetric.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsSymmetric] :
+namespace LogicEMB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsSymmetric] :
     A ∈ LogicEMB → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 instance : (@LogicEMB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMB.sound frame_1_2 hC⟩
+
+end LogicEMB
 
 theorem LogicEMCN_ssubset_LogicEMB : @LogicEMCN ℕ ⊂ LogicEMB := by
   constructor

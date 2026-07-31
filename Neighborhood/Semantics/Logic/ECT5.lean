@@ -20,7 +20,9 @@ to the neighborhood frames that are regular, reflexive, and euclidean.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECT5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsReflexive]
+namespace LogicECT5
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsReflexive]
     [F.IsEuclidean] :
     A ∈ LogicECT5 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -28,6 +30,8 @@ theorem LogicECT5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsRef
 instance : (@LogicECT5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECT5.sound frame_1_2 hC⟩
+
+end LogicECT5
 
 theorem LogicECTB_ssubset_LogicECT5 : @LogicECTB ℕ ⊂ LogicECT5 := by
   constructor

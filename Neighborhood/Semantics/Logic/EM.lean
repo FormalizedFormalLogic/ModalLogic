@@ -16,8 +16,9 @@ the monotonicity axiom `M`, with respect to all monotonic neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEM
 
-theorem LogicEM.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] :
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] :
     A ∈ LogicEM → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; simp)
 
@@ -27,12 +28,13 @@ instance : (@LogicEM α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEM.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → F ⊧ A) :
+theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → F ⊧ A) :
     A ∈ @LogicEM α :=
   (supplementedBasicCanonicalModel LogicEM).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEM).toFrame
       (supplementedBasicCanonicalModel LogicEM).Val)
 
+end LogicEM
 
 theorem LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM := by
   constructor

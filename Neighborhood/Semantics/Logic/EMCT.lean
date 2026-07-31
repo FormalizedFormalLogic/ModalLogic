@@ -21,7 +21,9 @@ with respect to the neighborhood frames that are monotonic, regular, and reflexi
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMCT.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
+namespace LogicEMCT
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.IsReflexive] :
     A ∈ LogicEMCT → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -29,6 +31,8 @@ theorem LogicEMCT.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsR
 instance : (@LogicEMCT α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCT.sound frame_1_2 hC⟩
+
+end LogicEMCT
 
 theorem LogicEMT_ssubset_LogicEMCT : @LogicEMT ℕ ⊂ LogicEMCT := by
   constructor

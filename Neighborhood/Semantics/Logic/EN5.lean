@@ -19,8 +19,9 @@ frames containing their unit and being Euclidean.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEN5
 
-theorem LogicEN5.sound {κ} [Nonempty κ] (F : Frame κ)
+theorem sound {κ} [Nonempty κ] (F : Frame κ)
     [F.ContainsUnit] [F.IsEuclidean] :
     A ∈ LogicEN5 → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
@@ -28,6 +29,8 @@ theorem LogicEN5.sound {κ} [Nonempty κ] (F : Frame κ)
 instance : (@LogicEN5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEN5.sound frame_1_2 hC⟩
+
+end LogicEN5
 
 theorem LogicEN_ssubset_LogicEN5 : @LogicEN ℕ ⊂ LogicEN5 := by
   constructor

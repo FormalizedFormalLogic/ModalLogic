@@ -17,7 +17,9 @@ reflexive.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMCNT.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
+namespace LogicEMCNT
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.ContainsUnit] [F.IsReflexive] :
     A ∈ LogicEMCNT → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) <;> simp)
@@ -25,6 +27,8 @@ theorem LogicEMCNT.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.Is
 instance : (@LogicEMCNT α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCNT.sound frame_1_2 hC⟩
+
+end LogicEMCNT
 
 theorem LogicEMCND_ssubset_LogicEMCNT : @LogicEMCND ℕ ⊂ LogicEMCNT := by
   constructor

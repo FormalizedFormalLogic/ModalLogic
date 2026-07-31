@@ -20,7 +20,9 @@ neighborhood frames that are regular, reflexive, and symmetric.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECTB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsReflexive]
+namespace LogicECTB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsReflexive]
     [F.IsSymmetric] :
     A ∈ LogicECTB → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -28,6 +30,8 @@ theorem LogicECTB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsRef
 instance : (@LogicECTB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECTB.sound frame_1_2 hC⟩
+
+end LogicECTB
 
 theorem LogicETB_ssubset_LogicECTB : @LogicETB ℕ ⊂ LogicECTB := by
   constructor

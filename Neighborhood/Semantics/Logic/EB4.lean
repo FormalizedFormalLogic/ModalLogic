@@ -19,13 +19,17 @@ symmetric and transitive. Also proves the strict inclusions of `LogicENB` and `L
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEB4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] [F.IsTransitive] :
+namespace LogicEB4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSymmetric] [F.IsTransitive] :
     A ∈ LogicEB4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 instance : (@LogicEB4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEB4.sound frame_1_2 hC⟩
+
+end LogicEB4
 
 theorem LogicENB_ssubset_LogicEB4 : @LogicENB ℕ ⊂ LogicEB4 := by
   constructor

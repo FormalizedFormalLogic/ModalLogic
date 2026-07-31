@@ -20,7 +20,9 @@ to the neighborhood frames that are monotonic, regular and euclidean.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMC5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
+namespace LogicEMC5
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.IsEuclidean] :
     A ∈ LogicEMC5 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -28,6 +30,8 @@ theorem LogicEMC5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsR
 instance : (@LogicEMC5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMC5.sound frame_1_2 hC⟩
+
+end LogicEMC5
 
 theorem LogicEMCN_ssubset_LogicEMC5 : @LogicEMCN ℕ ⊂ LogicEMC5 := by
   constructor

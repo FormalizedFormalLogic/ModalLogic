@@ -17,13 +17,17 @@ modal logic axiomatised by the regularity axiom `C` and the symmetry axiom `B` o
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSymmetric] :
+namespace LogicECB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSymmetric] :
     A ∈ LogicECB → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 instance : (@LogicECB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECB.sound frame_1_2 hC⟩
+
+end LogicECB
 
 theorem LogicEC_ssubset_LogicECB : (@LogicEC ℕ) ⊂ LogicECB := by
   constructor

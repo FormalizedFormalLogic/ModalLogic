@@ -20,7 +20,9 @@ unit-containing, and reflexive neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECNT.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.ContainsUnit]
+namespace LogicECNT
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.ContainsUnit]
     [F.IsReflexive] :
     A ∈ LogicECNT → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;> simp)
@@ -28,6 +30,8 @@ theorem LogicECNT.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.Conta
 instance : (@LogicECNT α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECNT.sound frame_1_2 hC⟩
+
+end LogicECNT
 
 theorem LogicENT_ssubset_LogicECNT : @LogicENT ℕ ⊂ LogicECNT := by
   constructor

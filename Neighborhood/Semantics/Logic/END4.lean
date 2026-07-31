@@ -21,8 +21,9 @@ inclusion of `LogicEND` and of `LogicEN4` in `LogicEND4`.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEND4
 
-theorem LogicEND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsSerial] [F.IsTransitive] :
     A ∈ LogicEND4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -30,6 +31,8 @@ theorem LogicEND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
 instance : (@LogicEND4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEND4.sound frame_1_2 hC⟩
+
+end LogicEND4
 
 theorem LogicEND_ssubset_LogicEND4 : @LogicEND ℕ ⊂ LogicEND4 := by
   constructor

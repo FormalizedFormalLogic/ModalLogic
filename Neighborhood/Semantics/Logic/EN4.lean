@@ -20,8 +20,9 @@ neighborhood frames containing their unit, together with its finite frame proper
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEN4
 
-theorem LogicEN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit]
     [F.IsTransitive] :
     A ∈ LogicEN4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
@@ -32,7 +33,7 @@ instance : (@LogicEN4 α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEN4.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicEN4 α :=
   (basicCanonicalModel LogicEN4).mem_of_valid
@@ -46,7 +47,7 @@ instance : FormulaSet.IsSubformulaClosed
     · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
-theorem LogicEN4.finite_complete
+theorem finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.ContainsUnit] → [F.IsTransitive] →
       F ⊧ A) : A ∈ @LogicEN4 α :=
   LogicEN4.complete <| by
@@ -58,6 +59,8 @@ theorem LogicEN4.finite_complete
     apply (transitiveFiltration M T).filtration_satisfies _ (by simp [T]) |>.mp
     haveI : (transitiveFiltration M T).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (transitiveFiltration M T).toModel.toFrame (transitiveFiltration M T).toModel.Val ⟦x⟧
+
+end LogicEN4
 
 theorem LogicEN_ssubset_LogicEN4 : @LogicEN ℕ ⊂ LogicEN4 := by
   constructor

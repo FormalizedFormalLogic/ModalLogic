@@ -17,8 +17,9 @@ Soundness, consistency and completeness of `LogicEN`, the classical modal logic 
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEN
 
-theorem LogicEN.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] :
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] :
     A ∈ @LogicEN α → F ⊧ A :=
   Hilbert.sound (by rintro _ rfl; simp)
 
@@ -28,12 +29,13 @@ instance : (@LogicEN α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEN.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → F ⊧ A) :
+theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → F ⊧ A) :
     A ∈ @LogicEN α :=
   (basicCanonicalModel LogicEN).mem_of_valid
     (h (basicCanonicalModel LogicEN).toFrame
       (basicCanonicalModel LogicEN).Val)
 
+end LogicEN
 
 theorem LogicE_ssubset_LogicEN : @LogicE ℕ ⊂ LogicEN := by
   constructor

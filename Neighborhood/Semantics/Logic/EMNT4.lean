@@ -20,8 +20,9 @@ are transitive, together with its finite frame property.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEMNT4
 
-theorem LogicEMNT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.ContainsUnit] [F.IsReflexive] [F.IsTransitive] :
     A ∈ LogicEMNT4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -32,14 +33,14 @@ instance : (@LogicEMNT4 α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEMNT4.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.ContainsUnit] →
       [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMNT4 α :=
   (supplementedBasicCanonicalModel LogicEMNT4).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMNT4).toFrame
       (supplementedBasicCanonicalModel LogicEMNT4).Val)
 
-theorem LogicEMNT4.finite_complete
+theorem finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] →
       [F.ContainsUnit] → [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMNT4 α :=
   LogicEMNT4.complete <| by
@@ -52,6 +53,8 @@ theorem LogicEMNT4.finite_complete
     haveI : (supplementedTransitiveFiltration M T).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (supplementedTransitiveFiltration M T).toModel.toFrame
       (supplementedTransitiveFiltration M T).toModel.Val ⟦x⟧
+
+end LogicEMNT4
 
 theorem LogicEMT4_ssubset_LogicEMNT4 : @LogicEMT4 ℕ ⊂ LogicEMNT4 := by
   constructor

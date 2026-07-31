@@ -20,7 +20,9 @@ transitive, and euclidean neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicED45.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] [F.IsTransitive]
+namespace LogicED45
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] [F.IsTransitive]
     [F.IsEuclidean] :
     A ∈ LogicED45 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -28,6 +30,8 @@ theorem LogicED45.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsSerial] [F.IsTran
 instance : (@LogicED45 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicED45.sound frame_1_2 hC⟩
+
+end LogicED45
 
 theorem LogicED4_ssubset_LogicED45 : @LogicED4 ℕ ⊂ LogicED45 := by
   constructor

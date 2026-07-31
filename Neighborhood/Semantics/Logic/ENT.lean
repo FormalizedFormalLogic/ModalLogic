@@ -19,7 +19,9 @@ that contain their unit and are reflexive.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicENT.sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsReflexive] :
+namespace LogicENT
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsReflexive] :
     A ∈ LogicENT → F ⊧ A :=
   Hilbert.sound (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp)
 
@@ -29,12 +31,14 @@ instance : (@LogicENT α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicENT.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsReflexive] → F ⊧ A) :
     A ∈ @LogicENT α :=
   (basicCanonicalModel LogicENT).mem_of_valid
     (h (basicCanonicalModel LogicENT).toFrame
       (basicCanonicalModel LogicENT).Val)
+
+end LogicENT
 
 theorem LogicET_ssubset_LogicENT : @LogicET ℕ ⊂ LogicENT := by
   constructor

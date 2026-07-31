@@ -18,7 +18,9 @@ regular, reflexive, and transitive.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMCT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
+namespace LogicEMCT4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.IsReflexive] [F.IsTransitive] :
     A ∈ LogicEMCT4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -26,6 +28,8 @@ theorem LogicEMCT4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.Is
 instance : (@LogicEMCT4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCT4.sound frame_1_2 hC⟩
+
+end LogicEMCT4
 
 theorem LogicEMT4_ssubset_LogicEMCT4 : @LogicEMT4 ℕ ⊂ LogicEMCT4 := by
   constructor

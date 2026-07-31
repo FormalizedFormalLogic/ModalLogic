@@ -20,7 +20,9 @@ the neighborhood frames that are monotonic, symmetric and transitive.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMB4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsSymmetric]
+namespace LogicEMB4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsSymmetric]
     [F.IsTransitive] :
     A ∈ LogicEMB4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -28,6 +30,8 @@ theorem LogicEMB4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsS
 instance : (@LogicEMB4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMB4.sound frame_1_2 hC⟩
+
+end LogicEMB4
 
 theorem LogicEMB_ssubset_LogicEMB4 : @LogicEMB ℕ ⊂ LogicEMB4 := by
   constructor

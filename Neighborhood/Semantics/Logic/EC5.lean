@@ -17,13 +17,17 @@ over `LogicE`, with respect to the regular and Euclidean neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEC5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsEuclidean] :
+namespace LogicEC5
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsEuclidean] :
     A ∈ LogicEC5 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
 instance : (@LogicEC5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEC5.sound frame_1_2 hC⟩
+
+end LogicEC5
 
 theorem LogicEC_ssubset_LogicEC5 : (@LogicEC ℕ) ⊂ LogicEC5 := by
   constructor

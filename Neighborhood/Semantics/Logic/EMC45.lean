@@ -19,7 +19,9 @@ transitive and euclidean.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMC45.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
+namespace LogicEMC45
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.IsTransitive] [F.IsEuclidean] :
     A ∈ LogicEMC45 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -27,6 +29,8 @@ theorem LogicEMC45.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.Is
 instance : (@LogicEMC45 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMC45.sound frame_1_2 hC⟩
+
+end LogicEMC45
 
 theorem LogicEMCN4_ssubset_LogicEMC45 : @LogicEMCN4 ℕ ⊂ LogicEMC45 := by
   constructor

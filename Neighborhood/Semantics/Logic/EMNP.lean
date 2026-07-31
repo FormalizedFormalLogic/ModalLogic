@@ -13,8 +13,9 @@ public import Neighborhood.Semantics.Example.Frame3_9471106
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEMNP
 
-theorem LogicEMNP.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.ContainsUnit]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.ContainsUnit]
     [F.NotContainsEmpty] :
     A ∈ LogicEMNP → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | rfl) <;> simp)
@@ -25,13 +26,15 @@ instance : (@LogicEMNP α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEMNP.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.ContainsUnit] →
       [F.NotContainsEmpty] → F ⊧ A) :
     A ∈ @LogicEMNP α :=
   (supplementedBasicCanonicalModel LogicEMNP).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMNP).toFrame
       (supplementedBasicCanonicalModel LogicEMNP).Val)
+
+end LogicEMNP
 
 theorem LogicEMP_ssubset_LogicEMNP : @LogicEMP ℕ ⊂ LogicEMNP := by
   constructor

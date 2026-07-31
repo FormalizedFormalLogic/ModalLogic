@@ -19,7 +19,9 @@ Also proves the strict inclusions of `LogicECND` and `LogicECNB` in `LogicECNDB`
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECNDB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
+namespace LogicECNDB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
     [F.ContainsUnit] [F.IsSerial] [F.IsSymmetric] :
     A ∈ LogicECNDB → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -27,6 +29,8 @@ theorem LogicECNDB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular]
 instance : (@LogicECNDB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECNDB.sound frame_1_2 hC⟩
+
+end LogicECNDB
 
 theorem LogicECND_ssubset_LogicECNDB : @LogicECND ℕ ⊂ LogicECNDB := by
   constructor

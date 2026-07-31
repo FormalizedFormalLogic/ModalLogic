@@ -16,7 +16,9 @@ inclusion in `LogicE`.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEC.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] :
+namespace LogicEC
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] :
     A ∈ LogicEC → F ⊧ A :=
   Hilbert.sound (by rintro _ ⟨_, _, rfl⟩; simp)
 
@@ -26,12 +28,13 @@ instance : (@LogicEC α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEC.complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegular] → F ⊧ A) :
+theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegular] → F ⊧ A) :
     A ∈ @LogicEC α :=
   (basicCanonicalModel LogicEC).mem_of_valid
     (h (basicCanonicalModel LogicEC).toFrame
       (basicCanonicalModel LogicEC).Val)
 
+end LogicEC
 
 theorem LogicE_ssubset_LogicEC : (@LogicE ℕ) ⊂ LogicEC := by
   constructor

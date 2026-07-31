@@ -19,7 +19,9 @@ serial, and symmetric neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECDB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSerial]
+namespace LogicECDB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSerial]
     [F.IsSymmetric] :
     A ∈ LogicECDB → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -27,6 +29,8 @@ theorem LogicECDB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSer
 instance : (@LogicECDB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECDB.sound frame_1_2 hC⟩
+
+end LogicECDB
 
 theorem LogicECD_ssubset_LogicECDB : @LogicECD ℕ ⊂ LogicECDB := by
   constructor

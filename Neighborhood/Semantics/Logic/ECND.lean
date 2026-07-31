@@ -20,7 +20,9 @@ and serial neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECND.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.ContainsUnit]
+namespace LogicECND
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.ContainsUnit]
     [F.IsSerial] :
     A ∈ LogicECND → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;> simp)
@@ -28,6 +30,8 @@ theorem LogicECND.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.Conta
 instance : (@LogicECND α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECND.sound frame_1_2 hC⟩
+
+end LogicECND
 
 theorem LogicECN_ssubset_LogicECND : @LogicECN ℕ ⊂ LogicECND := by
   constructor

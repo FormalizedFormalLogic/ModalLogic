@@ -25,7 +25,9 @@ respect to the neighborhood frames that are monotonic, reflexive and euclidean.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMT5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsReflexive]
+namespace LogicEMT5
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsReflexive]
     [F.IsEuclidean] :
     A ∈ LogicEMT5 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -33,6 +35,8 @@ theorem LogicEMT5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsR
 instance : (@LogicEMT5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMT5.sound frame_1_2 hC⟩
+
+end LogicEMT5
 
 theorem LogicEMCD45_ssubset_LogicEMT5 : @LogicEMCD45 ℕ ⊂ LogicEMT5 := by
   constructor

@@ -23,7 +23,9 @@ monotonic, regular, serial, transitive and euclidean.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMCD45.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
+namespace LogicEMCD45
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.IsSerial] [F.IsTransitive] [F.IsEuclidean] :
     A ∈ LogicEMCD45 → F ⊧ A :=
   Hilbert.sound (by
@@ -32,6 +34,8 @@ theorem LogicEMCD45.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.I
 instance : (@LogicEMCD45 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCD45.sound frame_1_2 hC⟩
+
+end LogicEMCD45
 
 theorem LogicEMCD5_ssubset_LogicEMCD45 : @LogicEMCD5 ℕ ⊂ LogicEMCD45 := by
   constructor

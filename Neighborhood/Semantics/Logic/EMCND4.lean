@@ -9,7 +9,7 @@ import Neighborhood.Semantics.Example.Frame2_140
 /-!
 # The neighborhood logic `LogicEMCND4`
 
-Soundness, consistency and the Nonempty instance for maximal consistent sets of `LogicEMCND4`,
+Soundness and consistency of `LogicEMCND4`,
 the classical modal logic axiomatised by the monotonicity axiom `M`, the regularity axiom `C`,
 `N := □⊤`, the seriality axiom `D` and the transitivity axiom `Four`, with respect to the
 neighborhood frames that are monotonic, regular, transitive, serial and contain their unit.
@@ -19,7 +19,9 @@ neighborhood frames that are monotonic, regular, transitive, serial and contain 
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMCND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+namespace LogicEMCND4
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.ContainsUnit] [F.IsTransitive] [F.IsSerial] :
     A ∈ LogicEMCND4 → F ⊧ A :=
   Hilbert.sound (by rintro _ ((((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -27,6 +29,8 @@ theorem LogicEMCND4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
 instance : (@LogicEMCND4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCND4.sound frame_1_2 hC⟩
+
+end LogicEMCND4
 
 theorem LogicEMCN4_ssubset_LogicEMCND4 : @LogicEMCN4 ℕ ⊂ LogicEMCND4 := by
   constructor

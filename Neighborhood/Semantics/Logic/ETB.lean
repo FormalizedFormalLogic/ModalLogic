@@ -24,7 +24,9 @@ frames that are both reflexive and symmetric.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicETB.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
+namespace LogicETB
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsReflexive]
     [F.IsSymmetric] :
     A ∈ LogicETB → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩) <;> simp)
@@ -41,7 +43,7 @@ variable [DecidableEq α]
 well as symmetric.
 
 - [Che80, Exercise 9.39(b)] -/
-theorem LogicETB.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsSymmetric] → F ⊧ A) :
     A ∈ @LogicETB α :=
   (intermediateRelativeMaximalCanonicalModel LogicETB).mem_of_valid
@@ -49,6 +51,8 @@ theorem LogicETB.complete
       (intermediateRelativeMaximalCanonicalModel LogicETB).Val)
 
 end
+
+end LogicETB
 
 theorem LogicENT_ssubset_LogicENTB : @LogicENT ℕ ⊂ LogicENTB := by
   constructor

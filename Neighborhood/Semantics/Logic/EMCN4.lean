@@ -20,8 +20,9 @@ unit, together with its finite frame property.
 
 variable {α : Type u} {A : Formula α}
 
+namespace LogicEMCN4
 
-theorem LogicEMCN4.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
     [F.IsRegular] [F.ContainsUnit] [F.IsTransitive] :
     A ∈ LogicEMCN4 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) <;> simp)
@@ -32,7 +33,7 @@ instance : (@LogicEMCN4 α).IsConsistent := ⟨by
 
 variable [DecidableEq α]
 
-theorem LogicEMCN4.complete
+theorem complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] →
       [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMCN4 α :=
   (supplementedBasicCanonicalModel LogicEMCN4).mem_of_valid
@@ -46,7 +47,7 @@ instance : FormulaSet.IsSubformulaClosed
     · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
-theorem LogicEMCN4.finite_complete
+theorem finite_complete
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] → [F.IsRegular] →
       [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMCN4 α :=
   LogicEMCN4.complete <| by
@@ -63,6 +64,8 @@ theorem LogicEMCN4.finite_complete
       ⟨‹_›⟩
     exact h (quasiFilteringTransitiveFiltration M T hfin).toModel.toFrame
       (quasiFilteringTransitiveFiltration M T hfin).toModel.Val ⟦x⟧
+
+end LogicEMCN4
 
 theorem LogicEMC4_ssubset_LogicEMCN4 : @LogicEMC4 ℕ ⊂ LogicEMCN4 := by
   constructor

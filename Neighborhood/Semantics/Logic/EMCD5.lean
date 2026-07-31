@@ -19,7 +19,9 @@ euclidean.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicEMCD5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
+namespace LogicEMCD5
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.IsSerial] [F.IsEuclidean] :
     A ∈ LogicEMCD5 → F ⊧ A :=
   Hilbert.sound (by rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
@@ -27,6 +29,8 @@ theorem LogicEMCD5.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.Is
 instance : (@LogicEMCD5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCD5.sound frame_1_2 hC⟩
+
+end LogicEMCD5
 
 theorem LogicEMC5_ssubset_LogicEMCD5 : @LogicEMC5 ℕ ⊂ LogicEMCD5 := by
   constructor

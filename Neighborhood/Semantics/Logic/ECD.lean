@@ -19,13 +19,17 @@ neighborhood frames.
 
 variable {α : Type u} {A : Formula α}
 
-theorem LogicECD.sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSerial] :
+namespace LogicECD
+
+theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSerial] :
     A ∈ LogicECD → F ⊧ A :=
   Hilbert.sound (by rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩) <;> simp)
 
 instance : (@LogicECD α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECD.sound frame_1_2 hC⟩
+
+end LogicECD
 
 theorem LogicEC_ssubset_LogicECD : @LogicEC ℕ ⊂ LogicECD := by
   constructor
