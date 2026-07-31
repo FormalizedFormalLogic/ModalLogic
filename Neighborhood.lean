@@ -98,6 +98,7 @@ public import Neighborhood.Semantics.Logic.ECN4
 public import Neighborhood.Semantics.Logic.ECN5
 public import Neighborhood.Semantics.Logic.ECNB
 public import Neighborhood.Semantics.Logic.ECND
+public import Neighborhood.Semantics.Logic.ECND4
 public import Neighborhood.Semantics.Logic.ECP
 public import Neighborhood.Semantics.Logic.ED
 public import Neighborhood.Semantics.Logic.ED4
