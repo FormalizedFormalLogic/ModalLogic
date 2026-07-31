@@ -1,9 +1,11 @@
 module
 
 public import Neighborhood.Semantics.Logic.EN
+public import Neighborhood.Semantics.Logic.E5
 public import Neighborhood.Semantics.Example.Frame2_137
 public import Neighborhood.Semantics.Example.Frame1_2
 public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame2_75
 
 /-!
 # The neighborhood logic `LogicEN5`
@@ -36,5 +38,12 @@ theorem LogicEN_ssubset_LogicEN5 : @LogicEN ℕ ⊂ LogicEN5 := by
   · intro h
     have hFive : Axioms.Five #0 ∈ (@LogicEN ℕ) := h (ProvableHilbert.axm (by grind))
     exact frame_2_137.not_valid_axiomFive (LogicEN.sound frame_2_137 hFive)
+
+theorem LogicE5_ssubset_LogicEN5 : @LogicE5 ℕ ⊂ LogicEN5 := by
+  constructor
+  · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
+  · intro h
+    have hN : (Axioms.N : Formula ℕ) ∈ @LogicE5 ℕ := h (ProvableHilbert.axm (by grind))
+    exact frame_2_75.not_valid_axiomN (LogicE5.sound frame_2_75 hN)
 
 end
