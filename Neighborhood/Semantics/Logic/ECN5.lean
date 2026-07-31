@@ -4,6 +4,9 @@ public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.EC5
 public import Neighborhood.Semantics.Logic.EN5
 public import Neighborhood.Semantics.Example.Frame3_9472136
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_153
+public import Neighborhood.Semantics.Example.Frame2_170
 
 /-!
 # The neighborhood logic `LogicECN5`
@@ -43,6 +46,26 @@ lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicECN5 α) := by
   by_contra! hcon
   exact frame_3_9472136.not_valid_axiomM hab (LogicECN5.sound frame_3_9472136 (hcon #a #b))
+
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicECN5 α) := by
+  by_contra! hcon
+  exact frame_2_153.not_valid_axiomK hab (LogicECN5.sound frame_2_153 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicECN5 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomT (LogicECN5.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicECN5 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomB (LogicECN5.sound frame_2_170 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicECN5 α) := by
+  intro hcon
+  exact frame_1_3.not_valid_axiomP (LogicECN5.sound frame_1_3 hcon)
 
 end LogicECN5
 

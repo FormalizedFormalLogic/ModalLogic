@@ -71,6 +71,16 @@ instance : frame_2_90.IsTransitive where
     · rw [hbox1, hbox1]
     · rw [hboxE, hbox1]
 
+instance : frame_2_90.IsRegular where
+  regular X Y w hw := by
+    fin_cases w <;>
+      simp only [Frame.box, frame_2_90, Set.mem_inter_iff, Set.mem_setOf_eq, Set.mem_insert_iff,
+        Set.mem_singleton_iff] at hw ⊢
+    · obtain ⟨hX, hY⟩ := hw
+      rcases hX with rfl | rfl <;> rcases hY with rfl | rfl <;> simp
+    · obtain ⟨hX, hY⟩ := hw
+      rcases hX with rfl | rfl <;> rcases hY with rfl | rfl <;> simp
+
 @[simp]
 lemma frame_2_90.not_valid_axiomP : ¬frame_2_90 ⊧ (Axioms.P : Formula α) := fun h => by
   have h1 := (notContainsEmpty_of_valid_axiomP h).not_contains_empty 1

@@ -56,6 +56,9 @@ instance : frame_3_8437920.IsMonotonic where
     (frame_3_8437920.box_mono Set.inter_subset_left)
     (frame_3_8437920.box_mono Set.inter_subset_right)
 
+instance : frame_3_8437920.ContainsUnit := ⟨by
+  ext w; fin_cases w <;> simp [Frame.box, frame_3_8437920]⟩
+
 instance : frame_3_8437920.IsReflexive where
   refl X w hw := by
     fin_cases w <;>

@@ -144,6 +144,23 @@ lemma frame_3_9488552.not_isRegular :
 
 instance : frame_3_9488552.ContainsUnit := ⟨frame_3_9488552.box_univ⟩
 
+instance : frame_3_9488552.IsSerial where
+  serial X w hw := by
+    have hw' : X ∈ frame_3_9488552.𝒩 w := hw
+    fin_cases w <;>
+      simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hw'
+    · rcases hw' with rfl | rfl | rfl
+      · simp [frame_3_9488552.dia_zero_one]
+      · simp [frame_3_9488552.dia_zero_two]
+      · simp [frame_3_9488552.dia_univ]
+    · rcases hw' with rfl | rfl | rfl
+      · simp [frame_3_9488552.dia_zero_one]
+      · simp [frame_3_9488552.dia_one_two]
+      · simp [frame_3_9488552.dia_univ]
+    · rcases hw' with rfl | rfl
+      · simp [frame_3_9488552.dia_two]
+      · simp [frame_3_9488552.dia_univ]
+
 lemma frame_3_9488552.not_valid_axiomC [DecidableEq α] (hab : a ≠ b) :
     ¬frame_3_9488552 ⊧ (Axioms.C #a #b : Formula α) := by
   intro hv
