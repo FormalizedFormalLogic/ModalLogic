@@ -63,7 +63,7 @@ theorem LogicENT4_ssubset_LogicEMNT4 : @LogicENT4 ℕ ⊂ LogicEMNT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicENT4.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicENT4.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

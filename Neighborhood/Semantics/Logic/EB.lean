@@ -43,12 +43,12 @@ theorem complete
 
 end
 
-lemma not_provable_axiomC [DecidableEq α] {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEB α) := by
   by_contra! hcon
   exact frame_3_9488552.not_valid_axiomC hab (LogicEB.sound frame_3_9488552 (hcon #a #b))
 
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEB α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEB α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD
     (LogicEB.sound frame_1_3 (hcon #a))
@@ -63,7 +63,7 @@ theorem LogicE_ssubset_LogicEB : (@LogicE ℕ) ⊂ LogicEB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
-  · obtain ⟨A, hA⟩ := LogicE.not_provable_axiomB (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicE.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

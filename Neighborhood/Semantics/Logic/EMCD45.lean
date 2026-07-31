@@ -30,7 +30,7 @@ instance : (@LogicEMCD45 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCD45.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomT {a : α} : ∃ A, Axioms.T A ∉ (@LogicEMCD45 α) := by
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCD45 α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicEMCD45.sound frame_2_170 (hcon #a))
 
@@ -40,7 +40,7 @@ theorem LogicEMCD5_ssubset_LogicEMCD45 : @LogicEMCD5 ℕ ⊂ LogicEMCD45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicEMCD5.not_provable_axiomFour (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMCD5.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMCND4_ssubset_LogicEMCD45 : @LogicEMCND4 ℕ ⊂ LogicEMCD45 := by
@@ -50,21 +50,21 @@ theorem LogicEMCND4_ssubset_LogicEMCD45 : @LogicEMCND4 ℕ ⊂ LogicEMCD45 := by
     rintro _ ((((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomD |
         exact Logic.axiomFour
-  · obtain ⟨A, hA⟩ := LogicEMCND4.not_provable_axiomFive (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMCND4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMC45_ssubset_LogicEMCD45 : @LogicEMC45 ℕ ⊂ LogicEMCD45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicEMC45.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMC45.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMD45_ssubset_LogicEMCD45 : @LogicEMD45 ℕ ⊂ LogicEMCD45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicEMD45.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEMD45.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

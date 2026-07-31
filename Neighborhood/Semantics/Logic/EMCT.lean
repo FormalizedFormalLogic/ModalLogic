@@ -33,14 +33,14 @@ theorem LogicEMT_ssubset_LogicEMCT : @LogicEMT ℕ ⊂ LogicEMCT := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicEMT.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEMT.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECT_ssubset_LogicEMCT : @LogicECT ℕ ⊂ LogicEMCT := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicECT.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicECT.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMCD_ssubset_LogicEMCT : @LogicEMCD ℕ ⊂ LogicEMCT := by
@@ -51,7 +51,7 @@ theorem LogicEMCD_ssubset_LogicEMCT : @LogicEMCD ℕ ⊂ LogicEMCT := by
     · exact ProvableHilbert.axm (by grind)
     · exact ProvableHilbert.axm (by grind)
     · exact Logic.axiomD
-  · obtain ⟨A, hA⟩ := LogicEMCD.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMCD.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

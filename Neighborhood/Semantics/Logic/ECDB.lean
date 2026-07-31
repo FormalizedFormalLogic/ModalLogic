@@ -33,21 +33,21 @@ theorem LogicECD_ssubset_LogicECDB : @LogicECD ℕ ⊂ LogicECDB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicECD.not_provable_axiomB (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicECD.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECB_ssubset_LogicECDB : @LogicECB ℕ ⊂ LogicECDB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicECB.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicECB.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEDB_ssubset_LogicECDB : @LogicEDB ℕ ⊂ LogicECDB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicEDB.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEDB.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

@@ -27,11 +27,11 @@ instance : (@LogicEMCND4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCND4.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicEMCND4 α) := by
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCND4 α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomFive (LogicEMCND4.sound frame_2_138 (hcon #a))
 
-lemma not_provable_axiomT {a : α} : ∃ A, Axioms.T A ∉ (@LogicEMCND4 α) := by
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCND4 α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicEMCND4.sound frame_2_170 (hcon #a))
 
@@ -41,14 +41,14 @@ theorem LogicEMCN4_ssubset_LogicEMCND4 : @LogicEMCN4 ℕ ⊂ LogicEMCND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicEMCN4.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMCN4.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMCND_ssubset_LogicEMCND4 : @LogicEMCND ℕ ⊂ LogicEMCND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicEMCND.not_provable_axiomFour (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMCND.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

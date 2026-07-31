@@ -27,7 +27,7 @@ instance : (@LogicEDB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEDB.sound frame_1_1 hC⟩
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEDB α) := by
   by_contra! hcon
   exact frame_3_3346281.not_valid_axiomC hab (LogicEDB.sound frame_3_3346281 (hcon #a #b))
@@ -44,14 +44,14 @@ theorem LogicED_ssubset_LogicEDB : @LogicED ℕ ⊂ LogicEDB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicED.not_provable_axiomB (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicED.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEB_ssubset_LogicEDB : @LogicEB ℕ ⊂ LogicEDB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, hA⟩ := LogicEB.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEB.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

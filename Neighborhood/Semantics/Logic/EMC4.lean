@@ -53,7 +53,7 @@ theorem finite_complete
       (quasiFilteringTransitiveFiltration M A.subformulas hfin).toModel.Val ⟦x⟧
 
 omit [DecidableEq α] in
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEMC4 α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMC4 α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEMC4.sound frame_1_3 (hcon #a))
 
@@ -68,21 +68,21 @@ theorem LogicEMC_ssubset_LogicEMC4 : @LogicEMC ℕ ⊂ LogicEMC4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicEMC.not_provable_axiomFour (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMC.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEM4_ssubset_LogicEMC4 : @LogicEM4 ℕ ⊂ LogicEMC4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicEM4.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEM4.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEC4_ssubset_LogicEMC4 : @LogicEC4 ℕ ⊂ LogicEMC4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicEC4.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEC4.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

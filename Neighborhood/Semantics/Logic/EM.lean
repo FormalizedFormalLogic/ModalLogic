@@ -35,11 +35,11 @@ theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonot
       (supplementedBasicCanonicalModel LogicEM).Val)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEM α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEM α) := by
   by_contra! hcon
   exact frame_2_8.not_valid_axiomFour (LogicEM.sound frame_2_8 (hcon #a))
 
-lemma not_provable_axiomK {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.K A B ∉ (@LogicEM α) := by
   by_contra! hcon
   exact frame_2_238.not_valid_axiomK hab (LogicEM.sound _ (hcon #a #b))
@@ -60,7 +60,7 @@ theorem LogicE_ssubset_LogicEM : @LogicE ℕ ⊂ LogicEM := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
-  · obtain ⟨A, B, hA⟩ := LogicE.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicE.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

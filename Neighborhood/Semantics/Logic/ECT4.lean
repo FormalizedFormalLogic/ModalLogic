@@ -33,14 +33,14 @@ theorem LogicET4_ssubset_LogicECT4 : @LogicET4 ℕ ⊂ LogicECT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicET4.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicET4.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECT_ssubset_LogicECT4 : @LogicECT ℕ ⊂ LogicECT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicECT.not_provable_axiomFour (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicECT.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECD4_ssubset_LogicECT4 : @LogicECD4 ℕ ⊂ LogicECT4 := by
@@ -51,7 +51,7 @@ theorem LogicECD4_ssubset_LogicECT4 : @LogicECD4 ℕ ⊂ LogicECT4 := by
     · exact ProvableHilbert.axm (by grind)
     · exact Logic.axiomD
     · exact ProvableHilbert.axm (by grind)
-  · obtain ⟨A, hA⟩ := LogicECD4.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicECD4.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

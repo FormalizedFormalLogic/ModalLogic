@@ -27,7 +27,7 @@ theorem complete
     (h (basicCanonicalModel LogicECP).toFrame
       (basicCanonicalModel LogicECP).Val)
 
-lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicECP α) := by
   by_contra! hcon
   exact frame_2_34.not_valid_axiomM hab (LogicECP.sound frame_2_34 (hcon #a #b))
@@ -50,7 +50,7 @@ theorem LogicEP_ssubset_LogicECP : @LogicEP ℕ ⊂ LogicECP := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, B, hA⟩ := LogicEP.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEP.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (Logic.HasAxiomC.C _ _), hA⟩
 
 end

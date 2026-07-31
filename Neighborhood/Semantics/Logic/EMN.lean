@@ -36,19 +36,19 @@ theorem complete
     (h (supplementedBasicCanonicalModel LogicEMN).toFrame
       (supplementedBasicCanonicalModel LogicEMN).Val)
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEMN α) := by
   by_contra! hcon
   exact frame_2_206.not_valid_axiomC hab
     (LogicEMN.sound frame_2_206 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicEMN α) := by
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMN α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomFive (LogicEMN.sound frame_2_140 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEMN α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMN α) := by
   by_contra! hcon
   exact frame_2_172.not_valid_axiomFour (LogicEMN.sound frame_2_172 (hcon #a))
 
@@ -69,7 +69,7 @@ theorem LogicEN_ssubset_LogicEMN : @LogicEN ℕ ⊂ LogicEMN := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, B, hA⟩ := LogicEN.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEN.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

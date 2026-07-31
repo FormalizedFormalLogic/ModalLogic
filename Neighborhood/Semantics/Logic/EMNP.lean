@@ -30,7 +30,7 @@ theorem complete
       (supplementedBasicCanonicalModel LogicEMNP).Val)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEMNP α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMNP α) := by
   by_contra! hcon
   exact frame_2_238.not_valid_axiomD (LogicEMNP.sound frame_2_238 (hcon #a))
 
@@ -52,7 +52,7 @@ theorem LogicENP_ssubset_LogicEMNP : @LogicENP ℕ ⊂ LogicEMNP := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.union_subset_union_left _ Set.subset_union_right)
-  · obtain ⟨A, B, hA⟩ := LogicENP.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicENP.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

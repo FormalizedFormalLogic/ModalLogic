@@ -30,7 +30,7 @@ instance : (@LogicEND5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEND5.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicEND5 α) := by
   by_contra! hcon
   exact frame_3_8553090.not_valid_axiomM hab (LogicEND5.sound frame_3_8553090 (hcon #a #b))
@@ -41,7 +41,7 @@ theorem LogicEND_ssubset_LogicEND5 : @LogicEND ℕ ⊂ LogicEND5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicEND.not_provable_axiomFive (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEND.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicED5_ssubset_LogicEND5 : @LogicED5 ℕ ⊂ LogicEND5 := by
@@ -54,7 +54,7 @@ theorem LogicEN5_ssubset_LogicEND5 : @LogicEN5 ℕ ⊂ LogicEND5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicEN5.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEN5.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

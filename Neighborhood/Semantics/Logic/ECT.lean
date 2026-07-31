@@ -23,11 +23,11 @@ instance : (@LogicECT α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECT.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicECT α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicECT α) := by
   by_contra! hcon
   exact frame_2_8.not_valid_axiomFour (LogicECT.sound frame_2_8 (hcon #a))
 
-lemma not_provable_axiomM [DecidableEq α] {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicECT α) := by
   by_contra! hcon
   exact frame_3_9471106.not_valid_axiomM hab (LogicECT.sound frame_3_9471106 (hcon #a #b))
@@ -42,7 +42,7 @@ theorem LogicET_ssubset_LogicECT : @LogicET ℕ ⊂ LogicECT := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicET.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicET.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

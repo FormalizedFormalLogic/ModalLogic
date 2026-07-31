@@ -30,7 +30,7 @@ instance : (@LogicENDB α).IsConsistent := ⟨by
   simpa using LogicENDB.sound frame_1_2 hC⟩
 
 omit [DecidableEq α] in
-lemma not_provable_axiomT {a : α} : ∃ A, Axioms.T A ∉ (@LogicENDB α) := by
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicENDB α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomT (LogicENDB.sound frame_2_140 (hcon #a))
 
@@ -40,7 +40,7 @@ theorem LogicEND_ssubset_LogicENDB : @LogicEND ℕ ⊂ LogicENDB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicEND.not_provable_axiomB (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEND.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEDB_ssubset_LogicENDB : @LogicEDB ℕ ⊂ LogicENDB := by
@@ -53,7 +53,7 @@ theorem LogicENB_ssubset_LogicENDB : @LogicENB ℕ ⊂ LogicENDB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicENB.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicENB.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

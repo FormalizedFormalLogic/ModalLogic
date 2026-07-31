@@ -38,27 +38,27 @@ theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.Contain
       (basicCanonicalModel LogicEN).Val)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomB {a : α} : ∃ A, Axioms.B A ∉ (@LogicEN α) := by
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEN α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomB (LogicEN.sound frame_2_170 (hcon #a))
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEN α) := by
   by_contra! hcon
   exact frame_2_206.not_valid_axiomC hab (LogicEN.sound frame_2_206 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicEN α) := by
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEN α) := by
   by_contra! hcon
   exact frame_2_137.not_valid_axiomFive (LogicEN.sound frame_2_137 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEN α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEN α) := by
   by_contra! hcon
   exact frame_2_172.not_valid_axiomFour
     (LogicEN.sound frame_2_172 (hcon #a))
 
-lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicEN α) := by
   by_contra! hcon
   exact frame_2_137.not_valid_axiomM hab (LogicEN.sound _ (hcon #a #b))

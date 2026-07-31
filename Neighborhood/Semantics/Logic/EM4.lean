@@ -48,14 +48,14 @@ theorem finite_complete
     exact h (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame
       (supplementedTransitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEM4 α) := by
   by_contra! hcon
   exact frame_2_206.not_valid_axiomC hab
     (LogicEM4.sound frame_2_206 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEM4 α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEM4 α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEM4.sound frame_1_3 (hcon #a))
 
@@ -70,14 +70,14 @@ theorem LogicE4_ssubset_LogicEM4 : @LogicE4 ℕ ⊂ LogicEM4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, B, hA⟩ := LogicE4.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicE4.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEM_ssubset_LogicEM4 : @LogicEM ℕ ⊂ LogicEM4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicEM.not_provable_axiomFour (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEM.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

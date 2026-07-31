@@ -38,12 +38,12 @@ theorem complete
       (supplementedBasicCanonicalModel LogicEMC).Val)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEMC α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMC α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEMC.sound frame_1_3 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEMC α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMC α) := by
   by_contra! hcon
   exact frame_2_8.not_valid_axiomFour
     (LogicEMC.sound frame_2_8 (hcon #a))
@@ -59,7 +59,7 @@ theorem LogicEC_ssubset_LogicEMC : @LogicEC ℕ ⊂ LogicEMC := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, B, hA⟩ := LogicEC.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEC.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

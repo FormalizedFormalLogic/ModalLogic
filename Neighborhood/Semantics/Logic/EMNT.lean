@@ -44,7 +44,7 @@ theorem LogicENT_ssubset_LogicEMNT : @LogicENT ℕ ⊂ LogicEMNT := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicENT.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicENT.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMND_ssubset_LogicEMNT : @LogicEMND ℕ ⊂ LogicEMNT := by
@@ -53,7 +53,7 @@ theorem LogicEMND_ssubset_LogicEMNT : @LogicEMND ℕ ⊂ LogicEMNT := by
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | rfl) | ⟨B, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomN | exact Logic.axiomD
-  · obtain ⟨A, hA⟩ := LogicEMND.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMND.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

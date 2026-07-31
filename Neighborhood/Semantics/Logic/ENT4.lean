@@ -33,18 +33,18 @@ theorem complete
   A ∈ @LogicENT4 α :=
   (basicCanonicalModel LogicENT4).mem_of_valid $ h (basicCanonicalModel LogicENT4).toFrame (basicCanonicalModel LogicENT4).Val
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicENT4 α) := by
   by_contra! hcon
   exact frame_3_10520744.not_valid_axiomC hab (LogicENT4.sound frame_3_10520744 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicENT4 α) := by
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENT4 α) := by
   by_contra! hcon
   exact frame_3_9471106.not_isEuclidean
     (isEuclidean_of_valid_axiomFive (LogicENT4.sound frame_3_9471106 (hcon #a)))
 
-lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicENT4 α) := by
   by_contra! hcon
   exact frame_3_9471106.not_valid_axiomM hab (LogicENT4.sound frame_3_9471106 (hcon #a #b))
@@ -84,7 +84,7 @@ theorem LogicENT_ssubset_LogicENT4 : @LogicENT ℕ ⊂ LogicENT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicENT.not_provable_axiomFour (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicENT.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEND4_ssubset_LogicENT4 : @LogicEND4 ℕ ⊂ LogicENT4 := by
@@ -93,7 +93,7 @@ theorem LogicEND4_ssubset_LogicENT4 : @LogicEND4 ℕ ⊂ LogicENT4 := by
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
       first | exact Logic.axiomN | exact Logic.axiomD | exact Logic.axiomFour
-  · obtain ⟨A, hA⟩ := LogicEND4.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEND4.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

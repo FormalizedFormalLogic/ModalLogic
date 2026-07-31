@@ -15,7 +15,7 @@ theorem of `LogicEP` but not of `LogicED`.
 
 theorem LogicED_not_subset_LogicEP : ¬(@LogicED ℕ ⊆ LogicEP) := by
   intro h
-  obtain ⟨A, hA⟩ := LogicEP.not_provable_axiomD (a := (0 : ℕ))
+  obtain ⟨A, hA⟩ := LogicEP.not_provable_axiomD (0 : ℕ)
   exact hA (h (ProvableHilbert.axm (by grind)))
 
 theorem LogicEP_not_subset_LogicED : ¬(@LogicEP ℕ ⊆ LogicED) := fun h =>

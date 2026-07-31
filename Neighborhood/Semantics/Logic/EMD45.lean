@@ -30,7 +30,7 @@ instance : (@LogicEMD45 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMD45.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomC [DecidableEq α] {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEMD45 α) := by
   by_contra! hcon
   exact frame_3_11053224.not_valid_axiomC hab (LogicEMD45.sound frame_3_11053224 (hcon #a #b))
@@ -47,7 +47,7 @@ theorem LogicEND45_ssubset_LogicEMD45 : @LogicEND45 ℕ ⊂ LogicEMD45 := by
         | exact Logic.axiomD
         | exact Logic.axiomFour
         | exact Logic.axiomFive
-  · obtain ⟨A, B, hA⟩ := LogicEND45.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEND45.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMND4_ssubset_LogicEMD45 : @LogicEMND4 ℕ ⊂ LogicEMD45 := by
@@ -60,21 +60,21 @@ theorem LogicEMND4_ssubset_LogicEMD45 : @LogicEMND4 ℕ ⊂ LogicEMD45 := by
         | exact Logic.axiomN
         | exact Logic.axiomD
         | exact Logic.axiomFour
-  · obtain ⟨A, hA⟩ := LogicEMND4.not_provable_axiomFive (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMND4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMD5_ssubset_LogicEMD45 : @LogicEMD5 ℕ ⊂ LogicEMD45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicEMD5.not_provable_axiomFour (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMD5.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEM45_ssubset_LogicEMD45 : @LogicEM45 ℕ ⊂ LogicEMD45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, hA⟩ := LogicEM45.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEM45.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

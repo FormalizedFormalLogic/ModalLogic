@@ -36,13 +36,13 @@ theorem complete
     (h (supplementedBasicCanonicalModel LogicEMD).toFrame
       (supplementedBasicCanonicalModel LogicEMD).Val)
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEMD α) := by
   by_contra! hcon
   exact frame_3_10528928.not_valid_axiomC hab (LogicEMD.sound frame_3_10528928 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEMD α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMD α) := by
   by_contra! hcon
   exact frame_2_172.not_valid_axiomFour (LogicEMD.sound frame_2_172 (hcon #a))
 
@@ -52,7 +52,7 @@ lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicEMD α) := by
   exact frame_1_0.not_valid_axiomN (LogicEMD.sound frame_1_0 hcon)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomT {a : α} : ∃ A, Axioms.T A ∉ (@LogicEMD α) := by
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMD α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicEMD.sound frame_2_170 (hcon #a))
 
@@ -62,7 +62,7 @@ theorem LogicED_ssubset_LogicEMD : @LogicED ℕ ⊂ LogicEMD := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, B, hA⟩ := LogicED.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicED.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMP_ssubset_LogicEMD : @LogicEMP ℕ ⊂ LogicEMD := by
@@ -70,7 +70,7 @@ theorem LogicEMP_ssubset_LogicEMD : @LogicEMP ℕ ⊂ LogicEMD := by
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro A (⟨B, C, rfl⟩ | rfl) <;> first | exact Logic.axiomM | exact Logic.axiomP_of_MD
-  · obtain ⟨A, hA⟩ := LogicEMP.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMP.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

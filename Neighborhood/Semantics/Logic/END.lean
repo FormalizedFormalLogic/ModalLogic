@@ -40,35 +40,35 @@ theorem complete
       (basicCanonicalModel LogicEND).Val)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomB {a : α} : ∃ A, Axioms.B A ∉ (@LogicEND α) := by
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEND α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB
     (LogicEND.sound frame_2_138 (hcon #a))
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEND α) := by
   by_contra! hcon
   exact frame_3_8431784.not_valid_axiomC hab (LogicEND.sound frame_3_8431784 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicEND α) := by
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEND α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomFive
     (LogicEND.sound frame_2_140 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEND α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEND α) := by
   by_contra! hcon
   exact frame_2_172.not_valid_axiomFour
     (LogicEND.sound frame_2_172 (hcon #a))
 
-lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicEND α) := by
   by_contra! hcon
   exact frame_3_8421506.not_valid_axiomM hab (LogicEND.sound frame_3_8421506 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomT {a : α} : ∃ A, Axioms.T A ∉ (@LogicEND α) := by
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEND α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicEND.sound frame_2_170 (hcon #a))
 
@@ -91,7 +91,7 @@ theorem LogicENP_ssubset_LogicEND : @LogicENP ℕ ⊂ LogicEND := by
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro A (rfl | rfl) <;> first | exact Logic.axiomN | exact Logic.axiomP_of_ND
-  · obtain ⟨A, hA⟩ := LogicENP.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicENP.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

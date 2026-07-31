@@ -39,22 +39,22 @@ theorem complete
       (supplementedBasicCanonicalModel LogicEMCN).Val)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomB {a : α} : ∃ A, Axioms.B A ∉ (@LogicEMCN α) := by
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMCN α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB (LogicEMCN.sound frame_2_138 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEMCN α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMCN α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEMCN.sound frame_1_3 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicEMCN α) := by
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCN α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomFive (LogicEMCN.sound frame_2_140 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEMCN α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMCN α) := by
   by_contra! hcon
   exact frame_2_172.not_valid_axiomFour (LogicEMCN.sound frame_2_172 (hcon #a))
 
@@ -64,7 +64,7 @@ theorem LogicECN_ssubset_LogicEMCN : @LogicECN ℕ ⊂ LogicEMCN := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicECN.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicECN.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMC_ssubset_LogicEMCN : @LogicEMC ℕ ⊂ LogicEMCN := by
@@ -77,7 +77,7 @@ theorem LogicEMN_ssubset_LogicEMCN : @LogicEMN ℕ ⊂ LogicEMCN := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicEMN.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEMN.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

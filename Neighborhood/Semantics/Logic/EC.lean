@@ -35,26 +35,26 @@ theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegul
       (basicCanonicalModel LogicEC).Val)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomB {a : α} : ∃ A, Axioms.B A ∉ (@LogicEC α) := by
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEC α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomB (LogicEC.sound frame_1_0 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEC α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEC α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEC.sound frame_1_3 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicEC α) := by
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEC α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicEC.sound frame_1_0 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEC α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEC α) := by
   by_contra! hcon
   exact frame_1_1.not_valid_axiomFour (LogicEC.sound frame_1_1 (hcon #a))
 
-lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicEC α) := by
   by_contra! hcon
   exact frame_3_137520.not_valid_axiomM hab (LogicEC.sound frame_3_137520 (hcon #a #b))
@@ -70,7 +70,7 @@ theorem LogicE_ssubset_LogicEC : (@LogicE ℕ) ⊂ LogicEC := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
-  · obtain ⟨A, B, hA⟩ := LogicE.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicE.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

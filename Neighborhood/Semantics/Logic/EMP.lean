@@ -27,7 +27,7 @@ theorem complete
       (supplementedBasicCanonicalModel LogicEMP).Val)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEMP α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMP α) := by
   by_contra! hcon
   exact frame_2_238.not_valid_axiomD (LogicEMP.sound frame_2_238 (hcon #a))
 
@@ -48,7 +48,7 @@ theorem LogicEP_ssubset_LogicEMP : @LogicEP ℕ ⊂ LogicEMP := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, B, hA⟩ := LogicEP.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicEP.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (Logic.HasAxiomM.M _ _), hA⟩
 
 end

@@ -34,19 +34,19 @@ theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsEucli
     (h (maximalRelativeMaximalCanonicalModel LogicE5).toFrame
       (maximalRelativeMaximalCanonicalModel LogicE5).Val)
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_3_10528928.not_valid_axiomC hab (LogicE5.sound frame_3_10528928 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicE5 α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD
     (LogicE5.sound frame_1_3 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicE5 α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_2_79.not_valid_axiomFour
     (LogicE5.sound frame_2_79 (hcon #a))
@@ -57,7 +57,7 @@ lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicE5 α) := by
   exact frame_2_75.not_valid_axiomN (LogicE5.sound frame_2_75 hcon)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomT {a : α} : ∃ A, Axioms.T A ∉ (@LogicE5 α) := by
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_1_3.not_isReflexive
     (isReflexive_of_valid_axiomT (LogicE5.sound frame_1_3 (hcon #a)))
@@ -68,7 +68,7 @@ theorem LogicE_ssubset_LogicE5 : @LogicE ℕ ⊂ LogicE5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
-  · obtain ⟨A, hA⟩ := LogicE.not_provable_axiomFive (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicE.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

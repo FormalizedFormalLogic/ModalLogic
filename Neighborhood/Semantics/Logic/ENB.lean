@@ -43,16 +43,16 @@ theorem complete
 
 end
 
-lemma not_provable_axiomC [DecidableEq α] {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicENB α) := by
   by_contra! hcon
   exact frame_3_9488552.not_valid_axiomC hab (LogicENB.sound frame_3_9488552 (hcon #a #b))
 
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicENB α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicENB α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicENB.sound frame_1_3 (hcon #a))
 
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicENB α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicENB α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomFour
     (Hilbert.sound (F := frame_2_140) (by rintro _ (rfl | ⟨_, rfl⟩) <;> simp) (hcon #a))
@@ -63,7 +63,7 @@ theorem LogicEN_ssubset_LogicENB : @LogicEN ℕ ⊂ LogicENB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicEN.not_provable_axiomB (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEN.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEB_ssubset_LogicENB : @LogicEB ℕ ⊂ LogicENB := by

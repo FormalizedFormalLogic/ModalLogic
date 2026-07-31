@@ -35,13 +35,13 @@ theorem complete
     (h (supplementedBasicCanonicalModel LogicEMT).toFrame
       (supplementedBasicCanonicalModel LogicEMT).Val)
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEMT α) := by
   by_contra! hcon
   exact frame_3_168.not_valid_axiomC hab (LogicEMT.sound frame_3_168 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEMT α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMT α) := by
   by_contra! hcon
   exact frame_2_8.not_valid_axiomFour
     (LogicEMT.sound frame_2_8 (hcon #a))
@@ -57,7 +57,7 @@ theorem LogicET_ssubset_LogicEMT : @LogicET ℕ ⊂ LogicEMT := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, B, hA⟩ := LogicET.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicET.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMD_ssubset_LogicEMT : @LogicEMD ℕ ⊂ LogicEMT := by
@@ -67,7 +67,7 @@ theorem LogicEMD_ssubset_LogicEMT : @LogicEMD ℕ ⊂ LogicEMT := by
     rintro _ (⟨_, _, rfl⟩ | ⟨_, rfl⟩)
     · exact ProvableHilbert.axm (by grind)
     · exact Logic.axiomD
-  · obtain ⟨A, hA⟩ := LogicEMD.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMD.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

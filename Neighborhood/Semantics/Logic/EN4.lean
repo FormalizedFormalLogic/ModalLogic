@@ -57,27 +57,27 @@ theorem finite_complete
     exact h (transitiveFiltration M T).toModel.toFrame (transitiveFiltration M T).toModel.Val ⟦x⟧
 
 omit [DecidableEq α] in
-lemma not_provable_axiomB {a : α} : ∃ A, Axioms.B A ∉ (@LogicEN4 α) := by
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEN4 α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB (LogicEN4.sound frame_2_138 (hcon #a))
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEN4 α) := by
   by_contra! hcon
   exact frame_3_10520744.not_valid_axiomC hab (LogicEN4.sound frame_3_10520744 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEN4 α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEN4 α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEN4.sound frame_1_3 (hcon #a))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicEN4 α) := by
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEN4 α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomFive
     (LogicEN4.sound frame_2_138 (hcon #a))
 
-lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicEN4 α) := by
   by_contra! hcon
   exact frame_3_9471106.not_valid_axiomM hab (LogicEN4.sound frame_3_9471106 (hcon #a #b))
@@ -88,7 +88,7 @@ theorem LogicEN_ssubset_LogicEN4 : @LogicEN ℕ ⊂ LogicEN4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicEN.not_provable_axiomFour (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEN.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicE4_ssubset_LogicEN4 : @LogicE4 ℕ ⊂ LogicEN4 := by

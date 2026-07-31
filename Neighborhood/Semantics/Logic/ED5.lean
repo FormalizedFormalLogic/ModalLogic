@@ -27,13 +27,13 @@ instance : (@LogicED5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicED5.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicED5 α) := by
   by_contra! hcon
   exact frame_3_10528928.not_valid_axiomC hab (LogicED5.sound frame_3_10528928 (hcon #a #b))
 
 omit [DecidableEq α] in
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicED5 α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicED5 α) := by
   by_contra! hcon
   exact frame_3_10528928.not_valid_axiomFour (LogicED5.sound frame_3_10528928 (hcon #a))
 
@@ -49,14 +49,14 @@ theorem LogicED_ssubset_LogicED5 : @LogicED ℕ ⊂ LogicED5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicED.not_provable_axiomFive (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicED.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicE5_ssubset_LogicED5 : @LogicE5 ℕ ⊂ LogicED5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, hA⟩ := LogicE5.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicE5.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

@@ -25,15 +25,15 @@ instance : (@LogicECD α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECD.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomB {a : α} : ∃ A, Axioms.B A ∉ (@LogicECD α) := by
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicECD α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomB (LogicECD.sound frame_1_0 (hcon #a))
 
-lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicECD α) := by
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicECD α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicECD.sound frame_1_0 (hcon #a))
 
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicECD α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicECD α) := by
   by_contra! hcon
   exact frame_1_1.not_valid_axiomFour (LogicECD.sound frame_1_1 (hcon #a))
 
@@ -47,14 +47,14 @@ theorem LogicEC_ssubset_LogicECD : @LogicEC ℕ ⊂ LogicECD := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicEC.not_provable_axiomD (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEC.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicED_ssubset_LogicECD : @LogicED ℕ ⊂ LogicECD := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, B, hA⟩ := LogicED.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicED.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 section

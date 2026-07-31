@@ -24,7 +24,7 @@ instance : (@LogicEK α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEK.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomM [DecidableEq α] {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicEK α) := by
   by_contra! hcon
   exact frame_4_11259170869739560.not_valid_axiomM hab (LogicEK.sound _ (hcon (#a ⋎ #b) #b))
@@ -35,7 +35,7 @@ theorem LogicE_ssubset_LogicEK : @LogicE ℕ ⊂ LogicEK := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
-  · obtain ⟨A, B, hA⟩ := LogicE.not_provable_axiomK (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicE.not_provable_axiomK (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.K A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

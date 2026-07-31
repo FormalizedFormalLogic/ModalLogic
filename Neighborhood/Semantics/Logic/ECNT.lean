@@ -27,7 +27,7 @@ instance : (@LogicECNT α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECNT.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomB {a : α} : ∃ A, Axioms.B A ∉ (@LogicECNT α) := by
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicECNT α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB (LogicECNT.sound frame_2_138 (hcon #a))
 
@@ -37,7 +37,7 @@ theorem LogicENT_ssubset_LogicECNT : @LogicENT ℕ ⊂ LogicECNT := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicENT.not_provable_axiomC (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicENT.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECT_ssubset_LogicECNT : @LogicECT ℕ ⊂ LogicECNT := by
@@ -54,7 +54,7 @@ theorem LogicECND_ssubset_LogicECNT : @LogicECND ℕ ⊂ LogicECNT := by
     · exact Logic.axiomC
     · exact Logic.axiomN
     · exact Logic.axiomD
-  · obtain ⟨A, hA⟩ := LogicECND.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicECND.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

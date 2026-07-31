@@ -31,36 +31,35 @@ theorem complete [DecidableEq α] (h : ∀ {κ : Type u} [Nonempty κ] (F : Fram
   (basicCanonicalModel LogicE).mem_of_valid
   (h (basicCanonicalModel LogicE).toFrame (basicCanonicalModel LogicE).Val)
 
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicE α) := by
+  by_contra! hcon
+  exact frame_2_8.not_valid_axiomFour (LogicE.sound frame_2_8 (hcon #a))
 
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicE α) := by
-  by_contra! hC;
-  exact frame_2_8.not_valid_axiomFour (LogicE.sound (frame_2_8) $ hC #a)
-
-lemma not_provable_axiomB {a : α} : ∃ A, Axioms.B A ∉ (@LogicE α) := by
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicE α) := by
   by_contra! hcon
   have hS : frame_1_0.IsSymmetric := isSymmetric_of_valid_axiomB (LogicE.sound _ (hcon #a))
   have := hS.symm {0} (show (0 : Fin 1) ∈ _ by simp)
   simp [Frame.box] at this
 
-lemma not_provable_axiomC [DecidableEq α] {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicE α) := by
   by_contra! hcon
   exact frame_2_22.not_valid_axiomC hab (LogicE.sound _ (hcon #a #b))
 
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicE α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicE α) := by
   by_contra! hcon
   exact frame_2_79.not_isSerial (isSerial_of_valid_axiomD (LogicE.sound _ (hcon #a)))
 
-lemma not_provable_axiomFive {a : α} : ∃ A, Axioms.Five A ∉ (@LogicE α) := by
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicE α) := by
   by_contra! hcon
   exact frame_3_9471106.not_isEuclidean (isEuclidean_of_valid_axiomFive (LogicE.sound _ (hcon #a)))
 
-lemma not_provable_axiomK [DecidableEq α] {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.K A B ∉ (@LogicE α) := by
   by_contra! hcon
   exact frame_3_130.not_valid_axiomK hab (LogicE.sound _ (hcon #a #b))
 
-lemma not_provable_axiomM [DecidableEq α] {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicE α) := by
   by_contra! hcon
   exact frame_3_137264.not_valid_axiomM hab (LogicE.sound _ (hcon #a #b))

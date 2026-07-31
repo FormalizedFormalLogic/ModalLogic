@@ -63,7 +63,7 @@ theorem complete
 
 end
 
-lemma not_provable_axiomC [DecidableEq α] {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicET5 α) := by
   by_contra! hcon
   exact frame_3_11570344.not_valid_axiomC hab (LogicET5.sound frame_3_11570344 (hcon #a #b))
@@ -78,14 +78,14 @@ theorem LogicENT4_ssubset_LogicET5 : @LogicENT4 ℕ ⊂ LogicET5 := by
     · exact Logic.axiomN
     · exact Logic.axiomT
     · exact LogicET5.hasAxiomFour
-  · obtain ⟨A, hA⟩ := LogicENT4.not_provable_axiomFive (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicENT4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, Logic.axiomFive, hA⟩
 
 theorem LogicE5_ssubset_LogicET5 : @LogicE5 ℕ ⊂ LogicET5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
-  · obtain ⟨A, hA⟩ := LogicE5.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicE5.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, Logic.axiomT, hA⟩
 
 theorem LogicETB_ssubset_LogicET5 : @LogicETB ℕ ⊂ LogicET5 := by
@@ -95,7 +95,7 @@ theorem LogicETB_ssubset_LogicET5 : @LogicETB ℕ ⊂ LogicET5 := by
     rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
     · exact Logic.axiomT
     · exact Logic.axiomB
-  · obtain ⟨A, hA⟩ := LogicETB.not_provable_axiomFive (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicETB.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEB4_ssubset_LogicET5 : @LogicEB4 ℕ ⊂ LogicET5 := by
@@ -105,7 +105,7 @@ theorem LogicEB4_ssubset_LogicET5 : @LogicEB4 ℕ ⊂ LogicET5 := by
     rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
     · exact Logic.axiomB
     · exact Logic.axiomFour
-  · obtain ⟨A, hA⟩ := LogicEB4.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEB4.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

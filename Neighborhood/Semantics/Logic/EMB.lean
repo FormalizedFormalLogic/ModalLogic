@@ -25,11 +25,11 @@ instance : (@LogicEMB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMB.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicEMB α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMB α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEMB.sound frame_1_3 (hcon #a))
 
-lemma not_provable_axiomFour {a : α} : ∃ A, Axioms.Four A ∉ (@LogicEMB α) := by
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMB α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomFour (LogicEMB.sound frame_2_140 (hcon #a))
 
@@ -41,7 +41,7 @@ theorem LogicEMCN_ssubset_LogicEMB : @LogicEMCN ℕ ⊂ LogicEMB := by
   · apply Hilbert.subset_of_provable_axioms
     rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) <;>
       first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN
-  · obtain ⟨A, hA⟩ := LogicEMCN.not_provable_axiomB (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMCN.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECNB_ssubset_LogicEMB : @LogicECNB ℕ ⊂ LogicEMB := by
@@ -52,7 +52,7 @@ theorem LogicECNB_ssubset_LogicEMB : @LogicECNB ℕ ⊂ LogicEMB := by
     · exact Logic.axiomC
     · exact Logic.axiomN
     · exact Logic.axiomB
-  · obtain ⟨A, B, hA⟩ := LogicECNB.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicECNB.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

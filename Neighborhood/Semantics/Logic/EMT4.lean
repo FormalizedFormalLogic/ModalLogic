@@ -50,7 +50,7 @@ theorem finite_complete
     exact h (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame
       (supplementedTransitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
-lemma not_provable_axiomC {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEMT4 α) := by
   by_contra! hcon
   exact frame_3_10520744.not_valid_axiomC hab (LogicEMT4.sound frame_3_10520744 (hcon #a #b))
@@ -66,14 +66,14 @@ theorem LogicEMT_ssubset_LogicEMT4 : @LogicEMT ℕ ⊂ LogicEMT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
-  · obtain ⟨A, hA⟩ := LogicEMT.not_provable_axiomFour (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMT.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicET4_ssubset_LogicEMT4 : @LogicET4 ℕ ⊂ LogicEMT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicET4.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicET4.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMD4_ssubset_LogicEMT4 : @LogicEMD4 ℕ ⊂ LogicEMT4 := by
@@ -84,7 +84,7 @@ theorem LogicEMD4_ssubset_LogicEMT4 : @LogicEMD4 ℕ ⊂ LogicEMT4 := by
     · exact ProvableHilbert.axm (by grind)
     · exact Logic.axiomD
     · exact ProvableHilbert.axm (by grind)
-  · obtain ⟨A, hA⟩ := LogicEMD4.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMD4.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 end

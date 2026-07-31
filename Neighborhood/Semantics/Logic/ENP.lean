@@ -28,11 +28,11 @@ theorem complete
       (basicCanonicalModel LogicENP).Val)
 
 omit [DecidableEq α] in
-lemma not_provable_axiomD {a : α} : ∃ A, Axioms.D A ∉ (@LogicENP α) := by
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicENP α) := by
   by_contra! hcon
   exact frame_2_238.not_valid_axiomD (LogicENP.sound frame_2_238 (hcon #a))
 
-lemma not_provable_axiomM {a b : α} (hab : a ≠ b) :
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicENP α) := by
   by_contra! hcon
   exact frame_3_9471106.not_valid_axiomM hab (LogicENP.sound frame_3_9471106 (hcon #a #b))

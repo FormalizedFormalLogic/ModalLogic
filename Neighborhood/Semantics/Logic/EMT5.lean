@@ -39,7 +39,7 @@ theorem LogicEMCD45_ssubset_LogicEMT5 : @LogicEMCD45 ℕ ⊂ LogicEMT5 := by
     rintro _ ((((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomD |
         exact Logic.axiomFour | exact Logic.axiomFive
-  · obtain ⟨A, hA⟩ := LogicEMCD45.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMCD45.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMCNT4_ssubset_LogicEMT5 : @LogicEMCNT4 ℕ ⊂ LogicEMT5 := by
@@ -49,7 +49,7 @@ theorem LogicEMCNT4_ssubset_LogicEMT5 : @LogicEMCNT4 ℕ ⊂ LogicEMT5 := by
     rintro _ ((((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomT |
         exact Logic.axiomFour
-  · obtain ⟨A, hA⟩ := LogicEMCNT4.not_provable_axiomFive (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMCNT4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMB4_ssubset_LogicEMT5 : @LogicEMB4 ℕ ⊂ LogicEMT5 := by
@@ -58,7 +58,7 @@ theorem LogicEMB4_ssubset_LogicEMT5 : @LogicEMB4 ℕ ⊂ LogicEMT5 := by
   · apply Hilbert.subset_of_provable_axioms
     rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomB | exact Logic.axiomFour
-  · obtain ⟨A, hA⟩ := LogicEMB4.not_provable_axiomT (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMB4.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicEMTB_ssubset_LogicEMT5 : @LogicEMTB ℕ ⊂ LogicEMT5 := by
@@ -67,7 +67,7 @@ theorem LogicEMTB_ssubset_LogicEMT5 : @LogicEMTB ℕ ⊂ LogicEMT5 := by
   · apply Hilbert.subset_of_provable_axioms
     rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomT | exact Logic.axiomB
-  · obtain ⟨A, hA⟩ := LogicEMTB.not_provable_axiomFive (a := (0 : ℕ))
+  · obtain ⟨A, hA⟩ := LogicEMTB.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem LogicECT5_ssubset_LogicEMT5 : @LogicECT5 ℕ ⊂ LogicEMT5 := by
@@ -75,7 +75,7 @@ theorem LogicECT5_ssubset_LogicEMT5 : @LogicECT5 ℕ ⊂ LogicEMT5 := by
   constructor
   · rw [LogicEMT5_eq_LogicEMCT5]
     exact Hilbert.subset_of_subset_axioms (by grind)
-  · obtain ⟨A, B, hA⟩ := LogicECT5.not_provable_axiomM (a := (0 : ℕ)) (b := 1) (by simp)
+  · obtain ⟨A, B, hA⟩ := LogicECT5.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 end
