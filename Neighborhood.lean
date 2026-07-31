@@ -122,6 +122,7 @@ public import Neighborhood.Semantics.Logic.EDB
 public import Neighborhood.Semantics.Logic.EK
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.EM4
+public import Neighborhood.Semantics.Logic.EM5
 public import Neighborhood.Semantics.Logic.EMB
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.EMC4
