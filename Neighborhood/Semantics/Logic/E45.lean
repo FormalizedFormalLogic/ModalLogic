@@ -2,7 +2,11 @@ module
 
 public import Neighborhood.Semantics.Logic.E4
 public import Neighborhood.Semantics.Logic.E5
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_153
+public import Neighborhood.Semantics.Example.Frame2_170
 public import Neighborhood.Semantics.Example.Frame2_206
+public import Neighborhood.Semantics.Example.Frame2_75
 
 /-!
 # The neighborhood logic `LogicE45`
@@ -42,6 +46,31 @@ omit [DecidableEq α] in
 lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicE45 α) := by
   intro hcon
   exact frame_2_75.not_valid_axiomN (LogicE45.sound frame_2_75 hcon)
+
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicE45 α) := by
+  by_contra! hcon
+  exact frame_2_75.not_valid_axiomK hab (LogicE45.sound frame_2_75 (hcon #a #b))
+
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicE45 α) := by
+  by_contra! hcon
+  exact frame_2_153.not_valid_axiomM hab (LogicE45.sound frame_2_153 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicE45 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomT (LogicE45.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicE45 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomB (LogicE45.sound frame_2_170 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicE45 α) := by
+  intro hcon
+  exact frame_1_3.not_valid_axiomP (LogicE45.sound frame_1_3 hcon)
 
 end LogicE45
 

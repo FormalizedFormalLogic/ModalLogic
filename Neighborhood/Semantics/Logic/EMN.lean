@@ -3,6 +3,9 @@ module
 public import Neighborhood.Semantics.Logic.EM
 public import Neighborhood.Semantics.Logic.EN
 public import Neighborhood.Semantics.Example.Frame2_140
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_138
+public import Neighborhood.Semantics.Example.Frame2_206
 
 /-!
 # The neighborhood logic `LogicEMN`
@@ -56,6 +59,26 @@ omit [DecidableEq α] in
 lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEMN α) := by
   intro hcon
   exact frame_1_3.not_valid_axiomP (LogicEMN.sound frame_1_3 hcon)
+
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicEMN α) := by
+  by_contra! hcon
+  exact frame_2_206.not_valid_axiomK hab (LogicEMN.sound frame_2_206 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMN α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomT (LogicEMN.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMN α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicEMN.sound frame_2_138 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMN α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicEMN.sound frame_1_3 (hcon #a))
 
 end LogicEMN
 

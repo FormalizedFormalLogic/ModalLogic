@@ -1,6 +1,8 @@
 module
 
 public import Neighborhood.Semantics.Logic.ET
+public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicECT`
@@ -35,6 +37,19 @@ lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
 lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicECT α) := by
   intro hcon
   exact frame_1_0.not_valid_axiomN (LogicECT.sound frame_1_0 hcon)
+
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicECT α) := by
+  by_contra! hcon
+  exact frame_3_9471106.not_valid_axiomK hab (LogicECT.sound frame_3_9471106 (hcon #a #b))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicECT α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomB (LogicECT.sound frame_1_0 (hcon #a))
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicECT α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomFive (LogicECT.sound frame_1_0 (hcon #a))
 
 end LogicECT
 
