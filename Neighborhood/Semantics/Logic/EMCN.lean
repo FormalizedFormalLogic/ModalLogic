@@ -3,6 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.EMC
 public import Neighborhood.Semantics.Logic.EMN
+public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_138
 
 /-!
@@ -57,6 +58,16 @@ omit [DecidableEq α] in
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMCN α) := by
   by_contra! hcon
   exact frame_2_172.not_valid_axiomFour (LogicEMCN.sound frame_2_172 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCN α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomT (LogicEMCN.sound frame_1_3 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEMCN α) := by
+  intro hcon
+  exact frame_1_3.not_valid_axiomP (LogicEMCN.sound frame_1_3 hcon)
 
 end LogicEMCN
 

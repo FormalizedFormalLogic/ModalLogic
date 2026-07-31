@@ -4,6 +4,8 @@ public import Neighborhood.Semantics.Logic.EMCN
 public import Neighborhood.Semantics.Logic.EM5
 public import Neighborhood.Semantics.Logic.ECN5
 public import Neighborhood.Semantics.Example.Frame3_10529440
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_170
 
 /-!
 # The neighborhood logic `LogicEMC5`
@@ -35,6 +37,18 @@ lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMC5 α) := by
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMC5 α) := by
   by_contra! hcon
   exact frame_3_10529440.not_valid_axiomFour (LogicEMC5.sound frame_3_10529440 (hcon #a))
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMC5 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomT (LogicEMC5.sound frame_1_3 (hcon #a))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMC5 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomB (LogicEMC5.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEMC5 α) := by
+  intro hcon
+  exact frame_1_3.not_valid_axiomP (LogicEMC5.sound frame_1_3 hcon)
 
 end LogicEMC5
 

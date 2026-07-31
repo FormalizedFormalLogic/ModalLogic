@@ -3,6 +3,9 @@ module
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.EMP
 public import Neighborhood.Semantics.Logic.ENP
+public import Neighborhood.Semantics.Example.Frame2_138
+public import Neighborhood.Semantics.Example.Frame2_140
+public import Neighborhood.Semantics.Example.Frame2_206
 
 @[expose] public section
 
@@ -33,6 +36,36 @@ omit [DecidableEq α] in
 lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMNP α) := by
   by_contra! hcon
   exact frame_2_238.not_valid_axiomD (LogicEMNP.sound frame_2_238 (hcon #a))
+
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicEMNP α) := by
+  by_contra! hcon
+  exact frame_2_206.not_valid_axiomK hab (LogicEMNP.sound frame_2_206 (hcon #a #b))
+
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicEMNP α) := by
+  by_contra! hcon
+  exact frame_2_206.not_valid_axiomC hab (LogicEMNP.sound frame_2_206 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMNP α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomT (LogicEMNP.sound frame_2_140 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMNP α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicEMNP.sound frame_2_138 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMNP α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFour (LogicEMNP.sound frame_2_140 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMNP α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomFive (LogicEMNP.sound frame_2_138 (hcon #a))
 
 end LogicEMNP
 

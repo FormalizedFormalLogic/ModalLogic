@@ -19,6 +19,9 @@ abbrev frame_3_10528928 : Frame (Fin 3) :=
     | 1 => {{0, 1}, {0, 2}, Set.univ}
     | 2 => {{0, 2}, Set.univ}⟩
 
+instance : frame_3_10528928.ContainsUnit := ⟨by
+  ext w; fin_cases w <;> simp [Frame.box, frame_3_10528928]⟩
+
 lemma frame_3_10528928.box_mono {X Y : Set (Fin 3)} (h : X ⊆ Y) :
     frame_3_10528928.box X ⊆ frame_3_10528928.box Y := by
   intro w hw

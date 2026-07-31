@@ -3,6 +3,8 @@ module
 public import Neighborhood.Semantics.Logic.EMT
 public import Neighborhood.Semantics.Logic.ECT
 public import Neighborhood.Semantics.Logic.EMCD
+public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame2_8
 
 /-!
 # The neighborhood logic `LogicEMCT`
@@ -26,6 +28,22 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
 instance : (@LogicEMCT α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCT.sound frame_1_2 hC⟩
+
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicEMCT α) := by
+  intro hcon
+  exact frame_1_0.not_valid_axiomN (LogicEMCT.sound frame_1_0 hcon)
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMCT α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomB (LogicEMCT.sound frame_1_0 (hcon #a))
+
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMCT α) := by
+  by_contra! hcon
+  exact frame_2_8.not_valid_axiomFour (LogicEMCT.sound frame_2_8 (hcon #a))
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCT α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomFive (LogicEMCT.sound frame_1_0 (hcon #a))
 
 end LogicEMCT
 

@@ -3,6 +3,8 @@ module
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EMD
 public import Neighborhood.Semantics.Logic.EMNP
+public import Neighborhood.Semantics.Example.Frame2_138
+public import Neighborhood.Semantics.Example.Frame3_8421544
 
 /-!
 # The neighborhood logic `LogicEMND`
@@ -38,6 +40,20 @@ lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMND α)
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMND α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicEMND.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicEMND α) := by
+  by_contra! hcon
+  exact frame_3_8421544.not_valid_axiomK hab (LogicEMND.sound frame_3_8421544 (hcon #a #b))
+
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicEMND α) := by
+  by_contra! hcon
+  exact frame_3_8421544.not_valid_axiomC hab (LogicEMND.sound frame_3_8421544 (hcon #a #b))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMND α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicEMND.sound frame_2_138 (hcon #a))
 
 end LogicEMND
 
