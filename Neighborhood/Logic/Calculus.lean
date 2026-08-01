@@ -170,13 +170,17 @@ lemma axiomK_of_MC [L.HasAxiomM] [L.HasAxiomC] : □(A 🡒 B) 🡒 □A 🡒 �
 
 instance [L.HasAxiomM] [L.HasAxiomC] : L.HasAxiomK := ⟨fun _ _ => axiomK_of_MC⟩
 
+/-- `◇(∼A)` and `∼□A` are equivalent. -/
+private lemma EDiaNNBox : ◇(∼A) 🡘 ∼□A ∈ L := by
+  have h : ∼∼A 🡘 A ∈ L := E_intro dne dni;
+  exact E_intro (contra (C_of_E_mpr (re h))) (contra (C_of_E_mp (re h)));
+
+/-- The axiom scheme `B` in the form `∼A 🡒 □(∼□A)`. -/
+private lemma CNBoxNBox [L.HasAxiomB] : ∼A 🡒 □(∼□A) ∈ L :=
+  C_trans axiomB (C_of_E_mp (re EDiaNNBox))
+
 /-- The dual of the axiom scheme `B`. -/
-lemma diaBc [L.HasAxiomB] : ◇□A 🡒 A ∈ L := by
-  have h₁ : ∼∼A 🡘 A ∈ L := E_intro dne dni;
-  have h₂ : ◇(∼A) 🡘 ∼□A ∈ L :=
-    E_intro (contra (C_of_E_mpr (re h₁))) (contra (C_of_E_mp (re h₁)));
-  have h₃ : ∼A 🡒 □(∼□A) ∈ L := C_trans axiomB (C_of_E_mp (re h₂));
-  exact C_trans (contra h₃) dne;
+lemma diaBc [L.HasAxiomB] : ◇□A 🡒 A ∈ L := C_trans (contra CNBoxNBox) dne
 
 /-- The axiom scheme `C` is derivable from `M` and `B`. -/
 instance [L.HasAxiomM] [L.HasAxiomB] : L.HasAxiomC := ⟨by
@@ -260,13 +264,12 @@ instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomT := ⟨fun A 
   have h₃ : ∼A 🡒 ∼□A ∈ L := C_trans hdia h₂;
   exact C_trans dni (C_trans (contra h₃) dne);⟩
 
+/-- The axiom scheme `Five` in the form `∼□A 🡒 □(∼□A)`. -/
+private lemma CNBoxBoxNBox [L.HasAxiomFive] : ∼□A 🡒 □(∼□A) ∈ L :=
+  C_trans (C_of_E_mpr EDiaNNBox) (C_trans axiomFive (C_of_E_mp (re EDiaNNBox)))
+
 /-- The dual of the axiom scheme `Five`. -/
-lemma diaFivec [L.HasAxiomFive] : ◇□A 🡒 □A ∈ L := by
-  have h₁ : ∼∼A 🡘 A ∈ L := E_intro dne dni;
-  have h₂ : ◇(∼A) 🡘 ∼□A ∈ L :=
-    E_intro (contra (C_of_E_mpr (re h₁))) (contra (C_of_E_mp (re h₁)));
-  have h₃ : ∼□A 🡒 □(∼□A) ∈ L := C_trans (C_of_E_mpr h₂) (C_trans axiomFive (C_of_E_mp (re h₂)));
-  exact C_trans (contra h₃) dne;
+lemma diaFivec [L.HasAxiomFive] : ◇□A 🡒 □A ∈ L := C_trans (contra CNBoxBoxNBox) dne
 
 /-- The axiom scheme `Four` is derivable from `M`, `B` and `5`. -/
 instance [L.HasAxiomM] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomFour :=
@@ -301,6 +304,18 @@ instance [L.HasAxiomM] [L.HasAxiomD] : L.HasAxiomP := ⟨axiomP_of_MD⟩
 /-- The axiom scheme `T` is derivable from `D`, `B` and `4`. -/
 instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomT :=
   ⟨fun _ => C_trans axiomFour (C_trans axiomD diaBc)⟩
+
+/-- The axiom scheme `T` is derivable from `C`, `D`, `B` and `5`. -/
+instance [L.HasAxiomC] [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomT := ⟨fun A => by
+  have hB : □A 🡒 □◇□A ∈ L := axiomB;
+  have hNA : ∼A 🡒 □(∼□A) ∈ L := CNBoxNBox;
+  have hO : ◇□A ⋏ ∼□A 🡒 ⊥ ∈ L := CK_iff_CC.mpr (C_swap (C_trans CNBoxBoxNBox dni));
+  have hBoxO : □(◇□A ⋏ ∼□A) 🡒 □⊥ ∈ L := C_of_E_mp (re (E_intro hO efq));
+  have h : □A ⋏ ∼A 🡒 (⊥ : Formula α) ∈ L :=
+    C_trans
+      (CK_of_C_of_C (C_trans and₁ hB) (C_trans and₂ hNA))
+      (C_trans axiomC (C_trans hBoxO axiomP));
+  exact C_trans (CK_iff_CC.mp h) dne;⟩
 
 variable [L.HasAxiomT]
 
