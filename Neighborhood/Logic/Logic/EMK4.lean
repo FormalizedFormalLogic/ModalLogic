@@ -1,48 +1,22 @@
 module
 
-public import Neighborhood.Logic.Logic.EM4
-public import Neighborhood.Logic.Logic.EMK
-public import Neighborhood.Semantics.Example.Frame1_0
-public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Logic.Logic.EMC4
 
 @[expose] public section
 
-variable {α : Type u} {A : Formula α}
+variable {α : Type u}
 
 namespace LogicEMK4
 
-theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.HasPropertyK]
-    [F.IsTransitive] :
-    A ∈ LogicEMK4 → F ⊧ A :=
-  Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) <;> simp)
-
-instance : (@LogicEMK4 α).IsConsistent := ⟨by
-  by_contra! hC
-  simpa using LogicEMK4.sound frame_1_2 hC⟩
-
-lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicEMK4 α) := by
-  intro hcon
-  exact frame_1_0.not_valid_axiomN (LogicEMK4.sound frame_1_0 hcon)
-
-lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMK4 α) := by
-  by_contra! hcon
-  exact frame_1_3.not_valid_axiomT (LogicEMK4.sound frame_1_3 (hcon #a))
-
-lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMK4 α) := by
-  by_contra! hcon
-  exact frame_1_0.not_valid_axiomB (LogicEMK4.sound frame_1_0 (hcon #a))
-
-lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMK4 α) := by
-  by_contra! hcon
-  exact frame_1_3.not_valid_axiomD (LogicEMK4.sound frame_1_3 (hcon #a))
-
-lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEMK4 α) := by
-  intro hcon
-  exact frame_1_3.not_valid_axiomP (LogicEMK4.sound frame_1_3 hcon)
-
-lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMK4 α) := by
-  by_contra! hcon
-  exact frame_1_0.not_valid_axiomFive (LogicEMK4.sound frame_1_0 (hcon #a))
+/-- Over `EM4`, the axiom scheme `K` and the axiom scheme `C` axiomatise the same logic. -/
+theorem eq_LogicEMC4 : (@LogicEMK4 α) = LogicEMC4 := by
+  apply Set.Subset.antisymm
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, rfl⟩) <;>
+      first | exact Logic.axiomM | exact Logic.axiomK | exact Logic.axiomFour
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, rfl⟩) <;>
+      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomFour
 
 end LogicEMK4
 
