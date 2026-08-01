@@ -3,56 +3,12 @@ module
 public import Neighborhood.Logic.Logic.EB4
 public import Neighborhood.Logic.Logic.EN4
 public import Neighborhood.Logic.Logic.ENB
-public import Neighborhood.Semantics.Example.Frame1_3
-public import Neighborhood.Semantics.Example.Frame2_191
-public import Neighborhood.Semantics.Example.Frame3_9472136
-public import Neighborhood.Semantics.Example.Frame3_11570344
 
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
 
 namespace LogicENB4
-
-theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsSymmetric]
-    [F.IsTransitive] :
-    A ∈ LogicENB4 → F ⊧ A :=
-  Hilbert.sound (by rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
-
-instance : (@LogicENB4 α).IsConsistent := ⟨by
-  by_contra! hC
-  simpa using LogicENB4.sound frame_1_2 hC⟩
-
-lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
-    ∃ A B, Axioms.K A B ∉ (@LogicENB4 α) := by
-  by_contra! hcon
-  exact frame_3_9472136.not_valid_axiomK hab (LogicENB4.sound frame_3_9472136 (hcon #a #b))
-
-lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
-    ∃ A B, Axioms.M A B ∉ (@LogicENB4 α) := by
-  by_contra! hcon
-  exact frame_3_9472136.not_valid_axiomM hab (LogicENB4.sound frame_3_9472136 (hcon #a #b))
-
-lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
-    ∃ A B, Axioms.C A B ∉ (@LogicENB4 α) := by
-  by_contra! hcon
-  exact frame_3_11570344.not_valid_axiomC hab (LogicENB4.sound frame_3_11570344 (hcon #a #b))
-
-lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicENB4 α) := by
-  by_contra! hcon
-  exact frame_1_3.not_valid_axiomT (LogicENB4.sound frame_1_3 (hcon #a))
-
-lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicENB4 α) := by
-  by_contra! hcon
-  exact frame_1_3.not_valid_axiomD (LogicENB4.sound frame_1_3 (hcon #a))
-
-lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicENB4 α) := by
-  intro hcon
-  exact frame_1_3.not_valid_axiomP (LogicENB4.sound frame_1_3 hcon)
-
-lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENB4 α) := by
-  by_contra! hcon
-  exact frame_2_191.not_valid_axiomFive (LogicENB4.sound frame_2_191 (hcon #a))
 
 /-- The axiom `N` is redundant over `B` and `4`. -/
 theorem eq_LogicEB4 : (@LogicENB4 α) = LogicEB4 := by
@@ -61,6 +17,33 @@ theorem eq_LogicEB4 : (@LogicENB4 α) = LogicEB4 := by
     rintro A ((rfl | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
       first | exact Logic.axiomN | exact Logic.axiomB | exact Logic.axiomFour
   · exact Hilbert.subset_of_subset_axioms (by grind)
+
+instance : (@LogicENB4 α).IsConsistent := by
+  rw [eq_LogicEB4]; infer_instance
+
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicENB4 α) := by
+  rw [eq_LogicEB4]; exact LogicEB4.not_provable_axiomK a b hab
+
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicENB4 α) := by
+  rw [eq_LogicEB4]; exact LogicEB4.not_provable_axiomM a b hab
+
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicENB4 α) := by
+  rw [eq_LogicEB4]; exact LogicEB4.not_provable_axiomC a b hab
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicENB4 α) := by
+  rw [eq_LogicEB4]; exact LogicEB4.not_provable_axiomT a
+
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicENB4 α) := by
+  rw [eq_LogicEB4]; exact LogicEB4.not_provable_axiomD a
+
+lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicENB4 α) := by
+  rw [eq_LogicEB4]; exact LogicEB4.not_provable_axiomP
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENB4 α) := by
+  rw [eq_LogicEB4]; exact LogicEB4.not_provable_axiomFive a
 
 end LogicENB4
 
