@@ -34,6 +34,12 @@ instance : frame_2_95.IsRegular where
       rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
         simp [frame_2_95.box_empty, frame_2_95.box_zero, frame_2_95.box_one]
 
+instance : frame_2_95.IsEuclidean where
+  eucl X := by
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      simp [Frame.dia, ← Set.Fin2.eq_univ, frame_2_95.box_empty, frame_2_95.box_zero,
+        frame_2_95.box_one, frame_2_95.box_univ]
+
 instance : frame_2_95.IsSymmetric where
   symm X := by
     rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>

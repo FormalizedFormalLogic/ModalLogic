@@ -27,6 +27,27 @@ lemma frame_2_34.box_one : frame_2_34.box ({1} : Set (Fin 2)) = Set.univ := by
 lemma frame_2_34.box_univ : frame_2_34.box (Set.univ : Set (Fin 2)) = ∅ := by
   ext y; fin_cases y <;> simp [Frame.box, frame_2_34, Set.ext_iff]
 
+instance : frame_2_34.HasPropertyK where
+  K X Y w := by
+    intro ⟨h1, h2⟩
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      simp only [← Set.Fin2.eq_univ, frame_2_34.box_univ, frame_2_34.box_zero,
+        frame_2_34.box_one, frame_2_34.box_empty, Set.mem_empty_iff_false] at h2
+    exfalso
+    rw [Set.Fin2.eq_compl_singleton_one_singleton_zero] at h1
+    have hne : ({0} ∪ Y : Set (Fin 2)) ≠ {1} := by
+      intro heq
+      have h0 : (0 : Fin 2) ∈ ({0} ∪ Y : Set (Fin 2)) := by simp
+      rw [heq] at h0
+      simp at h0
+    have hbox : frame_2_34.box ({0} ∪ Y) = ∅ := by
+      ext y
+      simp only [Frame.box, frame_2_34, Set.mem_setOf_eq, Set.mem_singleton_iff,
+        Set.mem_empty_iff_false, iff_false]
+      exact hne
+    rw [hbox] at h1
+    exact h1
+
 instance : frame_2_34.IsRegular where
   regular X Y := by
     rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>

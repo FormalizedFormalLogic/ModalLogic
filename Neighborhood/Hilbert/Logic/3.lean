@@ -366,13 +366,13 @@ instance : (@LogicENB4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
 instance : (@LogicENB4 α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
 instance : (@LogicENB4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 
-abbrev LogicEMKN : Logic α := Hilbert $
+abbrev LogicEMNK : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪
-  { Axioms.K A B | (A) (B) } ∪
-  { Axioms.N }
-instance : (@LogicEMKN α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMKN α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
-instance : (@LogicEMKN α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+  { Axioms.N } ∪
+  { Axioms.K A B | (A) (B) }
+instance : (@LogicEMNK α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
+instance : (@LogicEMNK α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicEMNK α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
 
 abbrev LogicEMKT : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪

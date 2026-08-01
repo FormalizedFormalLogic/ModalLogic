@@ -19,6 +19,13 @@ abbrev frame_3_9472136 : Frame (Fin 3) :=
     | 1 => {{0, 1}, Set.univ}
     | 2 => {{2}, Set.univ}⟩
 
+instance : frame_3_9472136.NotContainsEmpty := ⟨fun x => by
+  fin_cases x <;>
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
+  · exact ⟨(Set.insert_nonempty _ _).ne_empty.symm, Set.univ_nonempty.ne_empty.symm⟩
+  · exact ⟨(Set.insert_nonempty _ _).ne_empty.symm, Set.univ_nonempty.ne_empty.symm⟩
+  · exact ⟨(Set.singleton_nonempty _).ne_empty.symm, Set.univ_nonempty.ne_empty.symm⟩⟩
+
 instance : frame_3_9472136.IsRegular where
   regular X Y := by
     intro x ⟨hX, hY⟩

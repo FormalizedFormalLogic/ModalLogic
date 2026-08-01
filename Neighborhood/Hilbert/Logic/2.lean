@@ -186,4 +186,94 @@ abbrev LogicEB4 : Logic α := Hilbert $
 instance : (@LogicEB4 α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
 instance : (@LogicEB4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 
+abbrev LogicECK : Logic α := Hilbert $
+  { Axioms.C A B | (A) (B) } ∪
+  { Axioms.K A B | (A) (B) }
+instance : (@LogicECK α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECK α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+
+abbrev LogicENK : Logic α := Hilbert $
+  { Axioms.N } ∪
+  { Axioms.K A B | (A) (B) }
+instance : (@LogicENK α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENK α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+
+abbrev LogicEKT : Logic α := Hilbert $
+  { Axioms.K A B | (A) (B) } ∪
+  { Axioms.T A | (A) }
+instance : (@LogicEKT α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicEKT α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
+
+abbrev LogicEKD : Logic α := Hilbert $
+  { Axioms.K A B | (A) (B) } ∪
+  { Axioms.D A | (A) }
+instance : (@LogicEKD α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicEKD α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
+
+abbrev LogicEKP : Logic α := Hilbert $
+  { Axioms.K A B | (A) (B) } ∪
+  { Axioms.P }
+instance : (@LogicEKP α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicEKP α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+
+abbrev LogicEKB : Logic α := Hilbert $
+  { Axioms.K A B | (A) (B) } ∪
+  { Axioms.B A | (A) }
+instance : (@LogicEKB α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicEKB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
+
+abbrev LogicEK4 : Logic α := Hilbert $
+  { Axioms.K A B | (A) (B) } ∪
+  { Axioms.Four A | (A) }
+instance : (@LogicEK4 α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicEK4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
+
+abbrev LogicEK5 : Logic α := Hilbert $
+  { Axioms.K A B | (A) (B) } ∪
+  { Axioms.Five A | (A) }
+instance : (@LogicEK5 α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicEK5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
+
+abbrev LogicETD : Logic α := Hilbert $
+  { Axioms.T A | (A) } ∪
+  { Axioms.D A | (A) }
+instance : (@LogicETD α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
+instance : (@LogicETD α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
+
+abbrev LogicETP : Logic α := Hilbert $
+  { Axioms.T A | (A) } ∪
+  { Axioms.P }
+instance : (@LogicETP α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
+instance : (@LogicETP α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+
+abbrev LogicEDP : Logic α := Hilbert $
+  { Axioms.D A | (A) } ∪
+  { Axioms.P }
+instance : (@LogicEDP α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
+instance : (@LogicEDP α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+
+abbrev LogicEPB : Logic α := Hilbert $
+  { Axioms.P } ∪
+  { Axioms.B A | (A) }
+instance : (@LogicEPB α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+instance : (@LogicEPB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
+
+abbrev LogicEP4 : Logic α := Hilbert $
+  { Axioms.P } ∪
+  { Axioms.Four A | (A) }
+instance : (@LogicEP4 α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+instance : (@LogicEP4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
+
+abbrev LogicEP5 : Logic α := Hilbert $
+  { Axioms.P } ∪
+  { Axioms.Five A | (A) }
+instance : (@LogicEP5 α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+instance : (@LogicEP5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
+
+abbrev LogicEB5 : Logic α := Hilbert $
+  { Axioms.B A | (A) } ∪
+  { Axioms.Five A | (A) }
+instance : (@LogicEB5 α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
+instance : (@LogicEB5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
+
 end

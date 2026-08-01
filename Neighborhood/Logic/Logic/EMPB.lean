@@ -1,35 +1,22 @@
 module
 
-public import Neighborhood.Logic.Logic.EMB
-public import Neighborhood.Logic.Logic.EMP
-public import Neighborhood.Semantics.Example.Frame2_140
+public import Neighborhood.Logic.Logic.EMDB
 
 @[expose] public section
 
-variable {α : Type u} {A : Formula α}
+variable {α : Type u}
 
 namespace LogicEMPB
 
-theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.NotContainsEmpty]
-    [F.IsSymmetric] :
-    A ∈ LogicEMPB → F ⊧ A :=
-  Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;> simp)
-
-instance : (@LogicEMPB α).IsConsistent := ⟨by
-  by_contra! hC
-  simpa using LogicEMPB.sound frame_1_2 hC⟩
-
-lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMPB α) := by
-  by_contra! hcon
-  exact frame_2_140.not_valid_axiomT (LogicEMPB.sound frame_2_140 (hcon #a))
-
-lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMPB α) := by
-  by_contra! hcon
-  exact frame_2_140.not_valid_axiomFour (LogicEMPB.sound frame_2_140 (hcon #a))
-
-lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMPB α) := by
-  by_contra! hcon
-  exact frame_2_140.not_valid_axiomFive (LogicEMPB.sound frame_2_140 (hcon #a))
+/-- Over `EMB`, the axiom `P` and the axiom scheme `D` axiomatise the same logic. -/
+theorem eq_LogicEMDB : (@LogicEMPB α) = LogicEMDB := by
+  apply Set.Subset.antisymm
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A ((⟨B, C, rfl⟩ | rfl) | ⟨B, rfl⟩) <;>
+      first | exact Logic.axiomM | exact Logic.axiomP | exact Logic.axiomB
+  · apply Hilbert.subset_of_provable_axioms
+    rintro A ((⟨B, C, rfl⟩ | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
+      first | exact Logic.axiomM | exact Logic.axiomD | exact Logic.axiomB
 
 end LogicEMPB
 
