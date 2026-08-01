@@ -57,6 +57,12 @@ instance : frame_2_186.IsRegular where
         intro y hy <;> fin_cases y <;>
           simp_all [Frame.box, frame_2_186, Set.Fin2.eq_univ, Set.ext_iff]
 
+instance : frame_2_186.IsSymmetric where
+  symm X := by
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      intro y hy <;> fin_cases y <;>
+        simp_all [Frame.box, Frame.dia, frame_2_186, Set.Fin2.eq_univ, Set.ext_iff]
+
 lemma frame_2_186.not_isTransitive : ¬frame_2_186.IsTransitive := by
   intro hT
   have hboxE : frame_2_186.box (∅ : Set (Fin 2)) = {1} := by

@@ -77,6 +77,14 @@ instance : frame_3_8421512.IsRegular where
     · obtain ⟨rfl, rfl⟩ := hw'; simp
     · obtain ⟨rfl, rfl⟩ := hw'; simp
 
+instance : frame_3_8421512.HasPropertyK where
+  K X Y w hw := by
+    have hsub : (Xᶜ ∪ Y) ∩ X ⊆ Y := by
+      rintro z ⟨hz1 | hz1, hz2⟩
+      · exact absurd hz2 hz1
+      · exact hz1
+    exact frame_3_8421512.box_mono hsub (frame_3_8421512.regular hw)
+
 lemma frame_3_8421512.not_isTransitive :
     ¬frame_3_8421512.IsTransitive := by
   intro hC
