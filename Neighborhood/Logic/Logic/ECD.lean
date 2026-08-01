@@ -55,27 +55,27 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicECD α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomT (LogicECD.sound frame_2_140 (hcon #a))
 
-end LogicECD
-
-theorem LogicECD.ssubset_LogicEC : @LogicEC ℕ ⊂ LogicECD := by
+theorem ssubset_LogicEC : @LogicEC ℕ ⊂ LogicECD := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · obtain ⟨A, hA⟩ := LogicEC.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicECD.ssubset_LogicED : @LogicED ℕ ⊂ LogicECD := by
+theorem ssubset_LogicED : @LogicED ℕ ⊂ LogicECD := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · obtain ⟨A, B, hA⟩ := LogicED.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicECD.complete [DecidableEq α]
+theorem complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegular] → [F.IsSerial] → F ⊧ A) :
     A ∈ @LogicECD α :=
   (basicCanonicalModel LogicECD).mem_of_valid
     (h (basicCanonicalModel LogicECD).toFrame
       (basicCanonicalModel LogicECD).Val)
+
+end LogicECD
 
 end

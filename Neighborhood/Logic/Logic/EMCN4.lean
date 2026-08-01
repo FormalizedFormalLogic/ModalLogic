@@ -58,19 +58,19 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCN4 α
   by_contra! hcon
   exact frame_2_138.not_valid_axiomFive (LogicEMCN4.sound frame_2_138 (hcon #a))
 
-end LogicEMCN4
-
-theorem LogicEMCN4.ssubset_LogicEMC4 : @LogicEMC4 ℕ ⊂ LogicEMCN4 := by
+theorem ssubset_LogicEMC4 : @LogicEMC4 ℕ ⊂ LogicEMCN4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMC4.not_provable_axiomN⟩
 
-theorem LogicEMCN4.ssubset_LogicEMCN : @LogicEMCN ℕ ⊂ LogicEMCN4 := by
+theorem ssubset_LogicEMCN : @LogicEMCN ℕ ⊂ LogicEMCN4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicEMCN.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEMCN4
 
 end

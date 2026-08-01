@@ -67,12 +67,12 @@ lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEN α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEN.sound frame_1_3 (hcon #a))
 
-end LogicEN
-
-theorem LogicEN.ssubset_LogicE : @LogicE ℕ ⊂ LogicEN := by
+theorem ssubset_LogicE : @LogicE ℕ ⊂ LogicEN := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicE.not_provable_axiomN⟩
+
+end LogicEN
 
 end

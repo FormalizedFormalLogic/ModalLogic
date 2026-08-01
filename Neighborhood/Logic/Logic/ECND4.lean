@@ -19,27 +19,27 @@ instance : (@LogicECND4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECND4.sound frame_1_2 hC⟩
 
-end LogicECND4
-
-theorem LogicECND4.ssubset_LogicECND : @LogicECND ℕ ⊂ LogicECND4 := by
+theorem ssubset_LogicECND : @LogicECND ℕ ⊂ LogicECND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicECND.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicECND4.ssubset_LogicECN4 : @LogicECN4 ℕ ⊂ LogicECND4 := by
+theorem ssubset_LogicECN4 : @LogicECN4 ℕ ⊂ LogicECND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicECN4.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicECND4.ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicECND4 := by
+theorem ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicECND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, B, hA⟩ := LogicEND4.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicECND4
 
 end

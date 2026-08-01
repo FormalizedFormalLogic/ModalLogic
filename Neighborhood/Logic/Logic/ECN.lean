@@ -66,19 +66,19 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicECN α) := by
   intro hcon
   exact frame_1_3.not_valid_axiomP (LogicECN.sound frame_1_3 hcon)
 
-end LogicECN
-
-theorem LogicECN.ssubset_LogicEC : @LogicEC ℕ ⊂ LogicECN := by
+theorem ssubset_LogicEC : @LogicEC ℕ ⊂ LogicECN := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEC.not_provable_axiomN⟩
 
-theorem LogicECN.ssubset_LogicEN : @LogicEN ℕ ⊂ LogicECN := by
+theorem ssubset_LogicEN : @LogicEN ℕ ⊂ LogicECN := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · obtain ⟨A, B, hA⟩ := LogicEN.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicECN
 
 end

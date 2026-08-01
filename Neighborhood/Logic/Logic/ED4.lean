@@ -56,21 +56,20 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicED4 α) := by
   intro hcon
   exact frame_2_90.not_valid_axiomP (LogicED4.sound frame_2_90 hcon)
 
-end LogicED4
-
-
-theorem LogicED4.ssubset_LogicED : @LogicED ℕ ⊂ LogicED4 := by
+theorem ssubset_LogicED : @LogicED ℕ ⊂ LogicED4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · obtain ⟨A, hA⟩ := LogicED.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicED4.ssubset_LogicE4 : @LogicE4 ℕ ⊂ LogicED4 := by
+theorem ssubset_LogicE4 : @LogicE4 ℕ ⊂ LogicED4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · obtain ⟨A, hA⟩ := LogicE4.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicED4
 
 end

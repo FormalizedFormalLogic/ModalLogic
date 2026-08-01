@@ -64,13 +64,13 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEC α) := by
   intro hcon
   exact frame_1_1.not_valid_axiomP (LogicEC.sound frame_1_1 hcon)
 
-end LogicEC
-
-theorem LogicEC.ssubset_LogicE : (@LogicE ℕ) ⊂ LogicEC := by
+theorem ssubset_LogicE : (@LogicE ℕ) ⊂ LogicEC := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · obtain ⟨A, B, hA⟩ := LogicE.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEC
 
 end

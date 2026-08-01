@@ -49,16 +49,14 @@ lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEND4 α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB (LogicEND4.sound frame_2_138 (hcon #a))
 
-end LogicEND4
-
-theorem LogicEND4.ssubset_LogicEND : @LogicEND ℕ ⊂ LogicEND4 := by
+theorem ssubset_LogicEND : @LogicEND ℕ ⊂ LogicEND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · obtain ⟨A, hA⟩ := LogicEND.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEND4.ssubset_LogicEN4 : @LogicEN4 ℕ ⊂ LogicEND4 := by
+theorem ssubset_LogicEN4 : @LogicEN4 ℕ ⊂ LogicEND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms
@@ -66,10 +64,12 @@ theorem LogicEND4.ssubset_LogicEN4 : @LogicEN4 ℕ ⊂ LogicEND4 := by
   · obtain ⟨A, hA⟩ := LogicEN4.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEND4.ssubset_LogicED4 : @LogicED4 ℕ ⊂ LogicEND4 := by
+theorem ssubset_LogicED4 : @LogicED4 ℕ ⊂ LogicEND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicED4.not_provable_axiomN⟩
+
+end LogicEND4
 
 end

@@ -63,9 +63,7 @@ lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
   by_contra! hcon
   exact frame_3_8421506.not_valid_axiomK hab (LogicEND.sound frame_3_8421506 (hcon #a #b))
 
-end LogicEND
-
-theorem LogicEND.ssubset_LogicED : @LogicED ℕ ⊂ LogicEND := by
+theorem ssubset_LogicED : @LogicED ℕ ⊂ LogicEND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
@@ -77,12 +75,14 @@ instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.Not
     have hd := F.serial (X := (∅ : Set κ)) hbox
     simp [Frame.dia, F.contains_unit] at hd
 
-theorem LogicEND.ssubset_LogicENP : @LogicENP ℕ ⊂ LogicEND := by
+theorem ssubset_LogicENP : @LogicENP ℕ ⊂ LogicEND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro A (rfl | rfl) <;> first | exact Logic.axiomN | exact Logic.axiomP_of_ND
   · obtain ⟨A, hA⟩ := LogicENP.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEND
 
 end

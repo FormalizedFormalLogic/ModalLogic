@@ -54,9 +54,7 @@ lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicETB α) 
   by_contra! hcon
   exact frame_3_8437920.not_valid_axiomFour (LogicETB.sound frame_3_8437920 (hcon #a))
 
-end LogicETB
-
-theorem LogicETB.ssubset_LogicENDB : @LogicENDB ℕ ⊂ LogicETB := by
+theorem ssubset_LogicENDB : @LogicENDB ℕ ⊂ LogicETB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -64,5 +62,7 @@ theorem LogicETB.ssubset_LogicENDB : @LogicENDB ℕ ⊂ LogicETB := by
       first | exact Logic.axiomN | exact Logic.axiomD | exact Logic.axiomB
   · obtain ⟨A, hA⟩ := LogicENDB.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicETB
 
 end

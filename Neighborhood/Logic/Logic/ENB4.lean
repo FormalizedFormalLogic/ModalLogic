@@ -54,14 +54,14 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENB4 α)
   by_contra! hcon
   exact frame_2_191.not_valid_axiomFive (LogicENB4.sound frame_2_191 (hcon #a))
 
-end LogicENB4
-
 /-- The axiom `N` is redundant over `B` and `4`. -/
-theorem LogicENB4.eq_LogicEB4 : (@LogicENB4 α) = LogicEB4 := by
+theorem eq_LogicEB4 : (@LogicENB4 α) = LogicEB4 := by
   apply Set.Subset.antisymm
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((rfl | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
       first | exact Logic.axiomN | exact Logic.axiomB | exact Logic.axiomFour
   · exact Hilbert.subset_of_subset_axioms (by grind)
+
+end LogicENB4
 
 end

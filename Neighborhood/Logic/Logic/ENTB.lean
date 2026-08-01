@@ -44,21 +44,21 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENTB α)
   by_contra! hcon
   exact frame_3_8437920.not_valid_axiomFive (LogicENTB.sound frame_3_8437920 (hcon #a))
 
-end LogicENTB
-
 /-- The axiom `N` is redundant over `T` and `B`. -/
-theorem LogicENTB.eq_LogicETB : (@LogicENTB α) = LogicETB := by
+theorem eq_LogicETB : (@LogicENTB α) = LogicETB := by
   apply Set.Subset.antisymm
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((rfl | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
       first | exact Logic.axiomN | exact Logic.axiomT | exact Logic.axiomB
   · exact Hilbert.subset_of_subset_axioms (by grind)
 
-theorem LogicENTB.ssubset_LogicENT : @LogicENT ℕ ⊂ LogicENTB := by
+theorem ssubset_LogicENT : @LogicENT ℕ ⊂ LogicENTB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · obtain ⟨A, hA⟩ := LogicENT.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicENTB
 
 end

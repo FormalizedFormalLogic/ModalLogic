@@ -48,8 +48,6 @@ lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicENT4 α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB (LogicENT4.sound frame_2_138 (hcon #a))
 
-end LogicENT4
-
 instance [DecidableEq α] : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
   closed B hB C hC := by
@@ -57,7 +55,7 @@ instance [DecidableEq α] : FormulaSet.IsSubformulaClosed
     · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
-theorem LogicENT4.finite_complete [DecidableEq α]
+theorem finite_complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.ContainsUnit] → [F.IsReflexive] →
       [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicENT4 α :=
@@ -73,20 +71,20 @@ theorem LogicENT4.finite_complete [DecidableEq α]
     haveI : (transitiveFiltration M T).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (transitiveFiltration M T).toModel.toFrame (transitiveFiltration M T).toModel.Val ⟦x⟧
 
-theorem LogicENT4.ssubset_LogicET4 : @LogicET4 ℕ ⊂ LogicENT4 := by
+theorem ssubset_LogicET4 : @LogicET4 ℕ ⊂ LogicENT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.union_subset_union_left _ Set.subset_union_right)
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicET4.not_provable_axiomN⟩
 
-theorem LogicENT4.ssubset_LogicENT : @LogicENT ℕ ⊂ LogicENT4 := by
+theorem ssubset_LogicENT : @LogicENT ℕ ⊂ LogicENT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · obtain ⟨A, hA⟩ := LogicENT.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicENT4.ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicENT4 := by
+theorem ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicENT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -94,5 +92,7 @@ theorem LogicENT4.ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicENT4 := by
       first | exact Logic.axiomN | exact Logic.axiomD | exact Logic.axiomFour
   · obtain ⟨A, hA⟩ := LogicEND4.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicENT4
 
 end

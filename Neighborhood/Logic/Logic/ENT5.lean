@@ -35,14 +35,14 @@ lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
   by_contra! hcon
   exact frame_3_11570344.not_valid_axiomC hab (LogicENT5.sound frame_3_11570344 (hcon #a #b))
 
-end LogicENT5
-
 /-- The axiom `N` is redundant over `T` and `5`. -/
-theorem LogicENT5.eq_LogicET5 : (@LogicENT5 α) = LogicET5 := by
+theorem eq_LogicET5 : (@LogicENT5 α) = LogicET5 := by
   apply Set.Subset.antisymm
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((rfl | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
       first | exact Logic.axiomN | exact Logic.axiomT | exact Logic.axiomFive
   · exact Hilbert.subset_of_subset_axioms (by grind)
+
+end LogicENT5
 
 end

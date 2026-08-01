@@ -39,16 +39,14 @@ lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicECTB α)
   by_contra! hcon
   exact frame_3_8437920.not_valid_axiomFour (LogicECTB.sound frame_3_8437920 (hcon #a))
 
-end LogicECTB
-
-theorem LogicECTB.ssubset_LogicETB : @LogicETB ℕ ⊂ LogicECTB := by
+theorem ssubset_LogicETB : @LogicETB ℕ ⊂ LogicECTB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, B, hA⟩ := LogicETB.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicECTB.ssubset_LogicECNDB : @LogicECNDB ℕ ⊂ LogicECTB := by
+theorem ssubset_LogicECNDB : @LogicECNDB ℕ ⊂ LogicECTB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -57,7 +55,7 @@ theorem LogicECTB.ssubset_LogicECNDB : @LogicECNDB ℕ ⊂ LogicECTB := by
   · obtain ⟨A, hA⟩ := LogicECNDB.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicECTB.ssubset_LogicECNT : @LogicECNT ℕ ⊂ LogicECTB := by
+theorem ssubset_LogicECNT : @LogicECNT ℕ ⊂ LogicECTB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -65,5 +63,7 @@ theorem LogicECTB.ssubset_LogicECNT : @LogicECNT ℕ ⊂ LogicECTB := by
       first | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomT
   · obtain ⟨A, hA⟩ := LogicECNT.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicECTB
 
 end

@@ -41,23 +41,21 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCD α)
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicEMCD.sound frame_1_0 (hcon #a))
 
-end LogicEMCD
-
-theorem LogicEMCD.ssubset_LogicEMC : @LogicEMC ℕ ⊂ LogicEMCD := by
+theorem ssubset_LogicEMC : @LogicEMC ℕ ⊂ LogicEMCD := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · obtain ⟨A, hA⟩ := LogicEMC.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMCD.ssubset_LogicEMD : @LogicEMD ℕ ⊂ LogicEMCD := by
+theorem ssubset_LogicEMD : @LogicEMD ℕ ⊂ LogicEMCD := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.union_subset_union_left _ Set.subset_union_left)
   · obtain ⟨A, B, hA⟩ := LogicEMD.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMCD.ssubset_LogicECP : @LogicECP ℕ ⊂ LogicEMCD := by
+theorem ssubset_LogicECP : @LogicECP ℕ ⊂ LogicEMCD := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -66,7 +64,7 @@ theorem LogicEMCD.ssubset_LogicECP : @LogicECP ℕ ⊂ LogicEMCD := by
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 /-- Over `EMC`, the axiom `P` and the axiom scheme `D` axiomatise the same logic. -/
-theorem LogicEMCD.eq_LogicEMCP : (@LogicEMCD α) = LogicEMCP := by
+theorem eq_LogicEMCP : (@LogicEMCD α) = LogicEMCP := by
   apply Set.Subset.antisymm
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, rfl⟩) <;>
@@ -74,5 +72,7 @@ theorem LogicEMCD.eq_LogicEMCP : (@LogicEMCD α) = LogicEMCP := by
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | rfl) <;>
       first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomP_of_MD
+
+end LogicEMCD
 
 end

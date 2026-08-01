@@ -47,9 +47,7 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEM45 α) := by
   intro hcon
   exact frame_1_3.not_valid_axiomP (LogicEM45.sound frame_1_3 hcon)
 
-end LogicEM45
-
-theorem LogicEM45.ssubset_LogicEN45 : @LogicEN45 ℕ ⊂ LogicEM45 := by
+theorem ssubset_LogicEN45 : @LogicEN45 ℕ ⊂ LogicEM45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -58,7 +56,7 @@ theorem LogicEM45.ssubset_LogicEN45 : @LogicEN45 ℕ ⊂ LogicEM45 := by
   · obtain ⟨A, B, hA⟩ := LogicEN45.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEM45.ssubset_LogicEMN4 : @LogicEMN4 ℕ ⊂ LogicEM45 := by
+theorem ssubset_LogicEMN4 : @LogicEMN4 ℕ ⊂ LogicEM45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -67,11 +65,13 @@ theorem LogicEM45.ssubset_LogicEMN4 : @LogicEMN4 ℕ ⊂ LogicEM45 := by
   · obtain ⟨A, hA⟩ := LogicEMN4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEM45.ssubset_LogicEM5 : @LogicEM5 ℕ ⊂ LogicEM45 := by
+theorem ssubset_LogicEM5 : @LogicEM5 ℕ ⊂ LogicEM45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicEM5.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEM45
 
 end

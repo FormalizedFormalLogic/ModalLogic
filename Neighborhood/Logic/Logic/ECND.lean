@@ -46,16 +46,14 @@ lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
   by_contra! hcon
   exact frame_3_8553090.not_valid_axiomK hab (LogicECND.sound frame_3_8553090 (hcon #a #b))
 
-end LogicECND
-
-theorem LogicECND.ssubset_LogicECN : @LogicECN ℕ ⊂ LogicECND := by
+theorem ssubset_LogicECN : @LogicECN ℕ ⊂ LogicECND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · obtain ⟨A, hA⟩ := LogicECN.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicECND.ssubset_LogicECP : @LogicECP ℕ ⊂ LogicECND := by
+theorem ssubset_LogicECP : @LogicECP ℕ ⊂ LogicECND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -64,7 +62,7 @@ theorem LogicECND.ssubset_LogicECP : @LogicECP ℕ ⊂ LogicECND := by
     · exact Logic.axiomP_of_ND
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicECP.not_provable_axiomN⟩
 
-theorem LogicECND.ssubset_LogicEND : @LogicEND ℕ ⊂ LogicECND := by
+theorem ssubset_LogicEND : @LogicEND ℕ ⊂ LogicECND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
@@ -72,7 +70,7 @@ theorem LogicECND.ssubset_LogicEND : @LogicEND ℕ ⊂ LogicECND := by
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 /-- Over `ECN`, the axiom `P` and the axiom scheme `D` axiomatise the same logic. -/
-theorem LogicECND.eq_LogicECNP : (@LogicECND α) = LogicECNP := by
+theorem eq_LogicECNP : (@LogicECND α) = LogicECNP := by
   apply Set.Subset.antisymm
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | rfl) | ⟨B, rfl⟩) <;>
@@ -80,5 +78,7 @@ theorem LogicECND.eq_LogicECNP : (@LogicECND α) = LogicECNP := by
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | rfl) | rfl) <;>
       first | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomP_of_ND
+
+end LogicECND
 
 end

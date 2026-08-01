@@ -62,13 +62,13 @@ lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
   by_contra! hcon
   exact frame_3_130.not_valid_axiomK hab (LogicED.sound frame_3_130 (hcon #a #b))
 
-end LogicED
-
-theorem LogicED.ssubset_LogicE : @LogicE ℕ ⊂ LogicED := by
+theorem ssubset_LogicE : @LogicE ℕ ⊂ LogicED := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · obtain ⟨A, hA⟩ := LogicE.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicED
 
 end

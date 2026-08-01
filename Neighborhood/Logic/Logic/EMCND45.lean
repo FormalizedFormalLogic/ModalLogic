@@ -6,8 +6,10 @@ public import Neighborhood.Hilbert.Logics
 
 variable {α : Type u}
 
+namespace LogicEMCND45
+
 /-- The axiom `N` is redundant over `M`, `C`, `4`, and `5`. -/
-theorem LogicEMCND45.eq_LogicEMCD45 : (@LogicEMCND45 α) = LogicEMCD45 := by
+theorem eq_LogicEMCD45 : (@LogicEMCND45 α) = LogicEMCD45 := by
   apply Set.Subset.antisymm
   · apply Hilbert.subset_of_provable_axioms
     rintro A (((((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | rfl) | ⟨B, rfl⟩) | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
@@ -19,5 +21,7 @@ theorem LogicEMCND45.eq_LogicEMCD45 : (@LogicEMCND45 α) = LogicEMCD45 := by
         | exact Logic.axiomFour
         | exact Logic.axiomFive
   · exact Hilbert.subset_of_subset_axioms (by grind)
+
+end LogicEMCND45
 
 end

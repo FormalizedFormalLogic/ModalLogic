@@ -17,13 +17,13 @@ instance : (@LogicECNT4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECNT4.sound frame_1_2 hC⟩
 
-end LogicECNT4
-
-theorem LogicECNT4.ssubset_LogicENT4 : @LogicENT4 ℕ ⊂ LogicECNT4 := by
+theorem ssubset_LogicENT4 : @LogicENT4 ℕ ⊂ LogicECNT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, B, hA⟩ := LogicENT4.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicECNT4
 
 end

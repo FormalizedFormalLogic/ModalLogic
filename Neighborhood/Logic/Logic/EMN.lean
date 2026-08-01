@@ -64,19 +64,19 @@ lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMN α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEMN.sound frame_1_3 (hcon #a))
 
-end LogicEMN
-
-theorem LogicEMN.ssubset_LogicEM : @LogicEM ℕ ⊂ LogicEMN := by
+theorem ssubset_LogicEM : @LogicEM ℕ ⊂ LogicEMN := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEM.not_provable_axiomN⟩
 
-theorem LogicEMN.ssubset_LogicEN : @LogicEN ℕ ⊂ LogicEMN := by
+theorem ssubset_LogicEN : @LogicEN ℕ ⊂ LogicEMN := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · obtain ⟨A, B, hA⟩ := LogicEN.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEMN
 
 end

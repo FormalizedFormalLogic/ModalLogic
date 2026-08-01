@@ -75,20 +75,20 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEM4 α) 
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicEM4.sound frame_1_0 (hcon #a))
 
-end LogicEM4
-
-theorem LogicEM4.ssubset_LogicE4 : @LogicE4 ℕ ⊂ LogicEM4 := by
+theorem ssubset_LogicE4 : @LogicE4 ℕ ⊂ LogicEM4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · obtain ⟨A, B, hA⟩ := LogicE4.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEM4.ssubset_LogicEM : @LogicEM ℕ ⊂ LogicEM4 := by
+theorem ssubset_LogicEM : @LogicEM ℕ ⊂ LogicEM4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · obtain ⟨A, hA⟩ := LogicEM.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEM4
 
 end

@@ -39,9 +39,7 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMB α) 
   by_contra! hcon
   exact frame_2_140.not_valid_axiomFive (LogicEMB.sound frame_2_140 (hcon #a))
 
-end LogicEMB
-
-theorem LogicEMB.ssubset_LogicEMCN : @LogicEMCN ℕ ⊂ LogicEMB := by
+theorem ssubset_LogicEMCN : @LogicEMCN ℕ ⊂ LogicEMB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -50,7 +48,7 @@ theorem LogicEMB.ssubset_LogicEMCN : @LogicEMCN ℕ ⊂ LogicEMB := by
   · obtain ⟨A, hA⟩ := LogicEMCN.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMB.ssubset_LogicECNB : @LogicECNB ℕ ⊂ LogicEMB := by
+theorem ssubset_LogicECNB : @LogicECNB ℕ ⊂ LogicEMB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -60,5 +58,7 @@ theorem LogicEMB.ssubset_LogicECNB : @LogicECNB ℕ ⊂ LogicEMB := by
     · exact Logic.axiomB
   · obtain ⟨A, B, hA⟩ := LogicECNB.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEMB
 
 end

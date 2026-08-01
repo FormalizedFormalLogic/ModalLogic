@@ -35,22 +35,20 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCND α) := b
   by_contra! hcon
   exact frame_2_140.not_valid_axiomT (LogicEMCND.sound frame_2_140 (hcon #a))
 
-end LogicEMCND
-
-theorem LogicEMCND.ssubset_LogicEMCN : @LogicEMCN ℕ ⊂ LogicEMCND := by
+theorem ssubset_LogicEMCN : @LogicEMCN ℕ ⊂ LogicEMCND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicEMCN.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMCND.ssubset_LogicEMCD : @LogicEMCD ℕ ⊂ LogicEMCND := by
+theorem ssubset_LogicEMCD : @LogicEMCD ℕ ⊂ LogicEMCND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMCD.not_provable_axiomN⟩
 
-theorem LogicEMCND.ssubset_LogicECND : @LogicECND ℕ ⊂ LogicEMCND := by
+theorem ssubset_LogicECND : @LogicECND ℕ ⊂ LogicEMCND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
@@ -59,7 +57,7 @@ theorem LogicEMCND.ssubset_LogicECND : @LogicECND ℕ ⊂ LogicEMCND := by
 
 /-- Over `EMCN` (i.e. over the normal base `K`), the axiom `P` and the axiom scheme `D`
 axiomatise the same logic. -/
-theorem LogicEMCND.eq_LogicEMCNP : (@LogicEMCND α) = LogicEMCNP := by
+theorem eq_LogicEMCNP : (@LogicEMCND α) = LogicEMCNP := by
   apply Set.Subset.antisymm
   · apply Hilbert.subset_of_provable_axioms
     rintro A (((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | rfl) | ⟨B, rfl⟩) <;>
@@ -68,5 +66,7 @@ theorem LogicEMCND.eq_LogicEMCNP : (@LogicEMCND α) = LogicEMCNP := by
     rintro A (((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | rfl) | rfl) <;>
       first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN |
         exact Logic.axiomP_of_ND
+
+end LogicEMCND
 
 end

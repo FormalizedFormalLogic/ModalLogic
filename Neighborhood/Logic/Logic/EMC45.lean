@@ -26,9 +26,7 @@ lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMC45 α) := b
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEMC45.sound frame_1_3 (hcon #a))
 
-end LogicEMC45
-
-theorem LogicEMC45.ssubset_LogicEMCN4 : @LogicEMCN4 ℕ ⊂ LogicEMC45 := by
+theorem ssubset_LogicEMCN4 : @LogicEMCN4 ℕ ⊂ LogicEMC45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -37,11 +35,13 @@ theorem LogicEMC45.ssubset_LogicEMCN4 : @LogicEMCN4 ℕ ⊂ LogicEMC45 := by
   · obtain ⟨A, hA⟩ := LogicEMCN4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMC45.ssubset_LogicEMC5 : @LogicEMC5 ℕ ⊂ LogicEMC45 := by
+theorem ssubset_LogicEMC5 : @LogicEMC5 ℕ ⊂ LogicEMC45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicEMC5.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEMC45
 
 end

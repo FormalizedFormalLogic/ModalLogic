@@ -47,9 +47,7 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicECB4 α)
   by_contra! hcon
   exact frame_2_191.not_valid_axiomFive (LogicECB4.sound frame_2_191 (hcon #a))
 
-end LogicECB4
-
-theorem LogicECB4.ssubset_LogicECN4 : @LogicECN4 ℕ ⊂ LogicECB4 := by
+theorem ssubset_LogicECN4 : @LogicECN4 ℕ ⊂ LogicECB4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -60,7 +58,7 @@ theorem LogicECB4.ssubset_LogicECN4 : @LogicECN4 ℕ ⊂ LogicECB4 := by
   · obtain ⟨A, hA⟩ := LogicECN4.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicECB4.ssubset_LogicECNB : @LogicECNB ℕ ⊂ LogicECB4 := by
+theorem ssubset_LogicECNB : @LogicECNB ℕ ⊂ LogicECB4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -71,11 +69,13 @@ theorem LogicECB4.ssubset_LogicECNB : @LogicECNB ℕ ⊂ LogicECB4 := by
   · obtain ⟨A, hA⟩ := LogicECNB.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicECB4.ssubset_LogicEB4 : @LogicEB4 ℕ ⊂ LogicECB4 := by
+theorem ssubset_LogicEB4 : @LogicEB4 ℕ ⊂ LogicECB4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, B, hA⟩ := LogicEB4.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicECB4
 
 end

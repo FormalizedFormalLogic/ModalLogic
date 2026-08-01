@@ -22,9 +22,7 @@ instance : (@LogicEMT5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMT5.sound frame_1_2 hC⟩
 
-end LogicEMT5
-
-theorem LogicEMT5.ssubset_LogicEMCD45 : @LogicEMCD45 ℕ ⊂ LogicEMT5 := by
+theorem ssubset_LogicEMCD45 : @LogicEMCD45 ℕ ⊂ LogicEMT5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -34,7 +32,7 @@ theorem LogicEMT5.ssubset_LogicEMCD45 : @LogicEMCD45 ℕ ⊂ LogicEMT5 := by
   · obtain ⟨A, hA⟩ := LogicEMCD45.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMT5.ssubset_LogicEMCNT4 : @LogicEMCNT4 ℕ ⊂ LogicEMT5 := by
+theorem ssubset_LogicEMCNT4 : @LogicEMCNT4 ℕ ⊂ LogicEMT5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -44,7 +42,7 @@ theorem LogicEMT5.ssubset_LogicEMCNT4 : @LogicEMCNT4 ℕ ⊂ LogicEMT5 := by
   · obtain ⟨A, hA⟩ := LogicEMCNT4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMT5.ssubset_LogicEMB4 : @LogicEMB4 ℕ ⊂ LogicEMT5 := by
+theorem ssubset_LogicEMB4 : @LogicEMB4 ℕ ⊂ LogicEMT5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -53,7 +51,7 @@ theorem LogicEMT5.ssubset_LogicEMB4 : @LogicEMB4 ℕ ⊂ LogicEMT5 := by
   · obtain ⟨A, hA⟩ := LogicEMB4.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMT5.ssubset_LogicEMTB : @LogicEMTB ℕ ⊂ LogicEMT5 := by
+theorem ssubset_LogicEMTB : @LogicEMTB ℕ ⊂ LogicEMT5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -62,12 +60,14 @@ theorem LogicEMT5.ssubset_LogicEMTB : @LogicEMTB ℕ ⊂ LogicEMT5 := by
   · obtain ⟨A, hA⟩ := LogicEMTB.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMT5.ssubset_LogicECT5 : @LogicECT5 ℕ ⊂ LogicEMT5 := by
+theorem ssubset_LogicECT5 : @LogicECT5 ℕ ⊂ LogicEMT5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · rw [← LogicEMCT5.eq_LogicEMT5]
     exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, B, hA⟩ := LogicECT5.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEMT5
 
 end

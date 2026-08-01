@@ -29,9 +29,7 @@ lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMTB α)
   by_contra! hcon
   exact frame_3_8437920.not_valid_axiomFour (LogicEMTB.sound frame_3_8437920 (hcon #a))
 
-end LogicEMTB
-
-theorem LogicEMTB.ssubset_LogicEMDB : @LogicEMDB ℕ ⊂ LogicEMTB := by
+theorem ssubset_LogicEMDB : @LogicEMDB ℕ ⊂ LogicEMTB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -40,7 +38,7 @@ theorem LogicEMTB.ssubset_LogicEMDB : @LogicEMDB ℕ ⊂ LogicEMTB := by
   · obtain ⟨A, hA⟩ := LogicEMDB.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMTB.ssubset_LogicEMCNT : @LogicEMCNT ℕ ⊂ LogicEMTB := by
+theorem ssubset_LogicEMCNT : @LogicEMCNT ℕ ⊂ LogicEMTB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -49,12 +47,14 @@ theorem LogicEMTB.ssubset_LogicEMCNT : @LogicEMCNT ℕ ⊂ LogicEMTB := by
   · obtain ⟨A, hA⟩ := LogicEMCNT.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMTB.ssubset_LogicECTB : @LogicECTB ℕ ⊂ LogicEMTB := by
+theorem ssubset_LogicECTB : @LogicECTB ℕ ⊂ LogicEMTB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · rw [← LogicEMCTB.eq_LogicEMTB]
     exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, B, hA⟩ := LogicECTB.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEMTB
 
 end

@@ -26,20 +26,20 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCND4 α) := 
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicEMCND4.sound frame_2_170 (hcon #a))
 
-end LogicEMCND4
-
-theorem LogicEMCND4.ssubset_LogicEMCN4 : @LogicEMCN4 ℕ ⊂ LogicEMCND4 := by
+theorem ssubset_LogicEMCN4 : @LogicEMCN4 ℕ ⊂ LogicEMCND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicEMCN4.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMCND4.ssubset_LogicEMCND : @LogicEMCND ℕ ⊂ LogicEMCND4 := by
+theorem ssubset_LogicEMCND : @LogicEMCND ℕ ⊂ LogicEMCND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicEMCND.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEMCND4
 
 end

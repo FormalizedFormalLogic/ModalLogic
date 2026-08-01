@@ -23,26 +23,26 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMND4 α
   by_contra! hcon
   exact frame_2_138.not_valid_axiomFive (LogicEMND4.sound frame_2_138 (hcon #a))
 
-end LogicEMND4
-
-theorem LogicEMND4.ssubset_LogicEMND : @LogicEMND ℕ ⊂ LogicEMND4 := by
+theorem ssubset_LogicEMND : @LogicEMND ℕ ⊂ LogicEMND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicEMND.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMND4.ssubset_LogicEMD4 : @LogicEMD4 ℕ ⊂ LogicEMND4 := by
+theorem ssubset_LogicEMD4 : @LogicEMD4 ℕ ⊂ LogicEMND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMD4.not_provable_axiomN⟩
 
-theorem LogicEMND4.ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicEMND4 := by
+theorem ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicEMND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, B, hA⟩ := LogicEND4.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEMND4
 
 end

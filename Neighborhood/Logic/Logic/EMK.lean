@@ -49,31 +49,20 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMK α) 
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicEMK.sound frame_1_0 (hcon #a))
 
-end LogicEMK
-
-/-- The axiom scheme `K` is redundant over `M` and `C`, and the axiom scheme `C` is redundant
-over `M` and `K`. -/
-theorem LogicEMK.eq_LogicEMC : (@LogicEMK α) = LogicEMC := by
-  apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A (⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) <;>
-      first | exact Logic.axiomM | exact Logic.axiomK_of_MC
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A (⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) <;>
-      first | exact Logic.axiomM | exact Logic.axiomC
-
-theorem LogicEMK.ssubset_LogicEK : @LogicEK ℕ ⊂ LogicEMK := by
+theorem ssubset_LogicEK : @LogicEK ℕ ⊂ LogicEMK := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · obtain ⟨A, B, hA⟩ := LogicEK.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMK.ssubset_LogicEM : @LogicEM ℕ ⊂ LogicEMK := by
+theorem ssubset_LogicEM : @LogicEM ℕ ⊂ LogicEMK := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · obtain ⟨A, B, hA⟩ := LogicEM.not_provable_axiomK (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.K A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEMK
 
 end

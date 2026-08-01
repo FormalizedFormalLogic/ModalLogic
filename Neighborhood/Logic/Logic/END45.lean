@@ -25,13 +25,13 @@ lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
   by_contra! hcon
   exact frame_3_8553090.not_valid_axiomM hab (LogicEND45.sound frame_3_8553090 (hcon #a #b))
 
-end LogicEND45
-
-theorem LogicEND45.ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicEND45 := by
+theorem ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicEND45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicEND4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEND45
 
 end

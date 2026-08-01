@@ -80,15 +80,13 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicE4 α) := by
   intro hcon
   exact frame_1_3.not_valid_axiomP (LogicE4.sound frame_1_3 hcon)
 
-end LogicE4
-
-
-theorem LogicE4.ssubset_LogicE : @LogicE ℕ ⊂ LogicE4 := by
+theorem ssubset_LogicE : @LogicE ℕ ⊂ LogicE4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (Set.empty_subset _)
   · obtain ⟨A, hA⟩ := LogicE.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, ProvableHilbert.axm (by grind), hA⟩
 
+end LogicE4
 
 end

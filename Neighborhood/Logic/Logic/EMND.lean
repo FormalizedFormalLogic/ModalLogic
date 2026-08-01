@@ -47,22 +47,20 @@ lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMND α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB (LogicEMND.sound frame_2_138 (hcon #a))
 
-end LogicEMND
-
-theorem LogicEMND.ssubset_LogicEND : @LogicEND ℕ ⊂ LogicEMND := by
+theorem ssubset_LogicEND : @LogicEND ℕ ⊂ LogicEMND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, B, hA⟩ := LogicEND.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMND.ssubset_LogicEMD : @LogicEMD ℕ ⊂ LogicEMND := by
+theorem ssubset_LogicEMD : @LogicEMD ℕ ⊂ LogicEMND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMD.not_provable_axiomN⟩
 
-theorem LogicEMND.ssubset_LogicEMNP : @LogicEMNP ℕ ⊂ LogicEMND := by
+theorem ssubset_LogicEMNP : @LogicEMNP ℕ ⊂ LogicEMND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -71,12 +69,14 @@ theorem LogicEMND.ssubset_LogicEMNP : @LogicEMNP ℕ ⊂ LogicEMND := by
   · obtain ⟨A, hA⟩ := LogicEMNP.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEMND.complete [DecidableEq α]
+theorem complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.ContainsUnit] →
       [F.IsSerial] → F ⊧ A) :
     A ∈ @LogicEMND α :=
   (supplementedBasicCanonicalModel LogicEMND).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMND).toFrame
       (supplementedBasicCanonicalModel LogicEMND).Val)
+
+end LogicEMND
 
 end

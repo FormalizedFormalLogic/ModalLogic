@@ -5,7 +5,6 @@ public import Neighborhood.Logic.Logic.EMB
 public import Neighborhood.Logic.Logic.EMN
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_140
-public import Neighborhood.Logic.Logic.EMCB
 
 @[expose] public section
 
@@ -42,18 +41,14 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMNB α)
   by_contra! hcon
   exact frame_2_140.not_valid_axiomFive (LogicEMNB.sound frame_2_140 (hcon #a))
 
-end LogicEMNB
-
 /-- The axiom `N` is redundant over `M` and `B`. -/
-theorem LogicEMNB.eq_LogicEMB : (@LogicEMNB α) = LogicEMB := by
+theorem eq_LogicEMB : (@LogicEMNB α) = LogicEMB := by
   apply Set.Subset.antisymm
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | rfl) | ⟨B, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomN | exact Logic.axiomB
   · exact Hilbert.subset_of_subset_axioms (by grind)
 
-/-- `EMCB` and `EMNB` are the same logic. -/
-theorem LogicEMNB.eq_LogicEMCB : (@LogicEMNB α) = LogicEMCB :=
-  LogicEMNB.eq_LogicEMB.trans LogicEMCB.eq_LogicEMB.symm
+end LogicEMNB
 
 end

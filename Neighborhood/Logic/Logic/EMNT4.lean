@@ -40,19 +40,19 @@ theorem finite_complete [DecidableEq α]
     exact h (supplementedTransitiveFiltration M T).toModel.toFrame
       (supplementedTransitiveFiltration M T).toModel.Val ⟦x⟧
 
-end LogicEMNT4
-
-theorem LogicEMNT4.ssubset_LogicEMT4 : @LogicEMT4 ℕ ⊂ LogicEMNT4 := by
+theorem ssubset_LogicEMT4 : @LogicEMT4 ℕ ⊂ LogicEMNT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMT4.not_provable_axiomN⟩
 
-theorem LogicEMNT4.ssubset_LogicENT4 : @LogicENT4 ℕ ⊂ LogicEMNT4 := by
+theorem ssubset_LogicENT4 : @LogicENT4 ℕ ⊂ LogicEMNT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, B, hA⟩ := LogicENT4.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEMNT4
 
 end

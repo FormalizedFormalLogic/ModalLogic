@@ -55,15 +55,13 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENT α) 
   by_contra! hcon
   exact frame_2_138.not_valid_axiomFive (LogicENT.sound frame_2_138 (hcon #a))
 
-end LogicENT
-
-theorem LogicENT.ssubset_LogicET : @LogicET ℕ ⊂ LogicENT := by
+theorem ssubset_LogicET : @LogicET ℕ ⊂ LogicENT := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicET.not_provable_axiomN⟩
 
-theorem LogicENT.ssubset_LogicEND : @LogicEND ℕ ⊂ LogicENT := by
+theorem ssubset_LogicEND : @LogicEND ℕ ⊂ LogicENT := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
@@ -72,5 +70,7 @@ theorem LogicENT.ssubset_LogicEND : @LogicEND ℕ ⊂ LogicENT := by
     · exact Logic.axiomD
   · obtain ⟨A, hA⟩ := LogicEND.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicENT
 
 end

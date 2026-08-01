@@ -54,20 +54,20 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEC4 α) := by
   intro hcon
   exact frame_1_3.not_valid_axiomP (LogicEC4.sound frame_1_3 hcon)
 
-end LogicEC4
-
-theorem LogicEC4.ssubset_LogicEC : (@LogicEC ℕ) ⊂ LogicEC4 := by
+theorem ssubset_LogicEC : (@LogicEC ℕ) ⊂ LogicEC4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_left
   · obtain ⟨A, hA⟩ := LogicEC.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
-theorem LogicEC4.ssubset_LogicE4 : @LogicE4 ℕ ⊂ LogicEC4 := by
+theorem ssubset_LogicE4 : @LogicE4 ℕ ⊂ LogicEC4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · obtain ⟨A, B, hA⟩ := LogicE4.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+end LogicEC4
 
 end

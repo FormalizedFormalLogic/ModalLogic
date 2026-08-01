@@ -58,20 +58,20 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicECP α) 
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicECP.sound frame_1_0 (hcon #a))
 
-end LogicECP
-
-theorem LogicECP.ssubset_LogicECD : @LogicECD ℕ ⊂ LogicECP := by
+theorem ssubset_LogicECD : @LogicECD ℕ ⊂ LogicECP := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · apply Hilbert.subset_of_provable_axioms
     rintro A (⟨B, C, rfl⟩ | ⟨B, rfl⟩) <;> first | exact Logic.axiomC | exact Logic.axiomD
   · exact ⟨Axioms.P, (ProvableHilbert.axm (by grind)), LogicECD.not_provable_axiomP⟩
 
-theorem LogicECP.ssubset_LogicEP : @LogicEP ℕ ⊂ LogicECP := by
+theorem ssubset_LogicEP : @LogicEP ℕ ⊂ LogicECP := by
   apply Set.ssubset_iff_exists.mpr
   constructor
   · exact Hilbert.subset_of_subset_axioms Set.subset_union_right
   · obtain ⟨A, B, hA⟩ := LogicEP.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (Logic.HasAxiomC.C _ _), hA⟩
+
+end LogicECP
 
 end

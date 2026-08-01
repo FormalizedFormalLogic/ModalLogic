@@ -49,10 +49,8 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCK α)
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicEMCK.sound frame_1_0 (hcon #a))
 
-end LogicEMCK
-
 /-- The axiom scheme `K` is redundant over `M` and `C`. -/
-theorem LogicEMCK.eq_LogicEMC : (@LogicEMCK α) = LogicEMC := by
+theorem eq_LogicEMC : (@LogicEMCK α) = LogicEMC := by
   apply Set.Subset.antisymm
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, C, rfl⟩) <;>
@@ -60,11 +58,13 @@ theorem LogicEMCK.eq_LogicEMC : (@LogicEMCK α) = LogicEMC := by
   · exact Hilbert.subset_of_subset_axioms (by grind)
 
 /-- The axiom scheme `C` is redundant over `M` and `K`. -/
-theorem LogicEMCK.eq_LogicEMK : (@LogicEMCK α) = LogicEMK := by
+theorem eq_LogicEMK : (@LogicEMCK α) = LogicEMK := by
   apply Set.Subset.antisymm
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, C, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomK
   · exact Hilbert.subset_of_subset_axioms (by grind)
+
+end LogicEMCK
 
 end
