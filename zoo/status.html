@@ -9,6 +9,9 @@
   `{"status": true|false, "derived": true|false, "ref": "<Lean declaration>"}`,
   where `derived` distinguishes an axiom the logic is defined by from one it
   merely proves.
+
+  A logic proved equal to one listed earlier carries `equivalentTo` instead of
+  `axioms`, and its row just points at that logic.
 -->
 <html lang="en">
 <head>
@@ -100,6 +103,9 @@
   #grid tbody tr:nth-child(even) td { background: var(--zebra); }
   #grid tbody tr:hover th, #grid tbody tr:hover td { background: var(--hover); }
   #grid td { text-align: center; font-size: 16px; line-height: 1; cursor: default; }
+  #grid td.equiv {
+    text-align: left; font-size: 13px; line-height: 1.5; color: var(--text-secondary);
+  }
 
   footer { margin-top: 24px; color: var(--text-secondary); font-size: 13px; }
   footer .key { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -152,6 +158,13 @@
     ❔ is a statement about this repository, not about the logic: it marks an axiom
     whose status for that logic nobody has formalized yet. Hover a cell for the
     Lean declaration witnessing it.
+  </p>
+  <p>
+    A logic proved equal to one already listed gets no row of its own — the two
+    have the same status for every axiom. The row kept is the one axiomatised by
+    the fewest axioms, so <span class="tex">\mathbf{EMCK}</span> and
+    <span class="tex">\mathbf{EMK}</span> both defer to
+    <span class="tex">\mathbf{EMC}</span>.
   </p>
 </footer>
 
@@ -230,9 +243,22 @@
 
     const body = document.querySelector('#grid tbody');
     const count = {};
+    let equiv = 0;
     for (const row of logics) {
       const tr = body.insertRow();
       tex(add(tr, 'th'), '\\mathbf{' + row.logic + '}');
+      /* Equal logics have the same status everywhere, so only the first of them
+         is spelled out and the others point at it. */
+      if (row.equivalentTo) {
+        equiv++;
+        const td = add(tr, 'td');
+        td.colSpan = axioms.length;
+        td.className = 'equiv';
+        td.append('Equivalent to ');
+        tex(add(td, 'span'), '\\mathbf{' + row.equivalentTo + '}');
+        td.title = `${row.logic} = ${row.equivalentTo}`;
+        continue;
+      }
       for (const ax of axioms) {
         const c = row.axioms[ax];
         const m = mark(c);
@@ -245,7 +271,7 @@
       }
     }
     document.getElementById('stats').textContent =
-      `— ${logics.length} logics: ` +
+      `— ${logics.length} logics, ${equiv} of them equal to an earlier one: ` +
       ['✅', '☑️', '❌', '❔'].map(m => `${count[m] || 0} ${m}`).join(' / ');
     typesetAll();
   }
