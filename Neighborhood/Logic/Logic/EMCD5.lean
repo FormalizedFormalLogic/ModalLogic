@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Logic.Logic.EMC5
 public import Neighborhood.Logic.Logic.EMCND
+public import Neighborhood.Logic.Logic.ECD5
+public import Neighborhood.Logic.Logic.EMD5
 public import Neighborhood.Semantics.Example.Frame2_170
 
 @[expose] public section
@@ -44,6 +46,20 @@ theorem ssubset_LogicEMCND : @LogicEMCND ℕ ⊂ LogicEMCD5 := by
   · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMCND.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
+
+theorem ssubset_LogicECD5 : @LogicECD5 ℕ ⊂ LogicEMCD5 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicECD5.not_provable_axiomM (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.M A B, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicEMD5 : @LogicEMD5 ℕ ⊂ LogicEMCD5 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicEMD5.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, ProvableHilbert.axm (by grind), hA⟩
 
 end LogicEMCD5
 

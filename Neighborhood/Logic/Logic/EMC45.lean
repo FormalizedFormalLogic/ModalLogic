@@ -47,6 +47,13 @@ theorem ssubset_LogicEMC5 : @LogicEMC5 ℕ ⊂ LogicEMC45 := by
   · obtain ⟨A, hA⟩ := LogicEMC5.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
+theorem ssubset_LogicEM45 : @LogicEM45 ℕ ⊂ LogicEMC45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicEM45.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, ProvableHilbert.axm (by grind), hA⟩
+
 end LogicEMC45
 
 end

@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Logic.Logic.EMT4
 public import Neighborhood.Logic.Logic.EMC4
+public import Neighborhood.Logic.Logic.ECT4
+public import Neighborhood.Logic.Logic.EMCT
 public import Neighborhood.Semantics.Example.Frame1_0
 
 @[expose] public section
@@ -37,6 +39,27 @@ theorem ssubset_LogicEMT4 : @LogicEMT4 ℕ ⊂ LogicEMCT4 := by
   · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicEMT4.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+theorem ssubset_LogicECT4 : @LogicECT4 ℕ ⊂ LogicEMCT4 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicECT4.not_provable_axiomM (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.M A B, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicEMC4 : @LogicEMC4 ℕ ⊂ LogicEMCT4 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicEMC4.not_provable_axiomT (0 : ℕ)
+    exact ⟨Axioms.T A, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicEMCT : @LogicEMCT ℕ ⊂ LogicEMCT4 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicEMCT.not_provable_axiomFour (0 : ℕ)
+    exact ⟨Axioms.Four A, ProvableHilbert.axm (by grind), hA⟩
 
 end LogicEMCT4
 

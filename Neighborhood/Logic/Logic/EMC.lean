@@ -65,6 +65,13 @@ theorem ssubset_LogicEC : @LogicEC ℕ ⊂ LogicEMC := by
   · obtain ⟨A, B, hA⟩ := LogicEC.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
+theorem ssubset_LogicEM : @LogicEM ℕ ⊂ LogicEMC := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicEM.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, ProvableHilbert.axm (by grind), hA⟩
+
 end LogicEMC
 
 end
