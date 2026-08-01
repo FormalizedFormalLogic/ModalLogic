@@ -1,6 +1,7 @@
 module
 
 public import Neighborhood.Logic.Logic.EMCND
+public import Neighborhood.Logic.Logic.ENKT
 public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame3_8421512
 
@@ -9,6 +10,10 @@ public import Neighborhood.Semantics.Example.Frame3_8421512
 variable {α : Type u} {A : Formula α}
 
 namespace LogicEMCNT
+
+/-- Over `EN`, the axioms `M` and `C` derive `K`, and conversely `K` derives `M` and `C`. -/
+theorem eq_LogicENKT : (@LogicEMCNT α) = LogicENKT := by
+  hilbert_eq_axioms
 
 theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
     [F.ContainsUnit] [F.IsReflexive] :
