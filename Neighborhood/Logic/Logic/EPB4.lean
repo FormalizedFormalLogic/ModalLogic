@@ -6,6 +6,7 @@ public import Neighborhood.Logic.Logic.EB4
 public import Neighborhood.Semantics.Example.Frame3_9472136
 public import Neighborhood.Semantics.Example.Frame3_11570344
 public import Neighborhood.Semantics.Example.Frame3_11570364
+public import Neighborhood.Semantics.Example.Frame4_9872034215406635472
 
 @[expose] public section
 
@@ -44,6 +45,11 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEPB4 α) := by
 lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEPB4 α) := by
   by_contra! hcon
   exact frame_3_11570364.not_valid_axiomD (LogicEPB4.sound frame_3_11570364 (hcon #a))
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEPB4 α) := by
+  by_contra! hcon
+  exact frame_4_9872034215406635472.not_valid_axiomFive
+    (LogicEPB4.sound frame_4_9872034215406635472 (hcon #a))
 
 end LogicEPB4
 
