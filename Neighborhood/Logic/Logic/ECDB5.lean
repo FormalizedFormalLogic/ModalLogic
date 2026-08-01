@@ -4,6 +4,7 @@ public import Neighborhood.Logic.Logic.EDB5
 public import Neighborhood.Logic.Logic.ECB5
 public import Neighborhood.Logic.Logic.ECD5
 public import Neighborhood.Logic.Logic.ECDB
+public import Neighborhood.Logic.Logic.ECT5
 public import Neighborhood.Semantics.Example.Frame3_9472136
 
 @[expose] public section
@@ -11,6 +12,11 @@ public import Neighborhood.Semantics.Example.Frame3_9472136
 variable {α : Type u} {A : Formula α}
 
 namespace LogicECDB5
+
+/-- Over `EC`, the axioms `D`, `B` and `5` derive `T`, and conversely `T` and `5` derive
+`D` and `B`. -/
+theorem eq_LogicECT5 : (@LogicECDB5 α) = LogicECT5 := by
+  hilbert_eq_axioms
 
 theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsSerial] [F.IsSymmetric]
     [F.IsEuclidean] :
