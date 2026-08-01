@@ -253,6 +253,10 @@ lemma axiomP_of_MD [L.HasAxiomM] [L.HasAxiomD] : Axioms.P ∈ (L : Logic α) :=
 
 instance [L.HasAxiomM] [L.HasAxiomD] : L.HasAxiomP := ⟨axiomP_of_MD⟩
 
+/-- The axiom scheme `T` is derivable from `D`, `B` and `4`. -/
+instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomT :=
+  ⟨fun _ => C_trans axiomFour (C_trans axiomD diaBc)⟩
+
 variable [L.HasAxiomT]
 
 omit [L.HasRE] in
@@ -273,6 +277,11 @@ instance [L.HasAxiomFive] : L.HasAxiomB := ⟨fun _ => C_trans diaTc axiomFive�
 /-- The axiom scheme `Four` is derivable from `T` and `5`. -/
 instance [L.HasAxiomFive] : L.HasAxiomFour := ⟨fun A => by
   have e : □A 🡘 ◇□A ∈ L := E_intro diaTc diaFivec;
+  exact C_trans axiomB (C_of_E_mpr (re e))⟩
+
+/-- The axiom scheme `Five` is derivable from `T`, `B` and `4`. -/
+instance [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive := ⟨fun A => by
+  have e : ◇A 🡘 ◇◇A ∈ L := E_intro diaTc diaFourc;
   exact C_trans axiomB (C_of_E_mpr (re e))⟩
 
 /-- The necessitation rule, derived from `RE` and the axiom schemes `T` and `B`. -/
