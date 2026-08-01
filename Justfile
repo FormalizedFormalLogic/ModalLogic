@@ -23,7 +23,7 @@ mk-all:
 # Regenerate the Neighborhood logic zoo as zoo/{zoo,status}.json and zoo/zoo.png (requires typst)
 zoo:
     lake env lean zoo/Extract.lean
-    lake env lean zoo/Status.lean
+    lake exe zoo-status
     typst compile --root . zoo/neighborhood.typ zoo/zoo.png
 
 # Serve the interactive 3D zoo at http://localhost:8080 (requires miniserve; run `just zoo` first)
