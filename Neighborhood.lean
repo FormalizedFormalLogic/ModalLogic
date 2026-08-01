@@ -9,6 +9,7 @@ public import Neighborhood.Hilbert.Logic.«1»
 public import Neighborhood.Hilbert.Logic.«2»
 public import Neighborhood.Hilbert.Logic.«3»
 public import Neighborhood.Hilbert.Logic.«4»
+public import Neighborhood.Hilbert.Logic.«5»
 public import Neighborhood.Hilbert.Logic.«6»
 public import Neighborhood.Hilbert.Logic.«7»
 public import Neighborhood.Hilbert.Logic.«8»
