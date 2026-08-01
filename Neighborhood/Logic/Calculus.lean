@@ -89,6 +89,27 @@ class HasAxiomGeach (g : Axioms.Geach.Taple) (L : Logic α) where
 lemma axiomGeach [L.HasAxiomGeach g] : ◇^[g.i](□^[g.m]A) 🡒 □^[g.j](◇^[g.n]A) ∈ L :=
   HasAxiomGeach.Geach ..
 
+lemma axiomK_subset [L.HasAxiomK] : { Axioms.K A B | (A) (B) } ⊆ L := by
+  rintro _ ⟨_, _, rfl⟩; exact axiomK
+lemma axiomM_subset [L.HasAxiomM] : { Axioms.M A B | (A) (B) } ⊆ L := by
+  rintro _ ⟨_, _, rfl⟩; exact axiomM
+lemma axiomC_subset [L.HasAxiomC] : { Axioms.C A B | (A) (B) } ⊆ L := by
+  rintro _ ⟨_, _, rfl⟩; exact axiomC
+lemma axiomN_subset [L.HasAxiomN] : {Axioms.N} ⊆ L := by
+  rintro _ rfl; exact axiomN
+lemma axiomT_subset [L.HasAxiomT] : { Axioms.T A | (A) } ⊆ L := by
+  rintro _ ⟨_, rfl⟩; exact axiomT
+lemma axiomB_subset [L.HasAxiomB] : { Axioms.B A | (A) } ⊆ L := by
+  rintro _ ⟨_, rfl⟩; exact axiomB
+lemma axiomD_subset [L.HasAxiomD] : { Axioms.D A | (A) } ⊆ L := by
+  rintro _ ⟨_, rfl⟩; exact axiomD
+lemma axiomP_subset [L.HasAxiomP] : {Axioms.P} ⊆ L := by
+  rintro _ rfl; exact axiomP
+lemma axiomFour_subset [L.HasAxiomFour] : { Axioms.Four A | (A) } ⊆ L := by
+  rintro _ ⟨_, rfl⟩; exact axiomFour
+lemma axiomFive_subset [L.HasAxiomFive] : { Axioms.Five A | (A) } ⊆ L := by
+  rintro _ ⟨_, rfl⟩; exact axiomFive
+
 instance [L.HasAxiomT] : L.HasAxiomGeach ⟨0, 0, 1, 0⟩ := ⟨fun _ => axiomT⟩
 instance [L.HasAxiomB] : L.HasAxiomGeach ⟨0, 1, 0, 1⟩ := ⟨fun _ => axiomB⟩
 instance [L.HasAxiomD] : L.HasAxiomGeach ⟨0, 0, 1, 1⟩ := ⟨fun _ => axiomD⟩

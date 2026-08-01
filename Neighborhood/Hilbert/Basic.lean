@@ -130,6 +130,38 @@ lemma subset_of_provable_axioms (h : Ax₁ ⊆ Hilbert Ax₂) : Hilbert Ax₁ �
 lemma subset_of_subset_axioms (h : Ax₁ ⊆ Ax₂) : Hilbert Ax₁ ⊆ Hilbert Ax₂ :=
   subset_of_provable_axioms fun _ hA => ProvableHilbert.axm (h hA)
 
+end Hilbert
+
+section Tactic
+
+/-- Prove `Hilbert Ax₁ ⊆ Hilbert Ax₂` where `Ax₁` is a union of axiom schemes, each derivable
+in `Hilbert Ax₂` by its `Logic.HasAxiom*` instance. -/
+macro "hilbert_subset_axioms" : tactic =>
+  `(tactic| (
+    apply Hilbert.subset_of_provable_axioms
+    simp only [Set.union_subset_iff]
+    and_intros <;>
+      first
+        | exact Logic.axiomK_subset
+        | exact Logic.axiomM_subset
+        | exact Logic.axiomC_subset
+        | exact Logic.axiomN_subset
+        | exact Logic.axiomT_subset
+        | exact Logic.axiomB_subset
+        | exact Logic.axiomD_subset
+        | exact Logic.axiomP_subset
+        | exact Logic.axiomFour_subset
+        | exact Logic.axiomFive_subset))
+
+/-- Prove `Hilbert Ax₁ = Hilbert Ax₂` where every axiom scheme of each side is derivable in the
+other by its `Logic.HasAxiom*` instance (`hilbert_subset_axioms` in both directions). -/
+macro "hilbert_eq_axioms" : tactic =>
+  `(tactic| (apply Set.Subset.antisymm <;> hilbert_subset_axioms))
+
+end Tactic
+
+namespace Hilbert
+
 /-- `Hilbert Ax` has the axiom scheme `M` whenever `Ax` contains every instance of `M`. -/
 lemma hasAxiomM_of (h : ∀ A B : Formula α, Axioms.M A B ∈ Ax) : (Hilbert Ax).HasAxiomM :=
   ⟨fun A B => ProvableHilbert.axm (h A B)⟩
