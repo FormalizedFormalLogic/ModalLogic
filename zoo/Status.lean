@@ -14,7 +14,12 @@ For every logic `Logic<X>` in the environment and every one of the ten axioms
 Logics proved equal have the same status everywhere, so only one of them gets a
 row of its own: the rest record which logic they are equal to. The one that
 keeps the row is whichever comes first in the display order, that is, the one
-axiomatised by the fewest axioms.
+axiomatised by the fewest axioms. Because the status is shared, the row is
+filled from the evidence of the whole class rather than of its representative
+alone: `LogicEMCN.not_provable_axiomT` settles `T` for `LogicENK` too, since
+`LogicENK = LogicEMCN` is a theorem. The representative's own evidence is
+preferred where it exists, so a fallback in the `ref` field is exactly a cell
+that only an equal presentation of the logic records.
 
 Both sides are read off the statements, not off naming conventions, in the same
 spirit as `zoo/Extract.lean`. The result is written to `zoo/status.json` and
@@ -191,10 +196,21 @@ def provableBy (logic : Name) (ax : String) : MetaM (Option (Name × Bool)) := d
     | none => false
   return some (inst, !defining)
 
+/-- The members of each equivalence class, keyed by its representative and listed
+in display order, so that the representative itself comes first. -/
+def classes (logics : Array Name) (reps : Std.HashMap Name Name) :
+    Std.HashMap Name (Array Name) := Id.run do
+  let mut out : Std.HashMap Name (Array Name) := {}
+  for lg in logics do
+    let rep := reps[lg]?.getD lg
+    out := out.insert rep ((out[rep]?.getD #[]).push lg)
+  return out
+
 def main : MetaM Unit := do
   let logics ← collectLogics
   let refuted ← collectRefutations
   let reps := representatives logics (← collectEqualities)
+  let members := classes logics reps
   let mut rows : Array Json := #[]
   let mut equiv := 0
   for lg in logics do
@@ -206,17 +222,22 @@ def main : MetaM Unit := do
           [("logic", name), ("equivalentTo", Json.str (rep.toString.drop 5).toString)]
         equiv := equiv + 1
         continue
+    let mems := members[lg]?.getD #[lg]
     let mut cells : Array (String × Json) := #[]
     for (suffix, label) in axioms do
-      let cell ←
-        if let some (inst, derived) ← provableBy lg suffix then
-          pure <| Json.mkObj [("status", true), ("derived", derived), ("ref", toString inst)]
-        else if let some thm := refuted[(suffix, lg)]? then
-          pure <| Json.mkObj [("status", false), ("ref", toString thm)]
-        else
-          -- nothing is known either way: a gap in the formalization
-          pure Json.null
-      cells := cells.push (label, cell)
+      -- any member of the class settles the cell; the representative goes first
+      let mut cell : Option Json := none
+      for m in mems do
+        if cell.isSome then continue
+        if let some (inst, derived) ← provableBy m suffix then
+          cell := some <| Json.mkObj
+            [("status", true), ("derived", derived), ("ref", toString inst)]
+      for m in mems do
+        if cell.isSome then continue
+        if let some thm := refuted[(suffix, m)]? then
+          cell := some <| Json.mkObj [("status", false), ("ref", toString thm)]
+      -- nothing is known either way: a gap in the formalization
+      cells := cells.push (label, cell.getD Json.null)
     rows := rows.push <| Json.mkObj [("logic", name), ("axioms", Json.mkObj cells.toList)]
   let out := Json.mkObj
     [ ("axioms", Json.arr (axioms.map fun (_, l) => Json.str l))
