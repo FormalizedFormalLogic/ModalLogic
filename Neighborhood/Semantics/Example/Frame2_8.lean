@@ -36,6 +36,12 @@ instance : frame_2_8.NotContainsEmpty := ⟨fun x => by
       rw [h]
     simp at this⟩
 
+instance : frame_2_8.IsSerial where
+  serial X := by
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      intro y hy <;> fin_cases y <;>
+        simp_all [Frame.box, Frame.dia, frame_2_8, Set.Fin2.eq_univ, Set.ext_iff]
+
 lemma frame_2_8.not_isTransitive :
     ¬frame_2_8.IsTransitive := by
   intro hC

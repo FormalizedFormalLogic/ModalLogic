@@ -195,6 +195,10 @@ lemma diaFivec [L.HasAxiomFive] : ◇□A 🡒 □A ∈ L := by
   have h₃ : ∼□A 🡒 □(∼□A) ∈ L := C_trans (C_of_E_mpr h₂) (C_trans axiomFive (C_of_E_mp (re h₂)));
   exact C_trans (contra h₃) dne;
 
+/-- The axiom scheme `Four` is derivable from `M`, `B` and `5`. -/
+instance [L.HasAxiomM] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomFour :=
+  ⟨fun _ => C_trans axiomB (rm diaFivec)⟩
+
 /-- The axiom scheme `D` is derivable from `C` and `P`. -/
 instance [L.HasAxiomC] [L.HasAxiomP] : L.HasAxiomD := ⟨fun A => by
   have h₁ : (A ⋏ ∼A) 🡘 (⊥ : Formula α) ∈ L := E_intro CKNO efq;

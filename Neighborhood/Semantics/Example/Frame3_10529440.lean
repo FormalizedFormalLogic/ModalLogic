@@ -146,6 +146,84 @@ lemma frame_3_10529440.box_univ :
   ext w
   fin_cases w <;> simp [Frame.box, frame_3_10529440]
 
+lemma frame_3_10529440.box_eq_univ {Z : Set (Fin 3)} (h0 : (0 : Fin 3) ∈ Z) (h2 : (2 : Fin 3) ∈ Z) :
+    frame_3_10529440.box Z = Set.univ := by
+  ext w
+  fin_cases w <;>
+    simp only [Frame.box, frame_3_10529440, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff, Set.mem_univ, iff_true] <;>
+    by_cases h1 : (1 : Fin 3) ∈ Z
+  · right; ext i; fin_cases i <;> simp_all
+  · left; ext i; fin_cases i <;> simp_all
+  · right; right; right; ext i; fin_cases i <;> simp_all
+  · right; right; left; ext i; fin_cases i <;> simp_all
+  · right; ext i; fin_cases i <;> simp_all
+  · left; ext i; fin_cases i <;> simp_all
+
+lemma frame_3_10529440.box_eq_singleton_one {Z : Set (Fin 3)} (h0 : (0 : Fin 3) ∈ Z)
+    (h2 : (2 : Fin 3) ∉ Z) : frame_3_10529440.box Z = {1} := by
+  ext w
+  fin_cases w <;>
+    simp only [Frame.box, frame_3_10529440, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff]
+  · simp only [show ¬((⟨0, by omega⟩ : Fin 3) = 1) from by decide, iff_false]
+    rintro (h | h) <;> simp_all
+  · by_cases h1 : (1 : Fin 3) ∈ Z
+    · simp only [show ((⟨1, by omega⟩ : Fin 3) = 1) from by decide, iff_true]
+      right; left; ext i; fin_cases i <;> simp_all
+    · simp only [show ((⟨1, by omega⟩ : Fin 3) = 1) from by decide, iff_true]
+      left; ext i; fin_cases i <;> simp_all
+  · simp only [show ¬((⟨2, by omega⟩ : Fin 3) = 1) from by decide, iff_false]
+    rintro (h | h) <;> simp_all
+
+lemma frame_3_10529440.box_eq_empty {Z : Set (Fin 3)} (h0 : (0 : Fin 3) ∉ Z) :
+    frame_3_10529440.box Z = ∅ := by
+  ext w
+  fin_cases w <;>
+    simp only [Frame.box, frame_3_10529440, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff, Set.mem_empty_iff_false, iff_false]
+  · rintro (h | h) <;> simp_all
+  · rintro (h | h | h | h) <;> simp_all
+  · rintro (h | h) <;> simp_all
+
+lemma frame_3_10529440.mem_zero_box_iff {Z : Set (Fin 3)} :
+    (0 : Fin 3) ∈ frame_3_10529440.box Z ↔ (0 : Fin 3) ∈ Z ∧ (2 : Fin 3) ∈ Z := by
+  by_cases h0 : (0 : Fin 3) ∈ Z
+  · by_cases h2 : (2 : Fin 3) ∈ Z
+    · rw [frame_3_10529440.box_eq_univ h0 h2]; simp [h0, h2]
+    · rw [frame_3_10529440.box_eq_singleton_one h0 h2]; simp [h2]
+  · rw [frame_3_10529440.box_eq_empty h0]; simp [h0]
+
+lemma frame_3_10529440.mem_one_box_iff {Z : Set (Fin 3)} :
+    (1 : Fin 3) ∈ frame_3_10529440.box Z ↔ (0 : Fin 3) ∈ Z := by
+  by_cases h0 : (0 : Fin 3) ∈ Z
+  · by_cases h2 : (2 : Fin 3) ∈ Z
+    · rw [frame_3_10529440.box_eq_univ h0 h2]; simp [h0]
+    · rw [frame_3_10529440.box_eq_singleton_one h0 h2]; simp [h0]
+  · rw [frame_3_10529440.box_eq_empty h0]; simp [h0]
+
+lemma frame_3_10529440.mem_two_box_iff {Z : Set (Fin 3)} :
+    (2 : Fin 3) ∈ frame_3_10529440.box Z ↔ (0 : Fin 3) ∈ Z ∧ (2 : Fin 3) ∈ Z := by
+  by_cases h0 : (0 : Fin 3) ∈ Z
+  · by_cases h2 : (2 : Fin 3) ∈ Z
+    · rw [frame_3_10529440.box_eq_univ h0 h2]; simp [h0, h2]
+    · rw [frame_3_10529440.box_eq_singleton_one h0 h2]; simp [h2]
+  · rw [frame_3_10529440.box_eq_empty h0]; simp [h0]
+
+instance : frame_3_10529440.HasPropertyK where
+  K X Y w := by
+    intro ⟨h1, h2⟩
+    match w with
+    | 0 =>
+      simp only [frame_3_10529440.mem_zero_box_iff, Set.mem_union, Set.mem_compl_iff] at h1 h2 ⊢
+      tauto
+    | 1 =>
+      simp only [frame_3_10529440.mem_one_box_iff, Set.mem_union, Set.mem_compl_iff] at h1 h2 ⊢
+      tauto
+    | 2 =>
+      simp only [frame_3_10529440.mem_two_box_iff, Set.mem_union, Set.mem_compl_iff] at h1 h2 ⊢
+      tauto
+
 instance : frame_3_10529440.IsEuclidean := by
   apply Frame.IsEuclidean.of_alt
   intro X a ha
