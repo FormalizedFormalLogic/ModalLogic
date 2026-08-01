@@ -5,6 +5,7 @@ public import Neighborhood.Logic.Logic.EK5
 public import Neighborhood.Logic.Logic.EB5
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_79
+public import Neighborhood.Semantics.Example.Frame4_83879543059775487
 
 @[expose] public section
 
@@ -45,6 +46,12 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEKB5 α) := by
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEKB5 α) := by
   by_contra! hcon
   exact frame_2_79.not_valid_axiomFour (LogicEKB5.sound frame_2_79 (hcon #a))
+
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicEKB5 α) := by
+  by_contra! hcon
+  exact frame_4_83879543059775487.not_valid_axiomC hab
+    (LogicEKB5.sound frame_4_83879543059775487 (hcon #a #b))
 
 end LogicEKB5
 
