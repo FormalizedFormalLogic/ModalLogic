@@ -4,6 +4,9 @@ public import Neighborhood.Logic.Logic.ECN4
 public import Neighborhood.Logic.Logic.ECN5
 public import Neighborhood.Logic.Logic.EC45
 public import Neighborhood.Logic.Logic.EN45
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_153
+public import Neighborhood.Semantics.Example.Frame2_170
 
 @[expose] public section
 
@@ -19,6 +22,23 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.ContainsUnit]
 instance : (@LogicECN45 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECN45.sound frame_1_2 hC⟩
+
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicECN45 α) := by
+  by_contra! hcon
+  exact frame_2_153.not_valid_axiomM hab (LogicECN45.sound frame_2_153 (hcon #a #b))
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicECN45 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomT (LogicECN45.sound frame_1_3 (hcon #a))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicECN45 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomB (LogicECN45.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicECN45 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomD (LogicECN45.sound frame_1_3 (hcon #a))
 
 theorem ssubset_LogicECN4 : @LogicECN4 ℕ ⊂ LogicECN45 := by
   apply Set.ssubset_iff_exists.mpr

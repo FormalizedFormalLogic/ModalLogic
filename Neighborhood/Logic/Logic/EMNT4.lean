@@ -3,6 +3,8 @@ module
 public import Neighborhood.Logic.Logic.EMT4
 public import Neighborhood.Logic.Logic.EMN
 public import Neighborhood.Logic.Logic.ENT4
+public import Neighborhood.Semantics.Example.Frame2_138
+public import Neighborhood.Semantics.Example.Frame3_10520744
 
 @[expose] public section
 
@@ -39,6 +41,19 @@ theorem finite_complete [DecidableEq α]
     haveI : (supplementedTransitiveFiltration M T).toModel.toFrame.IsFinite := ⟨‹_›⟩
     exact h (supplementedTransitiveFiltration M T).toModel.toFrame
       (supplementedTransitiveFiltration M T).toModel.Val ⟦x⟧
+
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicEMNT4 α) := by
+  by_contra! hcon
+  exact frame_3_10520744.not_valid_axiomC hab (LogicEMNT4.sound frame_3_10520744 (hcon #a #b))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMNT4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicEMNT4.sound frame_2_138 (hcon #a))
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMNT4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomFive (LogicEMNT4.sound frame_2_138 (hcon #a))
 
 theorem ssubset_LogicEMT4 : @LogicEMT4 ℕ ⊂ LogicEMNT4 := by
   apply Set.ssubset_iff_exists.mpr

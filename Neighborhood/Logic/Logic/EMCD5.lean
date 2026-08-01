@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Logic.Logic.EMC5
 public import Neighborhood.Logic.Logic.EMCND
+public import Neighborhood.Semantics.Example.Frame2_170
 
 @[expose] public section
 
@@ -17,6 +18,14 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.IsRegular]
 instance : (@LogicEMCD5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCD5.sound frame_1_2 hC⟩
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCD5 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomT (LogicEMCD5.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMCD5 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomB (LogicEMCD5.sound frame_2_170 (hcon #a))
 
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMCD5 α) := by
   by_contra! hcon

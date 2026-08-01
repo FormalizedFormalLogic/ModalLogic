@@ -149,6 +149,9 @@ lemma frame_3_10529440.box_univ :
   ext w
   fin_cases w <;> simp [Frame.box, frame_3_10529440]
 
+instance : frame_3_10529440.ContainsUnit :=
+  ⟨frame_3_10529440.box_univ⟩
+
 lemma frame_3_10529440.box_eq_univ {Z : Set (Fin 3)} (h0 : (0 : Fin 3) ∈ Z) (h2 : (2 : Fin 3) ∈ Z) :
     frame_3_10529440.box Z = Set.univ := by
   ext w

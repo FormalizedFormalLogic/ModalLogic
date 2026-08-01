@@ -38,6 +38,44 @@ lemma frame_3_8431784.box_0_2 :
       Set.mem_singleton_iff] <;>
     simp only [Set.ext_iff] <;> decide
 
+lemma frame_3_8431784.box_mono {X Y : Set (Fin 3)} (h : X ⊆ Y) :
+    frame_3_8431784.box X ⊆ frame_3_8431784.box Y := by
+  intro w hw
+  fin_cases w <;>
+    simp only [Frame.box, frame_3_8431784, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at hw ⊢
+  · rcases hw with rfl | rfl | rfl
+    · have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+      have h1 : (1 : Fin 3) ∈ Y := h (by simp)
+      by_cases h2 : (2 : Fin 3) ∈ Y
+      · right; right; ext i; fin_cases i <;> simp_all
+      · left; ext i; fin_cases i <;> simp_all
+    · have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+      have h2 : (2 : Fin 3) ∈ Y := h (by simp)
+      by_cases h1 : (1 : Fin 3) ∈ Y
+      · right; right; ext i; fin_cases i <;> simp_all
+      · right; left; ext i; fin_cases i <;> simp_all
+    · right; right; exact Set.univ_subset_iff.mp h
+  · rcases hw with rfl | rfl | rfl
+    · have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+      have h1 : (1 : Fin 3) ∈ Y := h (by simp)
+      by_cases h2 : (2 : Fin 3) ∈ Y
+      · right; right; ext i; fin_cases i <;> simp_all
+      · left; ext i; fin_cases i <;> simp_all
+    · have h0 : (0 : Fin 3) ∈ Y := h (by simp)
+      have h2 : (2 : Fin 3) ∈ Y := h (by simp)
+      by_cases h1 : (1 : Fin 3) ∈ Y
+      · right; right; ext i; fin_cases i <;> simp_all
+      · right; left; ext i; fin_cases i <;> simp_all
+    · right; right; exact Set.univ_subset_iff.mp h
+  · subst hw
+    exact Set.univ_subset_iff.mp h
+
+instance : frame_3_8431784.IsMonotonic where
+  mono _ _ := Set.subset_inter
+    (frame_3_8431784.box_mono Set.inter_subset_left)
+    (frame_3_8431784.box_mono Set.inter_subset_right)
+
 instance : frame_3_8431784.IsSerial where
   serial X w hw := by
     simp only [Frame.dia, Frame.box, Set.mem_compl_iff, Set.mem_setOf_eq]
