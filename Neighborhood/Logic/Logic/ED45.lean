@@ -3,6 +3,10 @@ module
 public import Neighborhood.Logic.Logic.ED4
 public import Neighborhood.Logic.Logic.E45
 public import Neighborhood.Logic.Logic.ED5
+public import Neighborhood.Semantics.Example.Frame2_90
+public import Neighborhood.Semantics.Example.Frame2_170
+public import Neighborhood.Semantics.Example.Frame3_8553090
+public import Neighborhood.Semantics.Example.Frame3_11053224
 
 @[expose] public section
 
@@ -39,6 +43,37 @@ theorem ssubset_LogicED5 : @LogicED5 ℕ ⊂ LogicED45 := by
   · exact Hilbert.subset_of_subset_axioms (by grind)
   · obtain ⟨A, hA⟩ := LogicED5.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
+
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicED45 α) := by
+  by_contra! hcon
+  exact frame_3_8553090.not_valid_axiomK hab (LogicED45.sound frame_3_8553090 (hcon #a #b))
+
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicED45 α) := by
+  by_contra! hcon
+  exact frame_2_90.not_valid_axiomM hab (LogicED45.sound frame_2_90 (hcon #a #b))
+
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicED45 α) := by
+  by_contra! hcon
+  exact frame_3_11053224.not_valid_axiomC hab (LogicED45.sound frame_3_11053224 (hcon #a #b))
+
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicED45 α) := by
+  intro hcon
+  exact frame_2_90.not_valid_axiomN (LogicED45.sound frame_2_90 hcon)
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicED45 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomT (LogicED45.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicED45 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomB (LogicED45.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicED45 α) := by
+  intro hcon
+  exact frame_2_90.not_valid_axiomP (LogicED45.sound frame_2_90 hcon)
 
 end LogicED45
 

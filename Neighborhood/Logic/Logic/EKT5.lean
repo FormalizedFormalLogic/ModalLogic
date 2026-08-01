@@ -1,13 +1,10 @@
 module
 
-public import Neighborhood.Logic.Logic.EKT
-public import Neighborhood.Logic.Logic.EK5
-public import Neighborhood.Logic.Logic.ET5
 public import Neighborhood.Logic.Logic.EMT5
 
 @[expose] public section
 
-variable {α : Type u} {A : Formula α}
+variable {α : Type u}
 
 namespace LogicEKT5
 
@@ -21,9 +18,6 @@ theorem eq_LogicEMT5 : (@LogicEKT5 α) = LogicEMT5 := by
   · apply Hilbert.subset_of_provable_axioms
     rintro A ((⟨B, C, rfl⟩ | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
       first | exact Logic.axiomM | exact Logic.axiomT | exact Logic.axiomFive
-
-instance : (@LogicEKT5 α).IsConsistent := by
-  rw [eq_LogicEMT5]; infer_instance
 
 end LogicEKT5
 

@@ -205,6 +205,15 @@ instance [L.HasAxiomP] [L.HasAxiomB] : L.HasAxiomN := ⟨by
   have h₄ : □◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₃;
   exact C_of_E_mp h₄ ⨀ h₂;⟩
 
+/-- The axiom `N` is derivable from `D`, `B` and `5`. -/
+instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomN := ⟨by
+  have h₁ : □◇(⊤ : Formula α) ∈ L := axiomB' verum;
+  have h₂ : ◇◇(⊤ : Formula α) ∈ L := axiomD ⨀ h₁;
+  have h₃ : □◇◇(⊤ : Formula α) ∈ L := axiomFive ⨀ h₂;
+  have h₄ : ◇◇(⊤ : Formula α) 🡘 ⊤ ∈ L := E_intro (C_of_conseq verum) (C_of_conseq h₂);
+  have h₅ : □◇◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₄;
+  exact C_of_E_mp h₅ ⨀ h₃;⟩
+
 /-- The dual of the axiom scheme `Four`. -/
 lemma diaFourc [L.HasAxiomFour] : ◇◇A 🡒 ◇A ∈ L := by
   have e : ∼◇A 🡘 □(∼A) ∈ L := E_intro dne dni;
@@ -214,6 +223,12 @@ lemma diaFourc [L.HasAxiomFour] : ◇◇A 🡒 ◇A ∈ L := by
 /-- The axiom scheme `Five` is derivable from `M`, `B` and `4`. -/
 instance [L.HasAxiomM] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive :=
   ⟨fun _ => C_trans axiomB (rm diaFourc)⟩
+
+/-- The axiom scheme `Five` is derivable from `D`, `B` and `4`. -/
+instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive := ⟨fun A => by
+  have h₁ : ◇A 🡒 ◇◇A ∈ L := C_trans axiomB (C_trans axiomD diaFourc);
+  have e : ◇◇A 🡘 ◇A ∈ L := E_intro diaFourc h₁;
+  exact C_trans axiomB (C_of_E_mp (re e))⟩
 
 /-- The dual of the axiom scheme `Five`. -/
 lemma diaFivec [L.HasAxiomFive] : ◇□A 🡒 □A ∈ L := by
