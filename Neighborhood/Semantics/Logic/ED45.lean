@@ -4,14 +4,6 @@ public import Neighborhood.Semantics.Logic.ED4
 public import Neighborhood.Semantics.Logic.E45
 public import Neighborhood.Semantics.Logic.ED5
 
-/-!
-# The neighborhood logic `LogicED45`
-
-Soundness and consistency of `LogicED45`, the classical modal logic axiomatised by the seriality
-axiom `D`, the transitivity axiom `4`, and the euclideanity axiom `5`, with respect to the serial,
-transitive, and euclidean neighborhood frames.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

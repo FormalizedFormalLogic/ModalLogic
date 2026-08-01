@@ -7,14 +7,6 @@ public import Neighborhood.Semantics.Example.Frame1_1
 public import Neighborhood.Semantics.Example.Frame2_140
 public import Neighborhood.Semantics.Example.Frame3_9472136
 
-/-!
-# The neighborhood logic `LogicECDB`
-
-Soundness and consistency of `LogicECDB`, the classical modal logic axiomatised by the regularity
-axiom `C`, the seriality axiom `D`, and the symmetry axiom `B`, with respect to the regular,
-serial, and symmetric neighborhood frames.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

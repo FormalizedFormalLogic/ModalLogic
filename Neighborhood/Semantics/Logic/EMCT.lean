@@ -6,14 +6,6 @@ public import Neighborhood.Semantics.Logic.EMCD
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_8
 
-/-!
-# The neighborhood logic `LogicEMCT`
-
-Soundness and consistency of `LogicEMCT`, the classical modal logic axiomatised by
-the monotonicity axiom `M`, the regularity axiom `C`, and the reflexivity axiom `T`,
-with respect to the neighborhood frames that are monotonic, regular, and reflexive.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

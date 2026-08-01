@@ -21,51 +21,44 @@ instance : (@LogicENP α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicENP.sound frame_1_2 hC⟩
 
-variable [DecidableEq α]
-
-theorem complete
+theorem complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.NotContainsEmpty] → F ⊧ A) :
     A ∈ @LogicENP α :=
   (basicCanonicalModel LogicENP).mem_of_valid
     (h (basicCanonicalModel LogicENP).toFrame
       (basicCanonicalModel LogicENP).Val)
 
-omit [DecidableEq α] in
 lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicENP α) := by
   by_contra! hcon
   exact frame_2_238.not_valid_axiomD (LogicENP.sound frame_2_238 (hcon #a))
 
-lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicENP α) := by
   by_contra! hcon
   exact frame_3_9471106.not_valid_axiomM hab (LogicENP.sound frame_3_9471106 (hcon #a #b))
 
-lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.K A B ∉ (@LogicENP α) := by
   by_contra! hcon
   exact frame_2_206.not_valid_axiomK hab (LogicENP.sound frame_2_206 (hcon #a #b))
 
-lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicENP α) := by
   by_contra! hcon
   exact frame_2_206.not_valid_axiomC hab (LogicENP.sound frame_2_206 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicENP α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomT (LogicENP.sound frame_2_140 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicENP α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB (LogicENP.sound frame_2_138 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicENP α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomFour (LogicENP.sound frame_2_140 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENP α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomFive (LogicENP.sound frame_2_138 (hcon #a))

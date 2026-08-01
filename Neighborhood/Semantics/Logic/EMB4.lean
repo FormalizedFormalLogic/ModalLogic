@@ -5,14 +5,6 @@ public import Neighborhood.Semantics.Logic.EMC45
 public import Neighborhood.Semantics.Logic.ECB4
 public import Neighborhood.Semantics.Example.Frame1_3
 
-/-!
-# The neighborhood logic `LogicEMB4`
-
-Soundness and consistency of `LogicEMB4`, the classical modal logic axiomatised by the
-monotonicity axiom `M`, the symmetry axiom `B` and the transitivity axiom `Four`, with respect to
-the neighborhood frames that are monotonic, symmetric and transitive.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

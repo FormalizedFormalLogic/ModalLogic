@@ -6,15 +6,6 @@ public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_8
 
-/-!
-# The neighborhood logic `LogicEMCK`
-
-Soundness and consistency of `LogicEMCK`, the classical modal logic axiomatised by
-the monotonicity axiom `M`, the regularity axiom `C`, and the axiom `K`,
-with respect to the neighborhood frames that are monotonic, regular, and satisfy
-property K.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

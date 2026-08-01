@@ -6,14 +6,6 @@ public import Neighborhood.Semantics.Example.Frame2_140
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame3_9472136
 
-/-!
-# The neighborhood logic `LogicENB`
-
-Soundness, consistency and completeness of `LogicENB`, the classical modal logic axiomatised by
-`N := □⊤` and the symmetry axiom `B` over `LogicE`, with respect to the neighborhood frames that
-contain their unit and are symmetric.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -28,22 +20,16 @@ instance : (@LogicENB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicENB.sound frame_1_2 hC⟩
 
-section
-
-variable [DecidableEq α]
-
 /-- The intermediate canonical model of `intermediateRelativeMaximalCanonicalModel` contains its
 unit as well as being symmetric.
 
 - [Che80, Exercise 9.39(b)] -/
-theorem complete
+theorem complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsSymmetric] → F ⊧ A) :
     A ∈ @LogicENB α :=
   (intermediateRelativeMaximalCanonicalModel LogicENB).mem_of_valid
     (h (intermediateRelativeMaximalCanonicalModel LogicENB).toFrame
       (intermediateRelativeMaximalCanonicalModel LogicENB).Val)
-
-end
 
 lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicENB α) := by

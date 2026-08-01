@@ -6,15 +6,6 @@ public import Neighborhood.Semantics.Logic.EMD
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame3_43176
 
-/-!
-# The neighborhood logic `LogicEMD4`
-
-Soundness and consistency of `LogicEMD4`,
-the classical modal logic axiomatised by the monotonicity axiom `M`, the seriality axiom `D` and
-the transitivity axiom `Four`, with respect to the neighborhood frames that are monotonic,
-transitive and serial.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -38,24 +29,20 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMD4 α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicEMD4.sound frame_2_170 (hcon #a))
 
-variable [DecidableEq α]
-
-lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.K A B ∉ (@LogicEMD4 α) := by
   by_contra! hcon
   exact frame_3_43176.not_valid_axiomK hab (LogicEMD4.sound frame_3_43176 (hcon #a #b))
 
-lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEMD4 α) := by
   by_contra! hcon
   exact frame_3_43176.not_valid_axiomC hab (LogicEMD4.sound frame_3_43176 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMD4 α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomB (LogicEMD4.sound frame_1_0 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMD4 α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicEMD4.sound frame_1_0 (hcon #a))

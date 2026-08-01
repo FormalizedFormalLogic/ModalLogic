@@ -5,14 +5,6 @@ public import Neighborhood.Semantics.Logic.ECP
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Example.Frame3_8553090
 
-/-!
-# The neighborhood logic `LogicECND`
-
-Soundness and consistency of `LogicECND`, the classical modal logic axiomatised by the regularity
-axiom `C`, `N := □⊤`, and the seriality axiom `D`, with respect to the regular, unit-containing,
-and serial neighborhood frames.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

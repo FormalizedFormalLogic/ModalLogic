@@ -7,14 +7,6 @@ public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_206
 
-/-!
-# The neighborhood logic `LogicEMC`
-
-Soundness, consistency and completeness of `LogicEMC`, the classical modal logic axiomatised by
-the monotonicity axiom `M` and the regularity axiom `C`, with respect to the neighborhood frames
-that are both monotonic and regular.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -30,47 +22,38 @@ instance : (@LogicEMC α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMC.sound frame_1_2 hC⟩
 
-variable [DecidableEq α]
-
-theorem complete
+theorem complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] → F ⊧ A) :
     A ∈ @LogicEMC α :=
   (supplementedBasicCanonicalModel LogicEMC).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMC).toFrame
       (supplementedBasicCanonicalModel LogicEMC).Val)
 
-omit [DecidableEq α] in
 lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMC α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEMC.sound frame_1_3 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMC α) := by
   by_contra! hcon
   exact frame_2_8.not_valid_axiomFour
     (LogicEMC.sound frame_2_8 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicEMC α) := by
   intro hcon
   exact frame_1_0.not_valid_axiomN (LogicEMC.sound frame_1_0 hcon)
 
-omit [DecidableEq α] in
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMC α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomT (LogicEMC.sound frame_1_3 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMC α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomB (LogicEMC.sound frame_1_0 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEMC α) := by
   intro hcon
   exact frame_1_3.not_valid_axiomP (LogicEMC.sound frame_1_3 hcon)
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMC α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicEMC.sound frame_1_0 (hcon #a))

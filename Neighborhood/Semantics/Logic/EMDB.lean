@@ -4,14 +4,6 @@ public import Neighborhood.Semantics.Logic.EMCND
 public import Neighborhood.Semantics.Logic.EMB
 public import Neighborhood.Semantics.Example.Frame2_140
 
-/-!
-# The neighborhood logic `LogicEMDB`
-
-Soundness and consistency of `LogicEMDB`, the classical modal logic axiomatised by the
-monotonicity axiom `M`, the seriality axiom `D`, and the symmetry axiom `B`, with respect to the
-neighborhood frames that are monotonic, serial, and symmetric.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

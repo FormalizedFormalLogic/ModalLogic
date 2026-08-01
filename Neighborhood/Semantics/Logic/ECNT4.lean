@@ -2,14 +2,6 @@ module
 
 public import Neighborhood.Semantics.Logic.ENT4
 
-/-!
-# The neighborhood logic `LogicECNT4`
-
-Soundness and consistency of `LogicECNT4`, the classical modal logic axiomatised by the regularity
-axiom `C`, the unit axiom `N := □⊤`, the reflexivity axiom `T`, and the transitivity axiom `Four`,
-with respect to the regular, unit-containing, reflexive, and transitive neighborhood frames.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

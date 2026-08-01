@@ -8,14 +8,6 @@ public import Neighborhood.Semantics.Example.Frame2_140
 public import Neighborhood.Semantics.Example.Frame2_95
 public import Neighborhood.Semantics.Example.Frame3_9472136
 
-/-!
-# The neighborhood logic `LogicECB`
-
-Soundness and consistency of `LogicECB`, the classical
-modal logic axiomatised by the regularity axiom `C` and the symmetry axiom `B` over
-`LogicE`, with respect to the regular and symmetric neighborhood frames.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

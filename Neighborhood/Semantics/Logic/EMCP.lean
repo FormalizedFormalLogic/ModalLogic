@@ -7,15 +7,6 @@ public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_8
 public import Neighborhood.Semantics.Example.Frame2_140
 
-/-!
-# The neighborhood logic `LogicEMCP`
-
-Soundness and consistency of `LogicEMCP`, the classical modal logic axiomatised by
-the monotonicity axiom `M`, the regularity axiom `C`, and the possibility axiom `P := ∼□⊥`,
-with respect to the neighborhood frames that are monotonic, regular, and do not contain the
-empty set as one of their neighborhoods.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

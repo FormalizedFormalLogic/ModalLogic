@@ -5,14 +5,6 @@ public import Neighborhood.Semantics.Logic.ECB4
 public import Neighborhood.Semantics.Logic.ET5
 public import Neighborhood.Semantics.Example.Frame3_9472136
 
-/-!
-# The neighborhood logic `LogicECT5`
-
-Soundness and consistency of `LogicECT5`, the classical modal logic axiomatised by the
-regularity axiom `C`, the reflexivity axiom `T`, and the euclideanness axiom `Five`, with respect
-to the neighborhood frames that are regular, reflexive, and euclidean.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

@@ -3,15 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.ECND
 public import Neighborhood.Semantics.Logic.ECNB
 
-/-!
-# The neighborhood logic `LogicECNDB`
-
-Soundness and consistency of `LogicECNDB`, the classical modal logic axiomatised by
-the regularity axiom `C`, `N := □⊤`, the seriality axiom `D` and the symmetry axiom `B`
-over `LogicE`, with respect to the regular, unit-containing, serial and symmetric neighborhood frames.
-Also proves the strict inclusions of `LogicECND` and `LogicECNB` in `LogicECNDB`.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

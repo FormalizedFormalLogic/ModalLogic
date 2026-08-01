@@ -6,15 +6,6 @@ public import Neighborhood.Semantics.Logic.ED4
 public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame3_8421506
 
-/-!
-# The neighborhood logic `LogicEND4`
-
-Soundness and consistency of `LogicEND4`, the classical modal logic axiomatised by `N := □⊤`,
-the seriality axiom `D` and the transitivity axiom `Four` over `LogicE`, with respect to the
-serial and transitive neighborhood frames containing their unit. Also proves the strict
-inclusion of `LogicEND` and of `LogicEN4` in `LogicEND4`.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

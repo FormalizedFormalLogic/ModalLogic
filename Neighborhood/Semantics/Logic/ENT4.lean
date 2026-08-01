@@ -6,71 +6,58 @@ public import Neighborhood.Semantics.Logic.END4
 public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame3_9471106
 
-/-!
-# The neighborhood logic `LogicENT4`
-
-Soundness, consistency and completeness of `LogicENT4`, the classical modal logic axiomatised by
-`N := □⊤`, the reflexivity axiom `T` and the transitivity axiom `Four` over `LogicE`, with respect
-to the neighborhood frames that contain their unit, are reflexive and are transitive, together
-with its finite frame property.
--/
-
 @[expose] public section
 
-variable {α : Type u} [DecidableEq α] {A : Formula α}
+variable {α : Type u} {A : Formula α}
 
 namespace LogicENT4
 
-omit [DecidableEq α] in
 theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsReflexive] [F.IsTransitive]
   : A ∈ LogicENT4 → F ⊧ A := Hilbert.sound (by rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;> simp)
 
-omit [DecidableEq α] in
 instance : (@LogicENT4 α).IsConsistent := ⟨by
   by_contra! hC;
   simpa using LogicENT4.sound frame_1_2 hC⟩
 
-theorem complete
+theorem complete [DecidableEq α]
   (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.ContainsUnit] → [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) :
   A ∈ @LogicENT4 α :=
   (basicCanonicalModel LogicENT4).mem_of_valid $ h (basicCanonicalModel LogicENT4).toFrame (basicCanonicalModel LogicENT4).Val
 
-lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicENT4 α) := by
   by_contra! hcon
   exact frame_3_10520744.not_valid_axiomC hab (LogicENT4.sound frame_3_10520744 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENT4 α) := by
   by_contra! hcon
   exact frame_3_9471106.not_isEuclidean
     (isEuclidean_of_valid_axiomFive (LogicENT4.sound frame_3_9471106 (hcon #a)))
 
-lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicENT4 α) := by
   by_contra! hcon
   exact frame_3_9471106.not_valid_axiomM hab (LogicENT4.sound frame_3_9471106 (hcon #a #b))
 
-lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.K A B ∉ (@LogicENT4 α) := by
   by_contra! hcon
   exact frame_3_9471106.not_valid_axiomK hab (LogicENT4.sound frame_3_9471106 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicENT4 α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB (LogicENT4.sound frame_2_138 (hcon #a))
 
 end LogicENT4
 
-instance : FormulaSet.IsSubformulaClosed
+instance [DecidableEq α] : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
   closed B hB C hC := by
     rcases hB with hB | hB
     · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
-theorem LogicENT4.finite_complete
+theorem LogicENT4.finite_complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.ContainsUnit] → [F.IsReflexive] →
       [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicENT4 α :=

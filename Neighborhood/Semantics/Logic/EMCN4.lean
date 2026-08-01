@@ -3,15 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.EMCN
 public import Neighborhood.Semantics.Logic.EMC4
 
-/-!
-# The neighborhood logic `LogicEMCN4`
-
-Soundness, consistency and completeness of `LogicEMCN4`, the classical modal logic axiomatised by
-the monotonicity axiom `M`, the regularity axiom `C`, `N := □⊤` and the transitivity axiom `Four`,
-with respect to the neighborhood frames that are monotonic, regular, transitive, and contain their
-unit, together with its finite frame property.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -27,23 +18,21 @@ instance : (@LogicEMCN4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCN4.sound frame_1_2 hC⟩
 
-variable [DecidableEq α]
-
-theorem complete
+theorem complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsRegular] →
       [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMCN4 α :=
   (supplementedBasicCanonicalModel LogicEMCN4).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMCN4).toFrame
       (supplementedBasicCanonicalModel LogicEMCN4).Val)
 
-instance : FormulaSet.IsSubformulaClosed
+instance [DecidableEq α] : FormulaSet.IsSubformulaClosed
     ((A.subformulas : Set (Formula α)) ∪ (□⊤ : Formula α).subformulas) where
   closed B hB C hC := by
     rcases hB with hB | hB
     · exact Or.inl (Formula.subformulas.subset_of_mem hB hC)
     · exact Or.inr (Formula.subformulas.subset_of_mem hB hC)
 
-theorem finite_complete
+theorem finite_complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] → [F.IsRegular] →
       [F.ContainsUnit] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMCN4 α :=
   LogicEMCN4.complete <| by
@@ -61,12 +50,10 @@ theorem finite_complete
     exact h (quasiFilteringTransitiveFiltration M T hfin).toModel.toFrame
       (quasiFilteringTransitiveFiltration M T hfin).toModel.Val ⟦x⟧
 
-omit [DecidableEq α] in
 lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMCN4 α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEMCN4.sound frame_1_3 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCN4 α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomFive (LogicEMCN4.sound frame_2_138 (hcon #a))

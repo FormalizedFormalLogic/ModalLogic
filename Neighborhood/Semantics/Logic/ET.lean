@@ -7,14 +7,6 @@ public import Neighborhood.Semantics.Example.Frame2_72
 public import Neighborhood.Semantics.Example.Frame3_130
 public import Neighborhood.Semantics.Example.Frame3_168
 
-/-!
-# The neighborhood logic `LogicET`
-
-Soundness, consistency and completeness of `LogicET`, the classical modal logic axiomatised by
-the reflexivity axiom `T`, with respect to the reflexive neighborhood frames
-(`Frame.IsReflexive`).
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -29,45 +21,39 @@ instance : (@LogicET α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicET.sound frame_1_2 hC⟩
 
-variable [DecidableEq α]
-
-theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → F ⊧ A) :
+theorem complete [DecidableEq α] (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → F ⊧ A) :
     A ∈ @LogicET α :=
   (basicCanonicalModel LogicET).mem_of_valid
     (h (basicCanonicalModel LogicET).toFrame
       (basicCanonicalModel LogicET).Val)
 
-lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicET α) := by
   by_contra! hcon
   exact frame_3_168.not_valid_axiomC hab (LogicET.sound frame_3_168 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicET α) := by
   by_contra! hcon
   exact frame_2_72.not_isTransitive (isTransitive_of_valid_axiomFour (LogicET.sound frame_2_72 (hcon #a)))
 
-lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicET α) := by
   by_contra! hcon
   exact frame_3_9471106.not_valid_axiomM hab (LogicET.sound frame_3_9471106 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicET α) := by
   intro hcon
   exact frame_1_0.not_valid_axiomN (LogicET.sound frame_1_0 hcon)
 
-lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.K A B ∉ (@LogicET α) := by
   by_contra! hcon
   exact frame_3_130.not_valid_axiomK hab (LogicET.sound _ (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicET α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomB (LogicET.sound frame_1_0 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicET α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicET.sound frame_1_0 (hcon #a))

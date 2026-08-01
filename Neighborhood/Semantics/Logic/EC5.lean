@@ -7,14 +7,6 @@ public import Neighborhood.Semantics.Example.Frame2_153
 public import Neighborhood.Semantics.Example.Frame2_170
 public import Neighborhood.Semantics.Example.Frame2_75
 
-/-!
-# The neighborhood logic `LogicEC5`
-
-Soundness and consistency of `LogicEC5`, the classical
-modal logic axiomatised by the regularity axiom `C` and the Euclideanness axiom `Five`
-over `LogicE`, with respect to the regular and Euclidean neighborhood frames.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

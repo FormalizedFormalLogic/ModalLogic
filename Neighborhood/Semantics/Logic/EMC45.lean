@@ -3,15 +3,6 @@ module
 public import Neighborhood.Semantics.Logic.EMCN4
 public import Neighborhood.Semantics.Logic.EMC5
 
-/-!
-# The neighborhood logic `LogicEMC45`
-
-Soundness and consistency of `LogicEMC45`, the classical modal logic axiomatised by the
-monotonicity axiom `M`, the regularity axiom `C`, the transitivity axiom `Four` and the
-euclideanness axiom `Five`, with respect to the neighborhood frames that are monotonic, regular,
-transitive and euclidean.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

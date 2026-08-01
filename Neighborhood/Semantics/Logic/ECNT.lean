@@ -7,14 +7,6 @@ public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame3_8421512
 public import Neighborhood.Semantics.Example.Frame3_9471106
 
-/-!
-# The neighborhood logic `LogicECNT`
-
-Soundness and consistency of `LogicECNT`, the classical modal logic axiomatised by the regularity
-axiom `C`, the unit axiom `N := □⊤`, and the reflexivity axiom `T`, with respect to the regular,
-unit-containing, and reflexive neighborhood frames.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
