@@ -7,14 +7,6 @@ public import Neighborhood.Semantics.Logic.EMTB
 public import Neighborhood.Semantics.Logic.ECT5
 public import Neighborhood.Logic.Equiv.EMT5_EMCNT5
 
-/-!
-# The neighborhood logic `LogicEMT5`
-
-Soundness and consistency of `LogicEMT5`, the classical modal logic axiomatised by the
-monotonicity axiom `M`, the reflexivity axiom `T` and the euclideanness axiom `Five`, with
-respect to the neighborhood frames that are monotonic, reflexive and euclidean.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

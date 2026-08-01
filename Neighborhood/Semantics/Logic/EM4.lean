@@ -6,14 +6,6 @@ public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_206
 
-/-!
-# The neighborhood logic `LogicEM4`
-
-Soundness, consistency and completeness of `LogicEM4`, the classical modal logic axiomatised by
-the monotonicity axiom `M` and the transitivity axiom `Four`, with respect to the neighborhood
-frames that are monotonic and transitive, together with its finite frame property.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -28,16 +20,14 @@ instance : (@LogicEM4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEM4.sound frame_1_2 hC⟩
 
-variable [DecidableEq α]
-
-theorem complete
+theorem complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.IsTransitive] → F ⊧ A) :
     A ∈ @LogicEM4 α :=
   (supplementedBasicCanonicalModel LogicEM4).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEM4).toFrame
       (supplementedBasicCanonicalModel LogicEM4).Val)
 
-theorem finite_complete
+theorem finite_complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] →
       [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEM4 α :=
   LogicEM4.complete <| by
@@ -50,43 +40,37 @@ theorem finite_complete
     exact h (supplementedTransitiveFiltration M A.subformulas).toModel.toFrame
       (supplementedTransitiveFiltration M A.subformulas).toModel.Val ⟦x⟧
 
-lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEM4 α) := by
   by_contra! hcon
   exact frame_2_206.not_valid_axiomC hab
     (LogicEM4.sound frame_2_206 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEM4 α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicEM4.sound frame_1_3 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicEM4 α) := by
   intro hcon
   exact frame_1_0.not_valid_axiomN (LogicEM4.sound frame_1_0 hcon)
 
-lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.K A B ∉ (@LogicEM4 α) := by
   by_contra! hcon
   exact frame_2_206.not_valid_axiomK hab (LogicEM4.sound frame_2_206 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEM4 α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomT (LogicEM4.sound frame_1_3 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEM4 α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomB (LogicEM4.sound frame_1_0 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEM4 α) := by
   intro hcon
   exact frame_1_3.not_valid_axiomP (LogicEM4.sound frame_1_3 hcon)
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEM4 α) := by
   by_contra! hcon
   exact frame_1_0.not_valid_axiomFive (LogicEM4.sound frame_1_0 (hcon #a))

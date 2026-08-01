@@ -7,15 +7,6 @@ public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_170
 public import Neighborhood.Semantics.Example.Frame2_206
 
-/-!
-# The neighborhood logic `LogicEM45`
-
-Soundness and consistency of `LogicEM45`, the classical modal logic axiomatised by the
-monotonicity axiom `M`, the transitivity axiom `Four` and the euclidean axiom `Five`, with
-respect to the neighborhood frames that are monotonic, transitive and euclidean. Also proves the
-strict inclusions of `LogicEN45`, `LogicEMN4` and `LogicEM5` in `LogicEM45`.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

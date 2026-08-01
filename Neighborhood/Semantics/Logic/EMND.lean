@@ -6,14 +6,6 @@ public import Neighborhood.Semantics.Logic.EMNP
 public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame3_8421544
 
-/-!
-# The neighborhood logic `LogicEMND`
-
-Soundness and consistency of `LogicEMND`, the classical modal logic axiomatised by
-the monotonicity axiom `M`, `N := □⊤`, and the seriality axiom `D` over `LogicE`,
-with respect to the monotonic frames containing their unit and being serial.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -79,18 +71,12 @@ theorem LogicEMNP_ssubset_LogicEMND : @LogicEMNP ℕ ⊂ LogicEMND := by
   · obtain ⟨A, hA⟩ := LogicEMNP.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
-section
-
-variable [DecidableEq α]
-
-theorem LogicEMND.complete
+theorem LogicEMND.complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.ContainsUnit] →
       [F.IsSerial] → F ⊧ A) :
     A ∈ @LogicEMND α :=
   (supplementedBasicCanonicalModel LogicEMND).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMND).toFrame
       (supplementedBasicCanonicalModel LogicEMND).Val)
-
-end
 
 end

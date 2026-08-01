@@ -7,13 +7,6 @@ public import Neighborhood.Semantics.Example.Frame3_10528928
 public import Neighborhood.Semantics.Example.Frame2_153
 public import Neighborhood.Semantics.Example.Frame2_170
 
-/-!
-# The neighborhood logic `LogicE5`
-
-Soundness, consistency and completeness of `LogicE5`, the classical modal logic axiomatized by
-`Five := ◇A 🡒 □◇A` over `LogicE`, with respect to the euclidean frames (`Frame.IsEuclidean`).
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -28,58 +21,50 @@ instance : (@LogicE5 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicE5.sound frame_1_2 hC⟩
 
-variable [DecidableEq α]
-
-theorem complete (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsEuclidean] → F ⊧ A) :
+theorem complete [DecidableEq α] (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsEuclidean] → F ⊧ A) :
     A ∈ @LogicE5 α :=
   (maximalRelativeMaximalCanonicalModel LogicE5).mem_of_valid
     (h (maximalRelativeMaximalCanonicalModel LogicE5).toFrame
       (maximalRelativeMaximalCanonicalModel LogicE5).Val)
 
-lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_3_10528928.not_valid_axiomC hab (LogicE5.sound frame_3_10528928 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD
     (LogicE5.sound frame_1_3 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_2_79.not_valid_axiomFour
     (LogicE5.sound frame_2_79 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicE5 α) := by
   intro hcon
   exact frame_2_75.not_valid_axiomN (LogicE5.sound frame_2_75 hcon)
 
-omit [DecidableEq α] in
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_1_3.not_isReflexive
     (isReflexive_of_valid_axiomT (LogicE5.sound frame_1_3 (hcon #a)))
 
-lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.K A B ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_2_75.not_valid_axiomK hab (LogicE5.sound frame_2_75 (hcon #a #b))
 
-lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_2_153.not_valid_axiomM hab (LogicE5.sound frame_2_153 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicE5 α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomB (LogicE5.sound frame_2_170 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicE5 α) := by
   intro hcon
   exact frame_1_3.not_valid_axiomP (LogicE5.sound frame_1_3 hcon)

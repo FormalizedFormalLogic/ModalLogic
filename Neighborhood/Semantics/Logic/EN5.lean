@@ -7,14 +7,6 @@ public import Neighborhood.Semantics.Example.Frame2_186
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_170
 
-/-!
-# The neighborhood logic `LogicEN5`
-
-Soundness and consistency of `LogicEN5`, the classical modal logic axiomatised by
-`N := □⊤` and the Euclideanity axiom `5` over `LogicE`, with respect to the
-frames containing their unit and being Euclidean.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

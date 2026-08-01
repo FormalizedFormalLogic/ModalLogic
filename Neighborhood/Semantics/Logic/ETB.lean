@@ -6,14 +6,6 @@ public import Neighborhood.Logic.Equiv.ETB_ENTB
 public import Neighborhood.Semantics.Example.Frame3_8437920
 public import Neighborhood.Semantics.Example.Frame3_9472136
 
-/-!
-# The neighborhood logic `LogicETB`
-
-Soundness, consistency and completeness of `LogicETB`, the classical modal logic axiomatised by
-both the reflexivity axiom `T` and the symmetry axiom `B`, with respect to the neighborhood
-frames that are both reflexive and symmetric.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -29,22 +21,16 @@ instance : (@LogicETB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicETB.sound frame_1_2 hC⟩
 
-section
-
-variable [DecidableEq α]
-
 /-- The intermediate canonical model of `intermediateRelativeMaximalCanonicalModel` is reflexive as
 well as symmetric.
 
 - [Che80, Exercise 9.39(b)] -/
-theorem complete
+theorem complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsSymmetric] → F ⊧ A) :
     A ∈ @LogicETB α :=
   (intermediateRelativeMaximalCanonicalModel LogicETB).mem_of_valid
     (h (intermediateRelativeMaximalCanonicalModel LogicETB).toFrame
       (intermediateRelativeMaximalCanonicalModel LogicETB).Val)
-
-end
 
 lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicETB α) := by

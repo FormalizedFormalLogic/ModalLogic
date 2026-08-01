@@ -4,15 +4,6 @@ public import Neighborhood.Semantics.Logic.EMND
 public import Neighborhood.Semantics.Logic.EMD4
 public import Neighborhood.Semantics.Logic.END4
 
-/-!
-# The neighborhood logic `LogicEMND4`
-
-Soundness and consistency of `LogicEMND4`, the classical modal logic axiomatised by
-the monotonicity axiom `M`, `N := □⊤`, the seriality axiom `D` and the transitivity axiom `Four`
-over `LogicE`, with respect to the monotonic, unit-containing, serial and transitive neighborhood frames.
-Also proves the strict inclusions of `LogicEMND`, `LogicEMD4` and `LogicEND4` in `LogicEMND4`.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

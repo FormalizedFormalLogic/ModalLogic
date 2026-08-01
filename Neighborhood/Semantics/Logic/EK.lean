@@ -6,13 +6,6 @@ public import Neighborhood.Semantics.Example.Frame1_1
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame4_11259170869739560
 
-/-!
-# The neighborhood logic `LogicEK`
-
-Soundness and consistency of `LogicEK`, obtained from `LogicE` by adding every instance of the
-axiom scheme `K`, with respect to all neighborhood frames satisfying the `K`-property.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

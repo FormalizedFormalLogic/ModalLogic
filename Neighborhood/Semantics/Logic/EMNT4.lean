@@ -4,15 +4,6 @@ public import Neighborhood.Semantics.Logic.EMT4
 public import Neighborhood.Semantics.Logic.EMN
 public import Neighborhood.Semantics.Logic.ENT4
 
-/-!
-# The neighborhood logic `LogicEMNT4`
-
-Soundness, consistency and completeness of `LogicEMNT4`, the classical modal logic axiomatised by
-the monotonicity axiom `M`, `N := □⊤`, the reflexivity axiom `T` and the transitivity axiom `Four`,
-with respect to the neighborhood frames that are monotonic, contain their unit, are reflexive and
-are transitive, together with its finite frame property.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -28,16 +19,14 @@ instance : (@LogicEMNT4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMNT4.sound frame_1_2 hC⟩
 
-variable [DecidableEq α]
-
-theorem complete
+theorem complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsMonotonic] → [F.ContainsUnit] →
       [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMNT4 α :=
   (supplementedBasicCanonicalModel LogicEMNT4).mem_of_valid
     (h (supplementedBasicCanonicalModel LogicEMNT4).toFrame
       (supplementedBasicCanonicalModel LogicEMNT4).Val)
 
-theorem finite_complete
+theorem finite_complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsFinite] → [F.IsMonotonic] →
       [F.ContainsUnit] → [F.IsReflexive] → [F.IsTransitive] → F ⊧ A) : A ∈ @LogicEMNT4 α :=
   LogicEMNT4.complete <| by

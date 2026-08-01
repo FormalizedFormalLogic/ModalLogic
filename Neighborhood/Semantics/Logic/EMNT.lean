@@ -7,52 +7,39 @@ public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame3_8421512
 public import Neighborhood.Semantics.Example.Frame3_8421544
 
-/-!
-# The neighborhood logic `LogicEMNT`
-
-Soundness and consistency of `LogicEMNT`, the classical modal logic axiomatised by the
-monotonicity axiom `M`, the unit axiom `N`, and the reflexivity axiom `T`, with respect to
-the monotonic, unit-containing, and reflexive neighborhood frames.
--/
-
 @[expose] public section
 
-variable {α : Type u} [DecidableEq α] {A : Formula α}
+variable {α : Type u} {A : Formula α}
 
 namespace LogicEMNT
 
-omit [DecidableEq α] in
 theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic] [F.ContainsUnit]
     [F.IsReflexive] :
     A ∈ LogicEMNT → F ⊧ A :=
   Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;> simp)
 
-omit [DecidableEq α] in
 instance : (@LogicEMNT α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMNT.sound frame_1_2 hC⟩
 
-lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.K A B ∉ (@LogicEMNT α) := by
   by_contra! hcon
   exact frame_3_8421544.not_valid_axiomK hab (LogicEMNT.sound frame_3_8421544 (hcon #a #b))
 
-lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEMNT α) := by
   by_contra! hcon
   exact frame_3_8421544.not_valid_axiomC hab (LogicEMNT.sound frame_3_8421544 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMNT α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB (LogicEMNT.sound frame_2_138 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMNT α) := by
   by_contra! hcon
   exact frame_3_8421512.not_valid_axiomFour (LogicEMNT.sound frame_3_8421512 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMNT α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomFive (LogicEMNT.sound frame_2_138 (hcon #a))

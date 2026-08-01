@@ -6,14 +6,6 @@ public import Neighborhood.Semantics.Logic.ETB
 public import Neighborhood.Semantics.Logic.EB4
 public import Neighborhood.Semantics.Example.Frame3_9472136
 
-/-!
-# The neighborhood logic `LogicET5`
-
-Soundness, consistency and completeness of `LogicET5`, the classical modal logic axiomatised by
-the reflexivity axiom `T` and the euclideanness axiom `Five` over `LogicE`, with respect to the
-neighborhood frames that are both reflexive and euclidean.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -33,11 +25,6 @@ instance : (@LogicET5 α).HasAxiomN :=
       Logic.E_intro Logic.diaTc (Logic.C_of_conseq Logic.verum)
    Logic.C_of_E_mpr (Logic.re hiff) ⨀ (Logic.axiomFive ⨀ (Logic.diaTc ⨀ Logic.verum))⟩
 
-section
-
-variable [DecidableEq α]
-
-omit [DecidableEq α] in
 theorem hasAxiomFour : Axioms.Four A ∈ (@LogicET5 α) :=
   have h1 : (□A : Formula α) 🡒 ◇□A ∈ (@LogicET5 α) := Logic.diaTc
   have h2 : ◇□A 🡒 (□A : Formula α) ∈ (@LogicET5 α) :=
@@ -46,7 +33,7 @@ theorem hasAxiomFour : Axioms.Four A ∈ (@LogicET5 α) :=
   Logic.C_trans (Logic.C_trans h1 Logic.axiomFive)
     (Logic.C_of_E_mp (Logic.re (Logic.E_symm hiff)))
 
-instance : (basicCanonicalModel (@LogicET5 α)).IsEuclidean := by
+instance [DecidableEq α] : (basicCanonicalModel (@LogicET5 α)).IsEuclidean := by
   apply CanonicalModel.isEuclidean'
   intro X hX
   have hbox : (basicCanonicalModel (@LogicET5 α)).box X = ∅ := by
@@ -56,13 +43,11 @@ instance : (basicCanonicalModel (@LogicET5 α)).IsEuclidean := by
   rw [hbox]
   simp [Frame.dia, Frame.contains_unit]
 
-theorem complete
+theorem complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsReflexive] → [F.IsEuclidean] → F ⊧ A) :
     A ∈ @LogicET5 α :=
   (basicCanonicalModel LogicET5).mem_of_valid
     (h (basicCanonicalModel LogicET5).toFrame (basicCanonicalModel LogicET5).Val)
-
-end
 
 lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicET5 α) := by

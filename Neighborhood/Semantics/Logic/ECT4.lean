@@ -6,14 +6,6 @@ public import Neighborhood.Semantics.Logic.ECD4
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame3_9471106
 
-/-!
-# The neighborhood logic `LogicECT4`
-
-Soundness and consistency of `LogicECT4`, the classical modal logic axiomatised by the regularity
-axiom `C`, the reflexivity axiom `T`, and the transitivity axiom `Four`, with respect to the
-regular, reflexive, and transitive neighborhood frames.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

@@ -6,15 +6,6 @@ public import Neighborhood.Semantics.Example.Frame2_8
 public import Neighborhood.Semantics.Example.Frame2_78
 public import Neighborhood.Semantics.Example.Frame2_206
 
-/-!
-# The neighborhood logic `LogicEP`
-
-Soundness and consistency of `LogicEP`, the classical modal logic axiomatised by the
-possibility axiom `P := ∼□⊥`, with respect to the neighborhood frames in which no world has the
-empty set as one of its neighborhoods (`Frame.NotContainsEmpty`). Also that `D` is not among its
-theorems.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

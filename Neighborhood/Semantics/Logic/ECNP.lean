@@ -7,15 +7,6 @@ public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame2_140
 public import Neighborhood.Semantics.Example.Frame3_9471106
 
-/-!
-# The neighborhood logic `LogicECNP`
-
-Soundness and consistency of `LogicECNP`, the classical modal logic axiomatised by
-the regularity axiom `C`, `N := □⊤`, and the non-empty axiom `P`, with respect to
-the neighborhood frames that are regular, contain their unit, and do not contain the
-empty set.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

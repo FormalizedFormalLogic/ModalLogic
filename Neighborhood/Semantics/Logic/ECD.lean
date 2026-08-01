@@ -7,14 +7,6 @@ public import Neighborhood.Semantics.Example.Frame1_1
 public import Neighborhood.Semantics.Example.Frame2_140
 public import Neighborhood.Semantics.Example.Frame3_9471106
 
-/-!
-# The neighborhood logic `LogicECD`
-
-Soundness and consistency of `LogicECD`, the classical modal logic axiomatised by both the
-regularity axiom `C` and the seriality axiom `D`, with respect to the regular and serial
-neighborhood frames.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
@@ -79,17 +71,11 @@ theorem LogicED_ssubset_LogicECD : @LogicED ℕ ⊂ LogicECD := by
   · obtain ⟨A, B, hA⟩ := LogicED.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
-section
-
-variable [DecidableEq α]
-
-theorem LogicECD.complete
+theorem LogicECD.complete [DecidableEq α]
     (h : ∀ {κ : Type u} [Nonempty κ] (F : Frame κ), [F.IsRegular] → [F.IsSerial] → F ⊧ A) :
     A ∈ @LogicECD α :=
   (basicCanonicalModel LogicECD).mem_of_valid
     (h (basicCanonicalModel LogicECD).toFrame
       (basicCanonicalModel LogicECD).Val)
-
-end
 
 end

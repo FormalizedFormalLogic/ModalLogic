@@ -7,14 +7,6 @@ public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame2_90
 public import Neighborhood.Semantics.Example.Frame3_8553090
 
-/-!
-# The neighborhood logic `LogicECD4`
-
-Soundness and consistency of `LogicECD4`, the classical modal logic axiomatised by
-the regularity axiom `C`, the seriality axiom `D`, and the transitivity axiom `Four`,
-with respect to the neighborhood frames that are regular, serial, and transitive.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

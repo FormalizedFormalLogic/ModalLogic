@@ -6,14 +6,6 @@ public import Neighborhood.Semantics.Logic.ECTB
 public import Neighborhood.Logic.Equiv.EMTB_EMCNTB
 public import Neighborhood.Semantics.Example.Frame3_8437920
 
-/-!
-# The neighborhood logic `LogicEMTB`
-
-Soundness and consistency of `LogicEMTB`, the classical modal logic axiomatised by the
-monotonicity axiom `M`, the reflexivity axiom `T` and the symmetry axiom `B`, with respect to the
-neighborhood frames that are monotonic, reflexive and symmetric.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

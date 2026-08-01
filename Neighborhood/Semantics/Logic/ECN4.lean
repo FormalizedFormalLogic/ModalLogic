@@ -6,61 +6,46 @@ public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_153
 
-/-!
-# The neighborhood logic `LogicECN4`
-
-Soundness and consistency of `LogicECN4`, the classical modal logic axiomatised by `C`, `N := □⊤`
-and the transitivity axiom `Four` over `LogicE`, with respect to regular neighborhood frames that
-contain their unit and are transitive.
--/
-
 @[expose] public section
 
-variable {α : Type u} [DecidableEq α] {A : Formula α}
+variable {α : Type u} {A : Formula α}
 
 namespace LogicECN4
 
-omit [DecidableEq α] in
 theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.ContainsUnit] [F.IsRegular] [F.IsTransitive]
   : A ∈ LogicECN4 → F ⊧ A := Hilbert.sound (by rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;> simp)
 
-omit [DecidableEq α] in
 instance : (@LogicECN4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECN4.sound frame_1_2 hC⟩
 
-omit [DecidableEq α] in
 lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicECN4 α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomB (LogicECN4.sound frame_2_138 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicECN4 α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomD (LogicECN4.sound frame_1_3 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicECN4 α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomFive
     (LogicECN4.sound frame_2_138 (hcon #a))
 
-lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.K A B ∉ (@LogicECN4 α) := by
   by_contra! hcon
   exact frame_2_153.not_valid_axiomK hab (LogicECN4.sound frame_2_153 (hcon #a #b))
 
-lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.M A B ∉ (@LogicECN4 α) := by
   by_contra! hcon
   exact frame_2_153.not_valid_axiomM hab (LogicECN4.sound frame_2_153 (hcon #a #b))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicECN4 α) := by
   by_contra! hcon
   exact frame_1_3.not_valid_axiomT (LogicECN4.sound frame_1_3 (hcon #a))
 
-omit [DecidableEq α] in
 lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicECN4 α) := by
   intro hcon
   exact frame_1_3.not_valid_axiomP (LogicECN4.sound frame_1_3 hcon)

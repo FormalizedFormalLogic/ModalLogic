@@ -8,14 +8,6 @@ public import Neighborhood.Semantics.Example.Frame2_191
 public import Neighborhood.Semantics.Example.Frame3_9472136
 public import Neighborhood.Semantics.Example.Frame3_11570344
 
-/-!
-# The neighborhood logic `LogicENB4`
-
-Soundness and consistency of `LogicENB4`, the classical modal logic axiomatised by
-`N := □⊤`, the symmetry axiom `B`, and the transitivity axiom `Four`, with respect to
-the neighborhood frames that contain their unit, are symmetric, and are transitive.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

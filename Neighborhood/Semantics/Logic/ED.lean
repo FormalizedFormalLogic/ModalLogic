@@ -5,14 +5,6 @@ public import Neighborhood.Semantics.Example.Frame3_10528928
 public import Neighborhood.Semantics.Example.Frame2_53
 public import Neighborhood.Semantics.Example.Frame3_130
 
-/-!
-# The neighborhood logic `LogicED`
-
-Soundness and consistency of `LogicED`, the classical modal logic axiomatised by the seriality
-axiom `D`, with respect to the serial neighborhood frames (`Frame.IsSerial`), and the strict
-inclusion of `LogicE` in `LogicED`.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

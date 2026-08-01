@@ -8,14 +8,6 @@ public import Neighborhood.Semantics.Example.Frame2_170
 public import Neighborhood.Semantics.Example.Frame2_206
 public import Neighborhood.Semantics.Example.Frame3_10528928
 
-/-!
-# The neighborhood logic `LogicEMN5`
-
-Soundness and consistency of `LogicEMN5`, the classical modal logic axiomatised by
-the monotonicity axiom `M`, `N := □⊤`, and the Euclideanity axiom `5`, with respect to
-the neighborhood frames that are monotonic, contain their unit, and are Euclidean.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}

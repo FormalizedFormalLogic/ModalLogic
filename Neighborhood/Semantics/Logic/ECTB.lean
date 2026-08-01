@@ -6,14 +6,6 @@ public import Neighborhood.Semantics.Logic.ECNT
 public import Neighborhood.Semantics.Example.Frame3_8437920
 public import Neighborhood.Semantics.Example.Frame3_9472136
 
-/-!
-# The neighborhood logic `LogicECTB`
-
-Soundness and consistency of `LogicECTB`, the classical modal logic axiomatised by the
-regularity axiom `C`, the reflexivity axiom `T`, and the symmetry axiom `B`, with respect to the
-neighborhood frames that are regular, reflexive, and symmetric.
--/
-
 @[expose] public section
 
 variable {α : Type u} {A : Formula α}
