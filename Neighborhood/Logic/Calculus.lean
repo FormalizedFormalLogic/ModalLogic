@@ -309,7 +309,7 @@ instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomT :=
 instance [L.HasAxiomC] [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomT := ⟨fun A => by
   have hB : □A 🡒 □◇□A ∈ L := axiomB;
   have hNA : ∼A 🡒 □(∼□A) ∈ L := CNBoxNBox;
-  have hO : ◇□A ⋏ ∼□A 🡒 ⊥ ∈ L := CK_iff_CC.mpr (C_swap (C_trans CNBoxBoxNBox dni));
+  have hO : ◇□A ⋏ ∼□A 🡒 ⊥ ∈ L := CK_iff_CC.mpr (C_trans diaFivec dni);
   have hBoxO : □(◇□A ⋏ ∼□A) 🡒 □⊥ ∈ L := C_of_E_mp (re (E_intro hO efq));
   have h : □A ⋏ ∼A 🡒 (⊥ : Formula α) ∈ L :=
     C_trans
