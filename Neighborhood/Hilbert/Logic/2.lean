@@ -192,11 +192,11 @@ abbrev LogicECK : Logic α := Hilbert $
 instance : (@LogicECK α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
 instance : (@LogicECK α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
 
-abbrev LogicEKN : Logic α := Hilbert $
-  { Axioms.K A B | (A) (B) } ∪
-  { Axioms.N }
-instance : (@LogicEKN α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicEKN α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+abbrev LogicENK : Logic α := Hilbert $
+  { Axioms.N } ∪
+  { Axioms.K A B | (A) (B) }
+instance : (@LogicENK α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+instance : (@LogicENK α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
 
 abbrev LogicEKT : Logic α := Hilbert $
   { Axioms.K A B | (A) (B) } ∪

@@ -62,7 +62,6 @@ public import Neighborhood.Logic.Logic.EK4
 public import Neighborhood.Logic.Logic.EK5
 public import Neighborhood.Logic.Logic.EKB
 public import Neighborhood.Logic.Logic.EKD
-public import Neighborhood.Logic.Logic.EKN
 public import Neighborhood.Logic.Logic.EKP
 public import Neighborhood.Logic.Logic.EKT
 public import Neighborhood.Logic.Logic.EM
@@ -115,7 +114,6 @@ public import Neighborhood.Logic.Logic.EMK4
 public import Neighborhood.Logic.Logic.EMK5
 public import Neighborhood.Logic.Logic.EMKB
 public import Neighborhood.Logic.Logic.EMKD
-public import Neighborhood.Logic.Logic.EMKN
 public import Neighborhood.Logic.Logic.EMKP
 public import Neighborhood.Logic.Logic.EMKT
 public import Neighborhood.Logic.Logic.EMN
@@ -129,6 +127,7 @@ public import Neighborhood.Logic.Logic.EMND4
 public import Neighborhood.Logic.Logic.EMND45
 public import Neighborhood.Logic.Logic.EMND5
 public import Neighborhood.Logic.Logic.EMNDB
+public import Neighborhood.Logic.Logic.EMNK
 public import Neighborhood.Logic.Logic.EMNP
 public import Neighborhood.Logic.Logic.EMNT
 public import Neighborhood.Logic.Logic.EMNT4
@@ -155,6 +154,7 @@ public import Neighborhood.Logic.Logic.END4
 public import Neighborhood.Logic.Logic.END45
 public import Neighborhood.Logic.Logic.END5
 public import Neighborhood.Logic.Logic.ENDB
+public import Neighborhood.Logic.Logic.ENK
 public import Neighborhood.Logic.Logic.ENP
 public import Neighborhood.Logic.Logic.ENT
 public import Neighborhood.Logic.Logic.ENT4
