@@ -134,8 +134,8 @@
     node color: deductive strength (weakest&nbsp;<b>E</b> → strongest)</div>
   <div class="row"><span class="arrow">→</span>
     arrow <b>L</b> → <b>L′</b> means <b>L′</b> ⊊ <b>L</b> (proved in Lean)</div>
-  <div class="row"><span class="arrow">=</span>
-    equal logics are merged into one node (<b>L</b> = <b>L′</b>)</div>
+  <div class="row"><span class="arrow">+n</span>
+    <b>L</b><sup>+n</sup> merges <b>n</b> further logics equal to <b>L</b> (hover to list them)</div>
 </div>
 
 <div id="hint" class="panel">drag&nbsp;·&nbsp;rotate &nbsp; scroll&nbsp;·&nbsp;zoom &nbsp; right-drag&nbsp;·&nbsp;pan &nbsp; hover&nbsp;·&nbsp;inspect</div>
@@ -187,10 +187,14 @@ const Zoo = (() => {
   const buildGraph = edges => {
     const { find, members } = eqClasses(edges);
 
+    /* The shortest name of an equality class is its representative (`label`);
+       the other members are only counted into the `+n` badge and listed in
+       the tooltip, so labels stay short as the classes grow. */
     const nodes = [];
     for (const [id, names] of members) {
       names.sort((a, b) => a.length - b.length || (a < b ? -1 : 1));
-      nodes.push({ id, names, label: names.map(n => n.replace(/^Logic/, "")).join(" = ") });
+      const shorts = names.map(n => n.replace(/^Logic/, ""));
+      nodes.push({ id, names, shorts, label: shorts[0] });
     }
 
     /* One link per merged pair, oriented stronger -> weaker (as in the 2D
@@ -307,13 +311,16 @@ addEventListener("unhandledrejection", ev => showError(String(ev.reason)));
   /* ---- TeX label sprites ------------------------------------------- */
   /* Each label is typeset by MathJax as bold upright math (matching the
      `Logic` macro of `zoo/template.typ`), rasterized once to a black master
-     canvas, and tinted per theme/depth via source-in compositing. */
+     canvas, and tinted per theme/depth via source-in compositing. A node
+     merging an equality class shows only its representative, with a `+n`
+     superscript counting the other members (hover for the full list). */
   const EX_PX = 8;        // CSS px per MathJax ex unit
   const OVERSAMPLE = 6;   // rasterization factor, for crisp textures
   const LABEL_EX = 5;     // sprite graph-units per ex unit
   await MathJax.startup.promise;
   const renderMaster = async n => {
-    const texSrc = n.names.map(s => `\\mathbf{${s.replace(/^Logic/, "")}}`).join(" = ");
+    const extra = n.shorts.length - 1;
+    const texSrc = `\\mathbf{${n.label}}` + (extra > 0 ? `^{+${extra}}` : "");
     const svg = MathJax.tex2svg(texSrc).querySelector("svg");
     const wEx = parseFloat(svg.getAttribute("width")), hEx = parseFloat(svg.getAttribute("height"));
     const w = Math.ceil(wEx * EX_PX * OVERSAMPLE), h = Math.ceil(hEx * EX_PX * OVERSAMPLE);
@@ -406,10 +413,12 @@ addEventListener("unhandledrejection", ev => showError(String(ev.reason)));
   };
 
   /* ---- search & buttons -------------------------------------------- */
+  /* Every member of an equality class gets its own autocomplete entry, so a
+     logic hidden behind a `+n` badge is still findable by name. */
   const datalist = document.getElementById("logics");
-  for (const n of [...nodes].sort((a, b) => (a.label < b.label ? -1 : 1))) {
+  for (const s of nodes.flatMap(n => n.shorts).sort()) {
     const opt = document.createElement("option");
-    opt.value = n.label;
+    opt.value = s;
     datalist.appendChild(opt);
   }
   const flyTo = n => {
@@ -421,9 +430,9 @@ addEventListener("unhandledrejection", ev => showError(String(ev.reason)));
   document.getElementById("search").addEventListener("change", ev => {
     const q = ev.target.value.trim().toLowerCase();
     if (!q) return;
-    const hit = nodes.find(n => n.label.toLowerCase() === q)
-      ?? nodes.find(n => n.names.some(s => s.replace(/^Logic/, "").toLowerCase() === q))
-      ?? nodes.find(n => n.label.toLowerCase().includes(q));
+    const hit = nodes.find(n => n.shorts.some(s => s.toLowerCase() === q))
+      ?? nodes.find(n => n.names.some(s => s.toLowerCase() === q))
+      ?? nodes.find(n => n.shorts.some(s => s.toLowerCase().includes(q)));
     if (hit) flyTo(hit);
   });
   document.getElementById("reset").addEventListener("click", () => {
