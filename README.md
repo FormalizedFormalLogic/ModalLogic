@@ -14,6 +14,6 @@ The compact static 2D rendering ([PNG](https://formalizedformallogic.github.io/M
 
 ![Compact Neighborhood logic zoo](https://formalizedformallogic.github.io/ModalLogic/Neighborhood/compact.png)
 
-The full static 2D rendering ([PNG](https://formalizedformallogic.github.io/ModalLogic/Neighborhood/zoo.png)), with every logic and every equality:
+The full static 2D rendering ([PNG](https://formalizedformallogic.github.io/ModalLogic/Neighborhood/zoo.png)), covering the extensions by **P** and **K** as well; as in the 3D zoo, equal logics are merged into one node, and **L**<sup>+n</sup> means that **n** further logics are equal to **L**:
 
 ![Neighborhood logic zoo](https://formalizedformallogic.github.io/ModalLogic/Neighborhood/zoo.png)
