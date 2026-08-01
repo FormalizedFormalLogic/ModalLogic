@@ -12,11 +12,7 @@ namespace LogicENT5
 
 /-- The axiom `N` is redundant over `T` and `5`. -/
 theorem eq_LogicET5 : (@LogicENT5 α) = LogicET5 := by
-  apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((rfl | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
-      first | exact Logic.axiomN | exact Logic.axiomT | exact Logic.axiomFive
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  hilbert_eq_axioms
 
 instance : (@LogicENT5 α).IsConsistent := by
   rw [eq_LogicET5]; infer_instance

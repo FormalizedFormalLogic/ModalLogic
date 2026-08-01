@@ -12,11 +12,7 @@ namespace LogicENB4
 
 /-- The axiom `N` is redundant over `B` and `4`. -/
 theorem eq_LogicEB4 : (@LogicENB4 α) = LogicEB4 := by
-  apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((rfl | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
-      first | exact Logic.axiomN | exact Logic.axiomB | exact Logic.axiomFour
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  hilbert_eq_axioms
 
 instance : (@LogicENB4 α).IsConsistent := by
   rw [eq_LogicEB4]; infer_instance

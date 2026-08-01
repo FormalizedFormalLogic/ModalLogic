@@ -53,16 +53,14 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEM5 α) := by
 theorem ssubset_LogicEN5 : @LogicEN5 ℕ ⊂ LogicEM5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ (rfl | ⟨_, rfl⟩) <;> first | exact Logic.axiomN | exact Logic.axiomFive
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicEN5.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEMN : @LogicEMN ℕ ⊂ LogicEM5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ (⟨_, _, rfl⟩ | rfl) <;> first | exact Logic.axiomM | exact Logic.axiomN
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMN.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 

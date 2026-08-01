@@ -56,7 +56,7 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEMCN α) := by
 theorem ssubset_LogicECN : @LogicECN ℕ ⊂ LogicEMCN := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicECN.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
@@ -69,7 +69,7 @@ theorem ssubset_LogicEMC : @LogicEMC ℕ ⊂ LogicEMCN := by
 theorem ssubset_LogicEMN : @LogicEMN ℕ ⊂ LogicEMCN := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicEMN.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 

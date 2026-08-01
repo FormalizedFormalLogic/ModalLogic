@@ -67,11 +67,7 @@ lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
 theorem ssubset_LogicENT4 : @LogicENT4 ℕ ⊂ LogicET5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ ((rfl | ⟨_, rfl⟩) | ⟨_, rfl⟩)
-    · exact Logic.axiomN
-    · exact Logic.axiomT
-    · exact LogicET5.hasAxiomFour
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicENT4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, Logic.axiomFive, hA⟩
 
@@ -85,20 +81,14 @@ theorem ssubset_LogicE5 : @LogicE5 ℕ ⊂ LogicET5 := by
 theorem ssubset_LogicETB : @LogicETB ℕ ⊂ LogicET5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
-    · exact Logic.axiomT
-    · exact Logic.axiomB
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicETB.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEB4 : @LogicEB4 ℕ ⊂ LogicET5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ (⟨_, rfl⟩ | ⟨_, rfl⟩)
-    · exact Logic.axiomB
-    · exact Logic.axiomFour
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEB4.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 

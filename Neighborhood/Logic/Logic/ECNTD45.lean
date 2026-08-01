@@ -10,13 +10,7 @@ namespace LogicECNTD45
 
 /-- The axiom `B` is redundant over `C`, `N`, `T`, `D`, `4`, `5`. -/
 theorem eq_LogicECNTDB45 : (@LogicECNTD45 α) = LogicECNTDB45 := by
-  apply Set.Subset.antisymm
-  · exact Hilbert.subset_of_subset_axioms (by grind (instances := 20000))
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((((((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) |
-      ⟨_, rfl⟩) <;>
-      first | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomT | exact Logic.axiomD |
-        exact Logic.axiomB | exact Logic.axiomFour | exact Logic.axiomFive
+  hilbert_eq_axioms
 
 instance : (@LogicECNTD45 α).IsConsistent := by
   rw [eq_LogicECNTDB45]; infer_instance

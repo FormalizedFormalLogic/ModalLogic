@@ -50,22 +50,20 @@ lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMND α) := by
 theorem ssubset_LogicEND : @LogicEND ℕ ⊂ LogicEMND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicEND.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEMD : @LogicEMD ℕ ⊂ LogicEMND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMD.not_provable_axiomN⟩
 
 theorem ssubset_LogicEMNP : @LogicEMNP ℕ ⊂ LogicEMND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((⟨B, C, rfl⟩ | rfl) | rfl) <;>
-      first | exact Logic.axiomM | exact Logic.axiomN | exact Logic.axiomP_of_ND
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMNP.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 

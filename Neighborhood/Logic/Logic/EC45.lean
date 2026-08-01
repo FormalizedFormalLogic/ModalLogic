@@ -62,14 +62,14 @@ theorem ssubset_LogicEC4 : @LogicEC4 ℕ ⊂ LogicEC45 := by
 theorem ssubset_LogicEC5 : @LogicEC5 ℕ ⊂ LogicEC45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEC5.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicE45 : @LogicE45 ℕ ⊂ LogicEC45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicE45.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 

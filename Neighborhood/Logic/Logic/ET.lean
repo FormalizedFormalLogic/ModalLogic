@@ -61,18 +61,14 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicET α) :
 theorem ssubset_LogicED : @LogicED ℕ ⊂ LogicET := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ ⟨A, rfl⟩
-    exact Logic.C_trans Logic.axiomT Logic.diaTc
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicED.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEP : @LogicEP ℕ ⊂ LogicET := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ rfl
-    exact Logic.axiomP
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEP.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (Logic.HasAxiomT.T _), hA⟩
 

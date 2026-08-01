@@ -35,28 +35,21 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEMB4 α) := by
 theorem ssubset_LogicEMB : @LogicEMB ℕ ⊂ LogicEMB4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMB.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEMC45 : @LogicEMC45 ℕ ⊂ LogicEMB4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
-      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomFour |
-        exact Logic.axiomFive
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMC45.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicECB4 : @LogicECB4 ℕ ⊂ LogicEMB4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
-    · exact Logic.axiomC
-    · exact Logic.axiomB
-    · exact Logic.axiomFour
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicECB4.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 

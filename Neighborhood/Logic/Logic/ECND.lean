@@ -56,28 +56,19 @@ theorem ssubset_LogicECN : @LogicECN ℕ ⊂ LogicECND := by
 theorem ssubset_LogicECP : @LogicECP ℕ ⊂ LogicECND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A (⟨B, C, rfl⟩ | rfl)
-    · exact Logic.axiomC
-    · exact Logic.axiomP_of_ND
+  · hilbert_subset_axioms
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicECP.not_provable_axiomN⟩
 
 theorem ssubset_LogicEND : @LogicEND ℕ ⊂ LogicECND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicEND.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 /-- Over `ECN`, the axiom `P` and the axiom scheme `D` axiomatise the same logic. -/
 theorem eq_LogicECNP : (@LogicECND α) = LogicECNP := by
-  apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((⟨B, C, rfl⟩ | rfl) | ⟨B, rfl⟩) <;>
-      first | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomD
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((⟨B, C, rfl⟩ | rfl) | rfl) <;>
-      first | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomP_of_ND
+  hilbert_eq_axioms
 
 end LogicECND
 

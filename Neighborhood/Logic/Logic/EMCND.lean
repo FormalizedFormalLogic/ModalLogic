@@ -38,34 +38,27 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCND α) := b
 theorem ssubset_LogicEMCN : @LogicEMCN ℕ ⊂ LogicEMCND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMCN.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEMCD : @LogicEMCD ℕ ⊂ LogicEMCND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMCD.not_provable_axiomN⟩
 
 theorem ssubset_LogicECND : @LogicECND ℕ ⊂ LogicEMCND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicECND.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 /-- Over `EMCN` (i.e. over the normal base `K`), the axiom `P` and the axiom scheme `D`
 axiomatise the same logic. -/
 theorem eq_LogicEMCNP : (@LogicEMCND α) = LogicEMCNP := by
-  apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A (((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | rfl) | ⟨B, rfl⟩) <;>
-      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomD
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A (((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | rfl) | rfl) <;>
-      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN |
-        exact Logic.axiomP_of_ND
+  hilbert_eq_axioms
 
 end LogicEMCND
 

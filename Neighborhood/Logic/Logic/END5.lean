@@ -59,13 +59,13 @@ theorem ssubset_LogicEND : @LogicEND ℕ ⊂ LogicEND5 := by
 theorem ssubset_LogicED5 : @LogicED5 ℕ ⊂ LogicEND5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicED5.not_provable_axiomN⟩
 
 theorem ssubset_LogicEN5 : @LogicEN5 ℕ ⊂ LogicEND5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEN5.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 

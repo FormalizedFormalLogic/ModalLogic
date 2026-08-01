@@ -78,8 +78,7 @@ instance {κ} [Nonempty κ] {F : Frame κ} [F.ContainsUnit] [F.IsSerial] : F.Not
 theorem ssubset_LogicENP : @LogicENP ℕ ⊂ LogicEND := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A (rfl | rfl) <;> first | exact Logic.axiomN | exact Logic.axiomP_of_ND
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicENP.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
