@@ -248,5 +248,13 @@ def main : MetaM Unit := do
 
 end Status
 
-set_option maxHeartbeats 4000000 in
+-- The heartbeat budget of a command is cumulative, so any fixed value here is a
+-- bound on the size of the zoo rather than on any one computation: the table
+-- costs one instance search per (logic, axiom) cell, and both factors grow. The
+-- 4000000 this used to carry was reached once the search cost of the cells
+-- summed past it, which says nothing about the run being stuck. What a runaway
+-- search would trip is `synthInstance.maxHeartbeats`, whose budget is per
+-- typeclass problem and is left at its default, so dropping the cumulative bound
+-- does not give up the diagnostic that matters.
+set_option maxHeartbeats 0 in
 #eval Status.main
