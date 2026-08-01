@@ -284,7 +284,9 @@ addEventListener("unhandledrejection", ev => showError(String(ev.reason)));
   try {
     const res = await fetch("./zoo.json");
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-    edges = await res.json();
+    /* The file also lists the logics with the level the 2D figures lay them
+       out by; this page derives its own depth from the merged graph. */
+    edges = (await res.json()).edges;
   } catch (err) {
     document.getElementById("error").style.display = "block";
     document.getElementById("error-detail").textContent = String(err);

@@ -20,11 +20,13 @@ mk-all:
     lake exe mk_all --module --lib ModalLogicArchive
     lake exe mk_all --module --lib Neighborhood
 
-# Regenerate the Neighborhood logic zoo as zoo/{zoo,status}.json and zoo/zoo.png (requires typst)
+# Regenerate the Neighborhood logic zoo as zoo/{zoo,compact,status}.json and
+# zoo/{zoo,compact}.png (requires typst)
 zoo:
     lake env lean zoo/Extract.lean
     lake exe zoo-status
     typst compile --root . zoo/neighborhood.typ zoo/zoo.png
+    typst compile --root . zoo/compact.typ zoo/compact.png
 
 # Serve the interactive 3D zoo at http://localhost:8080 (requires miniserve; run `just zoo` first)
 zoo-serve:

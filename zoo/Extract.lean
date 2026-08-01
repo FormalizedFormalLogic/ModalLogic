@@ -6,6 +6,13 @@ Scans the environment for theorems whose statement has the form `L₁ ⊂ L₂`,
 reduces the collected inclusion graph by transitivity, and writes the
 remaining edges to `zoo/zoo.json`.
 
+A second, smaller graph is written to `zoo/compact.json`: the same relation
+restricted to the extensions of `E` by `M`, `C`, `N`, `D`, `T`, `B`, `4`, `5`,
+with each equivalence class of logics collapsed to a single representative.
+
+Both files list the logics along with their level in the order, so that the
+renderers can draw a graded Hasse diagram; see `Zoo.toJson`.
+
 Run from the repository root:
 
     lake env lean zoo/Extract.lean
@@ -31,6 +38,15 @@ def EdgeType.comp : EdgeType → EdgeType → EdgeType
   | t,    .eq  => t
   | .sub, .sub => .sub
   | _,    _    => .ssub
+
+/-- How much an edge says, used to pick the most informative of several
+inclusions derivable between the same two logics. Mirrors `cleanDup`: a `⊆`
+edge is the weakest statement, and `⊂` and `=` (which cannot both hold) are
+equally strong. -/
+def EdgeType.rank : EdgeType → Nat
+  | .sub => 0
+  | .ssub => 1
+  | .eq => 1
 
 structure Edge where
   a : String
@@ -169,16 +185,202 @@ def reduce (edges : Array Edge) : Array Edge := Id.run do
       keep := rest
   return keep
 
-def toJson (edges : Array Edge) : Json :=
-  Json.arr <| edges.map fun ⟨a, b, t⟩ =>
-    Json.mkObj [("from", a), ("to", b), ("type", toString t)]
+/-! ### The compact zoo
+
+The full zoo carries every logic the library knows about, including the
+extensions by `P` and `K` and every member of an equivalence class. The
+compact zoo keeps only the extensions of `E` by `M`, `C`, `N`, `D`, `T`, `B`,
+`4`, `5`, and only one representative per equivalence class. -/
+
+/-- The axioms an extension of `E` may be built from to appear in the compact
+zoo; `P` and `K` are deliberately absent. -/
+def compactAxioms : List Char := ['M', 'C', 'N', 'D', 'T', 'B', '4', '5']
+
+/-- Whether a logic belongs to the compact zoo, read off its name: `LogicE`
+followed by axioms drawn from `compactAxioms`. -/
+def isCompact (name : String) : Bool :=
+  name.startsWith "LogicE" && (name.drop 6).all (compactAxioms.contains ·)
+
+/-- Partition the nodes into equivalence classes along the `eq` edges, keying
+each class by the alphabetically first of its members. -/
+def eqClasses (edges : Array Edge) : Std.HashMap String String × Std.HashMap String (Array String) :=
+  Id.run do
+    let mut nodes : Std.HashSet String := {}
+    let mut adj : Std.HashMap String (Array String) := {}
+    for e in edges do
+      nodes := (nodes.insert e.a).insert e.b
+      if e.t == .eq then
+        adj := adj.insert e.a ((adj.getD e.a #[]).push e.b)
+        adj := adj.insert e.b ((adj.getD e.b #[]).push e.a)
+    let mut key : Std.HashMap String String := {}
+    let mut members : Std.HashMap String (Array String) := {}
+    for n in nodes do
+      if key.contains n then continue
+      let mut seen : Std.HashSet String := {n}
+      let mut stack : Array String := #[n]
+      let mut cls : Array String := #[]
+      while _h : 0 < stack.size do
+        let m := stack[stack.size - 1]
+        stack := stack.pop
+        cls := cls.push m
+        for m' in adj.getD m #[] do
+          unless seen.contains m' do
+            seen := seen.insert m'
+            stack := stack.push m'
+      let k := cls.foldl (fun a b => if b < a then b else a) n
+      for m in cls do key := key.insert m k
+      members := members.insert k cls
+    return (key, members)
+
+/-- The shortest of the members a class has that satisfy `p`, ties broken
+alphabetically; `none` when it has none. This is the name a class goes by:
+`EMT5` rather than `EMCNTDB45`, as in the interactive zoo. -/
+def shortestSuchThat (p : String → Bool) (members : Array String) : Option String :=
+  members.foldl (init := none) fun best n =>
+    if !p n then best
+    else match best with
+      | none => some n
+      | some b => if n.length < b.length || (n.length == b.length && n < b) then some n else some b
+
+/-- The name an equivalence class goes by in the compact zoo. A class none of
+whose members belongs to the compact zoo at all (e.g. the singleton `EK`) has
+no representative and drops out. -/
+def chooseRep (members : Array String) : Option String := shortestSuchThat isCompact members
+
+/-- The inclusion strengths derivable from `a` to each other node, by paths of
+length ≥ 1. This is `reachableTypes` for all targets at once, keeping only the
+strongest strength found; the compact zoo needs the whole row, and one search
+per source is markedly cheaper than one per pair. -/
+def reachableFrom (edges : Array Edge) (a : String) : Std.HashMap String EdgeType := Id.run do
+  let mut adj : Std.HashMap String (Array (String × EdgeType)) := {}
+  for e in edges do
+    adj := adj.insert e.a ((adj.getD e.a #[]).push (e.b, e.t))
+    if e.t == .eq then
+      adj := adj.insert e.b ((adj.getD e.b #[]).push (e.a, .eq))
+  let mut seen : Std.HashSet (String × EdgeType) := {}
+  let mut stack : Array (String × EdgeType) := #[]
+  for s in adj.getD a #[] do
+    unless seen.contains s do
+      seen := seen.insert s
+      stack := stack.push s
+  let mut out : Std.HashMap String EdgeType := {}
+  while _h : 0 < stack.size do
+    let (n, t) := stack[stack.size - 1]
+    stack := stack.pop
+    match out[n]? with
+    | some t' => if t'.rank < t.rank then out := out.insert n t
+    | none => out := out.insert n t
+    for (n', t') in adj.getD n #[] do
+      let s := (n', t.comp t')
+      unless seen.contains s do
+        seen := seen.insert s
+        stack := stack.push s
+  return out
+
+/-- Collapse each equivalence class to a single representative and drop the
+logics outside the compact zoo, then reduce the result by transitivity.
+Returns the surviving representatives along with the edges between them.
+
+Inclusions are re-derived from the transitive closure of the quotient graph
+rather than by relabelling the given edges: a discarded class can sit in the
+middle of a chain (`E ⊂ EK ⊂ EMK`), and simply dropping its edges would lose
+the inclusions that pass through it.
+
+The representatives are reported separately because collapsing a class can
+leave one with no edges at all: a logic whose only known relations are the
+equalities to its own class members keeps none of them, and an edge list
+alone would silently lose it. -/
+def compact (edges : Array Edge) : Array String × Array Edge := Id.run do
+  let (key, members) := eqClasses edges
+  let mut rep : Std.HashMap String String := {}
+  for (k, ms) in members do
+    if let some r := chooseRep ms then rep := rep.insert k r
+  let mut quotient : Std.HashSet Edge := {}
+  for e in edges do
+    let ka := key.getD e.a e.a
+    let kb := key.getD e.b e.b
+    unless ka == kb do quotient := quotient.insert ⟨ka, kb, e.t⟩
+  let qedges := quotient.toArray
+  let mut closure : Array Edge := #[]
+  for (k, r) in rep do
+    for (k', t) in reachableFrom qedges k do
+      if let some r' := rep[k']? then
+        unless r == r' do closure := closure.push ⟨r, r', t⟩
+  let sorted := closure.qsort fun x y => x.a < y.a || (x.a == y.a && x.b < y.b)
+  let nodes := rep.valuesArray.qsort (· < ·)
+  return (nodes, reduce sorted)
+
+/-! ### Output -/
+
+/-- The height of each logic: the length of the longest chain of inclusions
+leading up to it, with a whole equality class counting as one step, so that
+equal logics share a level and `E` sits at level `0`.
+
+The renderers pin every logic of a given level to one row, which turns a
+drawing into a properly graded Hasse diagram; left to themselves, the layout
+engines rank by a criterion of their own, and covers that skip several levels
+then drag their endpoints across the picture. -/
+def levels (nodes : Array String) (edges : Array Edge) : Std.HashMap String Nat := Id.run do
+  let (key, _) := eqClasses edges
+  let mut lvl : Std.HashMap String Nat := {}
+  let mut changed := true
+  while changed do
+    changed := false
+    for e in edges do
+      let ka := key.getD e.a e.a
+      let kb := key.getD e.b e.b
+      if ka == kb then continue
+      let below := lvl.getD ka 0 + 1
+      if lvl.getD kb 0 < below then
+        lvl := lvl.insert kb below
+        changed := true
+  return nodes.foldl (fun m v => m.insert v (lvl.getD (key.getD v v) 0)) {}
+
+/-- The logics an edge list mentions, with the members of an equality class
+listed consecutively.
+
+The order carries over into the rows of the drawing, and a row lays its
+logics out roughly in the order it is given them; keeping a class together
+stops its equalities from arcing across the whole row. -/
+def nodesOf (edges : Array Edge) : Array String := Id.run do
+  let (key, _) := eqClasses edges
+  let mut ns : Std.HashSet String := {}
+  for e in edges do ns := (ns.insert e.a).insert e.b
+  let cmp (x y : String) : Bool :=
+    let kx := key.getD x x
+    let ky := key.getD y y
+    kx < ky || (kx == ky && x < y)
+  return ns.toArray.qsort cmp
+
+/-- A graph as
+`{"nodes": [{"name", "level", "rep"}], "edges": [{"from", "to", "type"}]}`,
+where `rep` is the name the logic's equality class goes by.
+
+The logics are listed separately from the edges because an edge list alone
+loses those that have none: in the compact zoo, collapsing an equality class
+can leave a logic whose only known relations were the equalities to its own
+class members. -/
+def toJson (nodes : Array String) (edges : Array Edge) : Json :=
+  let lvl := levels nodes edges
+  let (key, members) := eqClasses edges
+  let rep := fun n =>
+    (members[key.getD n n]?.bind (shortestSuchThat (fun _ => true))).getD n
+  Json.mkObj
+    [ ("nodes", Json.arr <| nodes.map fun n =>
+        Json.mkObj
+          [("name", Json.str n), ("level", Json.num (lvl.getD n 0)), ("rep", Json.str (rep n))])
+    , ("edges", Json.arr <| edges.map fun ⟨a, b, t⟩ =>
+        Json.mkObj [("from", a), ("to", b), ("type", toString t)]) ]
 
 def main : MetaM Unit := do
   let edges := (← collect).toArray
   let sorted := edges.qsort fun x y => x.a < y.a || (x.a == y.a && x.b < y.b)
   let reduced := reduce (cleanDup sorted)
   IO.println s!"collected: {edges.size} edges, after transitive reduction: {reduced.size}"
-  IO.FS.writeFile "zoo/zoo.json" ((toJson reduced).pretty ++ "\n")
+  IO.FS.writeFile "zoo/zoo.json" ((toJson (nodesOf reduced) reduced).pretty ++ "\n")
+  let (nodes, compacted) := compact reduced
+  IO.println s!"compact zoo: {nodes.size} logics, {compacted.size} edges"
+  IO.FS.writeFile "zoo/compact.json" ((toJson nodes compacted).pretty ++ "\n")
 
 end Zoo
 

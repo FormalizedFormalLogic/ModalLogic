@@ -10,6 +10,10 @@ Strict inclusions between the logics formalized in `Neighborhood`, extracted fro
 
 **[Axiom status table](https://formalizedformallogic.github.io/ModalLogic/Neighborhood/status.html)** — for every logic, which of the ten axioms it proves, which it provably does not, and which nobody has settled yet.
 
-The static 2D rendering ([PNG](https://formalizedformallogic.github.io/ModalLogic/Neighborhood/zoo.png)):
+The compact static 2D rendering ([PNG](https://formalizedformallogic.github.io/ModalLogic/Neighborhood/compact.png)) — only the extensions of **E** by **M**, **C**, **N**, **D**, **T**, **B**, **4**, **5**, with one representative per equivalence class:
+
+![Compact Neighborhood logic zoo](https://formalizedformallogic.github.io/ModalLogic/Neighborhood/compact.png)
+
+The full static 2D rendering ([PNG](https://formalizedformallogic.github.io/ModalLogic/Neighborhood/zoo.png)), covering the extensions by **P** and **K** as well; as in the 3D zoo, equal logics are merged into one node, and **L**<sup>+n</sup> means that **n** further logics are equal to **L**:
 
 ![Neighborhood logic zoo](https://formalizedformallogic.github.io/ModalLogic/Neighborhood/zoo.png)
