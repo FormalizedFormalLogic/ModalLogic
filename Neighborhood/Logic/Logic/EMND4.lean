@@ -3,6 +3,9 @@ module
 public import Neighborhood.Logic.Logic.EMND
 public import Neighborhood.Logic.Logic.EMD4
 public import Neighborhood.Logic.Logic.END4
+public import Neighborhood.Semantics.Example.Frame2_138
+public import Neighborhood.Semantics.Example.Frame2_170
+public import Neighborhood.Semantics.Example.Frame3_8431784
 
 @[expose] public section
 
@@ -18,6 +21,19 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsMonotonic]
 instance : (@LogicEMND4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMND4.sound frame_1_2 hC⟩
+
+lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicEMND4 α) := by
+  by_contra! hcon
+  exact frame_3_8431784.not_valid_axiomC hab (LogicEMND4.sound frame_3_8431784 (hcon #a #b))
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMND4 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomT (LogicEMND4.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMND4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicEMND4.sound frame_2_138 (hcon #a))
 
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMND4 α) := by
   by_contra! hcon

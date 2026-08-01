@@ -230,6 +230,15 @@ instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive := ⟨fun
   have e : ◇◇A 🡘 ◇A ∈ L := E_intro diaFourc h₁;
   exact C_trans axiomB (C_of_E_mp (re e))⟩
 
+/-- The axiom scheme `T` is derivable from `D`, `B` and `4`. -/
+instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomT := ⟨fun A => by
+  have hdia : ∀ {A : Formula α}, A 🡒 ◇A ∈ L :=
+    fun {A} => C_trans axiomB (C_trans (axiomD (A := ◇A)) diaFourc);
+  have h₁ : ∼∼A 🡘 A ∈ L := E_intro dne dni;
+  have h₂ : ◇(∼A) 🡒 ∼□A ∈ L := contra (C_of_E_mpr (re h₁));
+  have h₃ : ∼A 🡒 ∼□A ∈ L := C_trans hdia h₂;
+  exact C_trans dni (C_trans (contra h₃) dne);⟩
+
 /-- The dual of the axiom scheme `Five`. -/
 lemma diaFivec [L.HasAxiomFive] : ◇□A 🡒 □A ∈ L := by
   have h₁ : ∼∼A 🡘 A ∈ L := E_intro dne dni;

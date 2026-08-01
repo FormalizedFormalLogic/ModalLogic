@@ -4,6 +4,7 @@ public import Neighborhood.Logic.Logic.END45
 public import Neighborhood.Logic.Logic.EMND4
 public import Neighborhood.Logic.Logic.EMD5
 public import Neighborhood.Logic.Logic.EM45
+public import Neighborhood.Semantics.Example.Frame2_170
 public import Neighborhood.Semantics.Example.Frame3_11053224
 
 @[expose] public section
@@ -25,6 +26,14 @@ lemma not_provable_axiomC [DecidableEq α] (a b : α) (hab : a ≠ b) :
     ∃ A B, Axioms.C A B ∉ (@LogicEMD45 α) := by
   by_contra! hcon
   exact frame_3_11053224.not_valid_axiomC hab (LogicEMD45.sound frame_3_11053224 (hcon #a #b))
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMD45 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomT (LogicEMD45.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMD45 α) := by
+  by_contra! hcon
+  exact frame_2_170.not_valid_axiomB (LogicEMD45.sound frame_2_170 (hcon #a))
 
 theorem ssubset_LogicEND45 : @LogicEND45 ℕ ⊂ LogicEMD45 := by
   apply Set.ssubset_iff_exists.mpr

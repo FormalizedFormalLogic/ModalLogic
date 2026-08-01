@@ -1,6 +1,7 @@
 module
 
 public import Neighborhood.Logic.Logic.EMCND
+public import Neighborhood.Semantics.Example.Frame2_138
 public import Neighborhood.Semantics.Example.Frame3_8421512
 
 @[expose] public section
@@ -25,6 +26,10 @@ lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMCNT α) := b
 lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEMCNT α) := by
   by_contra! hcon
   exact frame_3_8421512.not_valid_axiomFour (LogicEMCNT.sound frame_3_8421512 (hcon #a))
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCNT α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomFive (LogicEMCNT.sound frame_2_138 (hcon #a))
 
 theorem ssubset_LogicEMCND : @LogicEMCND ℕ ⊂ LogicEMCNT := by
   apply Set.ssubset_iff_exists.mpr

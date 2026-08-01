@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Logic.Logic.ECND
 public import Neighborhood.Logic.Logic.ECNB
+public import Neighborhood.Semantics.Example.Frame2_140
+public import Neighborhood.Semantics.Example.Frame3_9472136
 
 @[expose] public section
 
@@ -18,9 +20,22 @@ instance : (@LogicECNDB α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECNDB.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicECNDB α) := by
+  by_contra! hcon
+  exact frame_3_9472136.not_valid_axiomM hab (LogicECNDB.sound frame_3_9472136 (hcon #a #b))
+
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicECNDB α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomT (LogicECNDB.sound frame_2_140 (hcon #a))
+
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicECNDB α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFour (LogicECNDB.sound frame_2_140 (hcon #a))
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicECNDB α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFive (LogicECNDB.sound frame_2_140 (hcon #a))
 
 theorem ssubset_LogicECND : @LogicECND ℕ ⊂ LogicECNDB := by
   apply Set.ssubset_iff_exists.mpr

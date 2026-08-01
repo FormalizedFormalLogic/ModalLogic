@@ -4,6 +4,7 @@ public import Neighborhood.Hilbert.Logic.«0»
 public import Neighborhood.Hilbert.Logic.«1»
 public import Neighborhood.Hilbert.Logic.«2»
 public import Neighborhood.Hilbert.Logic.«3»
+public import Neighborhood.Hilbert.Logic.«4»
 public import Neighborhood.Hilbert.Logic.«6»
 public import Neighborhood.Hilbert.Logic.«7»
 public import Neighborhood.Hilbert.Logic.«8»
@@ -31,106 +32,6 @@ fewer axioms, as `Logic/Logic/<name>.lean` records.
 
 variable {α : Type u}
 
-abbrev LogicEMCNP : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.P }
-instance : (@LogicEMCNP α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCNP α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCNP α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMCNP α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
-
-abbrev LogicEMNT4 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.T A | (A) } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicEMNT4 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMNT4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMNT4 α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
-instance : (@LogicEMNT4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-
-abbrev LogicEMCN4 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicEMCN4 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCN4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCN4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMCN4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-
-abbrev LogicEMCNT : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.T A | (A) }
-instance : (@LogicEMCNT α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCNT α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCNT α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMCNT α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
-
-abbrev LogicEMCND : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.D A | (A) }
-instance : (@LogicEMCND α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCND α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCND α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMCND α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-
-abbrev LogicEMCNB : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.B A | (A) }
-instance : (@LogicEMCNB α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCNB α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCNB α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMCNB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
-
-abbrev LogicEMCN5 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicEMCN5 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCN5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCN5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMCN5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicEMCTB : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.T A | (A) } ∪
-  { Axioms.B A | (A) }
-instance : (@LogicEMCTB α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCTB α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCTB α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
-instance : (@LogicEMCTB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
-
-abbrev LogicEMNTB : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.T A | (A) } ∪
-  { Axioms.B A | (A) }
-instance : (@LogicEMNTB α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMNTB α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMNTB α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
-instance : (@LogicEMNTB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
-
-abbrev LogicECNTB : Logic α := Hilbert $
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.T A | (A) } ∪
-  { Axioms.B A | (A) }
-instance : (@LogicECNTB α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicECNTB α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicECNTB α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
-instance : (@LogicECNTB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
-
 abbrev LogicEMCNTB : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪
   { Axioms.C A B | (A) (B) } ∪
@@ -142,26 +43,6 @@ instance : (@LogicEMCNTB α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
 instance : (@LogicEMCNTB α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
 instance : (@LogicEMCNTB α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
 instance : (@LogicEMCNTB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
-
-abbrev LogicEMCT4 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.T A | (A) } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicEMCT4 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCT4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCT4 α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
-instance : (@LogicEMCT4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-
-abbrev LogicECNT4 : Logic α := Hilbert $
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.T A | (A) } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicECNT4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicECNT4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicECNT4 α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
-instance : (@LogicECNT4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 
 abbrev LogicEMCNT4 : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪
@@ -175,36 +56,6 @@ instance : (@LogicEMCNT4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
 instance : (@LogicEMCNT4 α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
 instance : (@LogicEMCNT4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 
-abbrev LogicEMCT5 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.T A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicEMCT5 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCT5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCT5 α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
-instance : (@LogicEMCT5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicEMNT5 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.T A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicEMNT5 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMNT5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMNT5 α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
-instance : (@LogicEMNT5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicECNT5 : Logic α := Hilbert $
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.T A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicECNT5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicECNT5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicECNT5 α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
-instance : (@LogicECNT5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
 abbrev LogicEMCNT5 : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪
   { Axioms.C A B | (A) (B) } ∪
@@ -216,36 +67,6 @@ instance : (@LogicEMCNT5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
 instance : (@LogicEMCNT5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
 instance : (@LogicEMCNT5 α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
 instance : (@LogicEMCNT5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicEMCDB : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.B A | (A) }
-instance : (@LogicEMCDB α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCDB α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCDB α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicEMCDB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
-
-abbrev LogicEMNDB : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.B A | (A) }
-instance : (@LogicEMNDB α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMNDB α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMNDB α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicEMNDB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
-
-abbrev LogicECNDB : Logic α := Hilbert $
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.B A | (A) }
-instance : (@LogicECNDB α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicECNDB α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicECNDB α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicECNDB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
 
 abbrev LogicEMCNDB : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪
@@ -259,36 +80,6 @@ instance : (@LogicEMCNDB α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
 instance : (@LogicEMCNDB α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
 instance : (@LogicEMCNDB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
 
-abbrev LogicEMCD4 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicEMCD4 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCD4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCD4 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicEMCD4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-
-abbrev LogicEMND4 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicEMND4 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMND4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMND4 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicEMND4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-
-abbrev LogicECND4 : Logic α := Hilbert $
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicECND4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicECND4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicECND4 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicECND4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-
 abbrev LogicEMCND4 : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪
   { Axioms.C A B | (A) (B) } ∪
@@ -301,36 +92,6 @@ instance : (@LogicEMCND4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
 instance : (@LogicEMCND4 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
 instance : (@LogicEMCND4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 
-abbrev LogicEMCD5 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicEMCD5 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCD5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCD5 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicEMCD5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicEMND5 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicEMND5 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMND5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMND5 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicEMND5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicECND5 : Logic α := Hilbert $
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicECND5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicECND5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicECND5 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicECND5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
 abbrev LogicEMCND5 : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪
   { Axioms.C A B | (A) (B) } ∪
@@ -342,36 +103,6 @@ instance : (@LogicEMCND5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
 instance : (@LogicEMCND5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
 instance : (@LogicEMCND5 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
 instance : (@LogicEMCND5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicEMD45 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.Four A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicEMD45 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMD45 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicEMD45 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-instance : (@LogicEMD45 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicECD45 : Logic α := Hilbert $
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.Four A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicECD45 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicECD45 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicECD45 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-instance : (@LogicECD45 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicEND45 : Logic α := Hilbert $
-  { Axioms.N } ∪
-  { Axioms.D A | (A) } ∪
-  { Axioms.Four A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicEND45 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEND45 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
-instance : (@LogicEND45 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-instance : (@LogicEND45 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
 
 abbrev LogicEMCD45 : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪
@@ -409,36 +140,6 @@ instance : (@LogicECND45 α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
 instance : (@LogicECND45 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 instance : (@LogicECND45 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
 
-abbrev LogicEMC45 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.Four A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicEMC45 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMC45 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMC45 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-instance : (@LogicEMC45 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicEMN45 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.Four A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicEMN45 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMN45 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMN45 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-instance : (@LogicEMN45 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicECN45 : Logic α := Hilbert $
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.Four A | (A) } ∪
-  { Axioms.Five A | (A) }
-instance : (@LogicECN45 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicECN45 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicECN45 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-instance : (@LogicECN45 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
 abbrev LogicEMCN45 : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪
   { Axioms.C A B | (A) (B) } ∪
@@ -450,36 +151,6 @@ instance : (@LogicEMCN45 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
 instance : (@LogicEMCN45 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
 instance : (@LogicEMCN45 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 instance : (@LogicEMCN45 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
-
-abbrev LogicEMCB4 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.B A | (A) } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicEMCB4 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMCB4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicEMCB4 α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
-instance : (@LogicEMCB4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-
-abbrev LogicEMNB4 : Logic α := Hilbert $
-  { Axioms.M A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.B A | (A) } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicEMNB4 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
-instance : (@LogicEMNB4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicEMNB4 α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
-instance : (@LogicEMNB4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
-
-abbrev LogicECNB4 : Logic α := Hilbert $
-  { Axioms.C A B | (A) (B) } ∪
-  { Axioms.N } ∪
-  { Axioms.B A | (A) } ∪
-  { Axioms.Four A | (A) }
-instance : (@LogicECNB4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
-instance : (@LogicECNB4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
-instance : (@LogicECNB4 α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
-instance : (@LogicECNB4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 
 abbrev LogicEMCNB4 : Logic α := Hilbert $
   { Axioms.M A B | (A) (B) } ∪

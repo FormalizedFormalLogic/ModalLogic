@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Logic.Logic.EMCN
 public import Neighborhood.Logic.Logic.EMC4
+public import Neighborhood.Semantics.Example.Frame1_3
+public import Neighborhood.Semantics.Example.Frame2_138
 
 @[expose] public section
 
@@ -49,6 +51,14 @@ theorem finite_complete [DecidableEq α]
       ⟨‹_›⟩
     exact h (quasiFilteringTransitiveFiltration M T hfin).toModel.toFrame
       (quasiFilteringTransitiveFiltration M T hfin).toModel.Val ⟦x⟧
+
+lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCN4 α) := by
+  by_contra! hcon
+  exact frame_1_3.not_valid_axiomT (LogicEMCN4.sound frame_1_3 (hcon #a))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMCN4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicEMCN4.sound frame_2_138 (hcon #a))
 
 lemma not_provable_axiomD (a : α) : ∃ A, Axioms.D A ∉ (@LogicEMCN4 α) := by
   by_contra! hcon
