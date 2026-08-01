@@ -40,6 +40,35 @@ instance : frame_3_6.HasPropertyK where
     · simp [Frame.box, frame_3_6] at hw₂
     · simp [Frame.box, frame_3_6] at hw₂
 
+instance : frame_3_6.NotContainsEmpty := ⟨fun x => by
+  fin_cases x <;> simp⟩
+
+lemma frame_3_6.dia_singleton_zero :
+    frame_3_6.dia ({0} : Set (Fin 3)) = Set.univ := by
+  ext w; fin_cases w <;> simp [Frame.dia, Frame.box, frame_3_6, Set.ext_iff]; decide
+
+lemma frame_3_6.dia_singleton_one :
+    frame_3_6.dia ({1} : Set (Fin 3)) = Set.univ := by
+  ext w; fin_cases w <;> simp [Frame.dia, Frame.box, frame_3_6, Set.ext_iff]; decide
+
+instance : frame_3_6.IsSerial where
+  serial X := by
+    intro w hw
+    fin_cases w
+    · simp only [Frame.box, frame_3_6, Set.mem_setOf_eq, Set.mem_insert_iff,
+        Set.mem_singleton_iff] at hw
+      rcases hw with rfl | rfl
+      · rw [frame_3_6.dia_singleton_zero]; trivial
+      · rw [frame_3_6.dia_singleton_one]; trivial
+    · simp [Frame.box, frame_3_6] at hw
+    · simp [Frame.box, frame_3_6] at hw
+
+lemma frame_3_6.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_3_6 ⊧ (Axioms.M #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then Set.univ else if c = b then {0} else ∅) 0
+  simp [Forces, Frame.box, frame_3_6, Ne.symm hab] at h0
+  rcases h0 with h0 | h0 <;> exact absurd h0 (by simp [Set.ext_iff]; decide)
+
 instance : frame_3_6.IsTransitive where
   trans X := by
     simp only [Function.iterate_succ, Function.iterate_zero, Function.comp_apply, id_eq]

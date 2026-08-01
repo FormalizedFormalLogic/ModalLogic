@@ -128,6 +128,21 @@ instance : frame_3_11570344.IsReflexive where
       | (have hX : X = (∅ : Set (Fin 3)) := by ext i; fin_cases i <;> simp_all
          subst hX; simp_all [frame_3_11570344.box_empty])
 
+instance : frame_3_11570344.NotContainsEmpty := ⟨fun x => by
+  fin_cases x <;>
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or] <;>
+    and_intros <;>
+    first
+      | exact (Set.singleton_ne_empty _).symm
+      | exact (Set.insert_nonempty _ _).ne_empty.symm
+      | exact (Set.univ_nonempty (α := Fin 3)).ne_empty.symm⟩
+
+instance : frame_3_11570344.IsSerial where
+  serial X w hw := by
+    simp only [Frame.dia, Frame.box, Set.mem_compl_iff, Set.mem_setOf_eq]
+    intro hc
+    exact (frame_3_11570344.refl hc) (frame_3_11570344.refl hw)
+
 instance : frame_3_11570344.IsSymmetric := ⟨fun X => by
   by_cases h0 : (0 : Fin 3) ∈ X <;> by_cases h1 : (1 : Fin 3) ∈ X <;> by_cases h2 : (2 : Fin 3) ∈ X
   · have hX : X = Set.univ := by ext i; fin_cases i <;> simp_all
