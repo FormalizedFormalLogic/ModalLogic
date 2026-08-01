@@ -67,6 +67,17 @@ lemma frame_2_79.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
   have h0 := h (fun c => if c = a then Set.univ else if c = b then {0} else ∅) 0
   simp [Forces, Frame.box, Set.ext_iff, frame_2_79, Ne.symm hab] at h0
 
+lemma frame_2_79.not_containsUnit : ¬frame_2_79.ContainsUnit := by
+  intro h
+  have h0 : (0 : Fin 2) ∈ frame_2_79.box (Set.univ : Set (Fin 2)) := by
+    rw [h.contains_unit]; trivial
+  simp only [Frame.box, frame_2_79, Set.mem_setOf_eq, Set.mem_singleton_iff] at h0
+  exact Set.Fin2.ne_singleton_univ h0.symm
+
+lemma frame_2_79.not_valid_axiomN :
+    ¬frame_2_79 ⊧ (Axioms.N : Formula α) :=
+  fun h => frame_2_79.not_containsUnit (containsUnit_of_valid_axiomN h)
+
 lemma frame_2_79.not_isSerial : ¬frame_2_79.IsSerial := fun hS => by
   have := hS.serial {1} (show (1 : Fin 2) ∈ _ by simp [Frame.box])
   simp [Frame.dia, Frame.box] at this
