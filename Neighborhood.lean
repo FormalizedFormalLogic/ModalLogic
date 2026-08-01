@@ -37,7 +37,6 @@ public import Neighborhood.Logic.Logic.ECK4
 public import Neighborhood.Logic.Logic.ECK5
 public import Neighborhood.Logic.Logic.ECKB
 public import Neighborhood.Logic.Logic.ECKD
-public import Neighborhood.Logic.Logic.ECKN
 public import Neighborhood.Logic.Logic.ECKP
 public import Neighborhood.Logic.Logic.ECKT
 public import Neighborhood.Logic.Logic.ECN
@@ -50,6 +49,7 @@ public import Neighborhood.Logic.Logic.ECND
 public import Neighborhood.Logic.Logic.ECND4
 public import Neighborhood.Logic.Logic.ECND5
 public import Neighborhood.Logic.Logic.ECNDB
+public import Neighborhood.Logic.Logic.ECNK
 public import Neighborhood.Logic.Logic.ECNP
 public import Neighborhood.Logic.Logic.ECNT
 public import Neighborhood.Logic.Logic.ECNT4
@@ -76,13 +76,6 @@ public import Neighborhood.Logic.Logic.EK4
 public import Neighborhood.Logic.Logic.EK5
 public import Neighborhood.Logic.Logic.EKB
 public import Neighborhood.Logic.Logic.EKD
-public import Neighborhood.Logic.Logic.EKN
-public import Neighborhood.Logic.Logic.EKN4
-public import Neighborhood.Logic.Logic.EKN5
-public import Neighborhood.Logic.Logic.EKNB
-public import Neighborhood.Logic.Logic.EKND
-public import Neighborhood.Logic.Logic.EKNP
-public import Neighborhood.Logic.Logic.EKNT
 public import Neighborhood.Logic.Logic.EKP
 public import Neighborhood.Logic.Logic.EKT
 public import Neighborhood.Logic.Logic.EM
@@ -176,8 +169,14 @@ public import Neighborhood.Logic.Logic.END4
 public import Neighborhood.Logic.Logic.END45
 public import Neighborhood.Logic.Logic.END5
 public import Neighborhood.Logic.Logic.ENDB
-public import Neighborhood.Logic.Logic.ENK
 public import Neighborhood.Logic.Logic.ENDP
+public import Neighborhood.Logic.Logic.ENK
+public import Neighborhood.Logic.Logic.ENK4
+public import Neighborhood.Logic.Logic.ENK5
+public import Neighborhood.Logic.Logic.ENKB
+public import Neighborhood.Logic.Logic.ENKD
+public import Neighborhood.Logic.Logic.ENKP
+public import Neighborhood.Logic.Logic.ENKT
 public import Neighborhood.Logic.Logic.ENP
 public import Neighborhood.Logic.Logic.ENP4
 public import Neighborhood.Logic.Logic.ENP5

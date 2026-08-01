@@ -478,220 +478,220 @@ instance : (@LogicEMP5 α).HasAxiomM := Hilbert.hasAxiomM_of $ by simp;
 instance : (@LogicEMP5 α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
 instance : (@LogicEMP5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
 
-abbrev LogicECKN : Logic α := Hilbert $
+abbrev LogicECNK : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
-  { Axioms.K A B | (A) (B) } ∪
-  { Axioms.N }
-instance : (@LogicECKN α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECKN α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicECKN α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
+  { Axioms.N } ∪
+  { Axioms.K A B | (A) (B) }
+instance : (@LogicECNK α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECNK α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicECNK α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
 
 abbrev LogicECKT : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.K A B | (A) (B) } ∪
   { Axioms.T A | (A) }
-instance : (@LogicECKT α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECKT α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicECKT α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
+instance : (@LogicECKT α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECKT α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicECKT α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
 
 abbrev LogicECKD : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.K A B | (A) (B) } ∪
   { Axioms.D A | (A) }
-instance : (@LogicECKD α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECKD α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicECKD α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
+instance : (@LogicECKD α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECKD α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicECKD α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
 
 abbrev LogicECKP : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.K A B | (A) (B) } ∪
   { Axioms.P }
-instance : (@LogicECKP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECKP α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicECKP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+instance : (@LogicECKP α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECKP α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicECKP α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
 
 abbrev LogicECKB : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.K A B | (A) (B) } ∪
   { Axioms.B A | (A) }
-instance : (@LogicECKB α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECKB α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicECKB α).HasAxiomB := Hilbert.hasAxiomB_of $ by grind;
+instance : (@LogicECKB α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECKB α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicECKB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
 
 abbrev LogicECK4 : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.K A B | (A) (B) } ∪
   { Axioms.Four A | (A) }
-instance : (@LogicECK4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECK4 α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicECK4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by grind;
+instance : (@LogicECK4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECK4 α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicECK4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 
 abbrev LogicECK5 : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.K A B | (A) (B) } ∪
   { Axioms.Five A | (A) }
-instance : (@LogicECK5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECK5 α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicECK5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by grind;
+instance : (@LogicECK5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECK5 α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicECK5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
 
-abbrev LogicEKNT : Logic α := Hilbert $
-  { Axioms.K A B | (A) (B) } ∪
+abbrev LogicENKT : Logic α := Hilbert $
   { Axioms.N } ∪
+  { Axioms.K A B | (A) (B) } ∪
   { Axioms.T A | (A) }
-instance : (@LogicEKNT α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicEKNT α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicEKNT α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
+instance : (@LogicENKT α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENKT α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicENKT α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
 
-abbrev LogicEKND : Logic α := Hilbert $
-  { Axioms.K A B | (A) (B) } ∪
+abbrev LogicENKD : Logic α := Hilbert $
   { Axioms.N } ∪
+  { Axioms.K A B | (A) (B) } ∪
   { Axioms.D A | (A) }
-instance : (@LogicEKND α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicEKND α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicEKND α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
+instance : (@LogicENKD α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENKD α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicENKD α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
 
-abbrev LogicEKNP : Logic α := Hilbert $
-  { Axioms.K A B | (A) (B) } ∪
+abbrev LogicENKP : Logic α := Hilbert $
   { Axioms.N } ∪
+  { Axioms.K A B | (A) (B) } ∪
   { Axioms.P }
-instance : (@LogicEKNP α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicEKNP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicEKNP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+instance : (@LogicENKP α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENKP α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicENKP α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
 
-abbrev LogicEKNB : Logic α := Hilbert $
-  { Axioms.K A B | (A) (B) } ∪
+abbrev LogicENKB : Logic α := Hilbert $
   { Axioms.N } ∪
+  { Axioms.K A B | (A) (B) } ∪
   { Axioms.B A | (A) }
-instance : (@LogicEKNB α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicEKNB α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicEKNB α).HasAxiomB := Hilbert.hasAxiomB_of $ by grind;
+instance : (@LogicENKB α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENKB α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicENKB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
 
-abbrev LogicEKN4 : Logic α := Hilbert $
-  { Axioms.K A B | (A) (B) } ∪
+abbrev LogicENK4 : Logic α := Hilbert $
   { Axioms.N } ∪
+  { Axioms.K A B | (A) (B) } ∪
   { Axioms.Four A | (A) }
-instance : (@LogicEKN4 α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicEKN4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicEKN4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by grind;
+instance : (@LogicENK4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENK4 α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicENK4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 
-abbrev LogicEKN5 : Logic α := Hilbert $
-  { Axioms.K A B | (A) (B) } ∪
+abbrev LogicENK5 : Logic α := Hilbert $
   { Axioms.N } ∪
+  { Axioms.K A B | (A) (B) } ∪
   { Axioms.Five A | (A) }
-instance : (@LogicEKN5 α).HasAxiomK := Hilbert.hasAxiomK_of $ by grind;
-instance : (@LogicEKN5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicEKN5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by grind;
+instance : (@LogicENK5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENK5 α).HasAxiomK := Hilbert.hasAxiomK_of $ by simp;
+instance : (@LogicENK5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
 
 abbrev LogicECTD : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.T A | (A) } ∪
   { Axioms.D A | (A) }
-instance : (@LogicECTD α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECTD α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
-instance : (@LogicECTD α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
+instance : (@LogicECTD α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECTD α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
+instance : (@LogicECTD α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
 
 abbrev LogicECTP : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.T A | (A) } ∪
   { Axioms.P }
-instance : (@LogicECTP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECTP α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
-instance : (@LogicECTP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+instance : (@LogicECTP α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECTP α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
+instance : (@LogicECTP α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
 
 abbrev LogicECDP : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.D A | (A) } ∪
   { Axioms.P }
-instance : (@LogicECDP α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECDP α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
-instance : (@LogicECDP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+instance : (@LogicECDP α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECDP α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
+instance : (@LogicECDP α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
 
 abbrev LogicECPB : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.P } ∪
   { Axioms.B A | (A) }
-instance : (@LogicECPB α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECPB α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
-instance : (@LogicECPB α).HasAxiomB := Hilbert.hasAxiomB_of $ by grind;
+instance : (@LogicECPB α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECPB α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+instance : (@LogicECPB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
 
 abbrev LogicECP4 : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.P } ∪
   { Axioms.Four A | (A) }
-instance : (@LogicECP4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECP4 α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
-instance : (@LogicECP4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by grind;
+instance : (@LogicECP4 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECP4 α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+instance : (@LogicECP4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 
 abbrev LogicECP5 : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.P } ∪
   { Axioms.Five A | (A) }
-instance : (@LogicECP5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECP5 α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
-instance : (@LogicECP5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by grind;
+instance : (@LogicECP5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECP5 α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+instance : (@LogicECP5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
 
 abbrev LogicECB5 : Logic α := Hilbert $
   { Axioms.C A B | (A) (B) } ∪
   { Axioms.B A | (A) } ∪
   { Axioms.Five A | (A) }
-instance : (@LogicECB5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by grind;
-instance : (@LogicECB5 α).HasAxiomB := Hilbert.hasAxiomB_of $ by grind;
-instance : (@LogicECB5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by grind;
+instance : (@LogicECB5 α).HasAxiomC := Hilbert.hasAxiomC_of $ by simp;
+instance : (@LogicECB5 α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
+instance : (@LogicECB5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
 
 abbrev LogicENTD : Logic α := Hilbert $
   { Axioms.N } ∪
   { Axioms.T A | (A) } ∪
   { Axioms.D A | (A) }
-instance : (@LogicENTD α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicENTD α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
-instance : (@LogicENTD α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
+instance : (@LogicENTD α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENTD α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
+instance : (@LogicENTD α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
 
 abbrev LogicENTP : Logic α := Hilbert $
   { Axioms.N } ∪
   { Axioms.T A | (A) } ∪
   { Axioms.P }
-instance : (@LogicENTP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicENTP α).HasAxiomT := Hilbert.hasAxiomT_of $ by grind;
-instance : (@LogicENTP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+instance : (@LogicENTP α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENTP α).HasAxiomT := Hilbert.hasAxiomT_of $ by simp;
+instance : (@LogicENTP α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
 
 abbrev LogicENDP : Logic α := Hilbert $
   { Axioms.N } ∪
   { Axioms.D A | (A) } ∪
   { Axioms.P }
-instance : (@LogicENDP α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicENDP α).HasAxiomD := Hilbert.hasAxiomD_of $ by grind;
-instance : (@LogicENDP α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
+instance : (@LogicENDP α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENDP α).HasAxiomD := Hilbert.hasAxiomD_of $ by simp;
+instance : (@LogicENDP α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
 
 abbrev LogicENPB : Logic α := Hilbert $
   { Axioms.N } ∪
   { Axioms.P } ∪
   { Axioms.B A | (A) }
-instance : (@LogicENPB α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicENPB α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
-instance : (@LogicENPB α).HasAxiomB := Hilbert.hasAxiomB_of $ by grind;
+instance : (@LogicENPB α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENPB α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+instance : (@LogicENPB α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
 
 abbrev LogicENP4 : Logic α := Hilbert $
   { Axioms.N } ∪
   { Axioms.P } ∪
   { Axioms.Four A | (A) }
-instance : (@LogicENP4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicENP4 α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
-instance : (@LogicENP4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by grind;
+instance : (@LogicENP4 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENP4 α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+instance : (@LogicENP4 α).HasAxiomFour := Hilbert.hasAxiomFour_of $ by simp;
 
 abbrev LogicENP5 : Logic α := Hilbert $
   { Axioms.N } ∪
   { Axioms.P } ∪
   { Axioms.Five A | (A) }
-instance : (@LogicENP5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicENP5 α).HasAxiomP := Hilbert.hasAxiomP_of $ by grind;
-instance : (@LogicENP5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by grind;
+instance : (@LogicENP5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENP5 α).HasAxiomP := Hilbert.hasAxiomP_of $ by simp;
+instance : (@LogicENP5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
 
 abbrev LogicENB5 : Logic α := Hilbert $
   { Axioms.N } ∪
   { Axioms.B A | (A) } ∪
   { Axioms.Five A | (A) }
-instance : (@LogicENB5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by grind;
-instance : (@LogicENB5 α).HasAxiomB := Hilbert.hasAxiomB_of $ by grind;
-instance : (@LogicENB5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by grind;
+instance : (@LogicENB5 α).HasAxiomN := Hilbert.hasAxiomN_of $ by simp;
+instance : (@LogicENB5 α).HasAxiomB := Hilbert.hasAxiomB_of $ by simp;
+instance : (@LogicENB5 α).HasAxiomFive := Hilbert.hasAxiomFive_of $ by simp;
 
 end
