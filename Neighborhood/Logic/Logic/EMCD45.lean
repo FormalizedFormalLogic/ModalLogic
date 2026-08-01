@@ -4,6 +4,8 @@ public import Neighborhood.Logic.Logic.EMCD5
 public import Neighborhood.Logic.Logic.EMCND4
 public import Neighborhood.Logic.Logic.EMC45
 public import Neighborhood.Logic.Logic.EMD45
+public import Neighborhood.Logic.Logic.ECD45
+public import Neighborhood.Logic.Logic.EMCD4
 
 @[expose] public section
 
@@ -56,6 +58,20 @@ theorem ssubset_LogicEMD45 : @LogicEMD45 ℕ ⊂ LogicEMCD45 := by
   · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicEMD45.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+theorem ssubset_LogicECD45 : @LogicECD45 ℕ ⊂ LogicEMCD45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicECD45.not_provable_axiomM (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.M A B, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicEMCD4 : @LogicEMCD4 ℕ ⊂ LogicEMCD45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicEMCD4.not_provable_axiomFive (0 : ℕ)
+    exact ⟨Axioms.Five A, ProvableHilbert.axm (by grind), hA⟩
 
 end LogicEMCD45
 

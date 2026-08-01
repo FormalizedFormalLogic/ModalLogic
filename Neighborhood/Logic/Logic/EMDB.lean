@@ -2,6 +2,7 @@ module
 
 public import Neighborhood.Logic.Logic.EMCND
 public import Neighborhood.Logic.Logic.EMB
+public import Neighborhood.Logic.Logic.EDB
 public import Neighborhood.Semantics.Example.Frame2_140
 
 @[expose] public section
@@ -44,6 +45,13 @@ theorem ssubset_LogicEMB : @LogicEMB ℕ ⊂ LogicEMDB := by
   · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMB.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
+
+theorem ssubset_LogicEDB : @LogicEDB ℕ ⊂ LogicEMDB := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicEDB.not_provable_axiomM (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.M A B, ProvableHilbert.axm (by grind), hA⟩
 
 end LogicEMDB
 

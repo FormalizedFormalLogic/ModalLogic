@@ -31,6 +31,34 @@ lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
   by_contra! hcon
   exact frame_3_9472136.not_valid_axiomM hab (LogicECDB5.sound frame_3_9472136 (hcon #a #b))
 
+theorem ssubset_LogicECB5 : @LogicECB5 ℕ ⊂ LogicECDB5 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicECB5.not_provable_axiomD (0 : ℕ)
+    exact ⟨Axioms.D A, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicECD5 : @LogicECD5 ℕ ⊂ LogicECDB5 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicECD5.not_provable_axiomB (0 : ℕ)
+    exact ⟨Axioms.B A, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicECDB : @LogicECDB ℕ ⊂ LogicECDB5 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicECDB.not_provable_axiomFive (0 : ℕ)
+    exact ⟨Axioms.Five A, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicEDB5 : @LogicEDB5 ℕ ⊂ LogicECDB5 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicEDB5.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, ProvableHilbert.axm (by grind), hA⟩
+
 end LogicECDB5
 
 end

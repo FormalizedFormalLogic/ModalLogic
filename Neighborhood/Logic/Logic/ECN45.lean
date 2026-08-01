@@ -54,6 +54,19 @@ theorem ssubset_LogicECN5 : @LogicECN5 ℕ ⊂ LogicECN45 := by
   · obtain ⟨A, hA⟩ := LogicECN5.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
+theorem ssubset_LogicEC45 : @LogicEC45 ℕ ⊂ LogicECN45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · exact ⟨Axioms.N, ProvableHilbert.axm (by grind), LogicEC45.not_provable_axiomN⟩
+
+theorem ssubset_LogicEN45 : @LogicEN45 ℕ ⊂ LogicECN45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicEN45.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, ProvableHilbert.axm (by grind), hA⟩
+
 end LogicECN45
 
 end

@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Logic.Logic.ECND
 public import Neighborhood.Logic.Logic.ECNB
+public import Neighborhood.Logic.Logic.ECDB
+public import Neighborhood.Logic.Logic.ENDB
 public import Neighborhood.Semantics.Example.Frame2_140
 public import Neighborhood.Semantics.Example.Frame3_9472136
 
@@ -50,6 +52,19 @@ theorem ssubset_LogicECNB : @LogicECNB ℕ ⊂ LogicECNDB := by
   · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicECNB.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
+
+theorem ssubset_LogicECDB : @LogicECDB ℕ ⊂ LogicECNDB := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · exact ⟨Axioms.N, ProvableHilbert.axm (by grind), LogicECDB.not_provable_axiomN⟩
+
+theorem ssubset_LogicENDB : @LogicENDB ℕ ⊂ LogicECNDB := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicENDB.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, ProvableHilbert.axm (by grind), hA⟩
 
 end LogicECNDB
 

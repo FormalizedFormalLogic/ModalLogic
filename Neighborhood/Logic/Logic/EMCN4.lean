@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Logic.Logic.EMCN
 public import Neighborhood.Logic.Logic.EMC4
+public import Neighborhood.Logic.Logic.ECN4
+public import Neighborhood.Logic.Logic.EMN4
 public import Neighborhood.Semantics.Example.Frame1_3
 public import Neighborhood.Semantics.Example.Frame2_138
 
@@ -80,6 +82,20 @@ theorem ssubset_LogicEMCN : @LogicEMCN ℕ ⊂ LogicEMCN4 := by
   · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMCN.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
+
+theorem ssubset_LogicECN4 : @LogicECN4 ℕ ⊂ LogicEMCN4 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicECN4.not_provable_axiomM (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.M A B, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicEMN4 : @LogicEMN4 ℕ ⊂ LogicEMCN4 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicEMN4.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, ProvableHilbert.axm (by grind), hA⟩
 
 end LogicEMCN4
 

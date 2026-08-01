@@ -1,6 +1,7 @@
 module
 
 public import Neighborhood.Logic.Logic.ET
+public import Neighborhood.Logic.Logic.EC
 public import Neighborhood.Semantics.Example.Frame1_0
 public import Neighborhood.Semantics.Example.Frame3_9471106
 
@@ -50,6 +51,13 @@ theorem ssubset_LogicET : @LogicET ℕ ⊂ LogicECT := by
   · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicET.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+theorem ssubset_LogicEC : @LogicEC ℕ ⊂ LogicECT := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicEC.not_provable_axiomT (0 : ℕ)
+    exact ⟨Axioms.T A, ProvableHilbert.axm (by grind), hA⟩
 
 end LogicECT
 

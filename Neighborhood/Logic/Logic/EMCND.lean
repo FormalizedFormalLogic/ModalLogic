@@ -3,6 +3,7 @@ module
 public import Neighborhood.Logic.Logic.EMCN
 public import Neighborhood.Logic.Logic.EMCD
 public import Neighborhood.Logic.Logic.ECND
+public import Neighborhood.Logic.Logic.EMND
 
 @[expose] public section
 
@@ -59,6 +60,13 @@ theorem ssubset_LogicECND : @LogicECND ℕ ⊂ LogicEMCND := by
 axiomatise the same logic. -/
 theorem eq_LogicEMCNP : (@LogicEMCND α) = LogicEMCNP := by
   hilbert_eq_axioms
+
+theorem ssubset_LogicEMND : @LogicEMND ℕ ⊂ LogicEMCND := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicEMND.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, ProvableHilbert.axm (by grind), hA⟩
 
 end LogicEMCND
 
