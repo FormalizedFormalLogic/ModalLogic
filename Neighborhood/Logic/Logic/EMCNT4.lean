@@ -18,6 +18,10 @@ instance : (@LogicEMCNT4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicEMCNT4.sound frame_1_2 hC⟩
 
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMCNT4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicEMCNT4.sound frame_2_138 (hcon #a))
+
 lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCNT4 α) := by
   by_contra! hcon
   exact frame_2_138.not_valid_axiomFive (LogicEMCNT4.sound frame_2_138 (hcon #a))

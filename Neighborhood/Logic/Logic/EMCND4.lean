@@ -26,6 +26,10 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCND4 α) := 
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicEMCND4.sound frame_2_170 (hcon #a))
 
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEMCND4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicEMCND4.sound frame_2_138 (hcon #a))
+
 theorem ssubset_LogicEMCN4 : @LogicEMCN4 ℕ ⊂ LogicEMCND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
