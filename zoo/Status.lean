@@ -11,6 +11,11 @@ For every logic `Logic<X>` in the environment and every one of the ten axioms
   * open       — neither, which is a gap in the formalization rather than a
                  claim about the logic.
 
+Logics proved equal have the same status everywhere, so only one of them gets a
+row of its own: the rest record which logic they are equal to. The one that
+keeps the row is whichever comes first in the display order, that is, the one
+axiomatised by the fewest axioms.
+
 Both sides are read off the statements, not off naming conventions, in the same
 spirit as `zoo/Extract.lean`. The result is written to `zoo/status.json` and
 rendered by `zoo/status.html`.
@@ -48,6 +53,78 @@ def collectLogics : MetaM (Array Name) := do
     let ka := (a.toString.drop 5).toString
     let kb := (b.toString.drop 5).toString
     ka.length < kb.length || (ka.length == kb.length && ka < kb)
+
+/-- Head constant of the conclusion of a (possibly universally quantified)
+statement, read off syntactically without entering `MetaM`. Used to screen the
+environment cheaply before the real matching runs. -/
+def conclusionHead : Expr → Name
+  | .forallE _ _ b _ => conclusionHead b
+  | e => e.getAppFn.constName
+
+/-- The `Logic<X>` constant an expression is headed by, if any. -/
+def logicHead? (e : Expr) : Option Name := do
+  let n ← e.getAppFn.constName?
+  let s := n.toString
+  guard <| s.startsWith "Logic" && s.length > 5 && (s.drop 5).all fun c => c.isUpper || c.isDigit
+  return n
+
+/-- Match a statement `L₁ = L₂` between two concrete logics (possibly under
+universally quantified binders), as in `zoo/Extract.lean`. -/
+def matchEquality (ci : ConstantInfo) : MetaM (Option (Name × Name)) := do
+  forallTelescope ci.type fun _ body => do
+    unless body.isAppOfArity ``Eq 3 do return none
+    -- the carrier type must (reducibly) be `Set (Formula _)`, i.e. `Logic _`
+    let carrier ← whnfR (body.getArg! 0)
+    unless carrier.isAppOfArity ``Set 1 do return none
+    unless (carrier.getArg! 0).isAppOf ``Formula do return none
+    let some a := logicHead? (body.getArg! 1) | return none
+    let some b := logicHead? (body.getArg! 2) | return none
+    if a == b then return none
+    return some (a, b)
+
+/-- Every pair of logics proved equal somewhere in `Neighborhood.*`. -/
+def collectEqualities : MetaM (Array (Name × Name)) := do
+  let env ← getEnv
+  let mut out : Array (Name × Name) := #[]
+  for (name, ci) in env.constants do
+    if name.isInternal then continue
+    let some modIdx := env.getModuleIdxFor? name | continue
+    let modName := env.header.moduleNames.getD modIdx.toNat Name.anonymous
+    unless (`Neighborhood).isPrefixOf modName do continue
+    unless conclusionHead ci.type == ``Eq do continue
+    try
+      if let some e ← matchEquality ci then out := out.push e
+    catch _ => continue
+  return out
+
+/-- Map each logic to the representative of its equivalence class under provable
+equality: the member coming first in `logics`, which is sorted by number of
+axioms. Labels are propagated along the equalities until they stop moving; one
+pass per logic is more than the longest chain can need. -/
+def representatives (logics : Array Name) (eqs : Array (Name × Name)) :
+    Std.HashMap Name Name := Id.run do
+  let mut rank : Std.HashMap Name Nat := {}
+  let mut rep : Std.HashMap Name Name := {}
+  let mut i := 0
+  for lg in logics do
+    rank := rank.insert lg i
+    rep := rep.insert lg lg
+    i := i + 1
+  for _ in [0:logics.size] do
+    let mut changed := false
+    for (a, b) in eqs do
+      let some ra := rep[a]? | continue
+      let some rb := rep[b]? | continue
+      let some ia := rank[ra]? | continue
+      let some ib := rank[rb]? | continue
+      if ia < ib then
+        rep := rep.insert b ra
+        changed := true
+      else if ib < ia then
+        rep := rep.insert a rb
+        changed := true
+    unless changed do break
+  return rep
 
 /-- Strip the `∃` binders in front of a statement. -/
 partial def stripExists (e : Expr) : MetaM Expr := do
@@ -117,8 +194,18 @@ def provableBy (logic : Name) (ax : String) : MetaM (Option (Name × Bool)) := d
 def main : MetaM Unit := do
   let logics ← collectLogics
   let refuted ← collectRefutations
+  let reps := representatives logics (← collectEqualities)
   let mut rows : Array Json := #[]
+  let mut equiv := 0
   for lg in logics do
+    let name := Json.str (lg.toString.drop 5).toString
+    -- a logic equal to an earlier one has the same status everywhere
+    if let some rep := reps[lg]? then
+      if rep != lg then
+        rows := rows.push <| Json.mkObj
+          [("logic", name), ("equivalentTo", Json.str (rep.toString.drop 5).toString)]
+        equiv := equiv + 1
+        continue
     let mut cells : Array (String × Json) := #[]
     for (suffix, label) in axioms do
       let cell ←
@@ -130,13 +217,13 @@ def main : MetaM Unit := do
           -- nothing is known either way: a gap in the formalization
           pure Json.null
       cells := cells.push (label, cell)
-    rows := rows.push <| Json.mkObj
-      [("logic", Json.str (lg.toString.drop 5).toString), ("axioms", Json.mkObj cells.toList)]
+    rows := rows.push <| Json.mkObj [("logic", name), ("axioms", Json.mkObj cells.toList)]
   let out := Json.mkObj
     [ ("axioms", Json.arr (axioms.map fun (_, l) => Json.str l))
     , ("logics", Json.arr rows) ]
   IO.FS.writeFile "zoo/status.json" (out.pretty ++ "\n")
-  IO.println s!"status: {logics.size} logics × {axioms.size} axioms"
+  IO.println s!"status: {logics.size - equiv} logics × {axioms.size} axioms, \
+    {equiv} equal to an earlier logic"
 
 end Status
 
