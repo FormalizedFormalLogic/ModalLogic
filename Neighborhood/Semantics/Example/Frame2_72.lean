@@ -36,6 +36,13 @@ lemma frame_2_72.box_one : frame_2_72.box ({1} : Set (Fin 2)) = {1} := by
 lemma frame_2_72.box_univ : frame_2_72.box (Set.univ : Set (Fin 2)) = {0} := by
   ext y; fin_cases y <;> simp [Frame.box, frame_2_72, Set.ext_iff]
 
+instance : frame_2_72.IsRegular where
+  regular X Y := by
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
+        intro y hy <;> fin_cases y <;>
+          simp_all [Frame.box, frame_2_72, Set.Fin2.eq_univ, Set.ext_iff]
+
 instance : frame_2_72.HasPropertyK where
   K X Y w := by
     intro ⟨h1, h2⟩
