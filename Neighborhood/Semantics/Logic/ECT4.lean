@@ -3,6 +3,8 @@ module
 public import Neighborhood.Semantics.Logic.ET4
 public import Neighborhood.Semantics.Logic.ECT
 public import Neighborhood.Semantics.Logic.ECD4
+public import Neighborhood.Semantics.Example.Frame1_0
+public import Neighborhood.Semantics.Example.Frame3_9471106
 
 /-!
 # The neighborhood logic `LogicECT4`
@@ -26,6 +28,28 @@ theorem sound {κ} [Nonempty κ] (F : Frame κ) [F.IsRegular] [F.IsReflexive]
 instance : (@LogicECT4 α).IsConsistent := ⟨by
   by_contra! hC
   simpa using LogicECT4.sound frame_1_2 hC⟩
+
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicECT4 α) := by
+  by_contra! hcon
+  exact frame_3_9471106.not_valid_axiomK hab (LogicECT4.sound frame_3_9471106 (hcon #a #b))
+
+lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicECT4 α) := by
+  by_contra! hcon
+  exact frame_3_9471106.not_valid_axiomM hab (LogicECT4.sound frame_3_9471106 (hcon #a #b))
+
+lemma not_provable_axiomN : (Axioms.N : Formula α) ∉ (@LogicECT4 α) := by
+  intro hcon
+  exact frame_1_0.not_valid_axiomN (LogicECT4.sound frame_1_0 hcon)
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicECT4 α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomB (LogicECT4.sound frame_1_0 (hcon #a))
+
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicECT4 α) := by
+  by_contra! hcon
+  exact frame_1_0.not_valid_axiomFive (LogicECT4.sound frame_1_0 (hcon #a))
 
 end LogicECT4
 

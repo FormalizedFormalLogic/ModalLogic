@@ -3,6 +3,9 @@ module
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EDB
 public import Neighborhood.Semantics.Logic.ENB
+public import Neighborhood.Semantics.Example.Frame2_140
+public import Neighborhood.Semantics.Example.Frame3_9472136
+public import Neighborhood.Semantics.Example.Frame3_9488552
 
 /-!
 # The neighborhood logic `LogicENDB`
@@ -33,6 +36,31 @@ omit [DecidableEq α] in
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicENDB α) := by
   by_contra! hcon
   exact frame_2_140.not_valid_axiomT (LogicENDB.sound frame_2_140 (hcon #a))
+
+lemma not_provable_axiomK (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicENDB α) := by
+  by_contra! hcon
+  exact frame_3_9472136.not_valid_axiomK hab (LogicENDB.sound frame_3_9472136 (hcon #a #b))
+
+lemma not_provable_axiomM (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.M A B ∉ (@LogicENDB α) := by
+  by_contra! hcon
+  exact frame_3_9472136.not_valid_axiomM hab (LogicENDB.sound frame_3_9472136 (hcon #a #b))
+
+lemma not_provable_axiomC (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.C A B ∉ (@LogicENDB α) := by
+  by_contra! hcon
+  exact frame_3_9488552.not_valid_axiomC hab (LogicENDB.sound frame_3_9488552 (hcon #a #b))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicENDB α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFour (LogicENDB.sound frame_2_140 (hcon #a))
+
+omit [DecidableEq α] in
+lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicENDB α) := by
+  by_contra! hcon
+  exact frame_2_140.not_valid_axiomFive (LogicENDB.sound frame_2_140 (hcon #a))
 
 end LogicENDB
 

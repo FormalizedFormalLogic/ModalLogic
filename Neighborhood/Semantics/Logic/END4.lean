@@ -3,6 +3,8 @@ module
 public import Neighborhood.Semantics.Logic.END
 public import Neighborhood.Semantics.Logic.EN4
 public import Neighborhood.Semantics.Logic.ED4
+public import Neighborhood.Semantics.Example.Frame2_138
+public import Neighborhood.Semantics.Example.Frame3_8421506
 
 /-!
 # The neighborhood logic `LogicEND4`
@@ -46,6 +48,15 @@ lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEND4 α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicEND4.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicEND4 α) := by
+  by_contra! hcon
+  exact frame_3_8421506.not_valid_axiomK hab (LogicEND4.sound frame_3_8421506 (hcon #a #b))
+
+lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEND4 α) := by
+  by_contra! hcon
+  exact frame_2_138.not_valid_axiomB (LogicEND4.sound frame_2_138 (hcon #a))
 
 end LogicEND4
 

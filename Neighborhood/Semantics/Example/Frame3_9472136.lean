@@ -158,6 +158,21 @@ instance : frame_3_9472136.IsSymmetric := ⟨fun X => by
 
 instance : frame_3_9472136.ContainsUnit := ⟨frame_3_9472136.box_univ⟩
 
+instance : frame_3_9472136.IsSerial where
+  serial X w hw := by
+    have hw' : X ∈ frame_3_9472136.𝒩 w := hw
+    fin_cases w <;>
+      simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hw'
+    · rcases hw' with rfl | rfl
+      · simp [frame_3_9472136.dia_zero_one]
+      · simp [frame_3_9472136.dia_univ]
+    · rcases hw' with rfl | rfl
+      · simp [frame_3_9472136.dia_zero_one]
+      · simp [frame_3_9472136.dia_univ]
+    · rcases hw' with rfl | rfl
+      · simp [frame_3_9472136.dia_two]
+      · simp [frame_3_9472136.dia_univ]
+
 instance : frame_3_9472136.IsTransitive where
   trans X := by
     by_cases h0 : (0 : Fin 3) ∈ X <;> by_cases h1 : (1 : Fin 3) ∈ X <;> by_cases h2 : (2 : Fin 3) ∈ X

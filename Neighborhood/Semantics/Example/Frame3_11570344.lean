@@ -51,6 +51,8 @@ lemma frame_3_11570344.box_univ :
     frame_3_11570344.box (Set.univ : Set (Fin 3)) = Set.univ := by
   ext w; fin_cases w <;> simp [Frame.box, frame_3_11570344]
 
+instance : frame_3_11570344.ContainsUnit := ⟨frame_3_11570344.box_univ⟩
+
 lemma frame_3_11570344.compl_zero : ({0} : Set (Fin 3))ᶜ = {1, 2} := by
   ext i; fin_cases i <;> simp
 

@@ -34,6 +34,19 @@ instance : frame_2_191.IsSymmetric where
       intro w hw <;> fin_cases w <;>
         simp_all [Frame.box, Frame.dia, frame_2_191, Set.Fin2.eq_univ, Set.ext_iff]
 
+instance : frame_2_191.IsRegular where
+  regular X Y w hw := by
+    fin_cases w <;>
+      simp only [Frame.box, frame_2_191, Set.mem_inter_iff, Set.mem_setOf_eq,
+        Set.mem_insert_iff, Set.mem_singleton_iff] at hw ⊢
+    · obtain ⟨hX, hY⟩ := hw
+      rcases hX with rfl | rfl | rfl | rfl <;> rcases hY with rfl | rfl | rfl | rfl <;> simp
+    · obtain ⟨hX, hY⟩ := hw
+      rcases hX with rfl | rfl | rfl <;> rcases hY with rfl | rfl | rfl <;> simp
+
+instance : frame_2_191.ContainsUnit := ⟨by
+  ext w; fin_cases w <;> simp [Frame.box, frame_2_191]⟩
+
 lemma frame_2_191.not_isEuclidean : ¬frame_2_191.IsEuclidean := by
   intro hE
   have hdia : frame_2_191.dia ({0} : Set (Fin 2)) = {1} := by

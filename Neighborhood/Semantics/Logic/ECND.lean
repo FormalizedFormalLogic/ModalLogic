@@ -3,6 +3,7 @@ module
 public import Neighborhood.Semantics.Logic.ECN
 public import Neighborhood.Semantics.Logic.ECP
 public import Neighborhood.Semantics.Logic.END
+public import Neighborhood.Semantics.Example.Frame3_8553090
 
 /-!
 # The neighborhood logic `LogicECND`
@@ -47,6 +48,11 @@ lemma not_provable_axiomM [DecidableEq α] (a b : α) (hab : a ≠ b) :
 lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicECND α) := by
   by_contra! hcon
   exact frame_2_170.not_valid_axiomT (LogicECND.sound frame_2_170 (hcon #a))
+
+lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
+    ∃ A B, Axioms.K A B ∉ (@LogicECND α) := by
+  by_contra! hcon
+  exact frame_3_8553090.not_valid_axiomK hab (LogicECND.sound frame_3_8553090 (hcon #a #b))
 
 end LogicECND
 

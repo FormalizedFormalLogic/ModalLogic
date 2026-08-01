@@ -46,6 +46,13 @@ instance : frame_3_8553090.IsSerial where
           (fun h => absurd ((Set.ext_iff.mp h 0).mpr (by simp)) (by simp))
       simp [Frame.dia, hb]
 
+instance : frame_3_8553090.IsRegular where
+  regular X Y w hw := by
+    simp only [Frame.box, frame_3_8553090, Set.mem_inter_iff, Set.mem_setOf_eq,
+      Set.mem_insert_iff, Set.mem_singleton_iff] at hw ⊢
+    obtain ⟨hX, hY⟩ := hw
+    rcases hX with rfl | rfl <;> rcases hY with rfl | rfl <;> simp
+
 instance : frame_3_8553090.IsTransitive where
   trans X w hw := by
     simp only [Function.iterate_succ, Function.iterate_zero, Function.comp_apply, id_eq]
