@@ -81,6 +81,7 @@ public import Neighborhood.Logic.Logic.EKN4
 public import Neighborhood.Logic.Logic.EKN5
 public import Neighborhood.Logic.Logic.EKNB
 public import Neighborhood.Logic.Logic.EKND
+public import Neighborhood.Logic.Logic.EKNP
 public import Neighborhood.Logic.Logic.EKNT
 public import Neighborhood.Logic.Logic.EKP
 public import Neighborhood.Logic.Logic.EKT
