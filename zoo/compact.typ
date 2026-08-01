@@ -16,7 +16,8 @@
 
 // An edge {from: L1, to: L2, type: t} means L1 ⊊ L2 (t = "ssub", solid) or
 // L1 ⊆ L2 (t = "sub", dashed); draw the arrow from the stronger logic to the
-// weaker one, laid out right-to-left (weakest logic rightmost).
+// weaker one, laid out top-to-bottom (E at the bottom, the strongest logics
+// at the top).
 #let arrows = data.edges.map(((from, to, type)) => {
   if type == "sub" {
     strfmt("\"{}\" -> \"{}\" [style=dashed]", to, from)
@@ -25,15 +26,28 @@
   }
 })
 
-// Declare the vertices too, so that a logic no inclusion is known about (its
-// only relations being to its own equals, which the compact zoo collapses)
-// still shows up.
-#let statements = data.nodes.map(v => strfmt("\"{}\";", v)) + arrows
+// Pin every logic of a given level -- the length of the longest chain of
+// inclusions below it, as computed by `zoo/Extract.lean` -- to one row. This
+// is what makes the drawing a graded Hasse diagram: without it the layout
+// engine ranks by its own criterion, and covers that skip several levels drag
+// their endpoints across the picture, which is most of what makes the full
+// zoo hard to read. Declaring the rows also declares the vertices, so a logic
+// no inclusion is known about (its only relations being to its own equals,
+// which the compact zoo collapses) still shows up.
+#let byLevel = (:)
+#for v in data.nodes {
+  let k = str(v.level)
+  byLevel.insert(k, byLevel.at(k, default: ()) + (v.name,))
+}
+#let rows = byLevel.values().map(vs => strfmt(
+  "{{rank = same; {}}}",
+  vs.map(v => strfmt("\"{}\";", v)).join(" "),
+))
 
 // Every vertex is named `Logic<X>`; label it 𝐗 (bold upright), dropping the prefix.
 #let labels = (:)
 #for v in data.nodes {
-  labels.insert(v, Logic(v.trim("Logic", at: start)))
+  labels.insert(v.name, Logic(v.name.trim("Logic", at: start)))
 }
 
 #figure(
@@ -48,13 +62,20 @@
     raw(
       "
   digraph CompactNeighborhoodLogicsZoo {
-    rankdir = RL;
+    rankdir = TB;
+    // `rank = same` groups are only honoured across the whole graph with this.
+    newrank = true;
+    // Room to breathe, and a generous crossing-minimisation budget: the graph
+    // is small enough that the extra passes cost nothing worth measuring.
+    nodesep = 0.3;
+    ranksep = 1.8;
+    mclimit = 40;
 
     node [
       shape=none
       margin=0.125
-      width=0
-      height=0
+      width=0.5
+      height=0.5
     ]
 
     edge [
@@ -64,10 +85,10 @@
     ];
 
   "
-        + statements.join("\n")
+        + (rows + arrows).join("\n")
         + "}",
     ),
     labels: labels,
-    width: 420pt,
+    width: 960pt,
   )
 ]

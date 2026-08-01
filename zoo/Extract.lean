@@ -303,12 +303,34 @@ def compact (edges : Array Edge) : Array String × Array Edge := Id.run do
   let nodes := rep.valuesArray.qsort (· < ·)
   return (nodes, reduce sorted)
 
+/-- The height of each logic in the compact zoo: the length of the longest
+chain of inclusions leading up to it, so that `E` sits at level `0`.
+
+The renderer pins every logic of a given level to one row, which turns the
+drawing into a properly graded Hasse diagram; left to itself, the layout
+engine ranks by a criterion of its own and the result is a tangle. -/
+def levels (nodes : Array String) (edges : Array Edge) : Std.HashMap String Nat := Id.run do
+  let mut lvl : Std.HashMap String Nat := nodes.foldl (fun m v => m.insert v 0) {}
+  let mut changed := true
+  while changed do
+    changed := false
+    for e in edges do
+      let below := lvl.getD e.a 0 + 1
+      if lvl.getD e.b 0 < below then
+        lvl := lvl.insert e.b below
+        changed := true
+  return lvl
+
 def edgesToJson (edges : Array Edge) : Json :=
   Json.arr <| edges.map fun ⟨a, b, t⟩ =>
     Json.mkObj [("from", a), ("to", b), ("type", toString t)]
 
 def compactToJson (nodes : Array String) (edges : Array Edge) : Json :=
-  Json.mkObj [("nodes", Json.arr (nodes.map Json.str)), ("edges", edgesToJson edges)]
+  let lvl := levels nodes edges
+  Json.mkObj
+    [ ("nodes", Json.arr <| nodes.map fun n =>
+        Json.mkObj [("name", Json.str n), ("level", Json.num (lvl.getD n 0))])
+    , ("edges", edgesToJson edges) ]
 
 def main : MetaM Unit := do
   let edges := (← collect).toArray
