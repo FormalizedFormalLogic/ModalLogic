@@ -106,6 +106,9 @@ instance : frame_3_10529440.IsSerial where
         simp only [Set.ext_iff, Set.mem_insert_iff, Set.mem_singleton_iff, Set.mem_univ,
           Set.mem_compl_iff] <;> decide
 
+instance : frame_3_10529440.NotContainsEmpty := ⟨fun x => by
+  fin_cases x <;> simp [Set.ext_iff] <;> decide⟩
+
 lemma frame_3_10529440.box_empty :
     frame_3_10529440.box (∅ : Set (Fin 3)) = ∅ := by
   ext w
