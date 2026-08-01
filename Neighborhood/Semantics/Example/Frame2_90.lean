@@ -11,7 +11,7 @@ import Mathlib.Tactic.FinCases
 @[expose] public section
 
 variable {α : Type u}
-variable {a : α}
+variable {a b : α}
 
 abbrev frame_2_90 : Frame (Fin 2) :=
   ⟨fun w => match w with
@@ -27,6 +27,31 @@ lemma frame_2_90.not_containsUnit : ¬frame_2_90.ContainsUnit := by
 lemma frame_2_90.not_valid_axiomN :
     ¬frame_2_90 ⊧ (Axioms.N : Formula α) :=
   fun h => frame_2_90.not_containsUnit (containsUnit_of_valid_axiomN h)
+
+lemma frame_2_90.box_empty : frame_2_90.box (∅ : Set (Fin 2)) = {1} := by
+  ext y; fin_cases y <;> simp [Frame.box, frame_2_90, Set.Fin2.eq_univ, Set.ext_iff]
+
+lemma frame_2_90.box_zero : frame_2_90.box ({0} : Set (Fin 2)) = {0} := by
+  ext y; fin_cases y <;> simp [Frame.box, frame_2_90, Set.Fin2.eq_univ, Set.ext_iff]
+
+lemma frame_2_90.box_one : frame_2_90.box ({1} : Set (Fin 2)) = {1} := by
+  ext y; fin_cases y <;> simp [Frame.box, frame_2_90, Set.Fin2.eq_univ, Set.ext_iff]
+
+lemma frame_2_90.box_univ : frame_2_90.box (Set.univ : Set (Fin 2)) = {0} := by
+  ext y; fin_cases y <;> simp [Frame.box, frame_2_90, Set.Fin2.eq_univ, Set.ext_iff]
+
+instance : frame_2_90.HasPropertyK where
+  K X Y w := by
+    intro ⟨h1, h2⟩
+    rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>
+      rcases Set.Fin2.all_cases Y with rfl | rfl | rfl | rfl <;>
+        simp_all [← Set.Fin2.eq_univ, frame_2_90.box_empty, frame_2_90.box_zero,
+          frame_2_90.box_one, frame_2_90.box_univ]
+
+lemma frame_2_90.not_valid_axiomM [DecidableEq α] (hab : a ≠ b) :
+    ¬frame_2_90 ⊧ (Axioms.M #a #b : Formula α) := fun h => by
+  have h0 := h (fun c => if c = a then ∅ else if c = b then {0} else Set.univ) 1
+  simp [Forces, Frame.box, Set.ext_iff, frame_2_90, Ne.symm hab] at h0
 
 instance : frame_2_90.IsEuclidean where
   eucl X := by

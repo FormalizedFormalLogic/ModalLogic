@@ -125,6 +125,14 @@ section
 
 variable [L.HasRE]
 
+/-- If `A 🡒 B` is a theorem, then `□A 🡒 □B` is a theorem, derived from `K` and `N`. -/
+private lemma box_mono_of_KN [L.HasAxiomK] [L.HasAxiomN] (h : A 🡒 B ∈ L) : □A 🡒 □B ∈ L :=
+  axiomK' (C_of_E_mpr (re (E_intro (C_of_conseq verum) (C_of_conseq h))) ⨀ axiomN)
+
+/-- The axiom scheme `M` is derivable from `K` and `N`. -/
+instance [L.HasAxiomK] [L.HasAxiomN] : L.HasAxiomM :=
+  ⟨fun _ _ => CK_of_C_of_C (box_mono_of_KN and₁) (box_mono_of_KN and₂)⟩
+
 /-- The axiom scheme `C` is derivable from `M` and `K`. -/
 instance [L.HasAxiomM] [L.HasAxiomK] : L.HasAxiomC := ⟨by
   intro A B;
@@ -177,6 +185,26 @@ instance [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomN := ⟨by
   have h₄ : □□◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₃;
   exact C_of_E_mp h₄ ⨀ h₂;⟩
 
+/-- `◇⊤` is derivable from the axiom `P`. -/
+private lemma diaTop_of_P [L.HasAxiomP] : ◇(⊤ : Formula α) ∈ L :=
+  C_trans (C_of_E_mp (re (E_intro dne efq))) axiomP
+
+/-- The axiom `N` is derivable from `P` and `5`. -/
+instance [L.HasAxiomP] [L.HasAxiomFive] : L.HasAxiomN := ⟨by
+  have h₁ : ◇(⊤ : Formula α) ∈ L := diaTop_of_P;
+  have h₂ : □◇(⊤ : Formula α) ∈ L := axiomFive ⨀ h₁;
+  have h₃ : ◇(⊤ : Formula α) 🡘 ⊤ ∈ L := E_intro (C_of_conseq verum) (C_of_conseq h₁);
+  have h₄ : □◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₃;
+  exact C_of_E_mp h₄ ⨀ h₂;⟩
+
+/-- The axiom `N` is derivable from `P` and `B`. -/
+instance [L.HasAxiomP] [L.HasAxiomB] : L.HasAxiomN := ⟨by
+  have h₁ : ◇(⊤ : Formula α) ∈ L := diaTop_of_P;
+  have h₂ : □◇(⊤ : Formula α) ∈ L := axiomB' verum;
+  have h₃ : ◇(⊤ : Formula α) 🡘 ⊤ ∈ L := E_intro (C_of_conseq verum) (C_of_conseq h₁);
+  have h₄ : □◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₃;
+  exact C_of_E_mp h₄ ⨀ h₂;⟩
+
 /-- The dual of the axiom scheme `Four`. -/
 lemma diaFourc [L.HasAxiomFour] : ◇◇A 🡒 ◇A ∈ L := by
   have e : ∼◇A 🡘 □(∼A) ∈ L := E_intro dne dni;
@@ -205,6 +233,11 @@ instance [L.HasAxiomC] [L.HasAxiomP] : L.HasAxiomD := ⟨fun A => by
   have h₂ : □A ⋏ □(∼A) 🡒 (⊥ : Formula α) ∈ L :=
     C_trans axiomC (C_trans (C_of_E_mp (re h₁)) axiomP);
   exact CK_iff_CC.mp h₂;⟩
+
+omit [L.HasRE] in
+/-- The axiom scheme `D` is derivable from `K` and `P`. -/
+instance [L.HasAxiomK] [L.HasAxiomP] : L.HasAxiomD :=
+  ⟨fun _ => C_trans dni (contra (C_trans (axiomK (B := ⊥)) (CCC_of_C_right axiomP)))⟩
 
 omit [L.HasRE] in
 /-- The axiom `P` is derivable from `N` and `D`. -/
