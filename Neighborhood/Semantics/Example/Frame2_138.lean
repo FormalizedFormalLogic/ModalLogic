@@ -21,6 +21,19 @@ abbrev frame_2_138 : Frame (Fin 2) :=
 instance : frame_2_138.NotContainsEmpty := ⟨fun x => by
   fin_cases x <;> simp [Set.ext_iff]⟩
 
+instance : frame_2_138.HasPropertyK where
+  K X Y w := by
+    intro ⟨h1, h2⟩
+    fin_cases w
+    · simp only [Frame.box, frame_2_138, Set.mem_setOf_eq, Set.mem_insert_iff,
+        Set.mem_singleton_iff] at h1 h2 ⊢
+      rcases h2 with rfl | rfl
+      · simp_all [Set.ext_iff]; tauto
+      · simp_all [Set.ext_iff]
+    · simp only [Frame.box, frame_2_138, Set.mem_setOf_eq, Set.mem_singleton_iff] at h1 h2 ⊢
+      rcases h2 with rfl
+      simp_all
+
 instance : frame_2_138.ContainsUnit := ⟨by
   ext y; fin_cases y <;> simp [Frame.box, frame_2_138, Set.Fin2.eq_univ, Set.ext_iff]⟩
 

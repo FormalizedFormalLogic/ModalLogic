@@ -24,6 +24,19 @@ instance : frame_2_140.ContainsUnit := ⟨by
 instance : frame_2_140.NotContainsEmpty := ⟨fun x => by
   fin_cases x <;> simp [Set.empty_ne_univ]⟩
 
+instance : frame_2_140.HasPropertyK where
+  K X Y w := by
+    intro ⟨h1, h2⟩
+    fin_cases w
+    · simp only [Frame.box, frame_2_140, Set.mem_setOf_eq, Set.mem_insert_iff,
+        Set.mem_singleton_iff] at h1 h2 ⊢
+      rcases h2 with rfl | rfl
+      · simp_all [Set.ext_iff]; tauto
+      · simp_all [Set.ext_iff]
+    · simp only [Frame.box, frame_2_140, Set.mem_setOf_eq, Set.mem_singleton_iff] at h1 h2 ⊢
+      rcases h2 with rfl
+      simp_all
+
 instance : frame_2_140.IsMonotonic where
   mono X Y := by
     rcases Set.Fin2.all_cases X with rfl | rfl | rfl | rfl <;>

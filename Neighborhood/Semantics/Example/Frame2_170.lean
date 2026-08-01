@@ -14,6 +14,17 @@ variable {a : α}
 
 abbrev frame_2_170 : Frame (Fin 2) := ⟨fun _ => {{(1 : Fin 2)}, Set.univ}⟩
 
+instance : frame_2_170.NotContainsEmpty := ⟨fun x => by simp [Set.ext_iff]⟩
+
+instance : frame_2_170.HasPropertyK where
+  K X Y w := by
+    intro ⟨h1, h2⟩
+    simp only [Frame.box, frame_2_170, Set.mem_setOf_eq, Set.mem_insert_iff,
+      Set.mem_singleton_iff] at h1 h2 ⊢
+    rcases h2 with rfl | rfl
+    · simp_all [Set.ext_iff]; tauto
+    · simp_all [Set.ext_iff]
+
 lemma frame_2_170.not_isReflexive :
     ¬frame_2_170.IsReflexive := by
   intro hR

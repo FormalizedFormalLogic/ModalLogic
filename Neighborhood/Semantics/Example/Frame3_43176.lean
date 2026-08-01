@@ -19,6 +19,15 @@ abbrev frame_3_43176 : Frame (Fin 3) :=
     | 1 => {{0, 1}, {0, 2}, Set.univ}
     | 2 => ∅⟩
 
+instance : frame_3_43176.NotContainsEmpty := ⟨fun x => by
+  fin_cases x <;> simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or] <;>
+    first
+      | trivial
+      | (and_intros <;>
+          first
+            | exact (Set.insert_nonempty _ _).ne_empty.symm
+            | exact Set.univ_nonempty.ne_empty.symm)⟩
+
 @[simp]
 lemma frame_3_43176.not_valid_axiomK [DecidableEq α] (hab : a ≠ b) :
     ¬frame_3_43176 ⊧ (Axioms.K #a #b : Formula α) := fun h => by

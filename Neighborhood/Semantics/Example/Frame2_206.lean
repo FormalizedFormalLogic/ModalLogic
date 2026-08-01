@@ -26,6 +26,17 @@ instance : frame_2_206.NotContainsEmpty := ⟨fun x => by
       | exact (Set.singleton_ne_empty _).symm
       | exact (Set.insert_nonempty _ _).ne_empty.symm⟩
 
+lemma frame_2_206.not_isSerial : ¬frame_2_206.IsSerial := by
+  intro hS
+  have h1 : (0 : Fin 2) ∈ frame_2_206.box ({0} : Set (Fin 2)) := by simp [Frame.box, frame_2_206]
+  have h2 : (0 : Fin 2) ∉ frame_2_206.dia ({0} : Set (Fin 2)) := by
+    simp [Frame.dia, Frame.box, frame_2_206]
+  exact h2 (hS.serial {0} h1)
+
+lemma frame_2_206.not_valid_axiomD :
+    ¬frame_2_206 ⊧ (Axioms.D #a : Formula α) :=
+  fun h => frame_2_206.not_isSerial (isSerial_of_valid_axiomD h)
+
 lemma frame_2_206.box_mono {X Y : Set (Fin 2)} (h : X ⊆ Y) :
     frame_2_206.box X ⊆ frame_2_206.box Y := by
   intro w hw

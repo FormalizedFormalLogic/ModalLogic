@@ -22,6 +22,15 @@ abbrev frame_3_10528928 : Frame (Fin 3) :=
 instance : frame_3_10528928.ContainsUnit := ⟨by
   ext w; fin_cases w <;> simp [Frame.box, frame_3_10528928]⟩
 
+instance : frame_3_10528928.NotContainsEmpty := ⟨fun x => by
+  fin_cases x <;> simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or] <;>
+    first
+      | trivial
+      | (and_intros <;>
+          first
+            | exact (Set.insert_nonempty _ _).ne_empty.symm
+            | exact Set.univ_nonempty.ne_empty.symm)⟩
+
 lemma frame_3_10528928.box_mono {X Y : Set (Fin 3)} (h : X ⊆ Y) :
     frame_3_10528928.box X ⊆ frame_3_10528928.box Y := by
   intro w hw
