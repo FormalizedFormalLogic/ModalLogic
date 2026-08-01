@@ -26,6 +26,10 @@ lemma frame_3_8553090.box_singleton_zero :
     frame_3_8553090.box ({0} : Set (Fin 3)) = Set.univ := by
   ext w; simp [Frame.box, frame_3_8553090]
 
+instance : frame_3_8553090.NotContainsEmpty := ⟨fun x => by
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
+  exact ⟨(Set.singleton_ne_empty 0).symm, Set.univ_nonempty.ne_empty.symm⟩⟩
+
 instance : frame_3_8553090.ContainsUnit := ⟨by
   ext w; simp [Frame.box, frame_3_8553090]⟩
 

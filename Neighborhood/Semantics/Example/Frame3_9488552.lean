@@ -51,6 +51,14 @@ lemma frame_3_9488552.box_univ :
     frame_3_9488552.box (Set.univ : Set (Fin 3)) = Set.univ := by
   ext w; fin_cases w <;> simp [Frame.box, frame_3_9488552]
 
+instance : frame_3_9488552.NotContainsEmpty := ⟨fun x => by
+  fin_cases x <;> simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or] <;>
+    (and_intros <;>
+      first
+        | exact (Set.insert_nonempty _ _).ne_empty.symm
+        | exact (Set.singleton_nonempty _).ne_empty.symm
+        | exact Set.univ_nonempty.ne_empty.symm)⟩
+
 instance : frame_3_9488552.IsReflexive where
   refl X w hw := by
     fin_cases w <;>
