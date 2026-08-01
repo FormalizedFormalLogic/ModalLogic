@@ -27,10 +27,13 @@ rendered by `zoo/status.html`.
 
 Run from the repository root:
 
-    lake env lean zoo/Status.lean
+    lake exe zoo-status
+
+`Neighborhood` is imported by `main` at run time, not by this header:
+elaborating the file is inert — no environment load, no instance searches, no
+file writes — and the work happens only when the executable is run.
 -/
 import Lean
-import Neighborhood
 
 open Lean Meta
 
@@ -78,10 +81,13 @@ universally quantified binders), as in `zoo/Extract.lean`. -/
 def matchEquality (ci : ConstantInfo) : MetaM (Option (Name × Name)) := do
   forallTelescope ci.type fun _ body => do
     unless body.isAppOfArity ``Eq 3 do return none
-    -- the carrier type must (reducibly) be `Set (Formula _)`, i.e. `Logic _`
+    -- the carrier type must (reducibly) be `Set (Formula _)`, i.e. `Logic _`.
+    -- Single-backtick names: `Set` and `Formula` live in the environment that
+    -- `main` imports at run time, so they cannot be resolved while this file
+    -- is elaborated.
     let carrier ← whnfR (body.getArg! 0)
-    unless carrier.isAppOfArity ``Set 1 do return none
-    unless (carrier.getArg! 0).isAppOf ``Formula do return none
+    unless carrier.isAppOfArity `Set 1 do return none
+    unless (carrier.getArg! 0).isAppOf `Formula do return none
     let some a := logicHead? (body.getArg! 1) | return none
     let some b := logicHead? (body.getArg! 2) | return none
     if a == b then return none
@@ -225,17 +231,22 @@ def main : MetaM Unit := do
     let mems := members[lg]?.getD #[lg]
     let mut cells : Array (String × Json) := #[]
     for (suffix, label) in axioms do
-      -- any member of the class settles the cell; the representative goes first
+      -- any member of the class settles the cell; the representative goes first.
+      -- Refutations are consulted before provability: at most one kind of
+      -- evidence exists (the library is consistent), a refutation is a map
+      -- lookup, and a doomed instance search is the most expensive thing this
+      -- file does — asking in the other order made every refuted cell pay for
+      -- a search of the whole derived-axiom graph that could not succeed.
       let mut cell : Option Json := none
+      for m in mems do
+        if cell.isSome then continue
+        if let some thm := refuted[(suffix, m)]? then
+          cell := some <| Json.mkObj [("status", false), ("ref", toString thm)]
       for m in mems do
         if cell.isSome then continue
         if let some (inst, derived) ← provableBy m suffix then
           cell := some <| Json.mkObj
             [("status", true), ("derived", derived), ("ref", toString inst)]
-      for m in mems do
-        if cell.isSome then continue
-        if let some thm := refuted[(suffix, m)]? then
-          cell := some <| Json.mkObj [("status", false), ("ref", toString thm)]
       -- nothing is known either way: a gap in the formalization
       cells := cells.push (label, cell.getD Json.null)
     rows := rows.push <| Json.mkObj [("logic", name), ("axioms", Json.mkObj cells.toList)]
@@ -248,13 +259,21 @@ def main : MetaM Unit := do
 
 end Status
 
--- The heartbeat budget of a command is cumulative, so any fixed value here is a
--- bound on the size of the zoo rather than on any one computation: the table
--- costs one instance search per (logic, axiom) cell, and both factors grow. The
--- 4000000 this used to carry was reached once the search cost of the cells
--- summed past it, which says nothing about the run being stuck. What a runaway
--- search would trip is `synthInstance.maxHeartbeats`, whose budget is per
--- typeclass problem and is left at its default, so dropping the cumulative bound
--- does not give up the diagnostic that matters.
-set_option maxHeartbeats 0 in
-#eval Status.main
+/-- Imports `Neighborhood` and runs the extraction. Deliberately not an `#eval`:
+that ran the whole thing — minutes of instance searches and a write to
+`zoo/status.json` — as a side effect of merely elaborating the file, e.g. of
+opening it in an editor. -/
+unsafe def main : IO Unit := do
+  initSearchPath (← findSysroot)
+  enableInitializersExecution
+  let env ← importModules #[{module := `Neighborhood}] {} (loadExts := true)
+  let ctx : Core.Context := {
+    fileName := "zoo/Status.lean", fileMap := default
+    -- A heartbeat bound here would be cumulative over the run, whose cost is
+    -- one instance search per (logic, axiom) cell — a bound on the size of the
+    -- zoo, not on any one computation, which is how the 4000000 this used to
+    -- carry came to fail once the table grew past it. A runaway single search
+    -- is instead caught by `synthInstance.maxHeartbeats`, whose budget is per
+    -- typeclass problem and stays at its default.
+    maxHeartbeats := 0 }
+  let _ ← (Status.main.run' {} {}).toIO ctx { env }

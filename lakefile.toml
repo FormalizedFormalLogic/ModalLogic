@@ -13,6 +13,17 @@ name = "Fin74"
 [[lean_lib]]
 name = "Neighborhood"
 
+# The axiom status extractor (`just zoo`). A compiled executable rather than a
+# `lean --run` script: it imports `Neighborhood` at run time with its
+# environment extensions, which corrupts the interpreter's state for the
+# running script itself when interpreted, but is the supported mode for a
+# compiled tool (hence `supportInterpreter`).
+[[lean_exe]]
+name = "zoo-status"
+srcDir = "zoo"
+root = "Status"
+supportInterpreter = true
+
 [[require]]
 name = "Foundation"
 git = "https://github.com/FormalizedFormalLogic/Foundation"
