@@ -44,6 +44,27 @@ lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicEDB5 α)
   by_contra! hcon
   exact frame_3_8815746.not_valid_axiomFour (LogicEDB5.sound frame_3_8815746 (hcon #a))
 
+theorem ssubset_LogicEB5 : @LogicEB5 ℕ ⊂ LogicEDB5 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicEB5.not_provable_axiomD (0 : ℕ)
+    exact ⟨Axioms.D A, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicED5 : @LogicED5 ℕ ⊂ LogicEDB5 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicED5.not_provable_axiomB (0 : ℕ)
+    exact ⟨Axioms.B A, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicEDB : @LogicEDB ℕ ⊂ LogicEDB5 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicEDB.not_provable_axiomFive (0 : ℕ)
+    exact ⟨Axioms.Five A, ProvableHilbert.axm (by grind), hA⟩
+
 end LogicEDB5
 
 end

@@ -49,6 +49,34 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicECD45 α) := by
   intro hcon
   exact frame_2_90.not_valid_axiomP (LogicECD45.sound frame_2_90 hcon)
 
+theorem ssubset_LogicEC45 : @LogicEC45 ℕ ⊂ LogicECD45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicEC45.not_provable_axiomD (0 : ℕ)
+    exact ⟨Axioms.D A, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicECD4 : @LogicECD4 ℕ ⊂ LogicECD45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicECD4.not_provable_axiomFive (0 : ℕ)
+    exact ⟨Axioms.Five A, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicECD5 : @LogicECD5 ℕ ⊂ LogicECD45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicECD5.not_provable_axiomFour (0 : ℕ)
+    exact ⟨Axioms.Four A, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicED45 : @LogicED45 ℕ ⊂ LogicECD45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, B, hA⟩ := LogicED45.not_provable_axiomC (0 : ℕ) 1 (by simp)
+    exact ⟨Axioms.C A B, ProvableHilbert.axm (by grind), hA⟩
+
 end LogicECD45
 
 end

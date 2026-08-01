@@ -2,6 +2,8 @@ module
 
 public import Neighborhood.Logic.Logic.EMCN4
 public import Neighborhood.Logic.Logic.EMC5
+public import Neighborhood.Logic.Logic.EC45
+public import Neighborhood.Logic.Logic.EM45
 public import Neighborhood.Semantics.Example.Frame1_3
 
 @[expose] public section

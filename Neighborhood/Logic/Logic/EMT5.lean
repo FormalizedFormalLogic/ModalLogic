@@ -6,6 +6,7 @@ public import Neighborhood.Logic.Logic.EMB4
 public import Neighborhood.Logic.Logic.EMTB
 public import Neighborhood.Logic.Logic.ECT5
 public import Neighborhood.Logic.Logic.EMCT5
+public import Neighborhood.Logic.Logic.EMT
 
 @[expose] public section
 
@@ -57,6 +58,13 @@ theorem ssubset_LogicECT5 : @LogicECT5 ℕ ⊂ LogicEMT5 := by
     hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicECT5.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
+
+theorem ssubset_LogicEMT : @LogicEMT ℕ ⊂ LogicEMT5 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicEMT.not_provable_axiomFive (0 : ℕ)
+    exact ⟨Axioms.Five A, ProvableHilbert.axm (by grind), hA⟩
 
 end LogicEMT5
 

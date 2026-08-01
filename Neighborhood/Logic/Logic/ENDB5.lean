@@ -1,6 +1,9 @@
 module
 
 public import Neighborhood.Logic.Logic.EDB5
+public import Neighborhood.Logic.Logic.ENB5
+public import Neighborhood.Logic.Logic.END5
+public import Neighborhood.Logic.Logic.ENDB
 
 @[expose] public section
 

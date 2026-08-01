@@ -3,6 +3,7 @@ module
 public import Neighborhood.Logic.Logic.END4
 public import Neighborhood.Logic.Logic.EN45
 public import Neighborhood.Logic.Logic.ED45
+public import Neighborhood.Logic.Logic.END5
 public import Neighborhood.Semantics.Example.Frame3_8553090
 public import Neighborhood.Semantics.Example.Frame2_170
 public import Neighborhood.Semantics.Example.Frame3_11570344
@@ -46,6 +47,26 @@ theorem ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicEND45 := by
   · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEND4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
+
+theorem ssubset_LogicED45 : @LogicED45 ℕ ⊂ LogicEND45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · exact ⟨Axioms.N, ProvableHilbert.axm (by grind), LogicED45.not_provable_axiomN⟩
+
+theorem ssubset_LogicEN45 : @LogicEN45 ℕ ⊂ LogicEND45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicEN45.not_provable_axiomD (0 : ℕ)
+    exact ⟨Axioms.D A, ProvableHilbert.axm (by grind), hA⟩
+
+theorem ssubset_LogicEND5 : @LogicEND5 ℕ ⊂ LogicEND45 := by
+  apply Set.ssubset_iff_exists.mpr
+  constructor
+  · hilbert_subset_axioms
+  · obtain ⟨A, hA⟩ := LogicEND5.not_provable_axiomFour (0 : ℕ)
+    exact ⟨Axioms.Four A, ProvableHilbert.axm (by grind), hA⟩
 
 end LogicEND45
 
