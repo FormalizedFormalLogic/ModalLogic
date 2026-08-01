@@ -5,8 +5,9 @@ public import Neighborhood.Logic.Cl
 /-!
 # Modal closure conditions of a logic
 
-Closure of a logic under the congruence rule `RE`, possession of the usual modal axiom schemes,
-and the derived monotonicity rule `RM`.
+Closure of a logic under the congruence rule `RE` and possession of the usual modal axiom
+schemes, together with the rules (`RM`, necessitation) and the derivations among the axiom
+schemes that follow from these closure conditions.
 -/
 
 @[expose] public section
@@ -15,9 +16,8 @@ namespace Logic
 
 variable {α : Type u} {L : Logic α} {A B C : Formula α} {n : ℕ} {g : Axioms.Geach.Taple}
 
-/-! ### Rules -/
+/-! ### The congruence rule -/
 
-/-- Closure of a logic under the congruence rule for `□`. -/
 class HasRE (L : Logic α) where
   re : ∀ {A B : Formula α}, A 🡘 B ∈ L → □A 🡘 □B ∈ L
 
@@ -30,58 +30,47 @@ lemma multire [L.HasRE] (h : A 🡘 B ∈ L) : □^[n]A 🡘 □^[n]B ∈ L := b
 
 /-! ### Axiom schemes -/
 
-/-- A logic containing the axiom scheme `K`. -/
 class HasAxiomK (L : Logic α) where
   K : ∀ (A B : Formula α), Axioms.K A B ∈ L
 
-/-- A logic containing the axiom scheme `M`. -/
 class HasAxiomM (L : Logic α) where
   M : ∀ (A B : Formula α), Axioms.M A B ∈ L
 
-/-- A logic containing the axiom scheme `C`. -/
 class HasAxiomC (L : Logic α) where
   C : ∀ (A B : Formula α), Axioms.C A B ∈ L
 
-/-- A logic containing the axiom `N`. -/
 class HasAxiomN (L : Logic α) where
   N : Axioms.N ∈ L
 
-/-- A logic containing the axiom scheme `T`. -/
 class HasAxiomT (L : Logic α) where
   T : ∀ (A : Formula α), Axioms.T A ∈ L
 
-/-- A logic containing the axiom scheme `B`. -/
 class HasAxiomB (L : Logic α) where
   B : ∀ (A : Formula α), Axioms.B A ∈ L
 
-/-- A logic containing the axiom scheme `D`. -/
 class HasAxiomD (L : Logic α) where
   D : ∀ (A : Formula α), Axioms.D A ∈ L
 
-/-- A logic containing the axiom `P`. -/
 class HasAxiomP (L : Logic α) where
   P : Axioms.P ∈ L
 
-/-- A logic containing the axiom scheme `Four`. -/
 class HasAxiomFour (L : Logic α) where
   Four : ∀ (A : Formula α), Axioms.Four A ∈ L
 
-/-- A logic containing the axiom scheme `Five`. -/
 class HasAxiomFive (L : Logic α) where
   Five : ∀ (A : Formula α), Axioms.Five A ∈ L
 
-/-- A logic containing the Geach axiom scheme with parameters `g`. -/
 class HasAxiomGeach (g : Axioms.Geach.Taple) (L : Logic α) where
   Geach : ∀ (A : Formula α), Axioms.Geach g A ∈ L
 
 @[simp] lemma axiomK [L.HasAxiomK] : □(A 🡒 B) 🡒 □A 🡒 □B ∈ L := HasAxiomK.K ..
 @[simp] lemma axiomM [L.HasAxiomM] : □(A ⋏ B) 🡒 (□A ⋏ □B) ∈ L := HasAxiomM.M ..
 @[simp] lemma axiomC [L.HasAxiomC] : (□A ⋏ □B) 🡒 □(A ⋏ B) ∈ L := HasAxiomC.C ..
-@[simp] lemma axiomN [L.HasAxiomN] : □(⊤ : Formula α) ∈ L := HasAxiomN.N
+@[simp] lemma axiomN [L.HasAxiomN] : □⊤ ∈ L := HasAxiomN.N
 @[simp] lemma axiomT [L.HasAxiomT] : □A 🡒 A ∈ L := HasAxiomT.T ..
 @[simp] lemma axiomB [L.HasAxiomB] : A 🡒 □◇A ∈ L := HasAxiomB.B ..
 @[simp] lemma axiomD [L.HasAxiomD] : □A 🡒 ◇A ∈ L := HasAxiomD.D ..
-@[simp] lemma axiomP [L.HasAxiomP] : ∼□(⊥ : Formula α) ∈ L := HasAxiomP.P
+@[simp] lemma axiomP [L.HasAxiomP] : ∼□⊥ ∈ L := HasAxiomP.P
 @[simp] lemma axiomFour [L.HasAxiomFour] : □A 🡒 □□A ∈ L := HasAxiomFour.Four ..
 @[simp] lemma axiomFive [L.HasAxiomFive] : ◇A 🡒 □◇A ∈ L := HasAxiomFive.Five ..
 
@@ -120,6 +109,8 @@ section
 
 variable [L.Cl]
 
+/-! ### Modus ponens forms of the axiom schemes -/
+
 @[simp] lemma axiomK' [L.HasAxiomK] (h : □(A 🡒 B) ∈ L) : □A 🡒 □B ∈ L := axiomK ⨀ h
 @[simp] lemma axiomK'' [L.HasAxiomK] (h₁ : □(A 🡒 B) ∈ L) (h₂ : □A ∈ L) : □B ∈ L := axiomK' h₁ ⨀ h₂
 lemma axiomM' [L.HasAxiomM] (h : □(A ⋏ B) ∈ L) : □A ⋏ □B ∈ L := axiomM ⨀ h
@@ -128,17 +119,71 @@ lemma axiomC' [L.HasAxiomC] (h : □A ⋏ □B ∈ L) : □(A ⋏ B) ∈ L := ax
 lemma axiomD' [L.HasAxiomD] (h : □A ∈ L) : ◇A ∈ L := axiomD ⨀ h
 @[simp] lemma axiomB' [L.HasAxiomB] (h : A ∈ L) : □◇A ∈ L := axiomB ⨀ h
 
-/-! ### The monotonicity rule -/
+/-! ### Duals of the axiom schemes -/
 
-/-- The monotonicity rule for `□`, derived from `RE` and the axiom scheme `M`. -/
+lemma EDiaNNBox [L.HasRE] : ◇(∼A) 🡘 ∼□A ∈ L := by
+  have h₁ : ∼∼A 🡘 A ∈ L := E_intro dne dni;
+  have h₂ : □(∼∼A) 🡘 □A ∈ L := re h₁;
+  have h₃ : ◇(∼A) 🡒 ∼□A ∈ L := contra (C_of_E_mpr h₂);
+  have h₄ : ∼□A 🡒 ◇(∼A) ∈ L := contra (C_of_E_mp h₂);
+  exact E_intro h₃ h₄;
+
+lemma diaTc [L.HasAxiomT] : A 🡒 ◇A ∈ L := by
+  have h₁ : □(∼A) 🡒 ∼A ∈ L := axiomT;
+  have h₂ : ∼∼A 🡒 ◇A ∈ L := contra h₁;
+  exact C_trans dni h₂;
+
+lemma CNBoxNBox [L.HasRE] [L.HasAxiomB] : ∼A 🡒 □(∼□A) ∈ L := by
+  have h₁ : ∼A 🡒 □◇(∼A) ∈ L := axiomB;
+  have h₂ : □◇(∼A) 🡘 □(∼□A) ∈ L := re EDiaNNBox;
+  have h₃ : □◇(∼A) 🡒 □(∼□A) ∈ L := C_of_E_mp h₂;
+  exact C_trans h₁ h₃;
+
+lemma diaBc [L.HasRE] [L.HasAxiomB] : ◇□A 🡒 A ∈ L := by
+  have h₁ : ∼A 🡒 □(∼□A) ∈ L := CNBoxNBox;
+  have h₂ : ◇□A 🡒 ∼∼A ∈ L := contra h₁;
+  exact C_trans h₂ dne;
+
+lemma diaFourc [L.HasRE] [L.HasAxiomFour] : ◇◇A 🡒 ◇A ∈ L := by
+  have h₁ : ∼◇A 🡘 □(∼A) ∈ L := E_intro dne dni;
+  have h₂ : □(∼◇A) 🡘 □□(∼A) ∈ L := re h₁;
+  have h₃ : □(∼A) 🡒 □(∼◇A) ∈ L := C_trans axiomFour (C_of_E_mpr h₂);
+  exact contra h₃;
+
+lemma CNBoxBoxNBox [L.HasRE] [L.HasAxiomFive] : ∼□A 🡒 □(∼□A) ∈ L := by
+  have h₁ : ∼□A 🡒 ◇(∼A) ∈ L := C_of_E_mpr EDiaNNBox;
+  have h₂ : ◇(∼A) 🡒 □◇(∼A) ∈ L := axiomFive;
+  have h₃ : □◇(∼A) 🡘 □(∼□A) ∈ L := re EDiaNNBox;
+  have h₄ : □◇(∼A) 🡒 □(∼□A) ∈ L := C_of_E_mp h₃;
+  have h₅ : ◇(∼A) 🡒 □(∼□A) ∈ L := C_trans h₂ h₄;
+  exact C_trans h₁ h₅;
+
+lemma diaFivec [L.HasRE] [L.HasAxiomFive] : ◇□A 🡒 □A ∈ L := by
+  have h₁ : ∼□A 🡒 □(∼□A) ∈ L := CNBoxBoxNBox;
+  have h₂ : ◇□A 🡒 ∼∼□A ∈ L := contra h₁;
+  exact C_trans h₂ dne;
+
+/-! ### Derived rules -/
+
 lemma rm [L.HasRE] [L.HasAxiomM] (h : A 🡒 B ∈ L) : □A 🡒 □B ∈ L := by
-  have h₁ : □A 🡒 □(A ⋏ B) ∈ L :=
-    C_of_E_mp <| re <| E_intro (CK_of_C_of_C C_id h) and₁;
-  exact C_trans (C_trans h₁ axiomM) and₂;
+  have h₁ : A 🡒 A ⋏ B ∈ L := CK_of_C_of_C C_id h;
+  have h₂ : A 🡘 A ⋏ B ∈ L := E_intro h₁ and₁;
+  have h₃ : □A 🡘 □(A ⋏ B) ∈ L := re h₂;
+  have h₄ : □A 🡒 □(A ⋏ B) ∈ L := C_of_E_mp h₃;
+  have h₅ : □A 🡒 (□A ⋏ □B) ∈ L := C_trans h₄ axiomM;
+  exact C_trans h₅ and₂;
 
-/-- The monotonicity rule for `◇`, derived from `RE` and the axiom scheme `M`. -/
-lemma rmDia [L.HasRE] [L.HasAxiomM] (h : A 🡒 B ∈ L) : ◇A 🡒 ◇B ∈ L :=
-  contra <| rm <| contra h
+lemma rmDia [L.HasRE] [L.HasAxiomM] (h : A 🡒 B ∈ L) : ◇A 🡒 ◇B ∈ L := by
+  have h₁ : ∼B 🡒 ∼A ∈ L := contra h;
+  have h₂ : □(∼B) 🡒 □(∼A) ∈ L := rm h₁;
+  exact contra h₂;
+
+lemma nec [L.HasRE] [L.HasAxiomT] [L.HasAxiomB] (h : A ∈ L) : □A ∈ L := by
+  have h₁ : A 🡘 ◇A ∈ L := E_intro diaTc (C_of_conseq h);
+  have h₂ : □A 🡘 □◇A ∈ L := re h₁;
+  have h₃ : □◇A 🡒 □A ∈ L := C_of_E_mpr h₂;
+  have h₄ : □◇A ∈ L := axiomB ⨀ h;
+  exact h₃ ⨀ h₄;
 
 /-! ### Derived axiom schemes -/
 
@@ -146,210 +191,260 @@ section
 
 variable [L.HasRE]
 
-/-- If `A 🡒 B` is a theorem, then `□A 🡒 □B` is a theorem, derived from `K` and `N`. -/
-private lemma box_mono_of_KN [L.HasAxiomK] [L.HasAxiomN] (h : A 🡒 B ∈ L) : □A 🡒 □B ∈ L :=
-  axiomK' (C_of_E_mpr (re (E_intro (C_of_conseq verum) (C_of_conseq h))) ⨀ axiomN)
+/-! #### The axiom scheme `M` -/
 
-/-- The axiom scheme `M` is derivable from `K` and `N`. -/
-instance [L.HasAxiomK] [L.HasAxiomN] : L.HasAxiomM :=
-  ⟨fun _ _ => CK_of_C_of_C (box_mono_of_KN and₁) (box_mono_of_KN and₂)⟩
+private lemma rm_of_KN [L.HasAxiomK] [L.HasAxiomN] (h : A 🡒 B ∈ L) : □A 🡒 □B ∈ L := by
+  have h₁ : (A 🡒 B) 🡘 ⊤ ∈ L := E_intro (C_of_conseq verum) (C_of_conseq h);
+  have h₂ : □(A 🡒 B) 🡘 □⊤ ∈ L := re h₁;
+  have h₃ : □⊤ 🡒 □(A 🡒 B) ∈ L := C_of_E_mpr h₂;
+  have h₄ : □(A 🡒 B) ∈ L := h₃ ⨀ axiomN;
+  exact axiomK' h₄;
 
-/-- The axiom scheme `C` is derivable from `M` and `K`. -/
-instance [L.HasAxiomM] [L.HasAxiomK] : L.HasAxiomC := ⟨by
+instance [L.HasAxiomK] [L.HasAxiomN] : L.HasAxiomM := by
+  constructor;
   intro A B;
-  have h₁ : □A 🡒 □(B 🡒 A) ∈ L := rm implyK;
-  have h₂ : □(B 🡒 A) 🡒 □(B 🡒 A ⋏ B) ∈ L :=
-    C_of_E_mp <| re <| E_intro
-      (CK_iff_CC.mp <| CK_of_C_of_C (mdp₁ and₁ and₂) and₂)
-      (CCC_of_C_right and₁);
-  exact mdp₁ (C_trans (C_trans and₁ (C_trans h₁ h₂)) axiomK) and₂;⟩
+  have h₁ : □(A ⋏ B) 🡒 □A ∈ L := rm_of_KN and₁;
+  have h₂ : □(A ⋏ B) 🡒 □B ∈ L := rm_of_KN and₂;
+  exact CK_of_C_of_C h₁ h₂;
 
-/-- The axiom scheme `K` is derivable from `M` and `C`. -/
-lemma axiomK_of_MC [L.HasAxiomM] [L.HasAxiomC] : □(A 🡒 B) 🡒 □A 🡒 □B ∈ L :=
-  CK_iff_CC.mp <| C_trans axiomC <| rm <| mdp₁ and₁ and₂
+/-! #### The axiom scheme `C` -/
 
-instance [L.HasAxiomM] [L.HasAxiomC] : L.HasAxiomK := ⟨fun _ _ => axiomK_of_MC⟩
+instance [L.HasAxiomM] [L.HasAxiomK] : L.HasAxiomC := by
+  constructor;
+  intro A B;
+  have h₁ : □A 🡒 □(B 🡒 A ⋏ B) ∈ L := rm and₃;
+  have h₂ : □(B 🡒 A ⋏ B) 🡒 (□B 🡒 □(A ⋏ B)) ∈ L := axiomK;
+  have h₃ : □A 🡒 (□B 🡒 □(A ⋏ B)) ∈ L := C_trans h₁ h₂;
+  have h₄ : (□A ⋏ □B) 🡒 (□B 🡒 □(A ⋏ B)) ∈ L := C_trans and₁ h₃;
+  exact mdp₁ h₄ and₂;
 
-/-- `◇(∼A)` and `∼□A` are equivalent. -/
-private lemma EDiaNNBox : ◇(∼A) 🡘 ∼□A ∈ L := by
-  have h : ∼∼A 🡘 A ∈ L := E_intro dne dni;
-  exact E_intro (contra (C_of_E_mpr (re h))) (contra (C_of_E_mp (re h)));
-
-/-- The axiom scheme `B` in the form `∼A 🡒 □(∼□A)`. -/
-private lemma CNBoxNBox [L.HasAxiomB] : ∼A 🡒 □(∼□A) ∈ L :=
-  C_trans axiomB (C_of_E_mp (re EDiaNNBox))
-
-/-- The dual of the axiom scheme `B`. -/
-lemma diaBc [L.HasAxiomB] : ◇□A 🡒 A ∈ L := C_trans (contra CNBoxNBox) dne
-
-/-- The axiom scheme `C` is derivable from `M` and `B`. -/
-instance [L.HasAxiomM] [L.HasAxiomB] : L.HasAxiomC := ⟨by
+instance [L.HasAxiomM] [L.HasAxiomB] : L.HasAxiomC := by
+  constructor;
   intro A B;
   have h₁ : (□A ⋏ □B) 🡒 □◇(□A ⋏ □B) ∈ L := axiomB;
   have h₂ : ◇(□A ⋏ □B) 🡒 A ∈ L := C_trans (rmDia and₁) diaBc;
   have h₃ : ◇(□A ⋏ □B) 🡒 B ∈ L := C_trans (rmDia and₂) diaBc;
-  have h₅ : □◇(□A ⋏ □B) 🡒 □(A ⋏ B) ∈ L := rm (CK_of_C_of_C h₂ h₃);
-  exact C_trans h₁ h₅;⟩
+  have h₄ : ◇(□A ⋏ □B) 🡒 (A ⋏ B) ∈ L := CK_of_C_of_C h₂ h₃;
+  have h₅ : □◇(□A ⋏ □B) 🡒 □(A ⋏ B) ∈ L := rm h₄;
+  exact C_trans h₁ h₅;
 
-/-- The axiom `N` is derivable from `M` and `B`. -/
-instance [L.HasAxiomM] [L.HasAxiomB] : L.HasAxiomN :=
-  ⟨rm (C_of_conseq verum) ⨀ axiomB' verum⟩
+/-! #### The axiom scheme `K` -/
 
-/-- The axiom `N` is derivable from `M` and `5`. -/
-instance [L.HasAxiomM] [L.HasAxiomFive] : L.HasAxiomN := ⟨by
-  have h_left : □(∼(⊤ : Formula α)) 🡒 □◇⊤ ∈ L := rm (mdp₁ CNC (C_of_conseq verum));
-  have h_right : ∼(□(∼(⊤ : Formula α))) 🡒 □◇⊤ ∈ L := axiomFive;
-  have h_dia : □◇(⊤ : Formula α) ∈ L := of_C_of_C_of_A h_left h_right lem;
-  exact rm (C_of_conseq verum) ⨀ h_dia;⟩
+instance [L.HasAxiomM] [L.HasAxiomC] : L.HasAxiomK := by
+  constructor;
+  intro A B;
+  have h₁ : ((A 🡒 B) ⋏ A) 🡒 B ∈ L := mdp₁ and₁ and₂;
+  have h₂ : □((A 🡒 B) ⋏ A) 🡒 □B ∈ L := rm h₁;
+  have h₃ : (□(A 🡒 B) ⋏ □A) 🡒 □((A 🡒 B) ⋏ A) ∈ L := axiomC;
+  have h₄ : (□(A 🡒 B) ⋏ □A) 🡒 □B ∈ L := C_trans h₃ h₂;
+  exact CK_iff_CC.mp h₄;
 
-/-- The axiom `N` is derivable from `B` and `4`. -/
-instance [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomN := ⟨by
-  have h₁ : □◇(⊤ : Formula α) ∈ L := axiomB' verum;
-  have h₂ : □□◇(⊤ : Formula α) ∈ L := axiomFour ⨀ h₁;
-  have h₃ : □◇(⊤ : Formula α) 🡘 ⊤ ∈ L := E_intro (C_of_conseq verum) (C_of_conseq h₁);
-  have h₄ : □□◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₃;
-  exact C_of_E_mp h₄ ⨀ h₂;⟩
+/-! #### The axiom `N` -/
 
-/-- `◇⊤` is derivable from the axiom `P`. -/
-private lemma diaTop_of_P [L.HasAxiomP] : ◇(⊤ : Formula α) ∈ L :=
-  C_trans (C_of_E_mp (re (E_intro dne efq))) axiomP
+private lemma axiomN_of_box (h : A ∈ L) (hb : □A ∈ L) : Axioms.N ∈ L := by
+  have h₁ : A 🡘 ⊤ ∈ L := E_intro (C_of_conseq verum) (C_of_conseq h);
+  have h₂ : □A 🡘 □⊤ ∈ L := re h₁;
+  exact C_of_E_mp h₂ ⨀ hb;
 
-/-- The axiom `N` is derivable from `P` and `5`. -/
-instance [L.HasAxiomP] [L.HasAxiomFive] : L.HasAxiomN := ⟨by
-  have h₁ : ◇(⊤ : Formula α) ∈ L := diaTop_of_P;
-  have h₂ : □◇(⊤ : Formula α) ∈ L := axiomFive ⨀ h₁;
-  have h₃ : ◇(⊤ : Formula α) 🡘 ⊤ ∈ L := E_intro (C_of_conseq verum) (C_of_conseq h₁);
-  have h₄ : □◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₃;
-  exact C_of_E_mp h₄ ⨀ h₂;⟩
+private lemma diaTop_of_P [L.HasAxiomP] : ◇⊤ ∈ L := by
+  have h₁ : ∼⊤ 🡒 ⊥ ∈ L := mdp₁ C_id (C_of_conseq verum);
+  have h₂ : ⊥ 🡒 ∼⊤ ∈ L := efq;
+  have h₃ : ∼⊤ 🡘 ⊥ ∈ L := E_intro h₁ h₂;
+  have h₄ : □(∼⊤) 🡘 □⊥ ∈ L := re h₃;
+  have h₅ : □(∼⊤) 🡒 □⊥ ∈ L := C_of_E_mp h₄;
+  exact C_trans h₅ axiomP;
 
-/-- The axiom `N` is derivable from `P` and `B`. -/
-instance [L.HasAxiomP] [L.HasAxiomB] : L.HasAxiomN := ⟨by
-  have h₁ : ◇(⊤ : Formula α) ∈ L := diaTop_of_P;
-  have h₂ : □◇(⊤ : Formula α) ∈ L := axiomB' verum;
-  have h₃ : ◇(⊤ : Formula α) 🡘 ⊤ ∈ L := E_intro (C_of_conseq verum) (C_of_conseq h₁);
-  have h₄ : □◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₃;
-  exact C_of_E_mp h₄ ⨀ h₂;⟩
+instance [L.HasAxiomM] [L.HasAxiomB] : L.HasAxiomN := by
+  constructor;
+  have h₁ : ◇⊤ 🡒 ⊤ ∈ L := C_of_conseq verum;
+  have h₂ : □◇⊤ 🡒 □⊤ ∈ L := rm h₁;
+  have h₃ : □◇⊤ ∈ L := axiomB' verum;
+  exact h₂ ⨀ h₃;
 
-/-- The axiom `N` is derivable from `D`, `B` and `5`. -/
-instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomN := ⟨by
-  have h₁ : □◇(⊤ : Formula α) ∈ L := axiomB' verum;
-  have h₂ : ◇◇(⊤ : Formula α) ∈ L := axiomD ⨀ h₁;
-  have h₃ : □◇◇(⊤ : Formula α) ∈ L := axiomFive ⨀ h₂;
-  have h₄ : ◇◇(⊤ : Formula α) 🡘 ⊤ ∈ L := E_intro (C_of_conseq verum) (C_of_conseq h₂);
-  have h₅ : □◇◇(⊤ : Formula α) 🡘 □⊤ ∈ L := re h₄;
-  exact C_of_E_mp h₅ ⨀ h₃;⟩
+instance [L.HasAxiomM] [L.HasAxiomFive] : L.HasAxiomN := by
+  constructor;
+  have h₁ : ∼⊤ 🡒 ⊤ 🡒 ◇⊤ ∈ L := CNC;
+  have h₂ : ∼⊤ 🡒 ⊤ ∈ L := C_of_conseq verum;
+  have h₃ : ∼⊤ 🡒 ◇⊤ ∈ L := mdp₁ h₁ h₂;
+  have h₄ : □(∼⊤) 🡒 □◇⊤ ∈ L := rm h₃;
+  have h₅ : ◇⊤ 🡒 □◇⊤ ∈ L := axiomFive;
+  have h₆ : □◇⊤ ∈ L := of_C_of_C_of_A h₄ h₅ lem;
+  have h₇ : ◇⊤ 🡒 ⊤ ∈ L := C_of_conseq verum;
+  have h₈ : □◇⊤ 🡒 □⊤ ∈ L := rm h₇;
+  exact h₈ ⨀ h₆;
 
-/-- The dual of the axiom scheme `Four`. -/
-lemma diaFourc [L.HasAxiomFour] : ◇◇A 🡒 ◇A ∈ L := by
-  have e : ∼◇A 🡘 □(∼A) ∈ L := E_intro dne dni;
-  have h : □(∼A) 🡒 □(∼◇A) ∈ L := C_trans axiomFour (C_of_E_mp (re (E_symm e)));
-  exact contra h;
+instance [L.HasAxiomP] [L.HasAxiomB] : L.HasAxiomN := by
+  constructor;
+  have h₁ : ◇⊤ ∈ L := diaTop_of_P;
+  have h₂ : □◇⊤ ∈ L := axiomB' verum;
+  exact axiomN_of_box h₁ h₂;
 
-/-- The axiom scheme `Five` is derivable from `M`, `B` and `4`. -/
-instance [L.HasAxiomM] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive :=
-  ⟨fun _ => C_trans axiomB (rm diaFourc)⟩
+instance [L.HasAxiomP] [L.HasAxiomFive] : L.HasAxiomN := by
+  constructor;
+  have h₁ : ◇⊤ ∈ L := diaTop_of_P;
+  have h₂ : □◇⊤ ∈ L := axiomFive ⨀ h₁;
+  exact axiomN_of_box h₁ h₂;
 
-/-- The axiom scheme `Five` is derivable from `D`, `B` and `4`. -/
-instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive := ⟨fun A => by
-  have h₁ : ◇A 🡒 ◇◇A ∈ L := C_trans axiomB (C_trans axiomD diaFourc);
-  have e : ◇◇A 🡘 ◇A ∈ L := E_intro diaFourc h₁;
-  exact C_trans axiomB (C_of_E_mp (re e))⟩
+instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomN := by
+  constructor;
+  have h₁ : □◇⊤ ∈ L := axiomB' verum;
+  have h₂ : ◇◇⊤ ∈ L := axiomD ⨀ h₁;
+  have h₃ : □◇◇⊤ ∈ L := axiomFive ⨀ h₂;
+  exact axiomN_of_box h₂ h₃;
 
-/-- The axiom scheme `T` is derivable from `D`, `B` and `4`. -/
-instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomT := ⟨fun A => by
-  have hdia : ∀ {A : Formula α}, A 🡒 ◇A ∈ L :=
-    fun {A} => C_trans axiomB (C_trans (axiomD (A := ◇A)) diaFourc);
-  have h₁ : ∼∼A 🡘 A ∈ L := E_intro dne dni;
-  have h₂ : ◇(∼A) 🡒 ∼□A ∈ L := contra (C_of_E_mpr (re h₁));
-  have h₃ : ∼A 🡒 ∼□A ∈ L := C_trans hdia h₂;
-  exact C_trans dni (C_trans (contra h₃) dne);⟩
+instance [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomN := by
+  constructor;
+  have h₁ : □◇⊤ ∈ L := axiomB' verum;
+  have h₂ : □□◇⊤ ∈ L := axiomFour ⨀ h₁;
+  exact axiomN_of_box h₁ h₂;
 
-/-- The axiom scheme `Five` in the form `∼□A 🡒 □(∼□A)`. -/
-private lemma CNBoxBoxNBox [L.HasAxiomFive] : ∼□A 🡒 □(∼□A) ∈ L :=
-  C_trans (C_of_E_mpr EDiaNNBox) (C_trans axiomFive (C_of_E_mp (re EDiaNNBox)))
+instance [L.HasAxiomT] [L.HasAxiomB] : L.HasAxiomN := ⟨nec verum⟩
 
-/-- The dual of the axiom scheme `Five`. -/
-lemma diaFivec [L.HasAxiomFive] : ◇□A 🡒 □A ∈ L := C_trans (contra CNBoxBoxNBox) dne
+/-! #### The axiom `P` -/
 
-/-- The axiom scheme `Four` is derivable from `M`, `B` and `5`. -/
-instance [L.HasAxiomM] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomFour :=
-  ⟨fun _ => C_trans axiomB (rm diaFivec)⟩
-
-/-- The axiom scheme `D` is derivable from `C` and `P`. -/
-instance [L.HasAxiomC] [L.HasAxiomP] : L.HasAxiomD := ⟨fun A => by
-  have h₁ : (A ⋏ ∼A) 🡘 (⊥ : Formula α) ∈ L := E_intro CKNO efq;
-  have h₂ : □A ⋏ □(∼A) 🡒 (⊥ : Formula α) ∈ L :=
-    C_trans axiomC (C_trans (C_of_E_mp (re h₁)) axiomP);
-  exact CK_iff_CC.mp h₂;⟩
+instance [L.HasAxiomM] [L.HasAxiomD] : L.HasAxiomP := by
+  constructor;
+  have h₁ : (⊥ : Formula α) 🡒 ∼⊥ ∈ L := efq;
+  have h₂ : □(⊥ : Formula α) 🡒 □(∼⊥) ∈ L := rm h₁;
+  have h₃ : □(⊥ : Formula α) 🡒 ◇(⊥ : Formula α) ∈ L := axiomD;
+  exact mdp₁ h₃ h₂;
 
 omit [L.HasRE] in
-/-- The axiom scheme `D` is derivable from `K` and `P`. -/
-instance [L.HasAxiomK] [L.HasAxiomP] : L.HasAxiomD :=
-  ⟨fun _ => C_trans dni (contra (C_trans (axiomK (B := ⊥)) (CCC_of_C_right axiomP)))⟩
+instance [L.HasAxiomN] [L.HasAxiomD] : L.HasAxiomP := by
+  constructor;
+  have h₁ : □(⊥ : Formula α) 🡒 ◇(⊥ : Formula α) ∈ L := axiomD;
+  have h₂ : ∼∼□⊤ 🡒 ∼□⊥ ∈ L := contra h₁;
+  have h₃ : ∼∼□⊤ ∈ L := dni' axiomN;
+  exact h₂ ⨀ h₃;
 
 omit [L.HasRE] in
-/-- The axiom `P` is derivable from `N` and `D`. -/
-lemma axiomP_of_ND [L.HasAxiomN] [L.HasAxiomD] : Axioms.P ∈ (L : Logic α) :=
-  contra (axiomD (A := ⊥)) ⨀ dni' axiomN
+instance [L.HasAxiomT] : L.HasAxiomP := by
+  constructor;
+  have h₁ : (⊤ : Formula α) 🡒 ∼□⊥ ∈ L := contra axiomT;
+  exact h₁ ⨀ verum;
+
+/-! #### The axiom scheme `D` -/
+
+instance [L.HasAxiomC] [L.HasAxiomP] : L.HasAxiomD := by
+  constructor;
+  intro A;
+  have h₁ : (A ⋏ ∼A) 🡘 ⊥ ∈ L := E_intro CKNO efq;
+  have h₂ : □(A ⋏ ∼A) 🡘 □⊥ ∈ L := re h₁;
+  have h₃ : □(A ⋏ ∼A) 🡒 □⊥ ∈ L := C_of_E_mp h₂;
+  have h₄ : □⊥ 🡒 ⊥ ∈ L := axiomP;
+  have h₅ : □(A ⋏ ∼A) 🡒 ⊥ ∈ L := C_trans h₃ h₄;
+  have h₆ : (□A ⋏ □(∼A)) 🡒 □(A ⋏ ∼A) ∈ L := axiomC;
+  have h₇ : (□A ⋏ □(∼A)) 🡒 ⊥ ∈ L := C_trans h₆ h₅;
+  exact CK_iff_CC.mp h₇;
 
 omit [L.HasRE] in
-instance [L.HasAxiomN] [L.HasAxiomD] : L.HasAxiomP := ⟨axiomP_of_ND⟩
-
-/-- The axiom `P` is derivable from `M` and `D`. -/
-lemma axiomP_of_MD [L.HasAxiomM] [L.HasAxiomD] : Axioms.P ∈ (L : Logic α) :=
-  mdp₁ (axiomD (A := ⊥)) (rm efq)
-
-instance [L.HasAxiomM] [L.HasAxiomD] : L.HasAxiomP := ⟨axiomP_of_MD⟩
-
-/-- The axiom scheme `T` is derivable from `D`, `B` and `4`. -/
-instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomT :=
-  ⟨fun _ => C_trans axiomFour (C_trans axiomD diaBc)⟩
-
-/-- The axiom scheme `T` is derivable from `C`, `D`, `B` and `5`. -/
-instance [L.HasAxiomC] [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomT := ⟨fun A => by
-  have hB : □A 🡒 □◇□A ∈ L := axiomB;
-  have hNA : ∼A 🡒 □(∼□A) ∈ L := CNBoxNBox;
-  have hO : ◇□A ⋏ ∼□A 🡒 ⊥ ∈ L := CK_iff_CC.mpr (C_swap (C_trans CNBoxBoxNBox dni));
-  have hBoxO : □(◇□A ⋏ ∼□A) 🡒 □⊥ ∈ L := C_of_E_mp (re (E_intro hO efq));
-  have h : □A ⋏ ∼A 🡒 (⊥ : Formula α) ∈ L :=
-    C_trans
-      (CK_of_C_of_C (C_trans and₁ hB) (C_trans and₂ hNA))
-      (C_trans axiomC (C_trans hBoxO axiomP));
-  exact C_trans (CK_iff_CC.mp h) dne;⟩
-
-variable [L.HasAxiomT]
+instance [L.HasAxiomK] [L.HasAxiomP] : L.HasAxiomD := by
+  constructor;
+  intro A;
+  have h₁ : □(∼A) 🡒 (□A 🡒 □⊥) ∈ L := axiomK;
+  have h₂ : (□A 🡒 □⊥) 🡒 (□A 🡒 ⊥) ∈ L := CCC_of_C_right axiomP;
+  have h₃ : □(∼A) 🡒 (□A 🡒 ⊥) ∈ L := C_trans h₁ h₂;
+  have h₄ : ∼∼□A 🡒 ◇A ∈ L := contra h₃;
+  exact C_trans dni h₄;
 
 omit [L.HasRE] in
-/-- The dual of the axiom scheme `T`. -/
-lemma diaTc : A 🡒 ◇A ∈ L := C_trans dni (contra axiomT)
+instance [L.HasAxiomT] : L.HasAxiomD := by
+  constructor;
+  intro A;
+  have h₁ : □A 🡒 A ∈ L := axiomT;
+  have h₂ : A 🡒 ◇A ∈ L := diaTc;
+  exact C_trans h₁ h₂;
+
+/-! #### The axiom scheme `T` -/
+
+instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomT := by
+  constructor;
+  intro A;
+  have h₁ : □A 🡒 □□A ∈ L := axiomFour;
+  have h₂ : □□A 🡒 ◇□A ∈ L := axiomD;
+  have h₃ : □A 🡒 ◇□A ∈ L := C_trans h₁ h₂;
+  have h₄ : ◇□A 🡒 A ∈ L := diaBc;
+  exact C_trans h₃ h₄;
+
+instance [L.HasAxiomC] [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomT := by
+  constructor;
+  intro A;
+  have h₁ : ◇□A ⋏ ∼□A 🡒 □A ∈ L := C_trans and₁ diaFivec;
+  have h₂ : ◇□A ⋏ ∼□A 🡒 (□A ⋏ ∼□A) ∈ L := CK_of_C_of_C h₁ and₂;
+  have h₃ : ◇□A ⋏ ∼□A 🡒 ⊥ ∈ L := C_trans h₂ CKNO;
+  have h₄ : ◇□A ⋏ ∼□A 🡘 ⊥ ∈ L := E_intro h₃ efq;
+  have h₅ : □(◇□A ⋏ ∼□A) 🡘 □⊥ ∈ L := re h₄;
+  have h₆ : □A 🡒 □◇□A ∈ L := axiomB;
+  have h₇ : ∼A 🡒 □(∼□A) ∈ L := CNBoxNBox;
+  have h₈ : □A ⋏ ∼A 🡒 (□◇□A ⋏ □(∼□A)) ∈ L := CK_of_C_of_C (C_trans and₁ h₆) (C_trans and₂ h₇);
+  have h₉ : (□◇□A ⋏ □(∼□A)) 🡒 □(◇□A ⋏ ∼□A) ∈ L := axiomC;
+  have h₁₀ : □A ⋏ ∼A 🡒 □(◇□A ⋏ ∼□A) ∈ L := C_trans h₈ h₉;
+  have h₁₁ : □(◇□A ⋏ ∼□A) 🡒 □⊥ ∈ L := C_of_E_mp h₅;
+  have h₁₂ : □A ⋏ ∼A 🡒 □⊥ ∈ L := C_trans h₁₀ h₁₁;
+  have h₁₃ : □A ⋏ ∼A 🡒 ⊥ ∈ L := C_trans h₁₂ axiomP;
+  have h₁₄ : □A 🡒 ∼∼A ∈ L := CK_iff_CC.mp h₁₃;
+  exact C_trans h₁₄ dne;
+
+/-! #### The axiom scheme `B` -/
 
 omit [L.HasRE] in
-/-- The axiom scheme `D` is derivable from `T`. -/
-instance : L.HasAxiomD := ⟨fun _ => C_trans axiomT diaTc⟩
+instance [L.HasAxiomT] [L.HasAxiomFive] : L.HasAxiomB := by
+  constructor;
+  intro A;
+  have h₁ : A 🡒 ◇A ∈ L := diaTc;
+  have h₂ : ◇A 🡒 □◇A ∈ L := axiomFive;
+  exact C_trans h₁ h₂;
 
-omit [L.HasRE] in
-/-- The axiom `P` is derivable from `T`. -/
-instance : L.HasAxiomP := ⟨contra (axiomT (A := ⊥)) ⨀ verum⟩
+/-! #### The axiom scheme `Four` -/
 
-/-- The axiom scheme `B` is derivable from `T` and `5`. -/
-instance [L.HasAxiomFive] : L.HasAxiomB := ⟨fun _ => C_trans diaTc axiomFive⟩
+instance [L.HasAxiomM] [L.HasAxiomB] [L.HasAxiomFive] : L.HasAxiomFour := by
+  constructor;
+  intro A;
+  have h₁ : ◇□A 🡒 □A ∈ L := diaFivec;
+  have h₂ : □◇□A 🡒 □□A ∈ L := rm h₁;
+  have h₃ : □A 🡒 □◇□A ∈ L := axiomB;
+  exact C_trans h₃ h₂;
 
-/-- The axiom scheme `Four` is derivable from `T` and `5`. -/
-instance [L.HasAxiomFive] : L.HasAxiomFour := ⟨fun A => by
-  have e : □A 🡘 ◇□A ∈ L := E_intro diaTc diaFivec;
-  exact C_trans axiomB (C_of_E_mpr (re e))⟩
+instance [L.HasAxiomT] [L.HasAxiomFive] : L.HasAxiomFour := by
+  constructor;
+  intro A;
+  have h₁ : □A 🡘 ◇□A ∈ L := E_intro diaTc diaFivec;
+  have h₂ : □□A 🡘 □◇□A ∈ L := re h₁;
+  have h₃ : □◇□A 🡒 □□A ∈ L := C_of_E_mpr h₂;
+  have h₄ : □A 🡒 □◇□A ∈ L := axiomB;
+  exact C_trans h₄ h₃;
 
-/-- The axiom scheme `Five` is derivable from `T`, `B` and `4`. -/
-instance [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive := ⟨fun A => by
-  have e : ◇A 🡘 ◇◇A ∈ L := E_intro diaTc diaFourc;
-  exact C_trans axiomB (C_of_E_mpr (re e))⟩
+/-! #### The axiom scheme `Five` -/
 
-/-- The necessitation rule, derived from `RE` and the axiom schemes `T` and `B`. -/
-lemma nec [L.HasAxiomB] (h : A ∈ L) : □A ∈ L :=
-  C_of_E_mpr (re <| E_intro diaTc (C_of_conseq h)) ⨀ (axiomB ⨀ h)
+instance [L.HasAxiomM] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive := by
+  constructor;
+  intro A;
+  have h₁ : ◇◇A 🡒 ◇A ∈ L := diaFourc;
+  have h₂ : □◇◇A 🡒 □◇A ∈ L := rm h₁;
+  have h₃ : ◇A 🡒 □◇◇A ∈ L := axiomB;
+  exact C_trans h₃ h₂;
 
-/-- The axiom `N` is derivable from `T` and `B`. -/
-instance [L.HasAxiomB] : L.HasAxiomN := ⟨nec verum⟩
+instance [L.HasAxiomD] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive := by
+  constructor;
+  intro A;
+  have h₁ : ◇A 🡒 □◇◇A ∈ L := axiomB;
+  have h₂ : □◇◇A 🡒 ◇◇◇A ∈ L := axiomD;
+  have h₃ : ◇◇◇A 🡒 ◇◇A ∈ L := diaFourc;
+  have h₄ : □◇◇A 🡒 ◇◇A ∈ L := C_trans h₂ h₃;
+  have h₅ : ◇A 🡒 ◇◇A ∈ L := C_trans h₁ h₄;
+  have h₆ : ◇◇A 🡘 ◇A ∈ L := E_intro diaFourc h₅;
+  have h₇ : □◇◇A 🡘 □◇A ∈ L := re h₆;
+  have h₈ : □◇◇A 🡒 □◇A ∈ L := C_of_E_mp h₇;
+  exact C_trans h₁ h₈;
+
+instance [L.HasAxiomT] [L.HasAxiomB] [L.HasAxiomFour] : L.HasAxiomFive := by
+  constructor;
+  intro A;
+  have h₁ : ◇A 🡘 ◇◇A ∈ L := E_intro diaTc diaFourc;
+  have h₂ : □◇A 🡘 □◇◇A ∈ L := re h₁;
+  have h₃ : □◇◇A 🡒 □◇A ∈ L := C_of_E_mpr h₂;
+  have h₄ : ◇A 🡒 □◇◇A ∈ L := axiomB;
+  exact C_trans h₄ h₃;
 
 end
 
