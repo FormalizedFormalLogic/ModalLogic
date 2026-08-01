@@ -59,13 +59,13 @@ theorem ssubset_LogicEND : @LogicEND ℕ ⊂ LogicENDB := by
 theorem ssubset_LogicEDB : @LogicEDB ℕ ⊂ LogicENDB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEDB.not_provable_axiomN⟩
 
 theorem ssubset_LogicENB : @LogicENB ℕ ⊂ LogicENDB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicENB.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 

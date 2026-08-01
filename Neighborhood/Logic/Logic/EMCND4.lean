@@ -29,14 +29,14 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCND4 α) := 
 theorem ssubset_LogicEMCN4 : @LogicEMCN4 ℕ ⊂ LogicEMCND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMCN4.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEMCND : @LogicEMCND ℕ ⊂ LogicEMCND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMCND.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 

@@ -12,11 +12,7 @@ namespace LogicEMN5
 
 /-- The axiom `N` is redundant over `M` and `5`. -/
 theorem eq_LogicEM5 : (@LogicEMN5 α) = LogicEM5 := by
-  apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((⟨B, C, rfl⟩ | rfl) | ⟨B, rfl⟩) <;>
-      first | exact Logic.axiomM | exact Logic.axiomFive | exact Logic.axiomN
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  hilbert_eq_axioms
 
 instance : (@LogicEMN5 α).IsConsistent := by
   rw [eq_LogicEM5]; infer_instance

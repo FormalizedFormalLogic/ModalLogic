@@ -57,21 +57,21 @@ lemma not_provable_axiomP : (Axioms.P : Formula α) ∉ (@LogicEN45 α) := by
 theorem ssubset_LogicEN4 : @LogicEN4 ℕ ⊂ LogicEN45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEN4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEN5 : @LogicEN5 ℕ ⊂ LogicEN45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEN5.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicE45 : @LogicE45 ℕ ⊂ LogicEN45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicE45.not_provable_axiomN⟩
 
 end LogicEN45

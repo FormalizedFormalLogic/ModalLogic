@@ -28,31 +28,28 @@ lemma not_provable_axiomT (a : α) : ∃ A, Axioms.T A ∉ (@LogicEMCD45 α) := 
 theorem ssubset_LogicEMCD5 : @LogicEMCD5 ℕ ⊂ LogicEMCD45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMCD5.not_provable_axiomFour (0 : ℕ)
     exact ⟨Axioms.Four A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEMCND4 : @LogicEMCND4 ℕ ⊂ LogicEMCD45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ ((((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
-      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomD |
-        exact Logic.axiomFour
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMCND4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEMC45 : @LogicEMC45 ℕ ⊂ LogicEMCD45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMC45.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEMD45 : @LogicEMD45 ℕ ⊂ LogicEMCD45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicEMD45.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 

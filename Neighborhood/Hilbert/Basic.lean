@@ -139,7 +139,7 @@ in `Hilbert Ax₂` by its `Logic.HasAxiom*` instance. -/
 macro "hilbert_subset_axioms" : tactic =>
   `(tactic| (
     apply Hilbert.subset_of_provable_axioms
-    simp only [Set.union_subset_iff]
+    try simp only [Set.union_subset_iff]
     and_intros <;>
       first
         | exact Logic.axiomK_subset

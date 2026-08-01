@@ -73,18 +73,14 @@ theorem ssubset_LogicEMT : @LogicEMT ℕ ⊂ LogicEMT4 := by
 theorem ssubset_LogicET4 : @LogicET4 ℕ ⊂ LogicEMT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicET4.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEMD4 : @LogicEMD4 ℕ ⊂ LogicEMT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
-    · exact ProvableHilbert.axm (by grind)
-    · exact Logic.axiomD
-    · exact ProvableHilbert.axm (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMD4.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 

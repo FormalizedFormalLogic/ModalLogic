@@ -64,10 +64,7 @@ theorem ssubset_LogicET : @LogicET ℕ ⊂ LogicENT := by
 theorem ssubset_LogicEND : @LogicEND ℕ ⊂ LogicENT := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A (rfl | ⟨B, rfl⟩)
-    · exact Logic.axiomN
-    · exact Logic.axiomD
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEND.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 

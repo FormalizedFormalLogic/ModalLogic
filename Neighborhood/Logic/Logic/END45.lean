@@ -43,7 +43,7 @@ lemma not_provable_axiomB (a : α) : ∃ A, Axioms.B A ∉ (@LogicEND45 α) := b
 theorem ssubset_LogicEND4 : @LogicEND4 ℕ ⊂ LogicEND45 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEND4.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 

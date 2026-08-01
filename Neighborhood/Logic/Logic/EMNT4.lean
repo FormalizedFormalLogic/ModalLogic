@@ -58,13 +58,13 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMNT4 α
 theorem ssubset_LogicEMT4 : @LogicEMT4 ℕ ⊂ LogicEMNT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEMT4.not_provable_axiomN⟩
 
 theorem ssubset_LogicENT4 : @LogicENT4 ℕ ⊂ LogicEMNT4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicENT4.not_provable_axiomM (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.M A B, (ProvableHilbert.axm (by grind)), hA⟩
 

@@ -33,27 +33,21 @@ lemma not_provable_axiomK [DecidableEq α] (a b : α) (hab : a ≠ b) :
 theorem ssubset_LogicECTB : @LogicECTB ℕ ⊂ LogicECT5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
-      first | exact Logic.axiomC | exact Logic.axiomT | exact Logic.axiomB
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicECTB.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicECB4 : @LogicECB4 ℕ ⊂ LogicECT5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ ((⟨_, _, rfl⟩ | ⟨_, rfl⟩) | ⟨_, rfl⟩)
-    · exact Logic.axiomC
-    · exact Logic.axiomB
-    · exact Logic.axiomFour
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicECB4.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, Logic.axiomT, hA⟩
 
 theorem ssubset_LogicET5 : @LogicET5 ℕ ⊂ LogicECT5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicET5.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 

@@ -34,9 +34,7 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCNT α
 theorem ssubset_LogicEMCND : @LogicEMCND ℕ ⊂ LogicEMCNT := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ (((⟨_, _, rfl⟩ | ⟨_, _, rfl⟩) | rfl) | ⟨_, rfl⟩) <;>
-      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomD
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMCND.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 

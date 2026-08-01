@@ -56,21 +56,21 @@ lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicECD5 α)
 theorem ssubset_LogicECD : @LogicECD ℕ ⊂ LogicECD5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicECD.not_provable_axiomFive (0 : ℕ)
     exact ⟨Axioms.Five A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicEC5 : @LogicEC5 ℕ ⊂ LogicECD5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEC5.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicED5 : @LogicED5 ℕ ⊂ LogicECD5 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicED5.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 

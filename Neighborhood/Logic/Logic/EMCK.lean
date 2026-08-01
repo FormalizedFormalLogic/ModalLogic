@@ -11,11 +11,7 @@ namespace LogicEMCK
 
 /-- The axiom scheme `K` is redundant over `M` and `C`. -/
 theorem eq_LogicEMC : (@LogicEMCK α) = LogicEMC := by
-  apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, C, rfl⟩) <;>
-      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomK_of_MC
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  hilbert_eq_axioms
 
 instance : (@LogicEMCK α).IsConsistent := by
   rw [eq_LogicEMC]; infer_instance
@@ -43,11 +39,7 @@ lemma not_provable_axiomFive (a : α) : ∃ A, Axioms.Five A ∉ (@LogicEMCK α)
 
 /-- The axiom scheme `C` is redundant over `M` and `K`. -/
 theorem eq_LogicEMK : (@LogicEMCK α) = LogicEMK := by
-  apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((⟨B, C, rfl⟩ | ⟨B, C, rfl⟩) | ⟨B, C, rfl⟩) <;>
-      first | exact Logic.axiomM | exact Logic.axiomC | exact Logic.axiomK
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  hilbert_eq_axioms
 
 end LogicEMCK
 

@@ -42,25 +42,21 @@ lemma not_provable_axiomFour (a : α) : ∃ A, Axioms.Four A ∉ (@LogicECTB α)
 theorem ssubset_LogicETB : @LogicETB ℕ ⊂ LogicECTB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicETB.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicECNDB : @LogicECNDB ℕ ⊂ LogicECTB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ (((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) | ⟨_, rfl⟩) <;>
-      first | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomD | exact Logic.axiomB
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicECNDB.not_provable_axiomT (0 : ℕ)
     exact ⟨Axioms.T A, (ProvableHilbert.axm (by grind)), hA⟩
 
 theorem ssubset_LogicECNT : @LogicECNT ℕ ⊂ LogicECTB := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro _ ((⟨_, _, rfl⟩ | rfl) | ⟨_, rfl⟩) <;>
-      first | exact Logic.axiomC | exact Logic.axiomN | exact Logic.axiomT
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicECNT.not_provable_axiomB (0 : ℕ)
     exact ⟨Axioms.B A, (ProvableHilbert.axm (by grind)), hA⟩
 

@@ -60,13 +60,13 @@ theorem ssubset_LogicECN : @LogicECN ℕ ⊂ LogicECN4 := by
 theorem ssubset_LogicEC4 : @LogicEC4 ℕ ⊂ LogicECN4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicEC4.not_provable_axiomN⟩
 
 theorem ssubset_LogicEN4 : @LogicEN4 ℕ ⊂ LogicECN4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · obtain ⟨A, B, hA⟩ := LogicEN4.not_provable_axiomC (0 : ℕ) 1 (by simp)
     exact ⟨Axioms.C A B, (ProvableHilbert.axm (by grind)), hA⟩
 

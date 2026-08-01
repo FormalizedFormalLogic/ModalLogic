@@ -67,7 +67,7 @@ theorem ssubset_LogicEN4 : @LogicEN4 ℕ ⊂ LogicEND4 := by
 theorem ssubset_LogicED4 : @LogicED4 ℕ ⊂ LogicEND4 := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  · hilbert_subset_axioms
   · exact ⟨Axioms.N, (ProvableHilbert.axm (by grind)), LogicED4.not_provable_axiomN⟩
 
 end LogicEND4

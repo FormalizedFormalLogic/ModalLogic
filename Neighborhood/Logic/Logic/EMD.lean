@@ -68,8 +68,7 @@ theorem ssubset_LogicED : @LogicED ℕ ⊂ LogicEMD := by
 theorem ssubset_LogicEMP : @LogicEMP ℕ ⊂ LogicEMD := by
   apply Set.ssubset_iff_exists.mpr
   constructor
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A (⟨B, C, rfl⟩ | rfl) <;> first | exact Logic.axiomM | exact Logic.axiomP_of_MD
+  · hilbert_subset_axioms
   · obtain ⟨A, hA⟩ := LogicEMP.not_provable_axiomD (0 : ℕ)
     exact ⟨Axioms.D A, (ProvableHilbert.axm (by grind)), hA⟩
 

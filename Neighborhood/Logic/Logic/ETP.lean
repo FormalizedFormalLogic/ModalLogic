@@ -11,10 +11,7 @@ namespace LogicETP
 
 /-- The axiom `P` is redundant over `T`. -/
 theorem eq_LogicET : (@LogicETP α) = LogicET := by
-  apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A (⟨B, rfl⟩ | rfl) <;> first | exact Logic.axiomP | exact Logic.axiomT
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  hilbert_eq_axioms
 
 instance : (@LogicETP α).IsConsistent := by
   rw [eq_LogicET]; infer_instance

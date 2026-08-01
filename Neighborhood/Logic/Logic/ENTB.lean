@@ -12,11 +12,7 @@ namespace LogicENTB
 
 /-- The axiom `N` is redundant over `T` and `B`. -/
 theorem eq_LogicETB : (@LogicENTB α) = LogicETB := by
-  apply Set.Subset.antisymm
-  · apply Hilbert.subset_of_provable_axioms
-    rintro A ((rfl | ⟨B, rfl⟩) | ⟨B, rfl⟩) <;>
-      first | exact Logic.axiomN | exact Logic.axiomT | exact Logic.axiomB
-  · exact Hilbert.subset_of_subset_axioms (by grind)
+  hilbert_eq_axioms
 
 instance : (@LogicENTB α).IsConsistent := by
   rw [eq_LogicETB]; infer_instance
